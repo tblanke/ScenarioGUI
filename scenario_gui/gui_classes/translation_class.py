@@ -96,10 +96,10 @@ class Translations:  # pragma: no cover
         "NoFileSelected",
         "ValueError",
         "ColumnError",
-        "ChooseGHEtool",
+        "Load",
         "SaveFigure",
         "SaveData",
-        "SaveGHEtool",
+        "Save",
         "label_WarningCustomBorefield",
         "label_WarningDepth",
         "checkBox_SizeBorefield",
@@ -843,7 +843,7 @@ class Translations:  # pragma: no cover
             "Columna incorrecta: compruebe las columnas seleccionadas",
             "Columna incorrecta: comprobe as columnas escollidas",
         ]
-        self.ChooseGHEtool: List[str] = [
+        self.Load: List[str] = [
             "Choose *.GHEtool to load scenarios",
             "Wählen Sie *.GHEtool zum Laden von Szenarien",
             "Kies *.GHEtool bestand",
@@ -870,7 +870,7 @@ class Translations:  # pragma: no cover
             "Elija la localización del csv para guardar resultados",
             "Escolla a localización do csv para gardar resultados",
         ]
-        self.SaveGHEtool: List[str] = [
+        self.Save: List[str] = [
             "Choose *.GHEtool location to save scenarios",
             "Wählen Sie den *.GHEtool-Speicherort zum Speichern von Szenarien",
             "Kies gewenste *.GHEtool locatie",

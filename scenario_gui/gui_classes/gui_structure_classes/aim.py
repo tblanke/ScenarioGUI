@@ -138,7 +138,7 @@ class Aim:
         None
         """
         icon11 = QtG.QIcon()
-        icon11.addFile(f"{FOLDER}/gui/icons/{self.icon}")
+        icon11.addFile(f"{FOLDER}/icons/{self.icon}")
         self.widget.setParent(frame)
         push_button = self.widget
         push_button.setIcon(icon11)

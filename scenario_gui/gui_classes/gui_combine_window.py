@@ -23,7 +23,7 @@ from .gui_structure_classes import FigureOption, Option
 
 if TYPE_CHECKING:
     from typing import List, Optional, Tuple, Union, Type
-    from ..gui_structure import GuiStructure
+    from scenario_gui.gui_classes.gui_structure import GuiStructure
 
 currentdir = dirname(realpath(__file__))
 parentdir = dirname(currentdir)
@@ -40,7 +40,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
     """
     filenameDefault: tuple = ("", "")
 
-    def __init__(self, dialog: QtW.QWidget, app: QtW.QApplication, gui_structure: Type[GuiStructure]) -> MainWindow:
+    def __init__(self, dialog: QtW.QWidget, app: QtW.QApplication, gui_structure: Type[GuiStructure], translations: Type[Translations]) -> MainWindow:
         """
 
         Parameters
@@ -60,7 +60,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         super(MainWindow, self).__init__()
         super().setup_ui(dialog)
         # pyside6-rcc icons.qrc -o icons_rc.py
-        self.translations: Translations = Translations()  # init translation class
+        self.translations: Translations = translations()  # init translation class
 
         self.gui_structure = gui_structure(self.central_widget, self.translations)
         for page in self.gui_structure.list_of_pages:
@@ -119,7 +119,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # reset push button size
         self.check_page_button_layout(False)
         # set start page to general page
-        self.gui_structure.page_aim.button.click()
+        self.gui_structure.list_of_pages[0].button.click()
 
         self.last_idx = 0
 
@@ -160,7 +160,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         action = QtG.QAction(self.central_widget)
         icon = QtG.QIcon()
-        icon.addFile(f'{FOLDER}/gui/icons/{icon_name}', QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon.addFile(f'{FOLDER}/icons/{icon_name}', QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         action.setIcon(icon)
         self.menuLanguage.addAction(action)
         action.setText(name)
@@ -484,7 +484,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         icon = QtG.QIcon()  # create icon class
         # add pixmap to icon
-        icon.addPixmap(QtG.QPixmap(f":/icons/icons/{icon_name}.svg"), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon.addPixmap(QtG.QPixmap(f"{FOLDER}/icons/{icon_name}.svg"), QtG.QIcon.Normal, QtG.QIcon.Off)
         button.setIcon(icon)  # set icon to button
 
     def fun_rename_scenario(self, name: str = "") -> None:

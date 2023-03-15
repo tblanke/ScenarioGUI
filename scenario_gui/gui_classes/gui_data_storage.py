@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from .gui_structure_classes import ListBox
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..gui_structure import GuiStructure
+    from scenario_gui.gui_classes.gui_structure import GuiStructure
     from ..global_settings import ResultsClass
 
 

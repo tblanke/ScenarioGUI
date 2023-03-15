@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="200mm"
+   height="200mm"
+   viewBox="0 0 200 200"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   sodipodi:docname="icon.svg"
+   inkscape:export-filename="C:\Users\Tobi\Documents\GitHub\GHEtool_test\GHEtool\gui\icons\icon_07.png"
+   inkscape:export-xdpi="130"
+   inkscape:export-ydpi="130"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1699">
+      <stop
+         style="stop-color:#2a7eb3;stop-opacity:1;"
+         offset="0"
+         id="stop1695" />
+      <stop
+         style="stop-color:#2a7eb3;stop-opacity:0;"
+         offset="1"
+         id="stop1697" />
+    </linearGradient>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipEmfPath1">
+      <path
+         d="M 4.639759,4.639759 H 122.07366 V 250.06701 H 4.639759 Z"
+         id="path833" />
+    </clipPath>
+    <pattern
+       id="EMFhbasepattern"
+       patternUnits="userSpaceOnUse"
+       width="6"
+       height="6"
+       x="0"
+       y="0" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipEmfPath1-1">
+      <path
+         d="M 4.639759,4.639759 H 122.07366 V 250.06701 H 4.639759 Z"
+         id="path833-9" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath971">
+      <path
+         d="M 4.639759,4.639759 H 122.07366 V 250.06701 H 4.639759 Z"
+         id="path969" />
+    </clipPath>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1699"
+       id="linearGradient1701"
+       x1="85.455177"
+       y1="175.35945"
+       x2="86.908791"
+       y2="174.3672"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1699"
+       id="linearGradient1756"
+       x1="84.174164"
+       y1="175.39316"
+       x2="82.675606"
+       y2="174.46272"
+       gradientUnits="userSpaceOnUse" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5412">
+      <g
+         id="g5416"
+         style="fill:#917c6f"
+         transform="matrix(1.2635007,0,0,1.4864716,-240.14828,581.10097)"
+         clip-path="none">
+        <path
+           style="fill:#00407a;stroke-width:9.21955;stroke-linejoin:round"
+           d="m 479.50124,265.76076 a 100.00001,85 0 0 1 -100.00001,85 100.00001,85 0 0 1 -100.00001,-85 100.00001,85 0 0 1 100.00001,-85 100.00001,85 0 0 1 100.00001,85 z"
+           id="path5414" />
+      </g>
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.5"
+     inkscape:cx="302"
+     inkscape:cy="446"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:object-paths="true"
+     inkscape:snap-intersection-paths="false"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-midpoints="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-62.674702,-103.64712)">
+    <g
+       id="g1031"
+       style="fill:#917c6f"
+       transform="matrix(0.99999992,0,0,1.1764706,1.8792114e-6,-53.584795)">
+      <ellipse
+         style="fill:#00407a;fill-opacity:1;stroke:none;stroke-width:9.21955;stroke-linejoin:round"
+         id="path866"
+         cx="162.67471"
+         cy="218.64713"
+         rx="100.00001"
+         ry="85" />
+    </g>
+    <g
+       id="g1031-4"
+       style="fill:#917c6f"
+       transform="matrix(0.99999992,0,0,1.1764706,2.013977e-6,-53.5848)">
+      <path
+         id="path866-0"
+         style="fill:#00407a;stroke-width:9.21955;stroke-linejoin:round"
+         d="m 262.67472,218.64713 a 100.00001,85 0 0 1 -100.00001,85 100.00001,85 0 0 1 -100.000004,-85 100.00001,85 0 0 1 100.000004,-85 100.00001,85 0 0 1 100.00001,85 z" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:126.47px;font-family:Lexend;-inkscape-font-specification:Lexend;fill:#ffffff;stroke-width:0.746873;stroke-linecap:round;stroke-linejoin:round"
+       x="87.804428"
+       y="247.91162"
+       id="text311"><tspan
+         sodipodi:role="line"
+         id="tspan309"
+         style="font-size:126.47px;fill:#ffffff;stroke-width:0.746873"
+         x="87.804428"
+         y="247.91162">Sc</tspan></text>
+  </g>
+</svg>

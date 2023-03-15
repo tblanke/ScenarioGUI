@@ -69,7 +69,7 @@ class FunctionButton:
         self.button.setText(f"  {self.button_text}  ")
         icon = QtG.QIcon()
         # icon11.addPixmap(QtGui_QPixmap(icon), QtGui_QIcon.Normal, QtGui_QIcon.Off)
-        icon.addFile(f'{FOLDER}/gui/icons/{self.icon}')
+        icon.addFile(f'{FOLDER}/icons/{self.icon}')
         self.button.setIcon(icon)
         self.button.setIconSize(QtC.QSize(20, 20))
         self.button.setMinimumWidth(100)

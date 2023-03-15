@@ -20,7 +20,7 @@ BLACK: str = "rgb(0, 0, 0)"
 FONT = 'Arial' if system() == 'Windows' else 'Helvetica'#Arial
 FONT_SIZE = 11 if system() == 'Windows' else 14
 
-FOLDER: Path = Path(__file__)
+FOLDER: Path = Path(__file__).parent
 
 # get current version
 path = Path(FOLDER).parent
@@ -30,6 +30,7 @@ VERSION = config.get('metadata', 'version')
 
 FILE_EXTENSION: str = 'scenario'
 GUI_NAME: str = 'Scenario GUI'
+ICON_NAME: str = 'icon.svg'
 
 
 class ResultsClass:
@@ -45,8 +46,6 @@ class ResultsClass:
 
 def func(d_s: DataStorage) -> Tuple[ResultsClass, Callable[[], None]]:
     """Example function"""
-    testing = ResultsClass(d_s)
-    return testing, testing.adding
 
 
 DATA_2_RESULTS_FUNCTION: Callable[[DataStorage], Union[Tuple[ResultsClass, partial[[], None]], Tuple[ResultsClass, Callable[[], None]]]] = func

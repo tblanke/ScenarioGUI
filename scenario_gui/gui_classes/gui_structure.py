@@ -6,7 +6,7 @@ from typing import List, Tuple, Union
 
 import PySide6.QtWidgets as QtW
 
-from .gui_classes.gui_structure_classes import (
+from scenario_gui.gui_classes.gui_structure_classes import (
     Aim,
     ButtonBox,
     Category,
@@ -22,7 +22,7 @@ from .gui_classes.gui_structure_classes import (
     ResultFigure,
     ResultText,
 )
-from .gui_classes.translation_class import Translations
+from scenario_gui.gui_classes.translation_class import Translations
 
 
 class GuiStructure:
@@ -44,13 +44,46 @@ class GuiStructure:
         self.translations = translations
 
         # create page
-        self.page_result = Page("Results", "Results", "Result.svg")
+        #self.page_result = None
 
+        #self.cat_no_result = None
+        #self.text_no_result = None
+
+        #self.page_settings = None
+        #self.category_language = None
+        #self.option_language = None
+        #self.category_save_scenario = None
+        #self.option_toggle_buttons = None
+        #self.option_auto_saving = None
+        #self.hint_saving = None
+
+        self.list_of_aims: List[Tuple[Aim, str]] = []
+        self.list_of_options: List[Tuple[Option, str]] = []
+        self.list_of_pages: List[Page] = []
+
+        self.list_of_result_texts: List[Tuple[ResultText, str]] = []
+        self.list_of_result_figures: List[Tuple[ResultFigure, str]] = []
+
+        self.list_of_options_with_dependent_results: List[Tuple[Option, str]] = []
+
+    def create_results_page(self):
+        """
+        creates the results page
+        Returns
+        -------
+            None
+        """
+        self.page_result = Page("Results", "Results", "Result.svg")
         self.cat_no_result = Category(page=self.page_result, label="No results")
         self.text_no_result = Hint("No results are yet calculated", category=self.cat_no_result, warning=True)
 
-
-        # create page
+    def create_settings_page(self):
+        """
+        creates the settings page
+        Returns
+        -------
+            None
+        """
         self.page_settings = Page("Settings", "Settings", "Settings.svg")
 
         self.category_language = Category(page=self.page_settings, label="Language")
@@ -71,23 +104,21 @@ class GuiStructure:
             "button in the upper left corner if the changes should not be lost. ",
         )
 
-        #################################################################################################################
-        #                                                                                                               #
-        # CREATE PAGES                                                                                                  #
-        #                                                                                                               #
-        #################################################################################################################
-
-
-        # general settings
+    def create_lists(self):
+        """
+        creates the lists with the different elements
+        """
         self.list_of_aims: List[Tuple[Aim, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Aim)]
         self.list_of_options: List[Tuple[Option, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option)]
         self.list_of_pages: List[Page] = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), Page)]
 
-        self.list_of_result_texts: List[Tuple[ResultText, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultText)]
-        self.list_of_result_figures: List[Tuple[ResultFigure, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultFigure)]
+        self.list_of_result_texts: List[Tuple[ResultText, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name),
+                                                                                                                                       ResultText)]
+        self.list_of_result_figures: List[Tuple[ResultFigure, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name),
+                                                                                                                                           ResultFigure)]
 
-        self.list_of_options_with_dependent_results: List[Tuple[Option, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option) if
-                                                                                 getattr(self, name).linked_options]
+        self.list_of_options_with_dependent_results: List[Tuple[Option, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(
+            getattr(self, name), Option) if getattr(self, name).linked_options]
 
     def change_toggle_button(self) -> None:
         """
@@ -104,7 +135,6 @@ class GuiStructure:
             return
         ButtonBox.TOGGLE = True
         Page.TOGGLE = True
-
 
     def translate(self, index: int, translation: Translations) -> None:
         """
