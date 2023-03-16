@@ -1,6 +1,3 @@
-from typing import List
-
-
 class Translations:  # pragma: no cover
     __slots__ = (
         "action_add_scenario",
@@ -42,9 +39,9 @@ class Translations:  # pragma: no cover
         "menu_scenario",
         "menu_settings",
         "new_name",
-        "NoBackupFile",
-        "NoSolution",
-        "NotCalculated",
+        "no_backup_file",
+        "no_solution",
+        "not_calculated",
         "option_language",
         "page_result",
         "page_settings",
@@ -60,6 +57,7 @@ class Translations:  # pragma: no cover
         "tool_imported",
         "choose_load",
         "option_toggle_buttons",
+        "no_file_selected",
         "languages",
     )
 
@@ -110,9 +108,9 @@ class Translations:  # pragma: no cover
         self.menu_scenario: list[str] = ["Scenario", "Szenario"]
         self.menu_settings: list[str] = ["Settings", "Einstellungen"]
         self.new_name: list[str] = ["New name for ", "Neuer Name für "]
-        self.NoBackupFile: list[str] = ["no backup fileImport", "Keine Sicherungsdatei gefunden"]
-        self.NoSolution: list[str] = ["No Solution found", "Keine Lösung gefunden"]
-        self.NotCalculated: list[str] = ["Not calculated", "Noch nicht berechnet"]
+        self.no_backup_file: list[str] = ["no backup fileImport", "Keine Sicherungsdatei gefunden"]
+        self.no_solution: list[str] = ["No Solution found", "Keine Lösung gefunden"]
+        self.not_calculated: list[str] = ["Not calculated", "Noch nicht berechnet"]
         self.option_language: list[str] = [
             "Language:,English,German,Dutch,Italian,French,Spanish,Galician",
             "Sprache:,English,German,Dutch,Italian,French,Spanish,Galician",
@@ -131,3 +129,4 @@ class Translations:  # pragma: no cover
         self.tool_imported: list[str] = ["scenario gui imported", "scenario gui importiert"]
         self.choose_load: list[str] = ["Choose file to load scenarios", "Wählen Sie Datei zum Laden von Szenarien"]
         self.option_toggle_buttons: list[str] = ["Use toggle buttons?:, no , yes ", "Umschalterbutton?:, Nein , Ja "]
+        self.no_file_selected: list[str] = ["No file selected.", "Keine Datei ausgewählt."]

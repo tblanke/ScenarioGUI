@@ -20,7 +20,6 @@ def translate_csv_2_class(csv_file_with_path: str | Path, target_path: str | Pat
     file_name = FOLDER.joinpath(f"{target_path}/translation_class.py")
 
     with open(file_name, "w", encoding="utf-8") as file:
-        file.write("from typing import List\n")
         file.write("class Translations:  # pragma: no cover\n")
         list_of_options = d_f["name"].to_list()
         list_of_options.append("languages")

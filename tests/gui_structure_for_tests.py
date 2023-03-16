@@ -4,10 +4,12 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
-from ScenarioGUI.gui_classes.gui_structure_classes import Aim, Category, FileNameBox, FloatBox, Hint, IntBox, Page, ResultText, ButtonBox
+from ScenarioGUI.gui_classes.gui_structure_classes import Aim, ButtonBox, Category, FigureOption, FileNameBox, FloatBox, Hint, IntBox, Page, ResultFigure, \
+    ResultText
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
+
     from .test_translations.translation_class import Translations
 
 
@@ -32,6 +34,7 @@ class GUI(GuiStructure):
             default_value=100,
             minimal_value=0,
             maximal_value=1000,
+            decimal_number=2,
             category=self.category_inputs,
         )
         folder: Path = Path(__file__).parent
@@ -44,7 +47,7 @@ class GUI(GuiStructure):
         self.category_grid.activate_grid_layout(5)
         self.hint_1 = Hint(category=self.category_grid, hint="Grid example")
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.int_b = IntBox(
+        self.int_small = IntBox(
             label="",
             default_value=2,
             minimal_value=0,
@@ -52,11 +55,12 @@ class GUI(GuiStructure):
             category=self.category_grid,
         )
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.int_b = FloatBox(
+        self.float_small = FloatBox(
             label="",
             default_value=2,
             minimal_value=0,
             maximal_value=200,
+            decimal_number=2,
             category=self.category_grid,
         )
 
@@ -75,8 +79,20 @@ class GUI(GuiStructure):
         )
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
+
+        self.figure_results = ResultFigure(label="Plot", page=self.page_result)
+        self.legend_figure_results = FigureOption(category=self.figure_results,
+                                                              label="Legend on",
+                                                              param="legend",
+                                                              default=0,
+                                                              entries=["No", "Yes"],
+                                                              entries_values=[False, True])
+
+        self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_sub.add_link_2_show(self.result_text_sub)
+        self.aim_plot.add_link_2_show(self.figure_results)
 
         self.create_settings_page()
         self.create_lists()

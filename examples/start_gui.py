@@ -79,7 +79,7 @@ class GUI(GuiStructure):
         self.category_grid.activate_grid_layout(5)
         self.hint_1 = Hint(category=self.category_grid, hint="Grid example")
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.int_b = IntBox(
+        self.int_small = IntBox(
             label="",
             default_value=2,
             minimal_value=0,
@@ -87,11 +87,12 @@ class GUI(GuiStructure):
             category=self.category_grid,
         )
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.int_b = FloatBox(
+        self.float_b = FloatBox(
             label="",
             default_value=2,
             minimal_value=0,
             maximal_value=200,
+            decimal_number=1,
             category=self.category_grid,
         )
 

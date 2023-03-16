@@ -8,8 +8,6 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC
 
-from ..global_settings import DATA_2_RESULTS_FUNCTION
-
 if TYPE_CHECKING:  # pragma: no cover
     from .gui_data_storage import DataStorage
 
@@ -50,7 +48,7 @@ class CalcProblem(QtC.QThread):
         -------
         None
         """
-
+        from ..global_settings import DATA_2_RESULTS_FUNCTION
         results, func = DATA_2_RESULTS_FUNCTION(self.ds)
 
         try:

@@ -38,9 +38,9 @@ menu_language;Language;Sprache
 menu_scenario;Scenario;Szenario
 menu_settings;Settings;Einstellungen
 new_name;New name for ;Neuer Name für 
-NoBackupFile;no backup fileImport;Keine Sicherungsdatei gefunden
-NoSolution;No Solution found;Keine Lösung gefunden
-NotCalculated;Not calculated;Noch nicht berechnet
+no_backup_file;no backup fileImport;Keine Sicherungsdatei gefunden
+no_solution;No Solution found;Keine Lösung gefunden
+not_calculated;Not calculated;Noch nicht berechnet
 option_language;Language:,English,German,Dutch,Italian,French,Spanish,Galician;Sprache:,English,German,Dutch,Italian,French,Spanish,Galician
 page_result;Results,Results;Ergebnisse,Ergebnisse
 page_settings;Settings,Settings;Einstellungen,Einstellungen
@@ -56,3 +56,4 @@ short_cut;Ctrl+Alt+E;Ctrl+Alt+G
 tool_imported;scenario gui imported;scenario gui importiert
 choose_load;Choose file to load scenarios;Wählen Sie Datei zum Laden von Szenarien
 option_toggle_buttons;Use toggle buttons?:, no , yes ;Umschalterbutton?:, Nein , Ja 
+no_file_selected;No file selected.;Keine Datei ausgewählt.

@@ -444,7 +444,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             button_cl = self.dialog.button(QtW.QMessageBox.Close)
             button_ca = self.dialog.button(QtW.QMessageBox.Cancel)
             # set save, close and cancel button text depending on language selected
-            button_s.setText(f"{self.translations.pushButton_SaveScenario[self.gui_structure.option_language.get_value()]} ")
+            button_s.setText(f"{self.translations.push_button_save_scenario[self.gui_structure.option_language.get_value()]} ")
             button_cl.setText(f"{self.translations.label_LeaveScenario[self.gui_structure.option_language.get_value()]} ")
             button_ca.setText(f"{self.translations.label_StayScenario[self.gui_structure.option_language.get_value()]} ")
             # set  save, close and cancel button icon
@@ -452,7 +452,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.set_push_button_icon(button_cl, "Exit")
             self.set_push_button_icon(button_ca, "Abort")
             # execute message box and save response
-            reply = self.dialog.exec_()
+            reply = self.dialog.exec()
             # check if closing should be canceled
             if reply == QtW.QMessageBox.Cancel:
                 return_2_old_item()
@@ -466,15 +466,22 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.change_scenario(self.list_widget_scenario.row(new_row_item))
         return
 
-    def fun_move_scenario(self, args) -> None:
+    def fun_move_scenario(self, *args) -> None:
         """
-        change list of ds entry if scenario is moved (more inputs than needed, because the list widget returns that much
-        :param start_item: start item of moving
-        :param start_index: start index of moving
-        :param start_index2: start index of moving
-        :param end_item: start end of moving
-        :param target_index: target index of moving
-        :return: None
+        change list of ds entry if scenario is moved (more inputs than needed, because the list widget returns that much\n
+
+        Parameters
+        ----------
+        args: tuple containing
+            :param start_item: start item of moving
+            :param start_index: start index of moving
+            :param start_index2: start index of moving
+            :param end_item: start end of moving
+            :param target_index: target index of moving
+
+        Returns
+        -------
+            None
         """
         start_item, start_index, start_index2, end_item, target_index = args
         self.list_ds.insert(target_index, self.list_ds.pop(start_index))
@@ -726,7 +733,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # change language to english
         self.change_language()
         # show message that no backup file is found
-        LOGGER.error(self.translations.NoBackupFile[self.gui_structure.option_language.get_value()])
+        LOGGER.error(self.translations.no_backup_file[self.gui_structure.option_language.get_value()])
 
     def fun_save_auto(self) -> None:
         """
@@ -770,7 +777,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             with open(location) as file:
                 saving = load(file)
         except FileNotFoundError:
-            LOGGER.error(self.translations.NoFileSelected[self.gui_structure.option_language.get_value()])
+            LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()])
             return
 
         # write data to variables
@@ -817,7 +824,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             with open(location, "w") as file:
                 dump(saving, file, indent=1)
         except FileNotFoundError:
-            LOGGER.error(self.translations.NoFileSelected[self.gui_structure.option_language.get_value()])
+            LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()])
         except PermissionError:  # pragma: no cover
             LOGGER.error("PermissionError")
 
@@ -860,7 +867,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.checking: bool = True
         # if no file is found display error message is status bar
         except FileNotFoundError:
-            LOGGER.error(self.translations.NoFileSelected[self.gui_structure.option_language.get_value()])
+            LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()])
 
     def fun_save_as(self) -> None:
         """
@@ -1231,7 +1238,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 for cat in self.gui_structure.page_result.list_categories:
                     cat.hide(results=True)
                 self.gui_structure.cat_no_result.show()
-                self.gui_structure.text_no_result.set_text(self.translations.NotCalculated[self.gui_structure.option_language.get_value()])
+                self.gui_structure.text_no_result.set_text(self.translations.not_calculated[self.gui_structure.option_language.get_value()])
                 return
             update_results()
             for cat in self.gui_structure.page_result.list_categories:
@@ -1336,7 +1343,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.set_push_button_icon(button_cl, "Exit")
         self.set_push_button_icon(button_ca, "Abort")
         # execute message box and save response
-        reply = self.dialog.exec_()
+        reply = self.dialog.exec()
         # check if closing should be canceled
         if reply == QtW.QMessageBox.Cancel:
             # cancel closing event
