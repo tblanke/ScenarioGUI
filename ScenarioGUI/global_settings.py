@@ -4,7 +4,7 @@ import logging
 from configparser import ConfigParser
 from pathlib import Path
 from platform import system
-from typing import TYPE_CHECKING
+from typing import Protocol, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from functools import partial
@@ -40,15 +40,14 @@ LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
 
 
-class ResultsClass:
+class ResultsClass(Protocol):
     """Testing"""
 
-    def __init__(self, d_s_c: DataStorage | None = None):
-        self.ds = d_s_c
+    def _to_dict(self) -> dict:
+        """creates a dict from class data"""
 
-    def adding(self):
-        self.ds
-        return
+    def _from_dict(self, dictionary: dict) -> None:
+        """creates a class from dict data"""
 
 
 def func(d_s: DataStorage) -> tuple[ResultsClass, Callable[[], None]]:

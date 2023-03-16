@@ -86,8 +86,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # allow checking of changes
         self.checking: bool = False
         # create backup path in home documents directory
-        self.default_path: PurePath = PurePath(Path.home(), f"Documents/{GUI_NAME}")
-        self.backup_file: PurePath = PurePath(self.default_path, BACKUP_FILENAME)
+        self.default_path: Path = Path(Path.home(), f"Documents/{GUI_NAME}")
+        self.backup_file: Path = Path(self.default_path, BACKUP_FILENAME)
         # check if backup folder exits and otherwise create it
         makedirs(dirname(self.backup_file), exist_ok=True)
         makedirs(dirname(self.default_path), exist_ok=True)
@@ -567,7 +567,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # hide results buttons if no results where found
         if any([(i.results is None) for i in self.list_ds]) or self.list_ds == []:
             # self.gui_structure.function_save_results.hide()
-            self.gui_structure.page_aim.button.click()
+            self.gui_structure.list_of_pages[0].button.click()
             return
         # display results otherwise
         self.display_results()
@@ -743,7 +743,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         self._save_to_data(self.backup_file)
 
-    def _load_from_data(self, location: str) -> None:
+    def _load_from_data(self, location: str | Path) -> None:
         """
         This function loads the data from a JSON formatted file.
 
@@ -775,51 +775,22 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         except FileNotFoundError:
             LOGGER.error(self.translations.NoFileSelected[self.gui_structure.option_language.get_value()])
             return
-            # raise ImportError("The datafile cannot be loaded!")
-        except (JSONDecodeError, UnicodeDecodeError):
-            # try to open as pickle
-            import GHEtool
-            from GHEtool.gui.gui_classes import gui_data_storage
 
-            GHEtool.gui.gui_data_storage = gui_data_storage
-            GHEtool.gui.gui_data_storage.DataStorage = gui_data_storage.DataStorage
-            with open(location, "rb") as file:
-                saving = pk_load(file)
-            version = "2.1.0"
-
-        if version == "2.1.1":
-            # write data to variables
-            self.list_ds = []
-            for val, results in zip(saving["values"], saving["borefields"], strict=True):
-                ds = DataStorage(self.gui_structure)
-                ds.from_dict(val)
-                if results is None:
-                    ds.results = None
-                else:
-                    ds.results = ResultsClass()
-                    ds.results._from_dict(results)
-                self.list_ds.append(ds)
-            # set and change the window title
-            self.filename = saving["filename"]
-            general_changes(saving["names"])
-            return
-
-        if version == "2.1.0":
-            self.filename, li, settings = saving
-            # write data to variables
-            self.list_ds, li = li[0], li[1]
-
-            # since the results object is changed, this is deleted from the dataframe
-            for ds in self.list_ds:
+        # write data to variables
+        self.list_ds = []
+        for val, results in zip(saving["values"], saving["results"], strict=True):
+            ds = DataStorage(self.gui_structure)
+            ds.from_dict(val)
+            if results is None:
                 ds.results = None
+            else:
+                ds.results = ResultsClass()
+                ds.results._from_dict(results)
+            self.list_ds.append(ds)
+        # set and change the window title
+        self.filename = saving["filename"]
+        general_changes(saving["names"])
 
-            # convert to new ds format
-            for idx, ds in enumerate(self.list_ds):
-                ds_new = DataStorage(gui_structure=self.gui_structure)
-                [setattr(ds_new, name, getattr(ds, name)) for name in ds.__dict__ if hasattr(ds_new, name)]
-                self.list_ds[idx] = ds_new
-            # write scenario names
-            general_changes(li)
 
     def _save_to_data(self, location: str | PurePath) -> None:
         """
@@ -865,7 +836,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # open interface and get file name
         self.filename = QtW.QFileDialog.getOpenFileName(
             self.central_widget,
-            caption=self.translations.ChooseLoad[self.gui_structure.option_language.get_value()],
+            caption=self.translations.choose_load[self.gui_structure.option_language.get_value()],
             filter=f"{FILE_EXTENSION} (*.{FILE_EXTENSION})",
             dir=str(self.default_path),
         )

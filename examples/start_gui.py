@@ -11,10 +11,11 @@ from time import sleep
 from typing import TYPE_CHECKING, Callable
 
 import ScenarioGUI.global_settings as global_vars
-from examples.translation_class import Translations
 from ScenarioGUI.global_settings import FILE_EXTENSION, GUI_NAME
-from ScenarioGUI.gui_classes.gui_structure import Aim, Category, GuiStructure, Page, ResultText
-from ScenarioGUI.gui_classes.gui_structure_classes import IntBox
+from ScenarioGUI.gui_classes.gui_structure import GuiStructure
+from ScenarioGUI.gui_classes.gui_structure_classes import IntBox, Page, ResultText, Aim, Category
+
+from examples.translation_class import Translations
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
@@ -35,9 +36,14 @@ class ResultsClass:
 
     def subtract(self):
         self.result = self.a - self.b
-        
+
     def _to_dict(self) -> dict:
         return {"a":self.a, "b": self.b, "result": self.result}
+
+    def _from_dict(self, dictionary: dict):
+        self.a = dictionary["a"]
+        self.b = dictionary["b"]
+        self.result = dictionary["result"]
 
 
 class GUI(GuiStructure):
@@ -105,7 +111,6 @@ def run(path_list=None):  # pragma: no cover
 
     from PySide6.QtWidgets import QApplication as QtWidgets_QApplication
     from PySide6.QtWidgets import QMainWindow as QtWidgets_QMainWindow
-
     from ScenarioGUI.global_settings import VERSION
     from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
@@ -115,11 +120,11 @@ def run(path_list=None):  # pragma: no cover
     # init application
     app = QtWidgets_QApplication()
     # set version and id
-    myAppID = f"{GUI_NAME} v{VERSION}"  # arbitrary string
+    my_app_id = f"{GUI_NAME} v{VERSION}"  # arbitrary string
     if os_system == "Windows":
         from ctypes import windll as ctypes_windll
 
-        ctypes_windll.shell32.SetCurrentProcessExplicitAppUserModelID(myAppID)
+        ctypes_windll.shell32.SetCurrentProcessExplicitAppUserModelID(my_app_id)
     app.setApplicationName(GUI_NAME)
     app.setApplicationVersion(f"v{VERSION}")
     # init window
