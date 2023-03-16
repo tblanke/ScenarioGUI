@@ -3,7 +3,7 @@ data storage class script
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
 
@@ -54,7 +54,7 @@ class DataStorage:
         for figure_name in self.list_of_figures:
             setattr(self, figure_name, None)
 
-        self.results: Optional[ResultsClass] = None
+        self.results: ResultsClass | None = None
 
         self.debug_message: str = ""
 
@@ -99,7 +99,7 @@ class DataStorage:
             Dictionary with the values of the class
         """
         # get all normal values
-        return {key: value for key, value in self.__dict__.items() if isinstance(value, (int, bool, float, str))}
+        return {key: value for key, value in self.__dict__.items() if isinstance(value, int | bool | float | str)}
 
     def from_dict(self, data: dict):
         """

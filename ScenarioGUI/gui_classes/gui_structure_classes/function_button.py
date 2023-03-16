@@ -12,7 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 from ...global_settings import FOLDER, WHITE
 
 if TYPE_CHECKING:  # pragma: no cover
-    from typing import Callable, Optional
+    from collections.abc import Callable
 
     from ..gui_structure_classes import Category
 
@@ -23,7 +23,7 @@ class FunctionButton:
     The FunctionButton can be used to couple a button press to a function call.
     """
 
-    default_parent: Optional[QtW.QWidget] = None
+    default_parent: QtW.QWidget | None = None
 
     def __init__(self, button_text: str, icon: str, category: Category):
         """

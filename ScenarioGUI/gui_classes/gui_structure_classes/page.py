@@ -4,7 +4,7 @@ page class script
 from __future__ import annotations
 
 from functools import partial as ft_partial
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
@@ -15,6 +15,8 @@ from .aim import Aim
 from .functions import _update_opponent_not_change, _update_opponent_toggle, check_aim_options
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Callable
+
     from .category import Category
     from .option import Option
 

@@ -2,7 +2,6 @@
 This document contains all the information relevant for the GUI.
 It contains all the options, categories etc. that should appear on the GUI.
 """
-from typing import List, Tuple, Union
 
 import PySide6.QtWidgets as QtW
 
@@ -43,14 +42,14 @@ class GuiStructure:
         # self.option_auto_saving = None
         # self.hint_saving = None
 
-        self.list_of_aims: List[Tuple[Aim, str]] = []
-        self.list_of_options: List[Tuple[Option, str]] = []
-        self.list_of_pages: List[Page] = []
+        self.list_of_aims: list[tuple[Aim, str]] = []
+        self.list_of_options: list[tuple[Option, str]] = []
+        self.list_of_pages: list[Page] = []
 
-        self.list_of_result_texts: List[Tuple[ResultText, str]] = []
-        self.list_of_result_figures: List[Tuple[ResultFigure, str]] = []
+        self.list_of_result_texts: list[tuple[ResultText, str]] = []
+        self.list_of_result_figures: list[tuple[ResultFigure, str]] = []
 
-        self.list_of_options_with_dependent_results: List[Tuple[Option, str]] = []
+        self.list_of_options_with_dependent_results: list[tuple[Option, str]] = []
 
     def create_results_page(self):
         """
@@ -107,18 +106,18 @@ class GuiStructure:
         """
         creates the lists with the different elements
         """
-        self.list_of_aims: List[Tuple[Aim, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Aim)]
-        self.list_of_options: List[Tuple[Option, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option)]
-        self.list_of_pages: List[Page] = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), Page)]
+        self.list_of_aims: list[tuple[Aim, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Aim)]
+        self.list_of_options: list[tuple[Option, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option)]
+        self.list_of_pages: list[Page] = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), Page)]
 
-        self.list_of_result_texts: List[Tuple[ResultText, str]] = [
+        self.list_of_result_texts: list[tuple[ResultText, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultText)
         ]
-        self.list_of_result_figures: List[Tuple[ResultFigure, str]] = [
+        self.list_of_result_figures: list[tuple[ResultFigure, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultFigure)
         ]
 
-        self.list_of_options_with_dependent_results: List[Tuple[Option, str]] = [
+        self.list_of_options_with_dependent_results: list[tuple[Option, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option) if getattr(self, name).linked_options
         ]
 
@@ -156,5 +155,5 @@ class GuiStructure:
         Page.next_label = translation.label_next[index]
         Page.previous_label = translation.label_previous[index]
         for name in [j for j in translation.__slots__ if hasattr(self, j)]:
-            entry: Union[Option, Hint, FunctionButton, Page, Category] = getattr(self, name)
+            entry: Option | Hint | FunctionButton | Page | Category = getattr(self, name)
             entry.set_text(getattr(translation, name)[index])

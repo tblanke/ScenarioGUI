@@ -6,7 +6,7 @@ from __future__ import annotations
 import logging
 from os.path import exists
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
@@ -15,6 +15,8 @@ from ...global_settings import DARK, LIGHT, LIGHT_SELECT, WHITE
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Callable
+
     from .category import Category
 
 
@@ -214,4 +216,5 @@ class FileNameBox(Option):
         filename = QtW.QFileDialog.getOpenFileName(self.frame, caption=self.dialog_text, filter="(*.csv)", dir=str(Path.home()))
         if not filename[0]:
             logging.error(self.error_text)
-        self.widget.setText(filename[0])
+            return
+        self.set_value(filename[0])

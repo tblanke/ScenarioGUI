@@ -4,7 +4,7 @@ button box class script
 from __future__ import annotations
 
 from functools import partial as ft_partial
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
 
@@ -13,6 +13,8 @@ from .functions import _update_opponent_not_change, _update_opponent_toggle, che
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Callable
+
     from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint

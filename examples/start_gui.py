@@ -5,6 +5,7 @@ script to start the GUI
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 from platform import system
 from sys import argv
 from time import sleep
@@ -13,7 +14,7 @@ from typing import TYPE_CHECKING, Callable
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.global_settings import FILE_EXTENSION, GUI_NAME
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
-from ScenarioGUI.gui_classes.gui_structure_classes import IntBox, Page, ResultText, Aim, Category
+from ScenarioGUI.gui_classes.gui_structure_classes import FileNameBox, IntBox, Page, ResultText, Aim, Category
 
 from examples.translation_class import Translations
 
@@ -67,7 +68,9 @@ class GUI(GuiStructure):
             maximal_value=200,
             category=self.category_inputs,
         )
-
+        folder: Path = Path(__file__).parent.parent
+        file = f'{folder.joinpath("./example_data.csv")}'
+        self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
         self.create_results_page()
         self.numerical_results = Category(
             page=self.page_result, label="Numerical results"

@@ -4,7 +4,7 @@ list box class script
 from __future__ import annotations
 
 from functools import partial as ft_partial
-from typing import TYPE_CHECKING, Callable, List, Union
+from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
 
@@ -13,6 +13,8 @@ from .functions import check
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Callable
+
     from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
@@ -24,7 +26,7 @@ class ListBox(Option):
     The ListBox can be used to select one option out of many (sort of like the ButtonBox)
     """
 
-    def __init__(self, label: str, default_index: int, entries: List[str], category: Category):
+    def __init__(self, label: str, default_index: int, entries: list[str], category: Category):
         """
 
         Parameters
@@ -51,7 +53,7 @@ class ListBox(Option):
 
         """
         super().__init__(label, default_index, category)
-        self.entries: List[str] = entries
+        self.entries: list[str] = entries
         self.widget: QtW.QComboBox = QtW.QComboBox(self.default_parent)
 
     def get_text(self) -> str:
@@ -128,13 +130,13 @@ class ListBox(Option):
         -------
         None
         """
-        entry_name: List[str, str] = name.split(",")
+        entry_name: list[str, str] = name.split(",")
         self.label_text = entry_name[0]
         self.label.setText(self.label_text)
         for idx, name in enumerate(entry_name[1:]):
             self.widget.setItemText(idx, name)
 
-    def add_link_2_show(self, option: Union[Option, Category, FunctionButton, Hint], *, on_index: int):
+    def add_link_2_show(self, option: Option | Category | FunctionButton | Hint, *, on_index: int):
         """
         This function couples the visibility of an option to the value of the ButtonBox object.
 

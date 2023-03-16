@@ -4,7 +4,7 @@ option base class script
 from __future__ import annotations
 
 import abc
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
 
@@ -12,6 +12,8 @@ from ...global_settings import WHITE
 from .aim import Aim
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Callable
+
     from .category import Category
 
 

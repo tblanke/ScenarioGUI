@@ -3,7 +3,7 @@ hint class script
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
 
@@ -19,7 +19,7 @@ class Hint:
     Hints can be used to show text (for information or warnings) inside the category.
     """
 
-    default_parent: Optional[QtW.QWidget] = None
+    default_parent: QtW.QWidget | None = None
 
     def __init__(self, hint: str, category: Category, warning: bool = False):
         """

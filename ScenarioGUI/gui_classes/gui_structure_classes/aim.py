@@ -3,7 +3,7 @@ aim class script
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, List, Optional, Protocol, Tuple, Union
+from typing import TYPE_CHECKING, Protocol
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
@@ -12,6 +12,8 @@ import PySide6.QtWidgets as QtW  # type: ignore
 from ...global_settings import DARK, FOLDER, GREY, LIGHT, WHITE
 
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Callable
+
     from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
@@ -20,13 +22,13 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class Option(Protocol):
     label_text: str
-    default_value: Union[bool, int, float, str]
-    widget: Optional[QtW.QWidget]
+    default_value: bool | int | float | str
+    widget: QtW.QWidget | None
     frame: QtW.QFrame
     label: QtW.QLabel
-    linked_options: List[(Option, int)]
+    linked_options: list[(Option, int)]
     limit_size: bool
-    list_2_check_before_value: List[Tuple[Option, int], Aim]
+    list_2_check_before_value: list[tuple[Option, int], Aim]
 
 
 class Aim:
@@ -35,7 +37,7 @@ class Aim:
     The Aim option is central in the GHEtool GUI for it determines the possible 'things' one can do with the tool.
     """
 
-    default_parent: Optional[QtW.QWidget] = None
+    default_parent: QtW.QWidget | None = None
 
     def __init__(self, label: str, icon: str, page: Page):
         """
@@ -63,7 +65,7 @@ class Aim:
         self.label: str = label
         self.icon: str = icon
         self.widget: QtW.QPushButton = QtW.QPushButton(self.default_parent)
-        self.list_options: List[Union[Option, Category, FunctionButton]] = []
+        self.list_options: list[Option | Category | FunctionButton] = []
         page.upper_frame.append(self)
 
     def set_text(self, name: str) -> None:
@@ -99,7 +101,7 @@ class Aim:
         """
         self.widget.clicked.connect(lambda: function_to_be_called(*args))  # pylint: disable=E1101
 
-    def add_link_2_show(self, option: Union[Option, Category, FunctionButton, Hint]):
+    def add_link_2_show(self, option: Option | Category | FunctionButton | Hint):
         """
         This function couples the visibility of an option to the value of the Aim object.
 

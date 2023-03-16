@@ -4,11 +4,11 @@ import logging
 from configparser import ConfigParser
 from pathlib import Path
 from platform import system
-from typing import Protocol, TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from functools import partial
-    from typing import Callable
 
     from .gui_classes.gui_data_storage import DataStorage
 

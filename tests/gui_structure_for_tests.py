@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
-from ScenarioGUI.gui_classes.gui_structure_classes import FloatBox, IntBox, Page, ResultText, Aim, Category
+from ScenarioGUI.gui_classes.gui_structure_classes import FileNameBox, FloatBox, IntBox, Page, ResultText, Aim, Category
 
 from examples.translation_class import Translations
 
@@ -40,6 +41,9 @@ class GUI(GuiStructure):
             maximal_value=1000,
             category=self.category_inputs,
         )
+        folder: Path = Path(__file__).parent
+        file = f'{folder.joinpath("./example_data.csv")}'
+        self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
 
         self.create_results_page()
         self.numerical_results = Category(

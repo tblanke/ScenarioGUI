@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from .hint import Hint
 
 if TYPE_CHECKING:  # pragma: no cover
-    from typing import Callable
+    from collections.abc import Callable
 
     from .category import Category
 

@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from functools import partial as ft_partial
-from json import JSONDecodeError, dump, load
+from json import dump, load
 from math import isclose
 from os import makedirs, remove
 from os.path import dirname, exists, realpath
 from os.path import split as os_split
 from pathlib import Path, PurePath
-from pickle import load as pk_load
 from sys import path
 from typing import TYPE_CHECKING
 
@@ -770,8 +769,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             # open file and get data
             with open(location) as file:
                 saving = load(file)
-
-            version = saving["version"]
         except FileNotFoundError:
             LOGGER.error(self.translations.NoFileSelected[self.gui_structure.option_language.get_value()])
             return
