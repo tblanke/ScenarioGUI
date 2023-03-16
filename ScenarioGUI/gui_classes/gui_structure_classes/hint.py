@@ -6,6 +6,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 import PySide6.QtWidgets as QtW  # type: ignore
+
 from ...global_settings import WARNING
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -48,7 +49,13 @@ class Hint:
         self.warning = warning
         category.list_of_options.append(self)
 
-    def create_widget(self, frame: QtW.QFrame, layout_parent: QtW.QLayout, row: int = None, column: int = None) -> None:
+    def create_widget(
+        self,
+        frame: QtW.QFrame,
+        layout_parent: QtW.QLayout,
+        row: int = None,
+        column: int = None,
+    ) -> None:
         """
         This functions creates the ButtonBox widget in the frame.
 
@@ -127,4 +134,4 @@ class Hint:
         self.label.setText(self.hint)
 
     def __repr__(self):
-        return f'{type(self).__name__}; Hint: {self.hint}; Warning: {self.warning}'
+        return f"{type(self).__name__}; Hint: {self.hint}; Warning: {self.warning}"

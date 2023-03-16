@@ -8,12 +8,13 @@ from typing import TYPE_CHECKING, Callable, List, Optional, Protocol, Tuple, Uni
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
-from ...global_settings import DARK, GREY, LIGHT, WHITE, FOLDER
+
+from ...global_settings import DARK, FOLDER, GREY, LIGHT, WHITE
 
 if TYPE_CHECKING:  # pragma: no cover
+    from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
-    from .category import Category
     from .page import Page
 
 
@@ -22,7 +23,7 @@ class Option(Protocol):
     default_value: Union[bool, int, float, str]
     widget: Optional[QtW.QWidget]
     frame: QtW.QFrame
-    label:  QtW.QLabel
+    label: QtW.QLabel
     linked_options: List[(Option, int)]
     limit_size: bool
     list_2_check_before_value: List[Tuple[Option, int], Aim]

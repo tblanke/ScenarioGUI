@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, List, Optional, Union
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
+
 from ...global_settings import LIGHT, WHITE
 from .hint import Hint
 from .result_text import ResultText
@@ -277,4 +278,4 @@ class Category:
         return self.frame.isHidden()
 
     def __repr__(self):
-        return f'{type(self).__name__}; Label: {self.label_text}'
+        return f"{type(self).__name__}; Label: {self.label_text}"

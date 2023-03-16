@@ -7,6 +7,7 @@ import abc
 from typing import TYPE_CHECKING, Callable, List, Optional, Tuple, Union
 
 import PySide6.QtWidgets as QtW  # type: ignore
+
 from ...global_settings import WHITE
 from .aim import Aim
 
@@ -21,7 +22,12 @@ class Option(metaclass=abc.ABCMeta):
 
     default_parent: Optional[QtW.QWidget] = None
 
-    def __init__(self, label: str, default_value: Union[bool, int, float, str], category: Category):
+    def __init__(
+        self,
+        label: str,
+        default_value: Union[bool, int, float, str],
+        category: Category,
+    ):
         """
         Parameters
         ----------
@@ -115,12 +121,19 @@ class Option(metaclass=abc.ABCMeta):
             if not self.list_2_check_before_value:
                 return self._check_value()
             if any(aim.widget.isChecked() for aim in self.list_2_check_before_value if isinstance(aim, Aim)) or any(
-                    value[0].get_value() == value[1] and not value[0].is_hidden() for value in self.list_2_check_before_value if isinstance(value, tuple)):
+                value[0].get_value() == value[1] and not value[0].is_hidden() for value in self.list_2_check_before_value if isinstance(value, tuple)
+            ):
                 return self._check_value()
         return True
 
     @abc.abstractmethod
-    def create_widget(self, frame: QtW.QFrame, layout_parent: QtW.QLayout, row: int = None, column: int = None) -> None:
+    def create_widget(
+        self,
+        frame: QtW.QFrame,
+        layout_parent: QtW.QLayout,
+        row: int = None,
+        column: int = None,
+    ) -> None:
         """
         This functions creates the widget, related to the current object, in the frame.
 
@@ -269,7 +282,16 @@ class Option(metaclass=abc.ABCMeta):
         [option.show() for option, value in self.linked_options if self.check_linked_value(value)]
 
     @abc.abstractmethod
-    def check_linked_value(self, value: Union[int, Tuple[Optional[int], Optional[int]], Tuple[Optional[float], Optional[float]], str, bool]) -> bool:
+    def check_linked_value(
+        self,
+        value: Union[
+            int,
+            Tuple[Optional[int], Optional[int]],
+            Tuple[Optional[float], Optional[float]],
+            str,
+            bool,
+        ],
+    ) -> bool:
         """
         Check if the linked value is the current one then return True
 
@@ -300,4 +322,4 @@ class Option(metaclass=abc.ABCMeta):
         """
 
     def __repr__(self):
-        return f'{type(self).__name__}; Label: {self.label_text}; Value: {self.get_value()}'
+        return f"{type(self).__name__}; Label: {self.label_text}; Value: {self.get_value()}"

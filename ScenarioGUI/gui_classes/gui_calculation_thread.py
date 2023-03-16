@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC
+
 from ..global_settings import DATA_2_RESULTS_FUNCTION
 
 if TYPE_CHECKING:  # pragma: no cover

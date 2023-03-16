@@ -7,6 +7,7 @@ from functools import partial as ft_partial
 from typing import TYPE_CHECKING, Callable, List, Union
 
 import PySide6.QtWidgets as QtW  # type: ignore
+
 from ...global_settings import WHITE
 from .functions import check
 from .option import Option
@@ -22,6 +23,7 @@ class ListBox(Option):
     This class contains all the functionalities of the ListBox option in the GUI.
     The ListBox can be used to select one option out of many (sort of like the ButtonBox)
     """
+
     def __init__(self, label: str, default_index: int, entries: List[str], category: Category):
         """
 
@@ -126,7 +128,7 @@ class ListBox(Option):
         -------
         None
         """
-        entry_name: List[str, str] = name.split(',')
+        entry_name: List[str, str] = name.split(",")
         self.label_text = entry_name[0]
         self.label.setText(self.label_text)
         for idx, name in enumerate(entry_name[1:]):
@@ -188,7 +190,13 @@ class ListBox(Option):
         """
         self.widget.currentIndexChanged.connect(function_to_be_called)  # pylint: disable=E1101
 
-    def create_widget(self, frame: QtW.QFrame, layout_parent: QtW.QLayout, row: int = None, column: int = None) -> None:
+    def create_widget(
+        self,
+        frame: QtW.QFrame,
+        layout_parent: QtW.QLayout,
+        row: int = None,
+        column: int = None,
+    ) -> None:
         """
         This functions creates the ListBox widget in the frame.
 

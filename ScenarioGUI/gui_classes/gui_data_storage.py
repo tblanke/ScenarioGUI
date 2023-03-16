@@ -10,7 +10,8 @@ import matplotlib.pyplot as plt
 from .gui_structure_classes import ListBox
 
 if TYPE_CHECKING:  # pragma: no cover
-    from scenario_gui.gui_classes.gui_structure import GuiStructure
+    from ScenarioGUI.gui_classes.gui_structure import GuiStructure
+
     from ..global_settings import ResultsClass
 
 
@@ -42,7 +43,7 @@ class DataStorage:
         for option, name in gui_structure.list_of_options:
             # for a listbox, not the value but the text is relevant
             if isinstance(option, ListBox):
-                setattr(self, name+"_text", option.get_text())
+                setattr(self, name + "_text", option.get_text())
             setattr(self, name, option.get_value())
         for aim, name in gui_structure.list_of_aims:
             setattr(self, name, aim.widget.isChecked())
@@ -79,7 +80,7 @@ class DataStorage:
     def close_figures(self) -> None:
         """
         This function closes the figures and sets them to None.
-        
+
         Returns
         -------
         None

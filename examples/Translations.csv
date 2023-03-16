@@ -1,0 +1,58 @@
+﻿name;English;German
+icon;Flag_English.svg;Flag_German.svg
+short_cut;Ctrl+Alt+E;Ctrl+Alt+G
+scenarioString;Scenario;Szenario
+label_Language;Language: ;Sprache: 
+category_language;Language: ;Sprache: 
+option_language;Language:,English,German,Dutch,Italian,French,Spanish,Galician;Sprache:,English,German,Dutch,Italian,French,Spanish,Galician
+pushButton_SaveScenario;Update scenario;Szenario aktualisieren
+pushButton_AddScenario;Add scenario;Szenario hinzufügen
+pushButton_DeleteScenario;Delete scenario;Szenario löschen
+pushButton_start_multiple;Calculate all scenarios;Berechne alle Szenarios
+pushButton_Cancel;Exit;Verlassen
+page_result;Results,Results;Ergebnisse,Ergebnisse
+page_settings;Settings,Settings;Einstellungen,Einstellungen
+label_Status;Progress: ;Fortschritt: 
+label_File;File;Datei
+label_Calculation;Calculation;Berechnung
+label_next;next;nächstes
+label_previous;previous;vorheriges
+Load;Choose file to load scenarios;Wählen Sie die Datei zum Laden von Szenarien
+SaveFigure;Choose png location to save figure;Wählen Sie einen png-Speicherort für die Abbildung
+Save;Choose file location to save scenarios;Wählen Sie den Dateispeicherort zum Speichern von Szenarien
+label_New;New Project;Neues Projekt
+label_Save;Save Project;Speichere Projekt
+label_Open;Open Project;Öffne Projekt
+label_Save_As;Save as;Speichere Projekt unter ...
+Calculation_Finished;Calculation finished;Berechnung fertiggestellt
+GHE_tool_imported;GHEtool imported;GHEtool importiert
+GHE_tool_imported_start;Start importing GHEtool;Starte GHEtool zu importieren
+label_new_scenario;Enter new scenario name;Neuer Name für das Szenario
+new_name;New name for ;Neuer Name für 
+label_okay;Okay ;Okay 
+label_abort;Abort ;Abbruch 
+NoBackupFile;no backup fileImport;Keine Sicherungsdatei gefunden
+label_close;Close;Schließen
+label_cancel;Cancel;Abbrechen
+label_CancelTitle;Warning;Warnung
+label_LeaveScenarioText;Are you sure you want to leave scenario? Any unsaved work will be lost.;Bist du sicher das Szenario zu verlasen? Alle ungesicherten Änderungen gehen sonst verloren.
+label_LeaveScenario;Leave scenario;Szenario verlassen
+label_StayScenario;Stay by scenario;Beim Szenario bleiben
+menuLanguage;Language;Sprache
+menuSettings;Settings;Einstellungen
+menuCalculation;Calculation;Berechnung
+menuFile;File;Datei
+menuScenario;Scenario;Szenario
+action_start_multiple;Calculate all scenarios;Berechne alle Szenarios
+actionNew;New Project;Neues Projekt
+actionSave;Save Project;Speichere Projekt
+actionOpen;Open Project;Öffne Projekt
+actionUpdate_Scenario;Update scenario;Szenario aktualisieren
+actionAdd_Scenario;Add scenario;Szenario hinzufügen
+actionDelete_scenario;Delete scenario;Szenario löschen
+actionSave_As;Save as;Speichere Projekt unter ...
+actionRename_scenario;Rename scenario;Szenario umbenennen
+button_rename_scenario;Rename scenario;Szenario umbenennen
+label_Language_Head;Language;Sprache
+NotCalculated;Not calculated;Noch nicht berechnet
+NoSolution;No Solution found;Keine Lösung gefunden

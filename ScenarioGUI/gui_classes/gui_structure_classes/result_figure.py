@@ -9,10 +9,11 @@ import matplotlib.pyplot as plt
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
-from ...global_settings import LIGHT, WHITE, set_graph_layout, FOLDER
-from .category import Category
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+
+from ...global_settings import FOLDER, LIGHT, WHITE, set_graph_layout
+from .category import Category
 
 if TYPE_CHECKING:  # pragma: no cover
     from .page import Page
@@ -24,6 +25,7 @@ class ResultFigure(Category):
     The ResultFigure option can be used to show figurative results in the results page.
     It is a category showing a figure and optionally a couple of FigureOptions to alter this figure.
     """
+
     def __init__(self, label: str, page: Page):
         """
 
@@ -54,16 +56,29 @@ class ResultFigure(Category):
         self.canvas: FigureCanvas = FigureCanvas(self.fig)
         # create navigation toolbar and replace icons with white ones
         self.toolbar: NavigationToolbar = NavigationToolbar(self.canvas, None, True)
-        for name, icon_name in [("save_figure", "Save_Inv"), ('home', 'Home'), ('zoom', 'Search'), ('back', 'Back'), ('forward', 'Forward'),
-                                ('pan', 'Pen'), ('configure_subplots', 'Options'), ('edit_parameters', 'Parameters')]:
+        for name, icon_name in [
+            ("save_figure", "Save_Inv"),
+            ("home", "Home"),
+            ("zoom", "Search"),
+            ("back", "Back"),
+            ("forward", "Forward"),
+            ("pan", "Pen"),
+            ("configure_subplots", "Options"),
+            ("edit_parameters", "Parameters"),
+        ]:
             icon = QtG.QIcon()
-            icon.addFile(f"{FOLDER}/gui/icons/{icon_name}.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+            icon.addFile(
+                f"{FOLDER}/gui/icons/{icon_name}.svg",
+                QtC.QSize(),
+                QtG.QIcon.Normal,
+                QtG.QIcon.Off,
+            )
             self.toolbar._actions[name].setIcon(icon)
         self._kwargs: dict = {}
         self.function_name: str = ""
         self.class_name: str = ""
-        self.x_axes_text: str = ''
-        self.y_axes_text: str = ''
+        self.x_axes_text: str = ""
+        self.y_axes_text: str = ""
         self.to_show: bool = True
 
     def replace_figure(self, fig: plt.Figure) -> None:
@@ -89,10 +104,23 @@ class ResultFigure(Category):
         canvas = FigureCanvas(self.fig)
         # create navigation toolbar and replace icons with white ones
         toolbar: NavigationToolbar = NavigationToolbar(canvas, self.frame_canvas, True)
-        for name, icon_name in [("save_figure", "Save_Inv"), ('home', 'Home'), ('zoom', 'Search'), ('back', 'Back'), ('forward', 'Forward'),
-                                ('pan', 'Pen'), ('configure_subplots', 'Options'), ('edit_parameters', 'Parameters')]:
+        for name, icon_name in [
+            ("save_figure", "Save_Inv"),
+            ("home", "Home"),
+            ("zoom", "Search"),
+            ("back", "Back"),
+            ("forward", "Forward"),
+            ("pan", "Pen"),
+            ("configure_subplots", "Options"),
+            ("edit_parameters", "Parameters"),
+        ]:
             icon = QtG.QIcon()
-            icon.addFile(f"{FOLDER}/gui/icons/{icon_name}.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+            icon.addFile(
+                f"{FOLDER}/gui/icons/{icon_name}.svg",
+                QtC.QSize(),
+                QtG.QIcon.Normal,
+                QtG.QIcon.Off,
+            )
             toolbar._actions[name].setIcon(icon)
 
         self.layout_frame_canvas.replaceWidget(self.canvas, canvas)
@@ -149,7 +177,7 @@ class ResultFigure(Category):
         -------
         None
         """
-        entry_name: List[str, str] = name.split(',')
+        entry_name: List[str, str] = name.split(",")
         self.label_text = entry_name[0]
         self.label.setText(self.label_text)
         self.y_axes_text: str = entry_name[1]
@@ -157,7 +185,12 @@ class ResultFigure(Category):
         self.ax.set_xlabel(self.x_axes_text)
         self.ax.set_ylabel(self.y_axes_text)
 
-    def fig_to_be_shown(self, class_name: str = "Borefield", function_name: str = "print_temperature_profile", **kwargs) -> None:
+    def fig_to_be_shown(
+        self,
+        class_name: str = "Borefield",
+        function_name: str = "print_temperature_profile",
+        **kwargs,
+    ) -> None:
         """
         This function sets the result that should be shown. It refers to a certain function (function_name) inside the class class_name.
         It is possible to pass through fixed arguments to this function by using **kwargs.

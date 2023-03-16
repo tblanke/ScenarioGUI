@@ -10,6 +10,9 @@ collect_ignore = ["GHEtool/gui/start_gui.py"]
 collect_ignore_glob = ["*start_gui.py"]
 
 
+[tool.black]
+line-length = 160
+
 [tool.coverage.report]
 exclude_lines = [
   "pragma: no cover",
@@ -23,14 +26,19 @@ omit = ["start_gui.py"]
 line_length = 160
 profile = 'black'
 
+[flake8]
+per-file-ignores = "__init__.py:F401"
+
 [tool.ruff]
 # Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
-select = ["E", "F", 'I']
+select = ["E", "F", 'UP', 'I', 'N', 'PL', 'NPY', 'PD', 'TRY', 'RUF', 'PLC', 'PLE', 'PLR', 'PLW']
 ignore = []
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = ["A", "B", "C", "D", "E", "F"]
 unfixable = []
+
+extend-select = ["B", "Q",'C4', 'SIM', 'TCH']
 
 # Exclude a variety of commonly ignored directories.
 exclude = [
@@ -63,8 +71,11 @@ line-length = 160
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 # Assume Python 3.10.
-target-version = "py310"
+target-version = "py37"
 
 [tool.ruff.mccabe]
 # Unlike Flake8, default to a complexity level of 10.
 max-complexity = 10
+
+[tool.ruff.per-file-ignores]
+"translation_class.py" = ["PLR0915"]

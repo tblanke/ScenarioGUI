@@ -7,7 +7,18 @@ import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
 
-from ..global_settings import BLACK, DARK, FOLDER, FONT, FONT_SIZE, GREY, LIGHT, LIGHT_SELECT, WHITE, ICON_NAME
+from ..global_settings import (
+    BLACK,
+    DARK,
+    FOLDER,
+    FONT,
+    FONT_SIZE,
+    GREY,
+    ICON_NAME,
+    LIGHT,
+    LIGHT_SELECT,
+    WHITE,
+)
 
 
 class BaseUI:
@@ -121,13 +132,28 @@ class BaseUI:
         self.action_start_multiple.setObjectName("action_start_multiple")
         self.action_start_multiple.setEnabled(True)
         icon4 = QtG.QIcon()
-        icon4.addFile(f"{FOLDER}/icons/Start_multiple_inv.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon4.addFile(f"{FOLDER}/icons/Start_multiple.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon4.addFile(
+            f"{FOLDER}/icons/Start_multiple_inv.svg",
+            QtC.QSize(),
+            QtG.QIcon.Normal,
+            QtG.QIcon.Off,
+        )
+        icon4.addFile(
+            f"{FOLDER}/icons/Start_multiple.svg",
+            QtC.QSize(),
+            QtG.QIcon.Active,
+            QtG.QIcon.Off,
+        )
         self.action_start_multiple.setIcon(icon4)
         self.actionUpdate_Scenario = QtG.QAction(ghe_tool)
         self.actionUpdate_Scenario.setObjectName("actionUpdate_Scenario")
         icon7 = QtG.QIcon()
-        icon7.addFile(f"{FOLDER}/icons/Update_Inv.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon7.addFile(
+            f"{FOLDER}/icons/Update_Inv.svg",
+            QtC.QSize(),
+            QtG.QIcon.Normal,
+            QtG.QIcon.Off,
+        )
         icon7.addFile(f"{FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.actionUpdate_Scenario.setIcon(icon7)
         self.actionAdd_Scenario = QtG.QAction(ghe_tool)
@@ -139,25 +165,45 @@ class BaseUI:
         self.actionDelete_scenario = QtG.QAction(ghe_tool)
         self.actionDelete_scenario.setObjectName("actionDelete_scenario")
         icon9 = QtG.QIcon()
-        icon9.addFile(f"{FOLDER}/icons/Delete_Inv.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon9.addFile(
+            f"{FOLDER}/icons/Delete_Inv.svg",
+            QtC.QSize(),
+            QtG.QIcon.Normal,
+            QtG.QIcon.Off,
+        )
         icon9.addFile(f"{FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.actionDelete_scenario.setIcon(icon9)
         self.actionSave_As = QtG.QAction(ghe_tool)
         self.actionSave_As.setObjectName("actionSave_As")
         icon10 = QtG.QIcon()
         icon10.addFile(f"{FOLDER}/icons/SaveAs.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon10.addFile(f"{FOLDER}/icons/Save_As_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon10.addFile(
+            f"{FOLDER}/icons/Save_As_Inv.svg",
+            QtC.QSize(),
+            QtG.QIcon.Active,
+            QtG.QIcon.Off,
+        )
         self.actionSave_As.setIcon(icon10)
         self.actionRename_scenario = QtG.QAction(ghe_tool)
         self.actionRename_scenario.setObjectName("actionRename_scenario")
         icon14 = QtG.QIcon()
-        icon14.addFile(f"{FOLDER}/icons/Rename_Inv.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon14.addFile(
+            f"{FOLDER}/icons/Rename_Inv.svg",
+            QtC.QSize(),
+            QtG.QIcon.Normal,
+            QtG.QIcon.Off,
+        )
         icon14.addFile(f"{FOLDER}/icons/Rename.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.actionRename_scenario.setIcon(icon14)
         self.action_start_single = QtG.QAction(ghe_tool)
         self.action_start_single.setObjectName("action_start_single")
         icon15 = QtG.QIcon()
-        icon15.addFile(f"{FOLDER}/icons/Start_inv.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon15.addFile(
+            f"{FOLDER}/icons/Start_inv.svg",
+            QtC.QSize(),
+            QtG.QIcon.Normal,
+            QtG.QIcon.Off,
+        )
         icon15.addFile(f"{FOLDER}/icons/Start.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_start_single.setIcon(icon15)
         self.central_widget = QtW.QWidget(ghe_tool)
@@ -234,7 +280,8 @@ class BaseUI:
         self.list_widget_scenario.setSizeAdjustPolicy(QtW.QAbstractScrollArea.AdjustToContents)
         self.list_widget_scenario.setAutoScrollMargin(10)
         self.list_widget_scenario.setEditTriggers(
-            QtW.QAbstractItemView.DoubleClicked | QtW.QAbstractItemView.EditKeyPressed | QtW.QAbstractItemView.SelectedClicked)
+            QtW.QAbstractItemView.DoubleClicked | QtW.QAbstractItemView.EditKeyPressed | QtW.QAbstractItemView.SelectedClicked
+        )
         self.list_widget_scenario.setDragDropMode(QtW.QAbstractItemView.DragDrop)
         self.list_widget_scenario.setDefaultDropAction(QtC.Qt.TargetMoveAction)
         self.list_widget_scenario.setSelectionBehavior(QtW.QAbstractItemView.SelectItems)
@@ -300,7 +347,12 @@ class BaseUI:
         self.pushButton_start_multiple.setMinimumSize(QtC.QSize(100, 40))
         self.pushButton_start_multiple.setMaximumSize(QtC.QSize(16777215, 40))
         icon33 = QtG.QIcon()
-        icon33.addFile(f"{FOLDER}/icons/Start_multiple.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon33.addFile(
+            f"{FOLDER}/icons/Start_multiple.svg",
+            QtC.QSize(),
+            QtG.QIcon.Normal,
+            QtG.QIcon.Off,
+        )
         self.pushButton_start_multiple.setIcon(icon33)
         self.pushButton_start_multiple.setIconSize(QtC.QSize(24, 24))
 
@@ -350,7 +402,12 @@ class BaseUI:
         self.menuLanguage.setEnabled(True)
         icon35 = QtG.QIcon()
         icon35.addFile(f"{FOLDER}/icons/Language.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon35.addFile(f"{FOLDER}/icons/Language_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon35.addFile(
+            f"{FOLDER}/icons/Language_Inv.svg",
+            QtC.QSize(),
+            QtG.QIcon.Active,
+            QtG.QIcon.Off,
+        )
         self.menuLanguage.setIcon(icon35)
         self.menuScenario = QtW.QMenu(self.menubar)
         self.menuScenario.setObjectName("menuScenario")

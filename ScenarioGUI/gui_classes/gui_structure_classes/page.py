@@ -9,9 +9,14 @@ from typing import TYPE_CHECKING, Callable, List, Optional, Union
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
-from ...global_settings import FONT, LIGHT, WHITE, FOLDER, FONT_SIZE
+
+from ...global_settings import FOLDER, FONT, FONT_SIZE, LIGHT, WHITE
 from .aim import Aim
-from .functions import _update_opponent_not_change, _update_opponent_toggle, check_aim_options
+from .functions import (
+    _update_opponent_not_change,
+    _update_opponent_toggle,
+    check_aim_options,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from .category import Category
@@ -23,8 +28,9 @@ class Page:
     This class contains all the functionalities of the Page option in the GUI.
     The Page is the most high-level object of the GUI for it contains Categories and Aims.
     """
-    next_label: str = 'next'
-    previous_label: str = 'previous'
+
+    next_label: str = "next"
+    previous_label: str = "previous"
     default_parent: Optional[QtW.QWidget] = None
     TOGGLE: bool = True
 
@@ -95,9 +101,9 @@ class Page:
         -------
         None
         """
-        entry_name: List[str, str] = name.split(',')
+        entry_name: List[str, str] = name.split(",")
         self.name = entry_name[1]
-        self.button_name = entry_name[0].replace('@', '\n')
+        self.button_name = entry_name[0].replace("@", "\n")
         self.label.setText(self.name)
         self.button.setText(self.button_name)
         if self.push_button_previous is not None:
@@ -135,7 +141,12 @@ class Page:
         """
         self.next_page = next_page
 
-    def create_page(self, central_widget: QtW.QWidget, stacked_widget: QtW.QStackedWidget, vertical_layout_menu: QtW.QVBoxLayout) -> None:
+    def create_page(
+        self,
+        central_widget: QtW.QWidget,
+        stacked_widget: QtW.QStackedWidget,
+        vertical_layout_menu: QtW.QVBoxLayout,
+    ) -> None:
         """
         This function creates the Page onto the central_widget.
 
@@ -248,13 +259,22 @@ class Page:
             for idx, aim in enumerate(list_aims):
                 default_value = 1 if idx == 0 else 0
                 aim.widget.clicked.connect(
-                    ft_partial(self.update_function, aim.widget, list_aims[default_value].widget,
-                               [aim.widget for i, aim in enumerate(list_aims) if i not in [idx, default_value]])
+                    ft_partial(
+                        self.update_function,
+                        aim.widget,
+                        list_aims[default_value].widget,
+                        [aim.widget for i, aim in enumerate(list_aims) if i not in [idx, default_value]],
+                    )
                 )  # pylint: disable=E1101
                 aim.widget.clicked.connect(ft_partial(check_aim_options, list_aims))  # pylint: disable=E1101
             list_aims[0].widget.click()
 
-    def update_function(self, button: QtW.QPushButton, button_opponent: QtW.QPushButton, false_button_list: List[QtW.QPushButton] = None) -> None:
+    def update_function(
+        self,
+        button: QtW.QPushButton,
+        button_opponent: QtW.QPushButton,
+        false_button_list: List[QtW.QPushButton] = None,
+    ) -> None:
         """
         This function updates which button should be checked/activated or unchecked/deactivated
         This can be done by either the toggle behaviour or not-change behaviour.
@@ -302,7 +322,12 @@ class Page:
             self.push_button_previous.setMinimumSize(QtC.QSize(0, 30))
             self.push_button_previous.setMaximumSize(QtC.QSize(16777215, 30))
             icon = QtG.QIcon()
-            icon.addFile(f"{FOLDER}/icons/ArrowLeft2.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+            icon.addFile(
+                f"{FOLDER}/icons/ArrowLeft2.svg",
+                QtC.QSize(),
+                QtG.QIcon.Normal,
+                QtG.QIcon.Off,
+            )
             self.push_button_previous.setIcon(icon)
             self.push_button_previous.setIconSize(QtC.QSize(20, 20))
             self.push_button_previous.setText(f"  {self.previous_label}  ")
@@ -319,7 +344,12 @@ class Page:
             self.push_button_next.setMaximumSize(QtC.QSize(16777215, 30))
             self.push_button_next.setLayoutDirection(QtC.Qt.RightToLeft)
             icon = QtG.QIcon()
-            icon.addFile(f"{FOLDER}/icons/ArrowRight2.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+            icon.addFile(
+                f"{FOLDER}/icons/ArrowRight2.svg",
+                QtC.QSize(),
+                QtG.QIcon.Normal,
+                QtG.QIcon.Off,
+            )
             self.push_button_next.setIcon(icon)
             self.push_button_next.setIconSize(QtC.QSize(20, 20))
             self.push_button_next.setText(f"  {self.next_label}  ")

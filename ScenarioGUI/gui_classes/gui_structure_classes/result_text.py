@@ -13,6 +13,7 @@ class ResultText(Hint):
     This class contains all the functionalities of the ResultText option in the GUI.
     The ResultText option can be used to show text results in the results page.
     """
+
     def __init__(self, result_name: str, category: Category, prefix: str = "", suffix: str = ""):
         """
 
@@ -45,7 +46,7 @@ class ResultText(Hint):
         self.var_name: str = ""
         self.prefix: str = prefix
         self.suffix: str = suffix
-        self._callable = lambda x: f'{x}'
+        self._callable = lambda x: f"{x}"
 
     def text_to_be_shown(self, class_name: str = "Borefield", var_name: str = "H") -> None:
         """
@@ -106,7 +107,7 @@ class ResultText(Hint):
         -------
         None
         """
-        entry_name: List[str, str] = name.split(',')
+        entry_name: List[str, str] = name.split(",")
         self.prefix = entry_name[0]
         self.suffix = entry_name[1]
 
@@ -124,4 +125,4 @@ class ResultText(Hint):
         -------
         None
         """
-        super().set_text(f'{self.prefix}{self._callable(data)}{self.suffix}')
+        super().set_text(f"{self.prefix}{self._callable(data)}{self.suffix}")

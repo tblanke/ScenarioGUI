@@ -6,29 +6,26 @@ from typing import List, Tuple, Union
 
 import PySide6.QtWidgets as QtW
 
-from scenario_gui.gui_classes.gui_structure_classes import (
+from ScenarioGUI.gui_classes.gui_structure_classes import (
     Aim,
     ButtonBox,
     Category,
-    FigureOption,
-    FileNameBox,
-    FloatBox,
     FunctionButton,
     Hint,
-    IntBox,
     ListBox,
     Option,
     Page,
     ResultFigure,
     ResultText,
 )
-from scenario_gui.gui_classes.translation_class import Translations
+from ScenarioGUI.gui_classes.translation_class import Translations
 
 
 class GuiStructure:
     """
     This class contains all the elements that are relevant for the GUI.
     """
+
     def __init__(self, default_parent: QtW.QWidget, translations: Translations):
         """
         All the elements that should be placed on the GUI, should be written in
@@ -44,18 +41,18 @@ class GuiStructure:
         self.translations = translations
 
         # create page
-        #self.page_result = None
+        # self.page_result = None
 
-        #self.cat_no_result = None
-        #self.text_no_result = None
+        # self.cat_no_result = None
+        # self.text_no_result = None
 
-        #self.page_settings = None
-        #self.category_language = None
-        #self.option_language = None
-        #self.category_save_scenario = None
-        #self.option_toggle_buttons = None
-        #self.option_auto_saving = None
-        #self.hint_saving = None
+        # self.page_settings = None
+        # self.category_language = None
+        # self.option_language = None
+        # self.category_save_scenario = None
+        # self.option_toggle_buttons = None
+        # self.option_auto_saving = None
+        # self.hint_saving = None
 
         self.list_of_aims: List[Tuple[Aim, str]] = []
         self.list_of_options: List[Tuple[Option, str]] = []
@@ -88,15 +85,28 @@ class GuiStructure:
 
         self.category_language = Category(page=self.page_settings, label="Language")
 
-        self.option_language = ListBox(category=self.category_language, label="Language: ", default_index=0, entries=[])
+        self.option_language = ListBox(
+            category=self.category_language,
+            label="Language: ",
+            default_index=0,
+            entries=[],
+        )
 
         self.category_save_scenario = Category(page=self.page_settings, label="Scenario saving settings")
 
-        self.option_toggle_buttons = ButtonBox(label="Toggle buttons?:", default_index=1, entries=[" no ", " yes "],
-                                               category=self.category_save_scenario)
+        self.option_toggle_buttons = ButtonBox(
+            label="Toggle buttons?:",
+            default_index=1,
+            entries=[" no ", " yes "],
+            category=self.category_save_scenario,
+        )
         self.option_toggle_buttons.change_event(self.change_toggle_button)
-        self.option_auto_saving = ButtonBox(label="Use automatic saving?:", default_index=0,
-                                            entries=[" no ", " yes "], category=self.category_save_scenario)
+        self.option_auto_saving = ButtonBox(
+            label="Use automatic saving?:",
+            default_index=0,
+            entries=[" no ", " yes "],
+            category=self.category_save_scenario,
+        )
         self.hint_saving = Hint(
             category=self.category_save_scenario,
             hint="If Auto saving is selected the scenario will automatically saved if a scenario"
@@ -112,13 +122,16 @@ class GuiStructure:
         self.list_of_options: List[Tuple[Option, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option)]
         self.list_of_pages: List[Page] = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), Page)]
 
-        self.list_of_result_texts: List[Tuple[ResultText, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name),
-                                                                                                                                       ResultText)]
-        self.list_of_result_figures: List[Tuple[ResultFigure, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name),
-                                                                                                                                           ResultFigure)]
+        self.list_of_result_texts: List[Tuple[ResultText, str]] = [
+            (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultText)
+        ]
+        self.list_of_result_figures: List[Tuple[ResultFigure, str]] = [
+            (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultFigure)
+        ]
 
-        self.list_of_options_with_dependent_results: List[Tuple[Option, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(
-            getattr(self, name), Option) if getattr(self, name).linked_options]
+        self.list_of_options_with_dependent_results: List[Tuple[Option, str]] = [
+            (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option) if getattr(self, name).linked_options
+        ]
 
     def change_toggle_button(self) -> None:
         """

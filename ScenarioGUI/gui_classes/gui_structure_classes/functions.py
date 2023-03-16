@@ -3,12 +3,17 @@ script which contain basic gui structure functions
 """
 from __future__ import annotations
 
-from typing import List, Protocol, Union
+from typing import TYPE_CHECKING
 
-import PySide6.QtWidgets as QtW  # type: ignore
+if TYPE_CHECKING:
+
+    import PySide6.QtWidgets as QtW  # type: ignore
+
+    from .aim import Aim
+    from .option import Option
 
 
-def _update_opponent_not_change(button: QtW.QPushButton, false_button_list: List[QtW.QPushButton] = None):
+def _update_opponent_not_change(button: QtW.QPushButton, false_button_list: list[QtW.QPushButton] = None):
     """
     This function controls the behaviour of the buttons.
     This function makes sure that whenever a button is active, all other buttons except the current one,
@@ -29,11 +34,15 @@ def _update_opponent_not_change(button: QtW.QPushButton, false_button_list: List
         button.setChecked(True)
         return
     for but in false_button_list:
-        if not but == button:
+        if but != button:
             but.setChecked(False)
 
 
-def _update_opponent_toggle(button: QtW.QPushButton, button_opponent: QtW.QPushButton, false_button_list: List[QtW.QPushButton] = None):
+def _update_opponent_toggle(
+    button: QtW.QPushButton,
+    button_opponent: QtW.QPushButton,
+    false_button_list: list[QtW.QPushButton] = None,
+):
     """
     This function controls the behaviour of the buttons, specifically the toggle behaviour.
     This function makes sure that whenever a button is pressed, all other buttons except the current one,
@@ -59,26 +68,11 @@ def _update_opponent_toggle(button: QtW.QPushButton, button_opponent: QtW.QPushB
             false_button.setChecked(False)
 
 
-class Option(Protocol):
-
-    def get_value(self) -> any:
-        """get the value"""
-
-    def hide(self):
-        """hides the option"""
-
-    def show(self):
-        """shows the option"""
-
-    def is_hidden(self) -> bool:
-        """checks if the option is hidden"""
-
-
-class Aim(Protocol):
-    widget: QtW.QPushButton
-    list_options: List[Option]
-
-def check(linked_options: List[(Union[Option, List[Option]], int)], option_input: Option, index: int):
+def check(
+    linked_options: list[(Option | list[Option], int)],
+    option_input: Option,
+    index: int,
+):
     """
     This function makes sure that the linked_options will be hidden when the index of the option_input
     is different from the index provided per Option in the linked_options list.
@@ -100,13 +94,13 @@ def check(linked_options: List[(Union[Option, List[Option]], int)], option_input
     index = index if option_input.get_value() == index else option_input.get_value()
     list_false = [(option, idx) for option, idx in linked_options if idx != index]
     list_true = [(option, idx) for option, idx in linked_options if idx == index]
-    for option, idx in list_false:
+    for option, _ in list_false:
         if isinstance(option, list):
             for opt in option:
                 opt.hide()
             continue
         option.hide()
-    for option, idx in list_true:
+    for option, _ in list_true:
         if isinstance(option, list):
             for opt in option:
                 opt.show()
@@ -114,9 +108,7 @@ def check(linked_options: List[(Union[Option, List[Option]], int)], option_input
         option.show()
 
 
-
-
-def check_aim_options(list_aim: List[Aim]) -> None:
+def check_aim_options(list_aim: list[Aim]) -> None:
     """
     This function makes sure that all the options, that are linked to the Aim, are made invisible
     when the aim is not selected and that the options, linked to the Aim, will be shown whenever this Aim
@@ -151,7 +143,7 @@ def check_aim_options(list_aim: List[Aim]) -> None:
             option.show()
 
 
-def show_linked_options(options_list: List[Option]) -> None:
+def show_linked_options(options_list: list[Option]) -> None:
     """
     This function makes sure that for a given list of options, all linked options are shown if the option
     itself is not hidden.

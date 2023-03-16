@@ -13,23 +13,31 @@ from typing import TYPE_CHECKING
 import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
-from ..global_settings import FOLDER, ResultsClass, set_graph_layout, FILE_EXTENSION, VERSION, GUI_NAME
+
+from ..global_settings import (
+    FILE_EXTENSION,
+    FOLDER,
+    GUI_NAME,
+    VERSION,
+    ResultsClass,
+    set_graph_layout,
+)
 from .gui_base_class import BaseUI
 from .gui_calculation_thread import CalcProblem
 from .gui_data_storage import DataStorage
-from .gui_structure_classes.functions import check_aim_options, show_linked_options
-from .translation_class import Translations
 from .gui_structure_classes import FigureOption, Option
+from .gui_structure_classes.functions import check_aim_options, show_linked_options
 
 if TYPE_CHECKING:
-    from typing import List, Optional, Tuple, Union, Type
-    from scenario_gui.gui_classes.gui_structure import GuiStructure
+    from ScenarioGUI.gui_classes.gui_structure import GuiStructure
+
+    from .translation_class import Translations
 
 currentdir = dirname(realpath(__file__))
 parentdir = dirname(currentdir)
 path.append(parentdir)
 
-BACKUP_FILENAME: str = f'backup.{FILE_EXTENSION}BackUp'
+BACKUP_FILENAME: str = f"backup.{FILE_EXTENSION}BackUp"
 
 
 # main GUI class
@@ -38,9 +46,16 @@ class MainWindow(QtW.QMainWindow, BaseUI):
     This class contains the general functionalities of the GUI (e.g. the handling of creating new scenarios,
     saving documents etc.)
     """
+
     filenameDefault: tuple = ("", "")
 
-    def __init__(self, dialog: QtW.QWidget, app: QtW.QApplication, gui_structure: Type[GuiStructure], translations: Type[Translations]) -> MainWindow:
+    def __init__(
+        self,
+        dialog: QtW.QWidget,
+        app: QtW.QApplication,
+        gui_structure: type[GuiStructure],
+        translations: type[Translations],
+    ) -> MainWindow:
         """
 
         Parameters
@@ -57,7 +72,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # parameter to show the end of the init function
         self.started = False
         # init windows of parent class
-        super(MainWindow, self).__init__()
+        super().__init__()
         super().setup_ui(dialog)
         # pyside6-rcc icons.qrc -o icons_rc.py
         self.translations: Translations = translations()  # init translation class
@@ -74,17 +89,24 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.app: QtW.QApplication = app
         self.Dia = dialog
         # init pop up dialog
-        self.dialog: Optional[QtW.QInputDialog] = None
+        self.dialog: QtW.QInputDialog | None = None
         # init variables of class
         # allow checking of changes
         self.checking: bool = False
         # create backup path in home documents directory
-        self.default_path: PurePath = PurePath(Path.home(), f'Documents/{GUI_NAME}')
+        self.default_path: PurePath = PurePath(Path.home(), f"Documents/{GUI_NAME}")
         self.backup_file: PurePath = PurePath(self.default_path, BACKUP_FILENAME)
         # check if backup folder exits and otherwise create it
         makedirs(dirname(self.backup_file), exist_ok=True)
         makedirs(dirname(self.default_path), exist_ok=True)
-        for idx, (name, icon, short_cut) in enumerate(zip(self.translations.languages, self.translations.icon, self.translations.short_cut)):
+        for idx, (name, icon, short_cut) in enumerate(
+            zip(
+                self.translations.languages,
+                self.translations.icon,
+                self.translations.short_cut,
+                strict=True
+            )
+        ):
             self._create_action_language(idx, name, icon, short_cut)
         # add languages to combo box
         self.gui_structure.option_language.widget.addItems(self.translations.languages)
@@ -96,8 +118,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.axBorehole = None
         self.NumberOfScenarios: int = 1  # number of scenarios
         self.finished: int = 1  # number of finished scenarios
-        self.threads: List[CalcProblem] = []  # list of calculation threads
-        self.list_ds: List[DataStorage] = []  # list of data storages
+        self.threads: list[CalcProblem] = []  # list of calculation threads
+        self.list_ds: list[DataStorage] = []  # list of data storages
         self.sizeB = QtC.QSize(48, 48)  # size of big logo on push button
         self.sizeS = QtC.QSize(24, 24)  # size of small logo on push button
         self.sizePushB = QtC.QSize(150, 75)  # size of big push button
@@ -125,7 +147,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         [option.init_links() for option, _ in self.gui_structure.list_of_options]
 
-        self.status_bar.showMessage(self.translations.GHE_tool_imported[self.gui_structure.option_language.get_value()], 5000)
+        self.status_bar.showMessage(
+            self.translations.GHE_tool_imported[self.gui_structure.option_language.get_value()],
+            5000,
+        )
         # allow checking of changes
         self.checking: bool = True
 
@@ -160,7 +185,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         action = QtG.QAction(self.central_widget)
         icon = QtG.QIcon()
-        icon.addFile(f'{FOLDER}/icons/{icon_name}', QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon.addFile(f"{FOLDER}/icons/{icon_name}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         action.setIcon(icon)
         self.menuLanguage.addAction(action)
         action.setText(name)
@@ -190,14 +215,21 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
 
-        setting_options = [(opt_cat, name) for category in self.gui_structure.page_settings.list_categories for opt_cat in category.list_of_options if
-                           isinstance(opt_cat, Option) for opt_glob, name in self.gui_structure.list_of_options if opt_cat == opt_glob]
-        for option, name in [(opt, name) for opt, name in self.gui_structure.list_of_options
-                             if not isinstance(opt, FigureOption) and (opt, name) not in setting_options]:
+        setting_options = [
+            (opt_cat, name)
+            for category in self.gui_structure.page_settings.list_categories
+            for opt_cat in category.list_of_options
+            if isinstance(opt_cat, Option)
+            for opt_glob, name in self.gui_structure.list_of_options
+            if opt_cat == opt_glob
+        ]
+        for option, _ in [
+            (opt, name) for opt, name in self.gui_structure.list_of_options if not isinstance(opt, FigureOption) and (opt, name) not in setting_options
+        ]:
             option.change_event(self.change)
-        for option, name in [(opt, name) for opt, name in self.gui_structure.list_of_options if isinstance(opt, FigureOption)]:
+        for option, _ in [(opt, name) for opt, name in self.gui_structure.list_of_options if isinstance(opt, FigureOption)]:
             option.change_event(self.remove_previous_calculated_results)
-        for option, name in self.gui_structure.list_of_aims:
+        for option, _ in self.gui_structure.list_of_aims:
             option.change_event(self.change)
 
         for option, name in setting_options:
@@ -341,12 +373,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # create current data storage
         ds: DataStorage = DataStorage(self.gui_structure)
         # check if current data storage is equal to the previous one then delete the *
-        if self.list_ds:
-            if ds == self.list_ds[idx]:
-                if text[-1] != "*":
-                    return
-                self.list_widget_scenario.item(idx).setText(text[:-1])
+        if self.list_ds and ds == self.list_ds[idx]:
+            if text[-1] != "*":
                 return
+            self.list_widget_scenario.item(idx).setText(text[:-1])
+            return
         # if scenario is already marked as changed return
         if text[-1] == "*":
             return
@@ -394,14 +425,17 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
             t.timeout.connect(hello)
             t.start(10)  # after 30 seconds, "hello, world" will be printed
+
         # check if the auto saving should be performed and then save the last selected scenario
         if self.gui_structure.option_auto_saving.get_value() == 1:
             if not self.check_values():
                 return_2_old_item()
                 return
             # save old scenario
-            if len(self.list_ds) - 1 >= self.list_widget_scenario.row(old_row_item) and DataStorage(self.gui_structure) != self.list_ds[
-                self.list_widget_scenario.row(old_row_item)]:
+            if (
+                len(self.list_ds) - 1 >= self.list_widget_scenario.row(old_row_item)
+                and DataStorage(self.gui_structure) != self.list_ds[self.list_widget_scenario.row(old_row_item)]
+            ):
                 self.list_ds[self.list_widget_scenario.row(old_row_item)].close_figures()
                 self.list_ds[self.list_widget_scenario.row(old_row_item)] = DataStorage(self.gui_structure)
             # update backup fileImport
@@ -443,16 +477,22 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 return_2_old_item()
                 return
             # save scenario if wanted
-            if reply == QtW.QMessageBox.Save:
-                if not self.save_scenario(self.list_widget_scenario.row(old_row_item)):
-                    return_2_old_item()
+            if reply == QtW.QMessageBox.Save and not self.save_scenario(self.list_widget_scenario.row(old_row_item)):
+                return_2_old_item()
             # remove * symbol
             old_row_item.setText(text[:-1])
         # change entries to new scenario values
         self.change_scenario(self.list_widget_scenario.row(new_row_item))
         return
 
-    def fun_move_scenario(self, start_item: QtC.QModelIndex, start_index: int, start_index2: int, end_item: QtC.QModelIndex, target_index: int) -> None:
+    def fun_move_scenario(
+        self,
+        start_item: QtC.QModelIndex,
+        start_index: int,
+        start_index2: int,
+        end_item: QtC.QModelIndex,
+        target_index: int,
+    ) -> None:
         """
         change list of ds entry if scenario is moved (more inputs than needed, because the list widget returns that much
         :param start_item: start item of moving
@@ -484,7 +524,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         icon = QtG.QIcon()  # create icon class
         # add pixmap to icon
-        icon.addPixmap(QtG.QPixmap(f"{FOLDER}/icons/{icon_name}.svg"), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon.addPixmap(
+            QtG.QPixmap(f"{FOLDER}/icons/{icon_name}.svg"),
+            QtG.QIcon.Normal,
+            QtG.QIcon.Off,
+        )
         button.setIcon(icon)  # set icon to button
 
     def fun_rename_scenario(self, name: str = "") -> None:
@@ -503,8 +547,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         def set_name(text):
             # sets the name of the current scenario to text
-            list_of_scenarios = [self.list_widget_scenario.item(x).text().split("*")[0] for x in
-                                 range(self.list_widget_scenario.count())]
+            list_of_scenarios = [self.list_widget_scenario.item(x).text().split("*")[0] for x in range(self.list_widget_scenario.count())]
             if text in list_of_scenarios:
                 text += "(2)"
             item.setText(text) if text != "" else None
@@ -626,7 +669,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         for ds in self.list_ds:
-            setattr(ds, name_of_option, getattr(self.gui_structure, name_of_option).get_value() if len(args) < 1 else args[0])
+            setattr(
+                ds,
+                name_of_option,
+                getattr(self.gui_structure, name_of_option).get_value() if len(args) < 1 else args[0],
+            )
 
     def change_language(self) -> None:
         """
@@ -641,7 +688,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         amount: int = self.list_widget_scenario.count()  # number of scenario elements
 
         # check if list scenario names are not unique
-        li_str_match: List[bool] = [
+        li_str_match: list[bool] = [
             self.list_widget_scenario.item(idx).text() == f"{self.translations.scenarioString[self.gui_structure.option_language.get_value()]}: {idx + 1}"
             for idx in range(amount)
         ]
@@ -746,42 +793,40 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         try:
             # open file and get data
-            with open(location, "r") as file:
+            with open(location) as file:
                 saving = load(file)
 
-            version = saving['version']
+            version = saving["version"]
         except FileNotFoundError:
             self.status_bar.showMessage(self.translations.NoFileSelected[self.gui_structure.option_language.get_value()])
-            return 
-            #raise ImportError("The datafile cannot be loaded!")
-        except (JSONDecodeError,  UnicodeDecodeError):
-            try:
-                # try to open as pickle
-                import GHEtool
-                from GHEtool.gui.gui_classes import gui_data_storage
-                GHEtool.gui.gui_data_storage = gui_data_storage
-                GHEtool.gui.gui_data_storage.DataStorage = gui_data_storage.DataStorage
-                with open(location, "rb") as file:
-                    saving = pk_load(file)
-                version = "2.1.0"
-            except (FileNotFoundError, ):
-                raise ImportError("The datafile cannot be loaded!")
+            return
+            # raise ImportError("The datafile cannot be loaded!")
+        except (JSONDecodeError, UnicodeDecodeError):
+            # try to open as pickle
+            import GHEtool
+            from GHEtool.gui.gui_classes import gui_data_storage
+
+            GHEtool.gui.gui_data_storage = gui_data_storage
+            GHEtool.gui.gui_data_storage.DataStorage = gui_data_storage.DataStorage
+            with open(location, "rb") as file:
+                saving = pk_load(file)
+            version = "2.1.0"
 
         if version == "2.1.1":
             # write data to variables
             self.list_ds = []
-            for val, results in zip(saving['values'], saving['borefields']):
+            for val, results in zip(saving["values"], saving["borefields"], strict=True):
                 ds = DataStorage(self.gui_structure)
                 ds.from_dict(val)
                 if results is None:
-                    setattr(ds, 'results', None)
+                    ds.results = None
                 else:
-                    setattr(ds, 'results', ResultsClass())
-                    getattr(ds, 'results')._from_dict(results)
+                    ds.results = ResultsClass()
+                    ds.results._from_dict(results)
                 self.list_ds.append(ds)
             # set and change the window title
-            self.filename = saving['filename']
-            general_changes(saving['names'])
+            self.filename = saving["filename"]
+            general_changes(saving["names"])
             return
 
         if version == "2.1.0":
@@ -791,7 +836,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
             # since the results object is changed, this is deleted from the dataframe
             for ds in self.list_ds:
-                setattr(ds, 'results', None)
+                ds.results = None
 
             # convert to new ds format
             for idx, ds in enumerate(self.list_ds):
@@ -801,7 +846,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             # write scenario names
             general_changes(li)
 
-    def _save_to_data(self, location: Union[str, PurePath]) -> None:
+    def _save_to_data(self, location: str | PurePath) -> None:
         """
         This function saves the gui data to a json formatted file.
 
@@ -815,22 +860,24 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # create list of all scenario names
-        scenario_names = [self.list_widget_scenario.item(idx).text() for idx in
-                          range(self.list_widget_scenario.count())]
+        scenario_names = [self.list_widget_scenario.item(idx).text() for idx in range(self.list_widget_scenario.count())]
         # create saving dict
-        saving = {'filename': self.filename,
-                  'names': scenario_names,
-                  'version': VERSION,
-                  'values': [ds.to_dict() for ds in self.list_ds],
-                  'borefields': [getattr(ds, 'results')._to_dict() if getattr(ds, 'results') is not None else None
-                                 for ds in self.list_ds]}
+        saving = {
+            "filename": self.filename,
+            "names": scenario_names,
+            "version": VERSION,
+            "values": [ds.to_dict() for ds in self.list_ds],
+            "borefields": [ds.results._to_dict() if ds.results is not None else None for ds in self.list_ds],
+        }
         try:
             # write data to back up file
             with open(location, "w") as file:
                 dump(saving, file, indent=1)
         except FileNotFoundError:
             self.status_bar.showMessage(
-                self.translations.NoFileSelected[self.gui_structure.option_language.get_value()], 5000)
+                self.translations.NoFileSelected[self.gui_structure.option_language.get_value()],
+                5000,
+            )
         except PermissionError:  # pragma: no cover
             self.status_bar.showMessage("PermissionError", 5000)
 
@@ -845,8 +892,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # open interface and get file name
         self.filename = QtW.QFileDialog.getOpenFileName(
-            self.central_widget, caption=self.translations.ChooseLoad[self.gui_structure.option_language.get_value()], filter=f"{FILE_EXTENSION} (*.{FILE_EXTENSION})",
-            dir=str(self.default_path)
+            self.central_widget,
+            caption=self.translations.ChooseLoad[self.gui_structure.option_language.get_value()],
+            filter=f"{FILE_EXTENSION} (*.{FILE_EXTENSION})",
+            dir=str(self.default_path),
         )
         # load selected data
         self.fun_load_known_filename()
@@ -871,7 +920,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.checking: bool = True
         # if no file is found display error message is status bar
         except FileNotFoundError:
-            self.status_bar.showMessage(self.translations.NoFileSelected[self.gui_structure.option_language.get_value()], 5000)
+            self.status_bar.showMessage(
+                self.translations.NoFileSelected[self.gui_structure.option_language.get_value()],
+                5000,
+            )
 
     def fun_save_as(self) -> None:
         """
@@ -886,7 +938,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.fun_save()  # save data under a new filename
 
     def fun_save(self) -> bool:
-        f"""
+        """
         This function saves all the scenarios in a JSON formatted *.{FILE_EXTENSION} file.
 
 
@@ -898,7 +950,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # ask for pickle file if the filename is still the default
         if self.filename == MainWindow.filenameDefault:
             self.filename: tuple = QtW.QFileDialog.getSaveFileName(
-                self.central_widget, caption=self.translations.Save[self.gui_structure.option_language.get_value()], filter=f"{FILE_EXTENSION} (*.{FILE_EXTENSION})",
+                self.central_widget,
+                caption=self.translations.Save[self.gui_structure.option_language.get_value()],
+                filter=f"{FILE_EXTENSION} (*.{FILE_EXTENSION})",
                 dir=str(self.default_path),
             )
             # break function if no file is selected
@@ -985,7 +1039,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if not all(option.check_value() for option, _ in self.gui_structure.list_of_options):
             for option, _ in self.gui_structure.list_of_options:
                 if not option.check_value():
-                    self.status_bar.showMessage(f'Wrong value in option with label: {option.label_text}', 5000)
+                    self.status_bar.showMessage(f"Wrong value in option with label: {option.label_text}", 5000)
                     return False
         return True
 
@@ -1017,7 +1071,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # create auto backup
         self.fun_save_auto()
         # remove * from scenario if not Auto save is checked and if the last char is a *
-        if not self.gui_structure.option_auto_saving.get_value() == 1:
+        if self.gui_structure.option_auto_saving.get_value() != 1:
             text = self.list_widget_scenario.item(idx).text()
             if text[-1] == "*":
                 self.list_widget_scenario.item(idx).setText(text[:-1])
@@ -1101,9 +1155,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.label_Status.hide()
             self.progressBar.hide()
             # show message that calculation is finished
-            self.status_bar.showMessage(self.translations.Calculation_Finished[self.gui_structure.option_language.get_value()], 5000)
+            self.status_bar.showMessage(
+                self.translations.Calculation_Finished[self.gui_structure.option_language.get_value()],
+                5000,
+            )
 
-    def thread_function(self, results: Tuple[DataStorage, int]) -> None:
+    def thread_function(self, results: tuple[DataStorage, int]) -> None:
         """
         This function closes the thread of the old calculation and stores it results.
         It increments the number of calculated scenarios, and calls to update the progress bar.
@@ -1195,7 +1252,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if not self.check_values():
             return
         # add scenario if no list of scenarios exits else save current scenario
-        self.add_scenario() if not self.list_ds else self.save_scenario() if self.list_widget_scenario.currentItem().text()[-1] == '*' else None
+        self.add_scenario() if not self.list_ds else self.save_scenario() if self.list_widget_scenario.currentItem().text()[-1] == "*" else None
 
         # get index of selected scenario
         idx: int = self.list_widget_scenario.currentRow()
@@ -1234,6 +1291,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
+
         def update_results():
             # update so all the relevant options are shown
             check_aim_options([aim for aim, _ in self.gui_structure.list_of_aims])
@@ -1276,7 +1334,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         hide_no_result(False)
         # create figure for every ResultFigure object
         for fig_obj, fig_name in self.gui_structure.list_of_result_figures:
-
             if fig_obj.is_hidden():
                 continue
 
@@ -1300,7 +1357,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             fig_obj.canvas.draw()
 
         # update result for every ResultText object
-        for result_text_obj, result_text_name in self.gui_structure.list_of_result_texts:
+        for (
+            result_text_obj,
+            _,
+        ) in self.gui_structure.list_of_result_texts:
             if not result_text_obj.is_hidden():
                 text = results.__getattribute__(result_text_obj.var_name)  # currently only results
                 if callable(text):

@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Callable, Optional, Tuple, Union
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
+
 from ...global_settings import LIGHT, WHITE
 from .option import Option
 
@@ -22,7 +23,16 @@ class IntBox(Option):
     This class contains all the functionalities of the IntBox (integer box) option in the GUI.
     The IntBox can be used to input integer numbers.
     """
-    def __init__(self, label: str, default_value: int, category: Category, minimal_value: int = 0, maximal_value: int = 100, step: int = 1):
+
+    def __init__(
+        self,
+        label: str,
+        default_value: int,
+        category: Category,
+        minimal_value: int = 0,
+        maximal_value: int = 100,
+        step: int = 1,
+    ):
         """
 
         Parameters
@@ -132,7 +142,13 @@ class IntBox(Option):
             return True
         return False
 
-    def add_link_2_show(self, option: Union[Option, Category, FunctionButton, Hint], *, below: int = None, above: int = None):
+    def add_link_2_show(
+        self,
+        option: Union[Option, Category, FunctionButton, Hint],
+        *,
+        below: int = None,
+        above: int = None,
+    ):
         """
         This function couples the visibility of an option to the value of the IntBox object.
 
@@ -158,7 +174,13 @@ class IntBox(Option):
         """
         self.widget.valueChanged.connect(ft_partial(self.show_option, option, below, above))
 
-    def show_option(self, option: Union[Option, Category, FunctionButton, Hint], below: Optional[int], above: Optional[int], args = None):
+    def show_option(
+        self,
+        option: Union[Option, Category, FunctionButton, Hint],
+        below: Optional[int],
+        above: Optional[int],
+        args=None,
+    ):
         """
         This function shows the option if the value of the IntBox is between the below and above value.
         If no below or above values are given, no boundary is taken into account for respectively the lower and
@@ -198,7 +220,14 @@ class IntBox(Option):
         """
         self.widget.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
 
-    def create_widget(self, frame: QtW.QFrame, layout_parent: QtW.QLayout,  *, row: int = None, column: int = None) -> None:
+    def create_widget(
+        self,
+        frame: QtW.QFrame,
+        layout_parent: QtW.QLayout,
+        *,
+        row: int = None,
+        column: int = None,
+    ) -> None:
         """
         This functions creates the IntBox widget in the frame.
 

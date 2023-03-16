@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Callable
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
+
 from ...global_settings import DARK, LIGHT, LIGHT_SELECT, WHITE
 from .option import Option
 
@@ -21,7 +22,16 @@ class FileNameBox(Option):
     This class contains all the functionalities of the FileNameBox (filename input box) option in the GUI.
     The FileNameBox can be used to import a datafile.
     """
-    def __init__(self, label: str, default_value: str, dialog_text: str, error_text: str, status_bar: QtW.QStatusBar, category: Category):
+
+    def __init__(
+        self,
+        label: str,
+        default_value: str,
+        dialog_text: str,
+        error_text: str,
+        status_bar: QtW.QStatusBar,
+        category: Category,
+    ):
         """
 
         Parameters
@@ -95,7 +105,7 @@ class FileNameBox(Option):
         None
         """
         current_value: str = self.get_value()
-        self.set_value('test')
+        self.set_value("test")
         self.set_value(current_value)
 
     def _check_value(self) -> bool:
@@ -148,7 +158,13 @@ class FileNameBox(Option):
         """
         self.widget.textChanged.connect(function_to_be_called)  # pylint: disable=E1101
 
-    def create_widget(self, frame: QtW.QFrame, layout_parent: QtW.QLayout, row: int = None, column: int = None) -> None:
+    def create_widget(
+        self,
+        frame: QtW.QFrame,
+        layout_parent: QtW.QLayout,
+        row: int = None,
+        column: int = None,
+    ) -> None:
         """
         This functions creates the ButtonBox widget in the frame.
 
@@ -196,6 +212,6 @@ class FileNameBox(Option):
         """
         # try to ask for a file otherwise show message in status bar
         filename = QtW.QFileDialog.getOpenFileName(self.frame, caption=self.dialog_text, filter="(*.csv)", dir=str(Path.home()))
-        if filename[0] == "":
+        if not filename[0]:
             self.status_bar.showMessage(self.error_text, 5000)
         self.widget.setText(filename[0])

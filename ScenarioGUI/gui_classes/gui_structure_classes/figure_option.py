@@ -3,7 +3,7 @@ figure option class script
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Tuple
+from typing import TYPE_CHECKING
 
 from .button_box import ButtonBox
 
@@ -17,7 +17,17 @@ class FigureOption(ButtonBox):
     Such an element is not placed in itself on the GUI, but is part of the ResultFigure category.
     It can be used to add an extra option to alter the figure shown.
     """
-    def __init__(self, category: ResultFigure, label: str, param: str, default: int, entries: List[str], entries_values: List):
+
+    def __init__(
+        self,
+        category: ResultFigure,
+        label: str,
+        param: str,
+        default: int,
+        *,
+        entries: list[str] = None,
+        entries_values: list = None,
+    ):
         """
 
         Parameters
@@ -51,11 +61,11 @@ class FigureOption(ButtonBox):
         .. figure:: _static/Example_FigureOption.PNG
 
         """
-        super(FigureOption, self).__init__(label=label, default_index=default, entries=entries, category=category)
-        self.values = entries_values
+        super().__init__(label=label, default_index=default, entries=entries, category=category)
+        self.entries_values = entries_values
         self.param = param
 
-    def get_value(self) -> Tuple[str, int]:
+    def get_value(self) -> tuple[str, int]:
         """
         This functions returns the value of the FigureOption.
         This is used to update the finale results figure.
@@ -67,10 +77,10 @@ class FigureOption(ButtonBox):
         """
         for idx, button in enumerate(self.widget):
             if button.isChecked():
-                return self.param, self.values[idx]
+                return self.param, self.entries_values[idx]
         return "", -1
 
-    def set_value(self, values: Tuple[str, int]) -> None:
+    def set_value(self, values: tuple[str, int]) -> None:
         """
         This function sets the value of the FigureOption.
 
@@ -86,7 +96,7 @@ class FigureOption(ButtonBox):
         """
         value = values[1]
         for idx, button in enumerate(self.widget):
-            if self.values[idx] == value:
+            if self.entries_values[idx] == value:
                 if not button.isChecked():
                     button.click()
                 break

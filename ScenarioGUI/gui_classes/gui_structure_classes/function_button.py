@@ -3,14 +3,17 @@ function button class script
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, List, Optional, Protocol, Union
+from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
-from ...global_settings import WHITE, FOLDER
+
+from ...global_settings import FOLDER, WHITE
 
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import Callable, Optional
+
     from ..gui_structure_classes import Category
 
 
@@ -19,6 +22,7 @@ class FunctionButton:
     This class contains all the functionalities of the FunctionButton option in the GUI.
     The FunctionButton can be used to couple a button press to a function call.
     """
+
     default_parent: Optional[QtW.QWidget] = None
 
     def __init__(self, button_text: str, icon: str, category: Category):
@@ -69,7 +73,7 @@ class FunctionButton:
         self.button.setText(f"  {self.button_text}  ")
         icon = QtG.QIcon()
         # icon11.addPixmap(QtGui_QPixmap(icon), QtGui_QIcon.Normal, QtGui_QIcon.Off)
-        icon.addFile(f'{FOLDER}/icons/{self.icon}')
+        icon.addFile(f"{FOLDER}/icons/{self.icon}")
         self.button.setIcon(icon)
         self.button.setIconSize(QtC.QSize(20, 20))
         self.button.setMinimumWidth(100)

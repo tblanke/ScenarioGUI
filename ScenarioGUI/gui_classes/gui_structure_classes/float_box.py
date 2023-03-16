@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Callable, Optional, Tuple, Union
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
+
 from ...global_settings import LIGHT, WHITE
 from .option import Option
 
@@ -22,8 +23,17 @@ class FloatBox(Option):
     This class contains all the functionalities of the FloatBox option in the GUI.
     The FloatBox can be used to input floating point numbers.
     """
-    def __init__(self, label: str, default_value: float, category: Category, decimal_number: int = 0,
-                 minimal_value: float = 0.0, maximal_value: float = 100.0, step: float = 1.0):
+
+    def __init__(
+        self,
+        label: str,
+        default_value: float,
+        category: Category,
+        decimal_number: int = 0,
+        minimal_value: float = 0.0,
+        maximal_value: float = 100.0,
+        step: float = 1.0,
+    ):
         """
 
         Parameters
@@ -101,7 +111,7 @@ class FloatBox(Option):
         None
         """
         current_value: float = self.get_value()
-        self.set_value(current_value*1.1)
+        self.set_value(current_value * 1.1)
         self.set_value(current_value)
 
     def _check_value(self) -> bool:
@@ -116,7 +126,12 @@ class FloatBox(Option):
         """
         return self.minimal_value <= self.get_value() <= self.maximal_value
 
-    def add_link_2_show(self, option: Union[Option, Category, FunctionButton, Hint], below: float = None, above: float = None) -> None:
+    def add_link_2_show(
+        self,
+        option: Union[Option, Category, FunctionButton, Hint],
+        below: float = None,
+        above: float = None,
+    ) -> None:
         """
         This function couples the visibility of an option to the value of the FloatBox object.
 
@@ -143,7 +158,13 @@ class FloatBox(Option):
         self.linked_options.append((option, (below, above)))
         self.widget.valueChanged.connect(ft_partial(self.show_option, option, below, above))
 
-    def show_option(self, option: Union[Option, Category, FunctionButton, Hint], below: Optional[float], above: Optional[float], args = None):
+    def show_option(
+        self,
+        option: Union[Option, Category, FunctionButton, Hint],
+        below: Optional[float],
+        above: Optional[float],
+        args=None,
+    ):
         """
         This function shows the option if the value of the FloatBox is between the below and above value.
         If no below or above values are given, no boundary is taken into account for respectively the lower and
@@ -204,7 +225,14 @@ class FloatBox(Option):
         """
         self.widget.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
 
-    def create_widget(self, frame: QtW.QFrame, layout_parent: QtW.QLayout, *, row: int = None, column: int = None) -> None:
+    def create_widget(
+        self,
+        frame: QtW.QFrame,
+        layout_parent: QtW.QLayout,
+        *,
+        row: int = None,
+        column: int = None,
+    ) -> None:
         """
         This functions creates the FloatBox widget in the frame.
 
