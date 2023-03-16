@@ -27,8 +27,7 @@ class Translations:  # pragma: no cover
         "label_Open",
         "label_Save_As",
         "Calculation_Finished",
-        "GHE_tool_imported",
-        "GHE_tool_imported_start",
+        "tool_imported",
         "label_new_scenario",
         "new_name",
         "label_okay",
@@ -91,8 +90,7 @@ class Translations:  # pragma: no cover
         self.label_Open: List[str] = ["Open Project", "Öffne Projekt"]
         self.label_Save_As: List[str] = ["Save as", "Speichere Projekt unter ..."]
         self.Calculation_Finished: List[str] = ["Calculation finished", "Berechnung fertiggestellt"]
-        self.GHE_tool_imported: List[str] = ["GHEtool imported", "GHEtool importiert"]
-        self.GHE_tool_imported_start: List[str] = ["Start importing GHEtool", "Starte GHEtool zu importieren"]
+        self.tool_imported: List[str] = ["scenario gui imported", "scenario gui importiert"]
         self.label_new_scenario: List[str] = ["Enter new scenario name", "Neuer Name für das Szenario"]
         self.new_name: List[str] = ["New name for ", "Neuer Name für "]
         self.label_okay: List[str] = ["Okay ", "Okay "]

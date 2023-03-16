@@ -118,15 +118,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.sizePushS = QtC.QSize(75, 75)  # size of small push button
         # init links from buttons to functions
         self.set_links()
-        # reset progress bar
-        self.update_bar(0, False)
         # set event filter for push button sizing
         self.set_event_filter()
         # load backup data
         self.load_backup()
         # add progress bar and label to statusbar
-        self.status_bar.addPermanentWidget(self.label_status, 0)
-        self.status_bar.addPermanentWidget(self.progress_bar, 1)
         self.status_bar.messageChanged.connect(self.status_hide)
         # change window title to saved filename
         self.change_window_title()
@@ -140,7 +136,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         [option.init_links() for option, _ in self.gui_structure.list_of_options]
 
         self.status_bar.showMessage(
-            self.translations.GHE_tool_imported[self.gui_structure.option_language.get_value()],
+            self.translations.tool_imported[self.gui_structure.option_language.get_value()],
             5000,
         )
         # allow checking of changes
@@ -849,7 +845,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             "names": scenario_names,
             "version": VERSION,
             "values": [ds.to_dict() for ds in self.list_ds],
-            "borefields": [ds.results._to_dict() if ds.results is not None else None for ds in self.list_ds],
+            "results": [ds.results._to_dict() if ds.results is not None else None for ds in self.list_ds],
         }
         try:
             # write data to back up file
@@ -1120,12 +1116,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # show label and progress bar if calculation started otherwise hide them
         if opt_start:
-            self.label_status.show()
-            self.progress_bar.show()
-            self.status_bar.show()
+            self.status_bar_progress_bar.show()
         else:
-            self.label_status.hide()
-            self.progress_bar.hide()
+            self.status_bar_progress_bar.hide()
         # calculate percentage of calculated scenario
         val = val / self.NumberOfScenarios
         # set percentage to progress bar

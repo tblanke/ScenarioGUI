@@ -23,8 +23,7 @@ label_Save;Save Project;Speichere Projekt
 label_Open;Open Project;Öffne Projekt
 label_Save_As;Save as;Speichere Projekt unter ...
 Calculation_Finished;Calculation finished;Berechnung fertiggestellt
-GHE_tool_imported;GHEtool imported;GHEtool importiert
-GHE_tool_imported_start;Start importing GHEtool;Starte GHEtool zu importieren
+tool_imported;scenario gui imported;scenario gui importiert
 label_new_scenario;Enter new scenario name;Neuer Name für das Szenario
 new_name;New name for ;Neuer Name für 
 label_okay;Okay ;Okay 

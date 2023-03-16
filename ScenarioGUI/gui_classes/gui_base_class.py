@@ -53,7 +53,9 @@ class BaseUI:
     action_open: QtG.QAction
     action_save: QtG.QAction
     action_new: QtG.QAction
-
+    frame_progress_bar: QtW.QFrame
+    status_bar_progress_bar: QtW.QStatusBar
+    
     def setup_ui(self, ghe_tool):
         if not ghe_tool.objectName():
             ghe_tool.setObjectName("GHEtool")
@@ -295,27 +297,35 @@ class BaseUI:
 
         self.vertical_layout_main.addWidget(self.stacked_widget)
 
-        self.horizontal_layout_progress_bar = QtW.QHBoxLayout()
-        self.horizontal_layout_progress_bar.setObjectName("horizontalLayout_7")
+        self.status_bar_progress_bar = QtW.QStatusBar(ghe_tool)
+        ghe_tool.setStatusBar(self.status_bar_progress_bar)
+
+        self.frame_progress_bar = QtW.QFrame(self.central_widget)
+        self.horizontal_layout_progress_bar = QtW.QHBoxLayout(self.frame_progress_bar)
+        self.horizontal_layout_progress_bar.setObjectName("horizontalLayout_progress_bar")
         self.label_status = QtW.QLabel(self.central_widget)
         self.label_status.setObjectName("label_Status")
-        self.label_status.setStyleSheet(f"*{'{'}background-color: {LIGHT};{'}'}")
         self.horizontal_layout_progress_bar.addWidget(self.label_status)
 
         self.progress_bar = QtW.QProgressBar(self.central_widget)
-        self.progress_bar.setObjectName("progressBar")
+        self.progress_bar.setObjectName("progress_bar")
         self.progress_bar.setStyleSheet(
             f"QProgressBar{'{'}border: 1px solid {WHITE};border-radius: 10px;text-align: center;color: {WHITE};{'}'}\n"
             f"QProgressBar::chunk{'{'}background-color: {LIGHT}; border-radius: 10px;{'}'}"
         )
-        self.progress_bar.setValue(24)
-
+        self.progress_bar.setValue(0)
         self.horizontal_layout_progress_bar.addWidget(self.progress_bar)
 
-        self.vertical_layout_main.addLayout(self.horizontal_layout_progress_bar)
-
+        self.vertical_layout_main.addWidget(self.frame_progress_bar)
+        
         self.horizontal_layout_start_buttons = QtW.QHBoxLayout()
         self.horizontal_layout_start_buttons.setObjectName("horizontalLayout_2")
+        
+        self.status_bar = QtW.QStatusBar(ghe_tool)
+        self.status_bar.setObjectName("status_bar")
+        self.status_bar.setStyleSheet(f"QStatusBar::item{'{'}border:None;{'}'}QStatusBar{'{'}color:{WHITE};background-color: {DARK};{'}'}")
+        self.horizontal_layout_start_buttons.addWidget(self.status_bar)
+        
         self.horizontal_spacer_start_buttons = QtW.QSpacerItem(40, 20, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
 
         self.horizontal_layout_start_buttons.addItem(self.horizontal_spacer_start_buttons)
@@ -410,10 +420,6 @@ class BaseUI:
         )
         self.tool_bar.setMovable(False)
         ghe_tool.addToolBar(QtC.Qt.TopToolBarArea, self.tool_bar)
-        self.status_bar = QtW.QStatusBar(ghe_tool)
-        self.status_bar.setObjectName("status_bar")
-        self.status_bar.setStyleSheet(f"QStatusBar::item{'{'}border:None;{'}'}QStatusBar{'{'}color:{BLACK};background-color: {LIGHT};{'}'}")
-        ghe_tool.setStatusBar(self.status_bar)
 
         self.menubar.addAction(self.menu_file.menuAction())
         self.menubar.addAction(self.menu_calculation.menuAction())
@@ -517,3 +523,5 @@ class BaseUI:
         self.menu_language.setTitle("Language")
         self.menu_scenario.setTitle("Scenario")
         self.tool_bar.setWindowTitle("toolBar")
+        self.status_bar_progress_bar.addPermanentWidget(self.frame_progress_bar, 1)
+        self.status_bar_progress_bar.hide()
