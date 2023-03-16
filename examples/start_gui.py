@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Callable
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.global_settings import FILE_EXTENSION, GUI_NAME
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
-from ScenarioGUI.gui_classes.gui_structure_classes import FileNameBox, IntBox, Page, ResultText, Aim, Category
+from ScenarioGUI.gui_classes.gui_structure_classes import FileNameBox, FloatBox, Hint, IntBox, Page, ResultText, Aim, Category
 
 from examples.translation_class import Translations
 
@@ -68,12 +68,32 @@ class GUI(GuiStructure):
             maximal_value=200,
             category=self.category_inputs,
         )
-        folder: Path = Path(__file__).parent.parent
+        folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
         self.create_results_page()
         self.numerical_results = Category(
             page=self.page_result, label="Numerical results"
+        )
+
+        self.category_grid = Category(page=self.page_inputs, label="Grid")
+        self.category_grid.activate_grid_layout(5)
+        self.hint_1 = Hint(category=self.category_grid, hint="Grid example")
+        # int boxes and float boxes with no label are displayed small in a grid layout
+        self.int_b = IntBox(
+            label="",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=200,
+            category=self.category_grid,
+        )
+        # int boxes and float boxes with no label are displayed small in a grid layout
+        self.int_b = FloatBox(
+            label="",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=200,
+            category=self.category_grid,
         )
 
         self.result_text_add = ResultText(

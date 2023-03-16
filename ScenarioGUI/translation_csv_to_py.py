@@ -29,7 +29,7 @@ def translate_csv_2_class(csv_file_with_path: str | Path, target_path: str | Pat
         file.write("\tdef __init__(self):\n")
         file.write(f"\t\tself.languages: List[str] = {d_f.columns[1:].to_list()}\n")
         for name, translations in zip(d_f["name"], d_f.iloc[:, 1:].to_numpy(), strict=True):
-            text = f"self.{name}: List[str] = {translations.tolist()}"
+            text = f"self.{name}: list[str] = {translations.tolist()}"
             file.write(f"\t\t{text}\n")
 
     system(f"py -m black --line-length 160 {file_name}")
