@@ -49,4 +49,5 @@ def test_float_box(qtbot):
     assert not main_window.gui_structure.int_a.is_hidden()
     float_b.set_value(220)
     assert not main_window.gui_structure.int_a.is_hidden()
+    main_window.delete_backup()
     

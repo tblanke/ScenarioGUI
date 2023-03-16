@@ -3,12 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from examples.translation_class import Translations
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
-from ScenarioGUI.gui_classes.gui_structure_classes import Aim, Category, FileNameBox, FloatBox, Hint, IntBox, Page, ResultText
+from ScenarioGUI.gui_classes.gui_structure_classes import Aim, Category, FileNameBox, FloatBox, Hint, IntBox, Page, ResultText, ButtonBox
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
+    from .test_translations.translation_class import Translations
 
 
 class GUI(GuiStructure):
@@ -17,6 +17,7 @@ class GUI(GuiStructure):
         self.page_inputs = Page(name="Inputs", button_name="Inputs", icon="Add.svg")
         self.aim_add = Aim(label="Adding", icon="Add", page=self.page_inputs)
         self.aim_sub = Aim(label="Substract", icon="Delete", page=self.page_inputs)
+        self.aim_plot = Aim(label="Plot", icon="Parameters", page=self.page_inputs)
         self.category_inputs = Category(page=self.page_inputs, label="Inputs")
         self.int_a = IntBox(
             label="a",
@@ -36,6 +37,8 @@ class GUI(GuiStructure):
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
+
+        self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 
         self.category_grid = Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(5)

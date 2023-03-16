@@ -59,6 +59,7 @@ class Translations:  # pragma: no cover
         "short_cut",
         "tool_imported",
         "choose_load",
+        "option_toggle_buttons",
         "languages",
     )
 
@@ -129,3 +130,4 @@ class Translations:  # pragma: no cover
         self.short_cut: list[str] = ["Ctrl+Alt+E", "Ctrl+Alt+G"]
         self.tool_imported: list[str] = ["scenario gui imported", "scenario gui importiert"]
         self.choose_load: list[str] = ["Choose file to load scenarios", "Wählen Sie Datei zum Laden von Szenarien"]
+        self.option_toggle_buttons: list[str] = ["Use toggle buttons?:, no , yes ", "Umschalterbutton?:, Nein , Ja "]

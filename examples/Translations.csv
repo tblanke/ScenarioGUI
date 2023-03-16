@@ -55,3 +55,4 @@ scenarioString;Scenario;Szenario
 short_cut;Ctrl+Alt+E;Ctrl+Alt+G
 tool_imported;scenario gui imported;scenario gui importiert
 choose_load;Choose file to load scenarios;Wählen Sie Datei zum Laden von Szenarien
+option_toggle_buttons;Use toggle buttons?:, no , yes ;Umschalterbutton?:, Nein , Ja 
