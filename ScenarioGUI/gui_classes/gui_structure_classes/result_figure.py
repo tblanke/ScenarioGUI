@@ -3,7 +3,7 @@ result figure class script
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
 import PySide6.QtCore as QtC  # type: ignore
@@ -52,7 +52,7 @@ class ResultFigure(Category):
         self.layout_frame_canvas: QtW.QVBoxLayout = QtW.QVBoxLayout(self.frame_canvas)
         set_graph_layout()
         self.fig: plt.Figure = plt.figure()
-        self.ax: Optional[plt.Axes] = self.fig.add_subplot(111)
+        self.ax: plt.Axes | None = self.fig.add_subplot(111)
         self.canvas: FigureCanvas = FigureCanvas(self.fig)
         # create navigation toolbar and replace icons with white ones
         self.toolbar: NavigationToolbar = NavigationToolbar(self.canvas, None, True)
@@ -177,7 +177,7 @@ class ResultFigure(Category):
         -------
         None
         """
-        entry_name: List[str, str] = name.split(",")
+        entry_name: list[str, str] = name.split(",")
         self.label_text = entry_name[0]
         self.label.setText(self.label_text)
         self.y_axes_text: str = entry_name[1]
@@ -254,7 +254,7 @@ class ResultFigure(Category):
         None
         """
         if self.to_show:
-            super(ResultFigure, self).show()
+            super().show()
         if results:
             return
         self.to_show = True
@@ -274,7 +274,7 @@ class ResultFigure(Category):
         -------
         None
         """
-        super(ResultFigure, self).hide()
+        super().hide()
         if results:
             return
         self.to_show = False

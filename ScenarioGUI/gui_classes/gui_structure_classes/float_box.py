@@ -4,7 +4,7 @@ float box option class
 from __future__ import annotations
 
 from functools import partial as ft_partial
-from typing import TYPE_CHECKING, Callable, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Callable
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
@@ -29,6 +29,7 @@ class FloatBox(Option):
         label: str,
         default_value: float,
         category: Category,
+        *,
         decimal_number: int = 0,
         minimal_value: float = 0.0,
         maximal_value: float = 100.0,
@@ -128,7 +129,7 @@ class FloatBox(Option):
 
     def add_link_2_show(
         self,
-        option: Union[Option, Category, FunctionButton, Hint],
+        option: Option | Category | FunctionButton | Hint,
         below: float = None,
         above: float = None,
     ) -> None:
@@ -160,9 +161,9 @@ class FloatBox(Option):
 
     def show_option(
         self,
-        option: Union[Option, Category, FunctionButton, Hint],
-        below: Optional[float],
-        above: Optional[float],
+        option: Option | Category | FunctionButton | Hint,
+        below: float | None,
+        above: float | None,
         args=None,
     ):
         """
@@ -189,7 +190,7 @@ class FloatBox(Option):
             return option.show()
         option.hide()
 
-    def check_linked_value(self, value: Tuple[Optional[float], Optional[float]]) -> bool:
+    def check_linked_value(self, value: tuple[float | None, float | None]) -> bool:
         """
         This function checks if the linked "option" should be shown.
 

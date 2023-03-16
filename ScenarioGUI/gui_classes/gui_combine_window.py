@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from functools import partial as ft_partial
 from json import JSONDecodeError, dump, load
+from math import isclose
 from os import makedirs, remove
 from os.path import dirname, exists, realpath
 from os.path import split as os_split
@@ -14,14 +15,7 @@ import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
 
-from ..global_settings import (
-    FILE_EXTENSION,
-    FOLDER,
-    GUI_NAME,
-    VERSION,
-    ResultsClass,
-    set_graph_layout,
-)
+from ..global_settings import FILE_EXTENSION, FOLDER, GUI_NAME, VERSION, ResultsClass, set_graph_layout
 from .gui_base_class import BaseUI
 from .gui_calculation_thread import CalcProblem
 from .gui_data_storage import DataStorage
@@ -47,7 +41,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
     saving documents etc.)
     """
 
-    filenameDefault: tuple = ("", "")
+    filename_default: tuple = ("", "")
 
     def __init__(
         self,
@@ -78,16 +72,14 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.translations: Translations = translations()  # init translation class
 
         self.gui_structure = gui_structure(self.central_widget, self.translations)
-        for page in self.gui_structure.list_of_pages:
-            page.create_page(self.central_widget, self.stackedWidget, self.verticalLayout_menu)
+        [page.create_page(self.central_widget, self.stacked_widget, self.vertical_layout_menu) for page in self.gui_structure.list_of_pages]
 
         self.verticalSpacer = QtW.QSpacerItem(20, 40, QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Expanding)
-        self.verticalLayout_menu.addItem(self.verticalSpacer)
+        self.vertical_layout_menu.addItem(self.verticalSpacer)
 
         # self.add_aims(list_button)
         # set app and dialog
-        self.app: QtW.QApplication = app
-        self.Dia = dialog
+        self.dia, self.app = dialog, app
         # init pop up dialog
         self.dialog: QtW.QInputDialog | None = None
         # init variables of class
@@ -111,7 +103,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # add languages to combo box
         self.gui_structure.option_language.widget.addItems(self.translations.languages)
         self.fileImport = None  # init import file
-        self.filename: tuple = MainWindow.filenameDefault  # filename of stored inputs
+        self.filename: tuple = MainWindow.filename_default  # filename of stored inputs
         self.list_widget_scenario.clear()  # reset list widget with stored scenarios
         self.changedFile: bool = False  # set change file variable to false
         self.ax: list = []  # axes of figure
@@ -133,8 +125,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # load backup data
         self.load_backup()
         # add progress bar and label to statusbar
-        self.status_bar.addPermanentWidget(self.label_Status, 0)
-        self.status_bar.addPermanentWidget(self.progressBar, 1)
+        self.status_bar.addPermanentWidget(self.label_status, 0)
+        self.status_bar.addPermanentWidget(self.progress_bar, 1)
         self.status_bar.messageChanged.connect(self.status_hide)
         # change window title to saved filename
         self.change_window_title()
@@ -187,7 +179,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         icon = QtG.QIcon()
         icon.addFile(f"{FOLDER}/icons/{icon_name}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         action.setIcon(icon)
-        self.menuLanguage.addAction(action)
+        self.menu_language.addAction(action)
         action.setText(name)
         action.setShortcut(short_cut)
         action.triggered.connect(ft_partial(self.gui_structure.option_language.widget.setCurrentIndex, idx))
@@ -237,21 +229,21 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         self.gui_structure.option_language.change_event(self.change_language)
         self.gui_structure.page_result.button.clicked.connect(self.display_results)
-        self.actionAdd_Scenario.triggered.connect(self.add_scenario)
-        self.actionUpdate_Scenario.triggered.connect(self.save_scenario)
-        self.actionDelete_scenario.triggered.connect(self.delete_scenario)
+        self.action_add_scenario.triggered.connect(self.add_scenario)
+        self.action_update_scenario.triggered.connect(self.save_scenario)
+        self.action_delete_scenario.triggered.connect(self.delete_scenario)
         self.action_start_multiple.triggered.connect(self.start_multiple_scenarios_calculation)
         self.action_start_single.triggered.connect(self.start_current_scenario_calculation)
-        self.actionSave.triggered.connect(self.fun_save)
-        self.actionSave_As.triggered.connect(self.fun_save_as)
-        self.actionOpen.triggered.connect(self.fun_load)
-        self.actionNew.triggered.connect(self.fun_new)
-        self.actionRename_scenario.triggered.connect(lambda: self.fun_rename_scenario())
+        self.action_save.triggered.connect(self.fun_save)
+        self.action_save_as.triggered.connect(self.fun_save_as)
+        self.action_open.triggered.connect(self.fun_load)
+        self.action_new.triggered.connect(self.fun_new)
+        self.action_rename_scenario.triggered.connect(lambda: self.fun_rename_scenario())
         self.list_widget_scenario.setDragDropMode(QtW.QAbstractItemView.InternalMove)
         self.list_widget_scenario.model().rowsMoved.connect(self.fun_move_scenario)
         self.list_widget_scenario.currentItemChanged.connect(self.scenario_is_changed)
         self.list_widget_scenario.itemSelectionChanged.connect(self._always_scenario_selected)
-        self.Dia.closeEvent = self.closeEvent
+        self.dia.closeEvent = self.closeEvent
 
     def remove_previous_calculated_results(self):
         """
@@ -335,23 +327,20 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        # return if not yet started
-        if not self.started:
-            return
-        # return if checking is not allowed
-        if not self.checking:
+        # return if not yet started or return if checking is not allowed
+        if not self.started or not self.checking:
             return
         if self.check_values():
-            self.pushButton_start_multiple.setEnabled(True)
-            self.pushButton_start_single.setEnabled(True)
-            self.pushButton_AddScenario.setEnabled(True)
-            self.pushButton_SaveScenario.setEnabled(True)
+            self.push_button_start_multiple.setEnabled(True)
+            self.push_button_start_single.setEnabled(True)
+            self.push_button_add_scenario.setEnabled(True)
+            self.push_button_save_scenario.setEnabled(True)
             self.list_widget_scenario.setEnabled(True)
         else:
-            self.pushButton_start_multiple.setEnabled(False)
-            self.pushButton_start_single.setEnabled(False)
-            self.pushButton_AddScenario.setEnabled(False)
-            self.pushButton_SaveScenario.setEnabled(False)
+            self.push_button_start_multiple.setEnabled(False)
+            self.push_button_start_single.setEnabled(False)
+            self.push_button_add_scenario.setEnabled(False)
+            self.push_button_save_scenario.setEnabled(False)
             self.list_widget_scenario.setEnabled(False)
         # if changed File is not already True set it to True and update window title
         if self.changedFile is False:
@@ -449,7 +438,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # check if the old scenario is unsaved then create message box
         if text[-1] == "*":
             # create message box
-            self.dialog: QtW.QMessageBox = QtW.QMessageBox(self.Dia)
+            self.dialog: QtW.QMessageBox = QtW.QMessageBox(self.dia)
             # set Icon to question mark icon
             self.dialog.setIcon(QtW.QMessageBox.Question)
             # set label text to leave scenario text depending on language selected
@@ -485,14 +474,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.change_scenario(self.list_widget_scenario.row(new_row_item))
         return
 
-    def fun_move_scenario(
-        self,
-        start_item: QtC.QModelIndex,
-        start_index: int,
-        start_index2: int,
-        end_item: QtC.QModelIndex,
-        target_index: int,
-    ) -> None:
+    def fun_move_scenario(self, args) -> None:
         """
         change list of ds entry if scenario is moved (more inputs than needed, because the list widget returns that much
         :param start_item: start item of moving
@@ -502,6 +484,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         :param target_index: target index of moving
         :return: None
         """
+        start_item, start_index, start_index2, end_item, target_index = args
         self.list_ds.insert(target_index, self.list_ds.pop(start_index))
         # project is changed
         self.changedFile = True
@@ -544,24 +527,27 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
+        # return if no scenarios exits
+        if not self.list_ds:
+            return 
 
         def set_name(text):
             # sets the name of the current scenario to text
             list_of_scenarios = [self.list_widget_scenario.item(x).text().split("*")[0] for x in range(self.list_widget_scenario.count())]
             if text in list_of_scenarios:
                 text += "(2)"
-            item.setText(text) if text != "" else None
+            item.setText(text) if text else None
 
         # get current item
         item = self.list_widget_scenario.currentItem()
         # get first item if no one is selected
         item = self.list_widget_scenario.item(0) if item is None else item
-        if name != "":
+        if name:
             set_name(name)
             return
 
         # create dialog box to ask for a new name
-        self.dialog = QtW.QInputDialog(self.Dia)
+        self.dialog = QtW.QInputDialog(self.dia)
         self.dialog.setWindowTitle(self.translations.label_new_scenario[self.gui_structure.option_language.get_value()])
         self.dialog.setLabelText(f"{self.translations.new_name[self.gui_structure.option_language.get_value()]}{item.text()}")
         self.dialog.setOkButtonText(self.translations.label_okay[self.gui_structure.option_language.get_value()])  # +++
@@ -602,13 +588,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # get filename separated from path
-        _, filename = MainWindow.filenameDefault if self.filename == MainWindow.filenameDefault else os_split(self.filename[0])
+        _, filename = MainWindow.filename_default if self.filename == MainWindow.filename_default else os_split(self.filename[0])
         # title determine new title if a filename is not empty
-        title: str = "" if filename == "" else f' - {filename.replace(".FILE_EXTENSION", "")}'
+        title: str = "" if not filename else f' - {filename.replace(".FILE_EXTENSION", "")}'
         # create new title name
         name: str = f"{GUI_NAME} v{VERSION} {title}*" if self.changedFile else f"{GUI_NAME} v{VERSION} {title}"
         # set new title name
-        self.Dia.setWindowTitle(name)
+        self.dia.setWindowTitle(name)
 
     def status_hide(self, text: str) -> None:
         """
@@ -623,12 +609,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        if text == "":
+        if not text:
             self.status_bar.hide()
             return
         self.status_bar.show()
 
-    def eventFilter(self, obj: QtW.QPushButton, event) -> bool:
+    def eventFilter(self, obj: QtW.QPushButton, event) -> bool:  # noqa: N802
         """
         This function checks the mouse over event. It overwrites the eventFilter object in QObject.
 
@@ -651,7 +637,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             # Mouse is not over the label
             self.check_page_button_layout(False)
             return True
-        return False
+        return super().eventFilter(obj, event)
 
     def _change_settings_in_all_data_storages(self, name_of_option: str, *args) -> None:
         """
@@ -781,10 +767,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         def general_changes(scenarios):
             # change window title to new loaded filename
             self.change_window_title()
-            # replace user window id
-            for DS in self.list_ds:
-                DS.ui = id(self)
-
             # init user window by reset scenario list widget and check for results
             self.list_widget_scenario.clear()
             self.list_widget_scenario.addItems(scenarios)
@@ -934,7 +916,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # reset filename because then the funSave function ask for a new filename
-        self.filename = MainWindow.filenameDefault
+        self.filename = MainWindow.filename_default
         self.fun_save()  # save data under a new filename
 
     def fun_save(self) -> bool:
@@ -948,7 +930,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             True if the saving was successful.
         """
         # ask for pickle file if the filename is still the default
-        if self.filename == MainWindow.filenameDefault:
+        if self.filename == MainWindow.filename_default:
             self.filename: tuple = QtW.QFileDialog.getSaveFileName(
                 self.central_widget,
                 caption=self.translations.Save[self.gui_structure.option_language.get_value()],
@@ -956,7 +938,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 dir=str(self.default_path),
             )
             # break function if no file is selected
-            if self.filename == MainWindow.filenameDefault:
+            if self.filename == MainWindow.filename_default:
                 return False
         # save scenarios
         self.save_scenario()
@@ -980,7 +962,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        self.filename: tuple = MainWindow.filenameDefault  # reset filename
+        self.filename: tuple = MainWindow.filename_default  # reset filename
         if self.fun_save():  # get and save filename
             self.list_ds: list = []  # reset list of data storages
             self.list_widget_scenario.clear()  # clear list widget with scenario list
@@ -1023,7 +1005,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # set values of selected Datastorage
         ds.set_values(self.gui_structure)
         # refresh results if results page is selected
-        self.display_results() if self.stackedWidget.currentWidget() == self.gui_structure.page_result.page else None
+        self.display_results() if self.stacked_widget.currentWidget() == self.gui_structure.page_result.page else None
         # activate checking for changed
         self.checking: bool = True
 
@@ -1063,11 +1045,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # if no scenario exists create a new one else save DataStorage with new inputs in list of scenarios
         if len(self.list_ds) == idx:
             self.add_scenario()
-        else:
-            # do not overwrite any results
-            if self.list_ds[idx].results is None:
-                self.list_ds[idx].close_figures()
-                self.list_ds[idx] = DataStorage(self.gui_structure)
+        elif self.list_ds[idx].results is None:  # do not overwrite any results
+            self.list_ds[idx].close_figures()
+            self.list_ds[idx] = DataStorage(self.gui_structure)
         # create auto backup
         self.fun_save_auto()
         # remove * from scenario if not Auto save is checked and if the last char is a *
@@ -1140,20 +1120,20 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # show label and progress bar if calculation started otherwise hide them
         if opt_start:
-            self.label_Status.show()
-            self.progressBar.show()
+            self.label_status.show()
+            self.progress_bar.show()
             self.status_bar.show()
         else:
-            self.label_Status.hide()
-            self.progressBar.hide()
+            self.label_status.hide()
+            self.progress_bar.hide()
         # calculate percentage of calculated scenario
         val = val / self.NumberOfScenarios
         # set percentage to progress bar
-        self.progressBar.setValue(round(val * 100))
+        self.progress_bar.setValue(round(val * 100))
         # hide labels and progressBar if all scenarios are calculated
-        if val > 0.9999:
-            self.label_Status.hide()
-            self.progressBar.hide()
+        if isclose(val, 1):
+            self.label_status.hide()
+            self.progress_bar.hide()
             # show message that calculation is finished
             self.status_bar.showMessage(
                 self.translations.Calculation_Finished[self.gui_structure.option_language.get_value()],
@@ -1190,9 +1170,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # if number of finished is the number that has to be calculated enable buttons and actions and change page to
         # results page
         if self.finished == self.NumberOfScenarios:
-            self.pushButton_start_multiple.setEnabled(True)
-            self.pushButton_start_single.setEnabled(True)
-            self.pushButton_SaveScenario.setEnabled(True)
+            self.push_button_start_multiple.setEnabled(True)
+            self.push_button_start_single.setEnabled(True)
+            self.push_button_save_scenario.setEnabled(True)
             self.action_start_single.setEnabled(True)
             self.action_start_multiple.setEnabled(True)
             self.gui_structure.page_result.button.click()
@@ -1221,9 +1201,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if self.NumberOfScenarios < 1:
             return
         # disable buttons and actions to avoid two calculation at once
-        self.pushButton_start_multiple.setEnabled(False)
-        self.pushButton_start_single.setEnabled(False)
-        self.pushButton_SaveScenario.setEnabled(False)
+        self.push_button_start_multiple.setEnabled(False)
+        self.push_button_start_single.setEnabled(False)
+        self.push_button_save_scenario.setEnabled(False)
         self.action_start_single.setEnabled(False)
         self.action_start_multiple.setEnabled(False)
         # initialize finished scenarios counting variable
@@ -1265,9 +1245,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             return
         # return to thermal demands page if no file is selected
         # disable buttons and actions to avoid two calculation at once
-        self.pushButton_start_multiple.setEnabled(False)
-        self.pushButton_start_single.setEnabled(False)
-        self.pushButton_SaveScenario.setEnabled(False)
+        self.push_button_start_multiple.setEnabled(False)
+        self.push_button_start_single.setEnabled(False)
+        self.push_button_save_scenario.setEnabled(False)
         self.action_start_single.setEnabled(False)
         self.action_start_multiple.setEnabled(False)
         # initialize finished scenarios counting variable
@@ -1321,7 +1301,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         results: ResultsClass = ds.results
 
         # set debug message
-        if ds.debug_message != "":
+        if ds.debug_message:
             hide_no_result(True)
             self.gui_structure.text_no_result.set_text(str(ds.debug_message))
             return
@@ -1367,7 +1347,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                     text = getattr(results, result_text_obj.var_name)()
                 result_text_obj.set_text_value(text)
 
-    def closeEvent(self, event) -> None:
+    def closeEvent(self, event) -> None:  # noqa: N802
         """
         This function is called when the gui is closed. It will prompt a window asking if potential changes
         need to be saved.
@@ -1386,7 +1366,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             event.accept()
             return
         # create message box
-        self.dialog: QtW.QMessageBox = QtW.QMessageBox(self.Dia)
+        self.dialog: QtW.QMessageBox = QtW.QMessageBox(self.dia)
         # set Icon to question mark icon
         self.dialog.setIcon(QtW.QMessageBox.Question)
         # set label text to cancel text depending on language selected

@@ -34,7 +34,7 @@ class CalcProblem(QtC.QThread):
         parent :
             Parent class of the calculation problem
         """
-        super(CalcProblem, self).__init__(parent)  # init parent class
+        super().__init__(parent)  # init parent class
         # set datastorage and index
         self.ds = ds
         self.idx = idx

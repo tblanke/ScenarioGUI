@@ -4,7 +4,7 @@ page class script
 from __future__ import annotations
 
 from functools import partial as ft_partial
-from typing import TYPE_CHECKING, Callable, List, Optional, Union
+from typing import TYPE_CHECKING, Callable
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
@@ -12,11 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 
 from ...global_settings import FOLDER, FONT, FONT_SIZE, LIGHT, WHITE
 from .aim import Aim
-from .functions import (
-    _update_opponent_not_change,
-    _update_opponent_toggle,
-    check_aim_options,
-)
+from .functions import _update_opponent_not_change, _update_opponent_toggle, check_aim_options
 
 if TYPE_CHECKING:  # pragma: no cover
     from .category import Category
@@ -31,7 +27,7 @@ class Page:
 
     next_label: str = "next"
     previous_label: str = "previous"
-    default_parent: Optional[QtW.QWidget] = None
+    default_parent: QtW.QWidget | None = None
     TOGGLE: bool = True
 
     def __init__(self, name: str, button_name: str, icon: str):
@@ -60,17 +56,17 @@ class Page:
         self.name: str = name
         self.button_name: str = button_name
         self.icon: str = icon
-        self.push_button_next: Optional[QtW.QPushButton] = None
-        self.push_button_previous: Optional[QtW.QPushButton] = None
-        self.list_categories: List[Category] = []
+        self.push_button_next: QtW.QPushButton | None = None
+        self.push_button_previous: QtW.QPushButton | None = None
+        self.list_categories: list[Category] = []
         self.button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
         self.label: QtW.QLabel = QtW.QLabel(self.default_parent)
         self.label_gap: QtW.QLabel = QtW.QLabel(self.default_parent)
         self.page: QtW.QWidget = QtW.QWidget(self.default_parent)
-        self.previous_page: Optional[Page] = None
-        self.next_page: Optional[Page] = None
-        self.upper_frame: List[Union[Aim, Option, Category]] = []
-        self.functions_button_clicked: List[Callable] = []
+        self.previous_page: Page | None = None
+        self.next_page: Page | None = None
+        self.upper_frame: list[Aim | Option | Category] = []
+        self.functions_button_clicked: list[Callable] = []
 
     def add_function_called_if_button_clicked(self, function_to_be_called: Callable) -> None:
         """
@@ -101,7 +97,7 @@ class Page:
         -------
         None
         """
-        entry_name: List[str, str] = name.split(",")
+        entry_name: list[str, str] = name.split(",")
         self.name = entry_name[1]
         self.button_name = entry_name[0].replace("@", "\n")
         self.label.setText(self.name)
@@ -254,7 +250,7 @@ class Page:
                 continue
             option.create_widget(upper_frame, grid_layout)
 
-        list_aims: List[Aim] = [aim for aim in self.upper_frame if isinstance(aim, Aim)]
+        list_aims: list[Aim] = [aim for aim in self.upper_frame if isinstance(aim, Aim)]
         if list_aims:
             for idx, aim in enumerate(list_aims):
                 default_value = 1 if idx == 0 else 0
@@ -273,7 +269,7 @@ class Page:
         self,
         button: QtW.QPushButton,
         button_opponent: QtW.QPushButton,
-        false_button_list: List[QtW.QPushButton] = None,
+        false_button_list: list[QtW.QPushButton] = None,
     ) -> None:
         """
         This function updates which button should be checked/activated or unchecked/deactivated
@@ -295,7 +291,7 @@ class Page:
         if self.TOGGLE:
             _update_opponent_toggle(button, button_opponent, false_button_list)
             return
-        _update_opponent_not_change(button, false_button_list + [button_opponent])
+        _update_opponent_not_change(button, [*false_button_list, button_opponent])
 
     def create_navigation_buttons(self, central_widget: QtW.QWidget, scroll_area_layout: QtW.QVBoxLayout) -> None:
         """

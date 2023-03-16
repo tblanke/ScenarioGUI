@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .aim import Aim
 from .button_box import ButtonBox
 from .category import Category
@@ -14,18 +16,18 @@ from .result_figure import ResultFigure
 from .result_text import ResultText
 
 __all__ = [
-    Aim,
-    ButtonBox,
-    Category,
-    FigureOption,
-    FileNameBox,
-    FloatBox,
-    FunctionButton,
-    Hint,
-    IntBox,
-    ListBox,
-    Option,
-    Page,
-    ResultFigure,
-    ResultText,
+    "Aim",
+    "ButtonBox",
+    "Category",
+    "FigureOption",
+    "FileNameBox",
+    "FloatBox",
+    "FunctionButton",
+    "Hint",
+    "IntBox",
+    "ListBox",
+    "Option",
+    "Page",
+    "ResultFigure",
+    "ResultText",
 ]

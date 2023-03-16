@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, List
+from typing import TYPE_CHECKING
 
 from .hint import Hint
 
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import Callable
+
     from .category import Category
 
 
@@ -107,7 +109,7 @@ class ResultText(Hint):
         -------
         None
         """
-        entry_name: List[str, str] = name.split(",")
+        entry_name: list[str, str] = name.split(",")
         self.prefix = entry_name[0]
         self.suffix = entry_name[1]
 

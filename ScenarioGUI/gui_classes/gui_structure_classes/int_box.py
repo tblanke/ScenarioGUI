@@ -4,7 +4,7 @@ int box class script
 from __future__ import annotations
 
 from functools import partial as ft_partial
-from typing import TYPE_CHECKING, Callable, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Callable
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
@@ -29,6 +29,7 @@ class IntBox(Option):
         label: str,
         default_value: int,
         category: Category,
+        *,
         minimal_value: int = 0,
         maximal_value: int = 100,
         step: int = 1,
@@ -121,7 +122,7 @@ class IntBox(Option):
         """
         return self.minimal_value <= self.get_value() <= self.maximal_value
 
-    def check_linked_value(self, value: Tuple[Optional[int], Optional[int]]) -> bool:
+    def check_linked_value(self, value: tuple[int | None, int | None]) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
@@ -144,7 +145,7 @@ class IntBox(Option):
 
     def add_link_2_show(
         self,
-        option: Union[Option, Category, FunctionButton, Hint],
+        option: Option | Category | FunctionButton | Hint,
         *,
         below: int = None,
         above: int = None,
@@ -176,9 +177,9 @@ class IntBox(Option):
 
     def show_option(
         self,
-        option: Union[Option, Category, FunctionButton, Hint],
-        below: Optional[int],
-        above: Optional[int],
+        option: Option | Category | FunctionButton | Hint,
+        below: int | None,
+        above: int | None,
         args=None,
     ):
         """

@@ -4,7 +4,7 @@ option base class script
 from __future__ import annotations
 
 import abc
-from typing import TYPE_CHECKING, Callable, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Callable
 
 import PySide6.QtWidgets as QtW  # type: ignore
 
@@ -20,12 +20,12 @@ class Option(metaclass=abc.ABCMeta):
     Abstract base class for a gui option.
     """
 
-    default_parent: Optional[QtW.QWidget] = None
+    default_parent: QtW.QWidget | None = None
 
     def __init__(
         self,
         label: str,
-        default_value: Union[bool, int, float, str],
+        default_value: bool | int | float | str,
         category: Category,
     ):
         """
@@ -39,17 +39,17 @@ class Option(metaclass=abc.ABCMeta):
             The category in which the option should be placed
         """
         self.label_text: str = label
-        self.default_value: Union[bool, int, float, str] = default_value
-        self.widget: Optional[QtW.QWidget] = None
+        self.default_value: bool | int | float | str = default_value
+        self.widget: QtW.QWidget | None = None
         self.frame: QtW.QFrame = QtW.QFrame(self.default_parent)
         self.label = QtW.QLabel(self.frame)
-        self.linked_options: List[(Option, int)] = []
+        self.linked_options: list[(Option, int)] = []
         self.limit_size: bool = True
         category.list_of_options.append(self)
-        self.list_2_check_before_value: List[Tuple[Option, int], Aim] = []
+        self.list_2_check_before_value: list[tuple[Option, int], Aim] = []
 
     @abc.abstractmethod
-    def get_value(self) -> Union[bool, int, float, str]:
+    def get_value(self) -> bool | int | float | str:
         """
         This function gets the value of the option.
 
@@ -59,7 +59,7 @@ class Option(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def set_value(self, value: Union[bool, int, float, str]) -> None:
+    def set_value(self, value: bool | int | float | str) -> None:
         """
         This function sets the value of the option.
 
@@ -84,7 +84,7 @@ class Option(metaclass=abc.ABCMeta):
             True if the option value is valid
         """
 
-    def add_aim_option_2_be_set_for_check(self, aim_or_option: Union[Tuple[Option, int], Aim]):
+    def add_aim_option_2_be_set_for_check(self, aim_or_option: tuple[Option, int] | Aim):
         """
         Sometimes, an option should not be check on its valid value. This can be the case when,
         for a specific aim or in a specific case, the current option is not needed. (e.g.,
@@ -222,7 +222,7 @@ class Option(metaclass=abc.ABCMeta):
             The frame created for this option
         """
 
-        if self.label_text == "":
+        if not self.label_text:
             self.frame.setParent(None)
             self.frame = frame
             return frame.layout()
@@ -284,13 +284,7 @@ class Option(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def check_linked_value(
         self,
-        value: Union[
-            int,
-            Tuple[Optional[int], Optional[int]],
-            Tuple[Optional[float], Optional[float]],
-            str,
-            bool,
-        ],
+        value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | str | bool,
     ) -> bool:
         """
         Check if the linked value is the current one then return True

@@ -6,18 +6,7 @@ from typing import List, Tuple, Union
 
 import PySide6.QtWidgets as QtW
 
-from ScenarioGUI.gui_classes.gui_structure_classes import (
-    Aim,
-    ButtonBox,
-    Category,
-    FunctionButton,
-    Hint,
-    ListBox,
-    Option,
-    Page,
-    ResultFigure,
-    ResultText,
-)
+from ScenarioGUI.gui_classes.gui_structure_classes import Aim, ButtonBox, Category, FunctionButton, Hint, ListBox, Option, Page, ResultFigure, ResultText
 from ScenarioGUI.gui_classes.translation_class import Translations
 
 

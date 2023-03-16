@@ -31,7 +31,7 @@ per-file-ignores = "__init__.py:F401"
 
 [tool.ruff]
 # Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
-select = ["E", "F", 'UP', 'I', 'N', 'PL', 'NPY', 'PD', 'TRY', 'RUF', 'PLC', 'PLE', 'PLR', 'PLW']
+select = ["E", "F", 'I', 'N', 'PL', 'NPY', 'PD', 'TRY', 'RUF', 'PLC', 'PLE', 'PLR', 'PLW']#, 'UP'
 ignore = []
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
@@ -79,3 +79,4 @@ max-complexity = 10
 
 [tool.ruff.per-file-ignores]
 "translation_class.py" = ["PLR0915"]
+"gui_base_class.py" = ["PLR0915"]

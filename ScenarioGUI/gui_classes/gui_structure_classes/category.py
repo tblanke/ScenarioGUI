@@ -3,7 +3,7 @@ category class script
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
@@ -24,7 +24,7 @@ class Category:
     options are put.
     """
 
-    default_parent: Optional[QtW.QWidget] = None
+    default_parent: QtW.QWidget | None = None
 
     def __init__(self, label: str, page: Page):
         """
@@ -47,12 +47,12 @@ class Category:
         """
         self.label_text: str = label
         self.label: QtW.QLabel = QtW.QLabel(self.default_parent)
-        self.list_of_options: List[Union[Option, Hint, FunctionButton]] = []
+        self.list_of_options: list[Option | Hint | FunctionButton] = []
         self.frame: QtW.QFrame = QtW.QFrame(self.default_parent)
-        self.graphic_left: Optional[Union[QtW.QGraphicsView, bool]] = None
-        self.graphic_right: Optional[Union[QtW.QGraphicsView, bool]] = None
+        self.graphic_left: QtW.QGraphicsView | bool | None = None
+        self.graphic_right: QtW.QGraphicsView | bool | None = None
         self.grid_layout: int = 0
-        self.layout_frame: Optional[QtW.QVBoxLayout] = None
+        self.layout_frame: QtW.QVBoxLayout | None = None
         page.list_categories.append(self)
         self.options_hidden = []
 
@@ -182,7 +182,7 @@ class Category:
                 if isinstance(option, Hint):
                     option.create_widget(self.frame, self.layout_frame, row=row, column=column)
                 else:
-                    if option.label_text == "":
+                    if not option.label_text:
                         option.deactivate_size_limit()
                     option.create_widget(self.frame, self.layout_frame, row=row, column=column)
                 if row == self.grid_layout - 1:

@@ -3,6 +3,7 @@ filename box
 """
 from __future__ import annotations
 
+import logging
 from os.path import exists
 from pathlib import Path
 from typing import TYPE_CHECKING, Callable
@@ -27,10 +28,10 @@ class FileNameBox(Option):
         self,
         label: str,
         default_value: str,
-        dialog_text: str,
-        error_text: str,
-        status_bar: QtW.QStatusBar,
         category: Category,
+        *,
+        dialog_text: str = "",
+        error_text: str = "",
     ):
         """
 
@@ -67,7 +68,6 @@ class FileNameBox(Option):
         self.widget: QtW.QLineEdit = QtW.QLineEdit(self.default_parent)
         self.dialog_text: str = dialog_text
         self.error_text: str = error_text
-        self.status_bar: QtW.QStatusBar = status_bar
         self.button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
 
     def get_value(self) -> str:
@@ -213,5 +213,5 @@ class FileNameBox(Option):
         # try to ask for a file otherwise show message in status bar
         filename = QtW.QFileDialog.getOpenFileName(self.frame, caption=self.dialog_text, filter="(*.csv)", dir=str(Path.home()))
         if not filename[0]:
-            self.status_bar.showMessage(self.error_text, 5000)
+            logging.error(self.error_text)
         self.widget.setText(filename[0])

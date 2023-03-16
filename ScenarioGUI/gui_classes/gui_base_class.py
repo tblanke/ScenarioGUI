@@ -7,18 +7,7 @@ import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
 
-from ..global_settings import (
-    BLACK,
-    DARK,
-    FOLDER,
-    FONT,
-    FONT_SIZE,
-    GREY,
-    ICON_NAME,
-    LIGHT,
-    LIGHT_SELECT,
-    WHITE,
-)
+from ..global_settings import BLACK, DARK, FOLDER, FONT, FONT_SIZE, GREY, ICON_NAME, LIGHT, LIGHT_SELECT, WHITE
 
 
 class BaseUI:
@@ -27,43 +16,43 @@ class BaseUI:
     the scenario/run/ ... buttons and the shortcuts.
     """
 
-    menuLanguage: QtW.QMenu
+    menu_language: QtW.QMenu
     status_bar: QtW.QStatusBar
-    toolBar: QtW.QToolBar
-    menuScenario: QtW.QMenu
-    menuSettings: QtW.QMenu
-    menuCalculation: QtW.QMenu
-    pushButton_Cancel: QtW.QPushButton
-    menuFile: QtW.QMenu
-    pushButton_start_multiple: QtW.QPushButton
-    pushButton_start_single: QtW.QPushButton
-    horizontalSpacer_2: QtW.QSpacerItem
-    progressBar: QtW.QProgressBar
-    horizontalLayout_2: QtW.QHBoxLayout
-    label_Status: QtW.QLabel
-    horizontalLayout_7: QtW.QHBoxLayout
-    stackedWidget: QtW.QStackedWidget
-    verticalLayout_21: QtW.QVBoxLayout
-    verticalLayout_menu: QtW.QVBoxLayout
+    tool_bar: QtW.QToolBar
+    menu_scenario: QtW.QMenu
+    menu_settings: QtW.QMenu
+    menu_calculation: QtW.QMenu
+    push_button_cancel: QtW.QPushButton
+    menu_file: QtW.QMenu
+    push_button_start_multiple: QtW.QPushButton
+    push_button_start_single: QtW.QPushButton
+    horizontal_spacer_start_buttons: QtW.QSpacerItem
+    progress_bar: QtW.QProgressBar
+    horizontal_layout_start_buttons: QtW.QHBoxLayout
+    label_status: QtW.QLabel
+    horizontal_layout_progress_bar: QtW.QHBoxLayout
+    stacked_widget: QtW.QStackedWidget
+    vertical_layout_main: QtW.QVBoxLayout
+    vertical_layout_menu: QtW.QVBoxLayout
     list_widget_scenario: QtW.QListWidget
     button_rename_scenario: QtW.QPushButton
-    pushButton_SaveScenario: QtW.QPushButton
-    verticalLayout_scenario: QtW.QVBoxLayout
-    horizontalLayout_23: QtW.QHBoxLayout
+    push_button_save_scenario: QtW.QPushButton
+    vertical_layout_scenario: QtW.QVBoxLayout
+    horizontal_layout_main: QtW.QHBoxLayout
     central_widget: QtW.QWidget
-    pushButton_DeleteScenario: QtW.QPushButton
+    push_button_delete_scenario: QtW.QPushButton
     action_start_single: QtG.QAction
-    actionRename_scenario: QtG.QAction
-    actionSave_As: QtG.QAction
-    actionDelete_scenario: QtG.QAction
-    actionAdd_Scenario: QtG.QAction
-    actionUpdate_Scenario: QtG.QAction
+    action_rename_scenario: QtG.QAction
+    action_save_as: QtG.QAction
+    action_delete_scenario: QtG.QAction
+    action_add_scenario: QtG.QAction
+    action_update_scenario: QtG.QAction
     menubar: QtW.QMenuBar
-    pushButton_AddScenario: QtW.QPushButton
+    push_button_add_scenario: QtW.QPushButton
     action_start_multiple: QtG.QAction
-    actionOpen: QtG.QAction
-    actionSave: QtG.QAction
-    actionNew: QtG.QAction
+    action_open: QtG.QAction
+    action_save: QtG.QAction
+    action_new: QtG.QAction
 
     def setup_ui(self, ghe_tool):
         if not ghe_tool.objectName():
@@ -105,29 +94,29 @@ class BaseUI:
             f"QTabWidget::pane{'{'}border: 1px solid {WHITE};{'}'}"
             f"QTabWidget::tab-bar{'{'}left: 5px;{'}'}"
         )
-        self.actionNew = QtG.QAction(ghe_tool)
-        self.actionNew.setObjectName("actionNew")
-        self.actionNew.setCheckable(False)
-        self.actionNew.setChecked(False)
-        self.actionNew.setEnabled(True)
+        self.action_new = QtG.QAction(ghe_tool)
+        self.action_new.setObjectName("actionNew")
+        self.action_new.setCheckable(False)
+        self.action_new.setChecked(False)
+        self.action_new.setEnabled(True)
         icon1 = QtG.QIcon()
         icon1.addFile(f"{FOLDER}/icons/New.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon1.addFile(f"{FOLDER}/icons/New_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
-        self.actionNew.setIcon(icon1)
-        self.actionSave = QtG.QAction(ghe_tool)
-        self.actionSave.setObjectName("actionSave")
-        self.actionSave.setEnabled(True)
+        self.action_new.setIcon(icon1)
+        self.action_save = QtG.QAction(ghe_tool)
+        self.action_save.setObjectName("actionSave")
+        self.action_save.setEnabled(True)
         icon2 = QtG.QIcon()
         icon2.addFile(f"{FOLDER}/icons/Save.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon2.addFile(f"{FOLDER}/icons/Save_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
-        self.actionSave.setIcon(icon2)
-        self.actionOpen = QtG.QAction(ghe_tool)
-        self.actionOpen.setObjectName("actionOpen")
-        self.actionOpen.setEnabled(True)
+        self.action_save.setIcon(icon2)
+        self.action_open = QtG.QAction(ghe_tool)
+        self.action_open.setObjectName("actionOpen")
+        self.action_open.setEnabled(True)
         icon3 = QtG.QIcon()
         icon3.addFile(f"{FOLDER}/icons/Open.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon3.addFile(f"{FOLDER}/icons/Open_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
-        self.actionOpen.setIcon(icon3)
+        self.action_open.setIcon(icon3)
         self.action_start_multiple = QtG.QAction(ghe_tool)
         self.action_start_multiple.setObjectName("action_start_multiple")
         self.action_start_multiple.setEnabled(True)
@@ -145,8 +134,8 @@ class BaseUI:
             QtG.QIcon.Off,
         )
         self.action_start_multiple.setIcon(icon4)
-        self.actionUpdate_Scenario = QtG.QAction(ghe_tool)
-        self.actionUpdate_Scenario.setObjectName("actionUpdate_Scenario")
+        self.action_update_scenario = QtG.QAction(ghe_tool)
+        self.action_update_scenario.setObjectName("actionUpdate_Scenario")
         icon7 = QtG.QIcon()
         icon7.addFile(
             f"{FOLDER}/icons/Update_Inv.svg",
@@ -155,15 +144,15 @@ class BaseUI:
             QtG.QIcon.Off,
         )
         icon7.addFile(f"{FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
-        self.actionUpdate_Scenario.setIcon(icon7)
-        self.actionAdd_Scenario = QtG.QAction(ghe_tool)
-        self.actionAdd_Scenario.setObjectName("actionAdd_Scenario")
+        self.action_update_scenario.setIcon(icon7)
+        self.action_add_scenario = QtG.QAction(ghe_tool)
+        self.action_add_scenario.setObjectName("actionAdd_Scenario")
         icon8 = QtG.QIcon()
         icon8.addFile(f"{FOLDER}/icons/Add_Inv.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon8.addFile(f"{FOLDER}/icons/Add.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
-        self.actionAdd_Scenario.setIcon(icon8)
-        self.actionDelete_scenario = QtG.QAction(ghe_tool)
-        self.actionDelete_scenario.setObjectName("actionDelete_scenario")
+        self.action_add_scenario.setIcon(icon8)
+        self.action_delete_scenario = QtG.QAction(ghe_tool)
+        self.action_delete_scenario.setObjectName("actionDelete_scenario")
         icon9 = QtG.QIcon()
         icon9.addFile(
             f"{FOLDER}/icons/Delete_Inv.svg",
@@ -172,9 +161,9 @@ class BaseUI:
             QtG.QIcon.Off,
         )
         icon9.addFile(f"{FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
-        self.actionDelete_scenario.setIcon(icon9)
-        self.actionSave_As = QtG.QAction(ghe_tool)
-        self.actionSave_As.setObjectName("actionSave_As")
+        self.action_delete_scenario.setIcon(icon9)
+        self.action_save_as = QtG.QAction(ghe_tool)
+        self.action_save_as.setObjectName("actionSave_As")
         icon10 = QtG.QIcon()
         icon10.addFile(f"{FOLDER}/icons/SaveAs.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon10.addFile(
@@ -183,9 +172,9 @@ class BaseUI:
             QtG.QIcon.Active,
             QtG.QIcon.Off,
         )
-        self.actionSave_As.setIcon(icon10)
-        self.actionRename_scenario = QtG.QAction(ghe_tool)
-        self.actionRename_scenario.setObjectName("actionRename_scenario")
+        self.action_save_as.setIcon(icon10)
+        self.action_rename_scenario = QtG.QAction(ghe_tool)
+        self.action_rename_scenario.setObjectName("actionRename_scenario")
         icon14 = QtG.QIcon()
         icon14.addFile(
             f"{FOLDER}/icons/Rename_Inv.svg",
@@ -194,7 +183,7 @@ class BaseUI:
             QtG.QIcon.Off,
         )
         icon14.addFile(f"{FOLDER}/icons/Rename.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
-        self.actionRename_scenario.setIcon(icon14)
+        self.action_rename_scenario.setIcon(icon14)
         self.action_start_single = QtG.QAction(ghe_tool)
         self.action_start_single.setObjectName("action_start_single")
         icon15 = QtG.QIcon()
@@ -208,50 +197,50 @@ class BaseUI:
         self.action_start_single.setIcon(icon15)
         self.central_widget = QtW.QWidget(ghe_tool)
         self.central_widget.setObjectName("central_widget")
-        self.horizontalLayout_23 = QtW.QHBoxLayout(self.central_widget)
-        self.horizontalLayout_23.setObjectName("horizontalLayout_23")
-        self.verticalLayout_scenario = QtW.QVBoxLayout()
-        self.verticalLayout_scenario.setObjectName("verticalLayout_scenario")
-        self.pushButton_SaveScenario = QtW.QPushButton(self.central_widget)
-        self.pushButton_SaveScenario.setObjectName("pushButton_SaveScenario")
+        self.horizontal_layout_main = QtW.QHBoxLayout(self.central_widget)
+        self.horizontal_layout_main.setObjectName("horizontalLayout_23")
+        self.vertical_layout_scenario = QtW.QVBoxLayout()
+        self.vertical_layout_scenario.setObjectName("verticalLayout_scenario")
+        self.push_button_save_scenario = QtW.QPushButton(self.central_widget)
+        self.push_button_save_scenario.setObjectName("pushButton_SaveScenario")
         size_policy1 = QtW.QSizePolicy(QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Minimum)
         size_policy1.setHorizontalStretch(0)
         size_policy1.setVerticalStretch(0)
-        size_policy1.setHeightForWidth(self.pushButton_SaveScenario.sizePolicy().hasHeightForWidth())
-        self.pushButton_SaveScenario.setSizePolicy(size_policy1)
-        self.pushButton_SaveScenario.setMinimumSize(QtC.QSize(180, 30))
-        self.pushButton_SaveScenario.setMaximumSize(QtC.QSize(250, 30))
-        self.pushButton_SaveScenario.setStyleSheet("text-align:left;")
+        size_policy1.setHeightForWidth(self.push_button_save_scenario.sizePolicy().hasHeightForWidth())
+        self.push_button_save_scenario.setSizePolicy(size_policy1)
+        self.push_button_save_scenario.setMinimumSize(QtC.QSize(180, 30))
+        self.push_button_save_scenario.setMaximumSize(QtC.QSize(250, 30))
+        self.push_button_save_scenario.setStyleSheet("text-align:left;")
         icon18 = QtG.QIcon()
         icon18.addFile(f"{FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        self.pushButton_SaveScenario.setIcon(icon18)
-        self.pushButton_SaveScenario.setIconSize(QtC.QSize(20, 20))
+        self.push_button_save_scenario.setIcon(icon18)
+        self.push_button_save_scenario.setIconSize(QtC.QSize(20, 20))
 
-        self.verticalLayout_scenario.addWidget(self.pushButton_SaveScenario)
+        self.vertical_layout_scenario.addWidget(self.push_button_save_scenario)
 
-        self.pushButton_AddScenario = QtW.QPushButton(self.central_widget)
-        self.pushButton_AddScenario.setObjectName("pushButton_AddScenario")
-        self.pushButton_AddScenario.setMinimumSize(QtC.QSize(180, 30))
-        self.pushButton_AddScenario.setMaximumSize(QtC.QSize(250, 30))
-        self.pushButton_AddScenario.setStyleSheet("text-align:left;")
+        self.push_button_add_scenario = QtW.QPushButton(self.central_widget)
+        self.push_button_add_scenario.setObjectName("pushButton_AddScenario")
+        self.push_button_add_scenario.setMinimumSize(QtC.QSize(180, 30))
+        self.push_button_add_scenario.setMaximumSize(QtC.QSize(250, 30))
+        self.push_button_add_scenario.setStyleSheet("text-align:left;")
         icon19 = QtG.QIcon()
         icon19.addFile(f"{FOLDER}/icons/Add.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        self.pushButton_AddScenario.setIcon(icon19)
-        self.pushButton_AddScenario.setIconSize(QtC.QSize(20, 20))
+        self.push_button_add_scenario.setIcon(icon19)
+        self.push_button_add_scenario.setIconSize(QtC.QSize(20, 20))
 
-        self.verticalLayout_scenario.addWidget(self.pushButton_AddScenario)
+        self.vertical_layout_scenario.addWidget(self.push_button_add_scenario)
 
-        self.pushButton_DeleteScenario = QtW.QPushButton(self.central_widget)
-        self.pushButton_DeleteScenario.setObjectName("pushButton_DeleteScenario")
-        self.pushButton_DeleteScenario.setMinimumSize(QtC.QSize(180, 30))
-        self.pushButton_DeleteScenario.setMaximumSize(QtC.QSize(250, 30))
-        self.pushButton_DeleteScenario.setStyleSheet("text-align:left;")
+        self.push_button_delete_scenario = QtW.QPushButton(self.central_widget)
+        self.push_button_delete_scenario.setObjectName("pushButton_DeleteScenario")
+        self.push_button_delete_scenario.setMinimumSize(QtC.QSize(180, 30))
+        self.push_button_delete_scenario.setMaximumSize(QtC.QSize(250, 30))
+        self.push_button_delete_scenario.setStyleSheet("text-align:left;")
         icon20 = QtG.QIcon()
         icon20.addFile(f"{FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        self.pushButton_DeleteScenario.setIcon(icon20)
-        self.pushButton_DeleteScenario.setIconSize(QtC.QSize(20, 20))
+        self.push_button_delete_scenario.setIcon(icon20)
+        self.push_button_delete_scenario.setIconSize(QtC.QSize(20, 20))
 
-        self.verticalLayout_scenario.addWidget(self.pushButton_DeleteScenario)
+        self.vertical_layout_scenario.addWidget(self.push_button_delete_scenario)
 
         self.button_rename_scenario = QtW.QPushButton(self.central_widget)
         self.button_rename_scenario.setObjectName("button_rename_scenario")
@@ -263,7 +252,7 @@ class BaseUI:
         self.button_rename_scenario.setIcon(icon21)
         self.button_rename_scenario.setIconSize(QtC.QSize(20, 20))
 
-        self.verticalLayout_scenario.addWidget(self.button_rename_scenario)
+        self.vertical_layout_scenario.addWidget(self.button_rename_scenario)
 
         self.list_widget_scenario = QtW.QListWidget(self.central_widget)
         QtW.QListWidgetItem(self.list_widget_scenario)
@@ -287,65 +276,65 @@ class BaseUI:
         self.list_widget_scenario.setSelectionBehavior(QtW.QAbstractItemView.SelectItems)
         self.list_widget_scenario.setSelectionRectVisible(False)
 
-        self.verticalLayout_scenario.addWidget(self.list_widget_scenario)
+        self.vertical_layout_scenario.addWidget(self.list_widget_scenario)
 
-        self.horizontalLayout_23.addLayout(self.verticalLayout_scenario)
+        self.horizontal_layout_main.addLayout(self.vertical_layout_scenario)
 
-        self.verticalLayout_menu = QtW.QVBoxLayout()
-        self.verticalLayout_menu.setSpacing(0)
-        self.verticalLayout_menu.setObjectName("verticalLayout_menu")
+        self.vertical_layout_menu = QtW.QVBoxLayout()
+        self.vertical_layout_menu.setSpacing(0)
+        self.vertical_layout_menu.setObjectName("verticalLayout_menu")
 
-        self.horizontalLayout_23.addLayout(self.verticalLayout_menu)
+        self.horizontal_layout_main.addLayout(self.vertical_layout_menu)
 
-        self.verticalLayout_21 = QtW.QVBoxLayout()
-        self.verticalLayout_21.setObjectName("verticalLayout_21")
-        self.stackedWidget = QtW.QStackedWidget(self.central_widget)
-        self.stackedWidget.setObjectName("stackedWidget")
-        self.stackedWidget.setFrameShadow(QtW.QFrame.Plain)
-        self.stackedWidget.setLineWidth(0)
+        self.vertical_layout_main = QtW.QVBoxLayout()
+        self.vertical_layout_main.setObjectName("verticalLayout_21")
+        self.stacked_widget = QtW.QStackedWidget(self.central_widget)
+        self.stacked_widget.setObjectName("stackedWidget")
+        self.stacked_widget.setFrameShadow(QtW.QFrame.Plain)
+        self.stacked_widget.setLineWidth(0)
 
-        self.verticalLayout_21.addWidget(self.stackedWidget)
+        self.vertical_layout_main.addWidget(self.stacked_widget)
 
-        self.horizontalLayout_7 = QtW.QHBoxLayout()
-        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
-        self.label_Status = QtW.QLabel(self.central_widget)
-        self.label_Status.setObjectName("label_Status")
-        self.label_Status.setStyleSheet(f"*{'{'}background-color: {LIGHT};{'}'}")
-        self.horizontalLayout_7.addWidget(self.label_Status)
+        self.horizontal_layout_progress_bar = QtW.QHBoxLayout()
+        self.horizontal_layout_progress_bar.setObjectName("horizontalLayout_7")
+        self.label_status = QtW.QLabel(self.central_widget)
+        self.label_status.setObjectName("label_Status")
+        self.label_status.setStyleSheet(f"*{'{'}background-color: {LIGHT};{'}'}")
+        self.horizontal_layout_progress_bar.addWidget(self.label_status)
 
-        self.progressBar = QtW.QProgressBar(self.central_widget)
-        self.progressBar.setObjectName("progressBar")
-        self.progressBar.setStyleSheet(
+        self.progress_bar = QtW.QProgressBar(self.central_widget)
+        self.progress_bar.setObjectName("progressBar")
+        self.progress_bar.setStyleSheet(
             f"QProgressBar{'{'}border: 1px solid {WHITE};border-radius: 10px;text-align: center;color: {WHITE};{'}'}\n"
             f"QProgressBar::chunk{'{'}background-color: {LIGHT}; border-radius: 10px;{'}'}"
         )
-        self.progressBar.setValue(24)
+        self.progress_bar.setValue(24)
 
-        self.horizontalLayout_7.addWidget(self.progressBar)
+        self.horizontal_layout_progress_bar.addWidget(self.progress_bar)
 
-        self.verticalLayout_21.addLayout(self.horizontalLayout_7)
+        self.vertical_layout_main.addLayout(self.horizontal_layout_progress_bar)
 
-        self.horizontalLayout_2 = QtW.QHBoxLayout()
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.horizontalSpacer_2 = QtW.QSpacerItem(40, 20, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
+        self.horizontal_layout_start_buttons = QtW.QHBoxLayout()
+        self.horizontal_layout_start_buttons.setObjectName("horizontalLayout_2")
+        self.horizontal_spacer_start_buttons = QtW.QSpacerItem(40, 20, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
 
-        self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
+        self.horizontal_layout_start_buttons.addItem(self.horizontal_spacer_start_buttons)
 
-        self.pushButton_start_single = QtW.QPushButton(self.central_widget)
-        self.pushButton_start_single.setObjectName("pushButton_start_single")
-        self.pushButton_start_single.setMinimumSize(QtC.QSize(100, 40))
-        self.pushButton_start_single.setMaximumSize(QtC.QSize(16777215, 40))
+        self.push_button_start_single = QtW.QPushButton(self.central_widget)
+        self.push_button_start_single.setObjectName("pushButton_start_single")
+        self.push_button_start_single.setMinimumSize(QtC.QSize(100, 40))
+        self.push_button_start_single.setMaximumSize(QtC.QSize(16777215, 40))
         icon32 = QtG.QIcon()
         icon32.addFile(f"{FOLDER}/icons/Start.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        self.pushButton_start_single.setIcon(icon32)
-        self.pushButton_start_single.setIconSize(QtC.QSize(24, 24))
+        self.push_button_start_single.setIcon(icon32)
+        self.push_button_start_single.setIconSize(QtC.QSize(24, 24))
 
-        self.horizontalLayout_2.addWidget(self.pushButton_start_single)
+        self.horizontal_layout_start_buttons.addWidget(self.push_button_start_single)
 
-        self.pushButton_start_multiple = QtW.QPushButton(self.central_widget)
-        self.pushButton_start_multiple.setObjectName("pushButton_start_multiple")
-        self.pushButton_start_multiple.setMinimumSize(QtC.QSize(100, 40))
-        self.pushButton_start_multiple.setMaximumSize(QtC.QSize(16777215, 40))
+        self.push_button_start_multiple = QtW.QPushButton(self.central_widget)
+        self.push_button_start_multiple.setObjectName("pushButton_start_multiple")
+        self.push_button_start_multiple.setMinimumSize(QtC.QSize(100, 40))
+        self.push_button_start_multiple.setMaximumSize(QtC.QSize(16777215, 40))
         icon33 = QtG.QIcon()
         icon33.addFile(
             f"{FOLDER}/icons/Start_multiple.svg",
@@ -353,25 +342,25 @@ class BaseUI:
             QtG.QIcon.Normal,
             QtG.QIcon.Off,
         )
-        self.pushButton_start_multiple.setIcon(icon33)
-        self.pushButton_start_multiple.setIconSize(QtC.QSize(24, 24))
+        self.push_button_start_multiple.setIcon(icon33)
+        self.push_button_start_multiple.setIconSize(QtC.QSize(24, 24))
 
-        self.horizontalLayout_2.addWidget(self.pushButton_start_multiple)
+        self.horizontal_layout_start_buttons.addWidget(self.push_button_start_multiple)
 
-        self.pushButton_Cancel = QtW.QPushButton(self.central_widget)
-        self.pushButton_Cancel.setObjectName("pushButton_Cancel")
-        self.pushButton_Cancel.setMinimumSize(QtC.QSize(100, 40))
-        self.pushButton_Cancel.setMaximumSize(QtC.QSize(16777215, 40))
+        self.push_button_cancel = QtW.QPushButton(self.central_widget)
+        self.push_button_cancel.setObjectName("pushButton_Cancel")
+        self.push_button_cancel.setMinimumSize(QtC.QSize(100, 40))
+        self.push_button_cancel.setMaximumSize(QtC.QSize(16777215, 40))
         icon34 = QtG.QIcon()
         icon34.addFile(f"{FOLDER}/icons/Exit.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        self.pushButton_Cancel.setIcon(icon34)
-        self.pushButton_Cancel.setIconSize(QtC.QSize(24, 24))
+        self.push_button_cancel.setIcon(icon34)
+        self.push_button_cancel.setIconSize(QtC.QSize(24, 24))
 
-        self.horizontalLayout_2.addWidget(self.pushButton_Cancel)
+        self.horizontal_layout_start_buttons.addWidget(self.push_button_cancel)
 
-        self.verticalLayout_21.addLayout(self.horizontalLayout_2)
+        self.vertical_layout_main.addLayout(self.horizontal_layout_start_buttons)
 
-        self.horizontalLayout_23.addLayout(self.verticalLayout_21)
+        self.horizontal_layout_main.addLayout(self.vertical_layout_main)
 
         ghe_tool.setCentralWidget(self.central_widget)
         self.menubar = QtW.QMenuBar(ghe_tool)
@@ -385,21 +374,21 @@ class BaseUI:
             f"QToolTip{'{'} color: {WHITE}; background-color: {BLACK}; border: none; {'}'}"
         )
         self.menubar.setNativeMenuBar(True)
-        self.menuFile = QtW.QMenu(self.menubar)
-        self.menuFile.setObjectName("menuFile")
-        self.menuFile.setStyleSheet(
+        self.menu_file = QtW.QMenu(self.menubar)
+        self.menu_file.setObjectName("menuFile")
+        self.menu_file.setStyleSheet(
             f"QtG.QAction::icon {'{'} background-color:{LIGHT};selection-background-color: {LIGHT};{'}'}\n"
             f"*{'{'}	background-color: {DARK};{'}'}\n"
             f"*:hover{'{'}background-color: {LIGHT};{'}'}"
         )
-        self.menuFile.setTearOffEnabled(False)
-        self.menuCalculation = QtW.QMenu(self.menubar)
-        self.menuCalculation.setObjectName("menuCalculation")
-        self.menuSettings = QtW.QMenu(self.menubar)
-        self.menuSettings.setObjectName("menuSettings")
-        self.menuLanguage = QtW.QMenu(self.menuSettings)
-        self.menuLanguage.setObjectName("menuLanguage")
-        self.menuLanguage.setEnabled(True)
+        self.menu_file.setTearOffEnabled(False)
+        self.menu_calculation = QtW.QMenu(self.menubar)
+        self.menu_calculation.setObjectName("menuCalculation")
+        self.menu_settings = QtW.QMenu(self.menubar)
+        self.menu_settings.setObjectName("menuSettings")
+        self.menu_language = QtW.QMenu(self.menu_settings)
+        self.menu_language.setObjectName("menuLanguage")
+        self.menu_language.setEnabled(True)
         icon35 = QtG.QIcon()
         icon35.addFile(f"{FOLDER}/icons/Language.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon35.addFile(
@@ -408,123 +397,123 @@ class BaseUI:
             QtG.QIcon.Active,
             QtG.QIcon.Off,
         )
-        self.menuLanguage.setIcon(icon35)
-        self.menuScenario = QtW.QMenu(self.menubar)
-        self.menuScenario.setObjectName("menuScenario")
+        self.menu_language.setIcon(icon35)
+        self.menu_scenario = QtW.QMenu(self.menubar)
+        self.menu_scenario.setObjectName("menuScenario")
         ghe_tool.setMenuBar(self.menubar)
-        self.toolBar = QtW.QToolBar(ghe_tool)
-        self.toolBar.setObjectName("toolBar")
-        self.toolBar.setStyleSheet(
+        self.tool_bar = QtW.QToolBar(ghe_tool)
+        self.tool_bar.setObjectName("toolBar")
+        self.tool_bar.setStyleSheet(
             f"QAction::icon {'{'} background-color:{LIGHT};selection-background-color: {LIGHT};{'}'}\n"
             f"*{'{'}	background-color: {DARK};{'}'}\n"
             f"*:hover{'{'}background-color: {LIGHT};{'}'}"
         )
-        self.toolBar.setMovable(False)
-        ghe_tool.addToolBar(QtC.Qt.TopToolBarArea, self.toolBar)
+        self.tool_bar.setMovable(False)
+        ghe_tool.addToolBar(QtC.Qt.TopToolBarArea, self.tool_bar)
         self.status_bar = QtW.QStatusBar(ghe_tool)
         self.status_bar.setObjectName("status_bar")
         self.status_bar.setStyleSheet(f"QStatusBar::item{'{'}border:None;{'}'}QStatusBar{'{'}color:{BLACK};background-color: {LIGHT};{'}'}")
         ghe_tool.setStatusBar(self.status_bar)
 
-        self.menubar.addAction(self.menuFile.menuAction())
-        self.menubar.addAction(self.menuCalculation.menuAction())
-        self.menubar.addAction(self.menuScenario.menuAction())
-        self.menubar.addAction(self.menuSettings.menuAction())
-        self.menuFile.addAction(self.actionNew)
-        self.menuFile.addAction(self.actionSave)
-        self.menuFile.addAction(self.actionSave_As)
-        self.menuFile.addAction(self.actionOpen)
-        self.menuCalculation.addAction(self.action_start_multiple)
-        self.menuCalculation.addAction(self.action_start_single)
-        self.menuSettings.addAction(self.menuLanguage.menuAction())
-        self.menuScenario.addAction(self.actionUpdate_Scenario)
-        self.menuScenario.addAction(self.actionAdd_Scenario)
-        self.menuScenario.addAction(self.actionDelete_scenario)
-        self.menuScenario.addAction(self.actionRename_scenario)
-        self.toolBar.addAction(self.actionNew)
-        self.toolBar.addAction(self.actionSave)
-        self.toolBar.addAction(self.actionSave_As)
-        self.toolBar.addAction(self.actionOpen)
-        self.toolBar.addAction(self.action_start_single)
-        self.toolBar.addAction(self.action_start_multiple)
-        self.toolBar.addAction(self.actionUpdate_Scenario)
-        self.toolBar.addAction(self.actionAdd_Scenario)
-        self.toolBar.addAction(self.actionDelete_scenario)
-        self.toolBar.addAction(self.actionRename_scenario)
+        self.menubar.addAction(self.menu_file.menuAction())
+        self.menubar.addAction(self.menu_calculation.menuAction())
+        self.menubar.addAction(self.menu_scenario.menuAction())
+        self.menubar.addAction(self.menu_settings.menuAction())
+        self.menu_file.addAction(self.action_new)
+        self.menu_file.addAction(self.action_save)
+        self.menu_file.addAction(self.action_save_as)
+        self.menu_file.addAction(self.action_open)
+        self.menu_calculation.addAction(self.action_start_multiple)
+        self.menu_calculation.addAction(self.action_start_single)
+        self.menu_settings.addAction(self.menu_language.menuAction())
+        self.menu_scenario.addAction(self.action_update_scenario)
+        self.menu_scenario.addAction(self.action_add_scenario)
+        self.menu_scenario.addAction(self.action_delete_scenario)
+        self.menu_scenario.addAction(self.action_rename_scenario)
+        self.tool_bar.addAction(self.action_new)
+        self.tool_bar.addAction(self.action_save)
+        self.tool_bar.addAction(self.action_save_as)
+        self.tool_bar.addAction(self.action_open)
+        self.tool_bar.addAction(self.action_start_single)
+        self.tool_bar.addAction(self.action_start_multiple)
+        self.tool_bar.addAction(self.action_update_scenario)
+        self.tool_bar.addAction(self.action_add_scenario)
+        self.tool_bar.addAction(self.action_delete_scenario)
+        self.tool_bar.addAction(self.action_rename_scenario)
 
-        self.button_rename_scenario.clicked.connect(self.actionRename_scenario.trigger)
-        self.pushButton_Cancel.clicked.connect(ghe_tool.close)
-        self.pushButton_start_multiple.clicked.connect(self.action_start_multiple.trigger)
-        self.pushButton_AddScenario.clicked.connect(self.actionAdd_Scenario.trigger)
-        self.pushButton_DeleteScenario.clicked.connect(self.actionDelete_scenario.trigger)
-        self.pushButton_SaveScenario.clicked.connect(self.actionUpdate_Scenario.trigger)
-        self.list_widget_scenario.itemDoubleClicked.connect(self.actionRename_scenario.trigger)
-        self.pushButton_start_single.clicked.connect(self.action_start_single.trigger)
+        self.button_rename_scenario.clicked.connect(self.action_rename_scenario.trigger)
+        self.push_button_cancel.clicked.connect(ghe_tool.close)
+        self.push_button_start_multiple.clicked.connect(self.action_start_multiple.trigger)
+        self.push_button_add_scenario.clicked.connect(self.action_add_scenario.trigger)
+        self.push_button_delete_scenario.clicked.connect(self.action_delete_scenario.trigger)
+        self.push_button_save_scenario.clicked.connect(self.action_update_scenario.trigger)
+        self.list_widget_scenario.itemDoubleClicked.connect(self.action_rename_scenario.trigger)
+        self.push_button_start_single.clicked.connect(self.action_start_single.trigger)
 
-        self.stackedWidget.setCurrentIndex(0)
+        self.stacked_widget.setCurrentIndex(0)
         QtC.QMetaObject.connectSlotsByName(ghe_tool)
 
         ghe_tool.setWindowTitle("GHEtool")
-        self.actionNew.setText("New")
+        self.action_new.setText("New")
         # if QT_CONFIG(tooltip)
-        self.actionNew.setToolTip("Create new project file")
+        self.action_new.setToolTip("Create new project file")
         # endif // QT_CONFIG(tooltip)
         # if QT_CONFIG(shortcut)
-        self.actionNew.setShortcut("Ctrl+N")
+        self.action_new.setShortcut("Ctrl+N")
         # endif // QT_CONFIG(shortcut)
-        self.actionSave.setText("Save")
+        self.action_save.setText("Save")
         # if QT_CONFIG(shortcut)
-        self.actionSave.setShortcut("Ctrl+S")
+        self.action_save.setShortcut("Ctrl+S")
         # endif // QT_CONFIG(shortcut)
-        self.actionOpen.setText("Open")
+        self.action_open.setText("Open")
         # if QT_CONFIG(shortcut)
-        self.actionOpen.setShortcut("Ctrl+O")
+        self.action_open.setShortcut("Ctrl+O")
         # endif // QT_CONFIG(shortcut)
         self.action_start_multiple.setText("Calculate all scenarios")
         # if QT_CONFIG(shortcut)
         self.action_start_multiple.setShortcut("Ctrl+R")
         # endif // QT_CONFIG(shortcut)
-        self.actionUpdate_Scenario.setText("Update scenario")
+        self.action_update_scenario.setText("Update scenario")
         # if QT_CONFIG(shortcut)
-        self.actionUpdate_Scenario.setShortcut("Ctrl+Shift+S")
+        self.action_update_scenario.setShortcut("Ctrl+Shift+S")
         # endif // QT_CONFIG(shortcut)
-        self.actionAdd_Scenario.setText("Add scenario")
+        self.action_add_scenario.setText("Add scenario")
         # if QT_CONFIG(shortcut)
-        self.actionAdd_Scenario.setShortcut("Ctrl+Shift+A")
+        self.action_add_scenario.setShortcut("Ctrl+Shift+A")
         # endif // QT_CONFIG(shortcut)
-        self.actionDelete_scenario.setText("Delete scenario")
+        self.action_delete_scenario.setText("Delete scenario")
         # if QT_CONFIG(shortcut)
-        self.actionDelete_scenario.setShortcut("Ctrl+Shift+D")
+        self.action_delete_scenario.setShortcut("Ctrl+Shift+D")
         # endif // QT_CONFIG(shortcut)
-        self.actionSave_As.setText("Save As")
+        self.action_save_as.setText("Save As")
         # if QT_CONFIG(shortcut)
-        self.actionSave_As.setShortcut("F12")
+        self.action_save_as.setShortcut("F12")
         # endif // QT_CONFIG(shortcut)
-        self.actionRename_scenario.setText("Rename scenario")
+        self.action_rename_scenario.setText("Rename scenario")
         # if QT_CONFIG(shortcut)
-        self.actionRename_scenario.setShortcut("Ctrl+Shift+R")
+        self.action_rename_scenario.setShortcut("Ctrl+Shift+R")
         # endif // QT_CONFIG(shortcut)
         self.action_start_single.setText("Calculate current scenario")
         # if QT_CONFIG(shortcut)
         self.action_start_single.setShortcut("Ctrl+Shift+R")
         # endif // QT_CONFIG(shortcut)
-        self.pushButton_SaveScenario.setText("Update scenario")
-        self.pushButton_AddScenario.setText("Add scenario")
-        self.pushButton_DeleteScenario.setText("Delete scenario")
+        self.push_button_save_scenario.setText("Update scenario")
+        self.push_button_add_scenario.setText("Add scenario")
+        self.push_button_delete_scenario.setText("Delete scenario")
         self.button_rename_scenario.setText("Rename scenario")
 
-        __sortingEnabled = self.list_widget_scenario.isSortingEnabled()
+        __sorting_enabled = self.list_widget_scenario.isSortingEnabled()
         self.list_widget_scenario.setSortingEnabled(False)
         ___qlistwidgetitem = self.list_widget_scenario.item(0)
         ___qlistwidgetitem.setText("Scenario: 1")
-        self.list_widget_scenario.setSortingEnabled(__sortingEnabled)
-        self.label_Status.setText("Progress: ")
-        self.pushButton_start_single.setText("Calculate current scenario")
-        self.pushButton_start_multiple.setText("Calculate all scenarios")
-        self.pushButton_Cancel.setText("Exit")
-        self.menuFile.setTitle("File")
-        self.menuCalculation.setTitle("Calculation")
-        self.menuSettings.setTitle("Settings")
-        self.menuLanguage.setTitle("Language")
-        self.menuScenario.setTitle("Scenario")
-        self.toolBar.setWindowTitle("toolBar")
+        self.list_widget_scenario.setSortingEnabled(__sorting_enabled)
+        self.label_status.setText("Progress: ")
+        self.push_button_start_single.setText("Calculate current scenario")
+        self.push_button_start_multiple.setText("Calculate all scenarios")
+        self.push_button_cancel.setText("Exit")
+        self.menu_file.setTitle("File")
+        self.menu_calculation.setTitle("Calculation")
+        self.menu_settings.setTitle("Settings")
+        self.menu_language.setTitle("Language")
+        self.menu_scenario.setTitle("Scenario")
+        self.tool_bar.setWindowTitle("toolBar")
