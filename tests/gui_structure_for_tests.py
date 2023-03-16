@@ -3,10 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ScenarioGUI.gui_classes.gui_structure import GuiStructure
-from ScenarioGUI.gui_classes.gui_structure_classes import FileNameBox, FloatBox, Hint, IntBox, Page, ResultText, Aim, Category
-
 from examples.translation_class import Translations
+from ScenarioGUI.gui_classes.gui_structure import GuiStructure
+from ScenarioGUI.gui_classes.gui_structure_classes import Aim, Category, FileNameBox, FloatBox, Hint, IntBox, Page, ResultText
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
