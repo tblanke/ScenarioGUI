@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from configparser import ConfigParser
 from pathlib import Path
 from platform import system
@@ -34,6 +35,9 @@ VERSION = config.get("metadata", "version")
 FILE_EXTENSION: str = "scenario"
 GUI_NAME: str = "Scenario GUI"
 ICON_NAME: str = "icon.svg"
+
+LOGGER = logging.getLogger()
+LOGGER.setLevel(logging.INFO)
 
 
 class ResultsClass:

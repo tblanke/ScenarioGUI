@@ -11,11 +11,10 @@ from time import sleep
 from typing import TYPE_CHECKING, Callable
 
 import ScenarioGUI.global_settings as global_vars
+from examples.translation_class import Translations
 from ScenarioGUI.global_settings import FILE_EXTENSION, GUI_NAME
 from ScenarioGUI.gui_classes.gui_structure import Aim, Category, GuiStructure, Page, ResultText
 from ScenarioGUI.gui_classes.gui_structure_classes import IntBox
-
-from examples.translation_class import Translations
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
@@ -106,6 +105,7 @@ def run(path_list=None):  # pragma: no cover
 
     from PySide6.QtWidgets import QApplication as QtWidgets_QApplication
     from PySide6.QtWidgets import QMainWindow as QtWidgets_QMainWindow
+
     from ScenarioGUI.global_settings import VERSION
     from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 

@@ -319,7 +319,7 @@ class Page:
             self.push_button_previous.setMaximumSize(QtC.QSize(16777215, 30))
             icon = QtG.QIcon()
             icon.addFile(
-                f"{FOLDER}/icons/ArrowLeft2.svg",
+                f"{FOLDER}/icons/ArrowLeft.svg",
                 QtC.QSize(),
                 QtG.QIcon.Normal,
                 QtG.QIcon.Off,
@@ -341,7 +341,7 @@ class Page:
             self.push_button_next.setLayoutDirection(QtC.Qt.RightToLeft)
             icon = QtG.QIcon()
             icon.addFile(
-                f"{FOLDER}/icons/ArrowRight2.svg",
+                f"{FOLDER}/icons/ArrowRight.svg",
                 QtC.QSize(),
                 QtG.QIcon.Normal,
                 QtG.QIcon.Off,

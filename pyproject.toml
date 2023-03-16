@@ -78,5 +78,6 @@ target-version = "py37"
 max-complexity = 10
 
 [tool.ruff.per-file-ignores]
+"__init__.py" = ["N999"]
 "translation_class.py" = ["PLR0915"]
 "gui_base_class.py" = ["PLR0915"]

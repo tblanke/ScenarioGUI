@@ -15,7 +15,7 @@ import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
 
-from ..global_settings import FILE_EXTENSION, FOLDER, GUI_NAME, VERSION, ResultsClass, set_graph_layout
+from ..global_settings import FILE_EXTENSION, FOLDER, GUI_NAME, LOGGER, VERSION, ResultsClass, set_graph_layout
 from .gui_base_class import BaseUI
 from .gui_calculation_thread import CalcProblem
 from .gui_data_storage import DataStorage
@@ -123,7 +123,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # load backup data
         self.load_backup()
         # add progress bar and label to statusbar
-        self.status_bar.messageChanged.connect(self.status_hide)
+        self.status_bar.widget.messageChanged.connect(self.status_hide)
         # change window title to saved filename
         self.change_window_title()
         # reset push button size
@@ -135,10 +135,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         [option.init_links() for option, _ in self.gui_structure.list_of_options]
 
-        self.status_bar.showMessage(
-            self.translations.tool_imported[self.gui_structure.option_language.get_value()],
-            5000,
-        )
+        LOGGER.info(self.translations.tool_imported[self.gui_structure.option_language.get_value()])
         # allow checking of changes
         self.checking: bool = True
 
@@ -606,9 +603,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         if not text:
-            self.status_bar.hide()
+            self.status_bar.widget.hide()
             return
-        self.status_bar.show()
+        self.status_bar.widget.show()
 
     def eventFilter(self, obj: QtW.QPushButton, event) -> bool:  # noqa: N802
         """
@@ -730,7 +727,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # change language to english
         self.change_language()
         # show message that no backup file is found
-        self.status_bar.showMessage(self.translations.NoBackupFile[self.gui_structure.option_language.get_value()])
+        LOGGER.error(self.translations.NoBackupFile[self.gui_structure.option_language.get_value()])
 
     def fun_save_auto(self) -> None:
         """
@@ -776,7 +773,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
             version = saving["version"]
         except FileNotFoundError:
-            self.status_bar.showMessage(self.translations.NoFileSelected[self.gui_structure.option_language.get_value()])
+            LOGGER.error(self.translations.NoFileSelected[self.gui_structure.option_language.get_value()])
             return
             # raise ImportError("The datafile cannot be loaded!")
         except (JSONDecodeError, UnicodeDecodeError):
@@ -852,12 +849,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             with open(location, "w") as file:
                 dump(saving, file, indent=1)
         except FileNotFoundError:
-            self.status_bar.showMessage(
-                self.translations.NoFileSelected[self.gui_structure.option_language.get_value()],
-                5000,
-            )
+            LOGGER.error(self.translations.NoFileSelected[self.gui_structure.option_language.get_value()])
         except PermissionError:  # pragma: no cover
-            self.status_bar.showMessage("PermissionError", 5000)
+            LOGGER.error("PermissionError")
 
     def fun_load(self) -> None:
         """
@@ -898,10 +892,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.checking: bool = True
         # if no file is found display error message is status bar
         except FileNotFoundError:
-            self.status_bar.showMessage(
-                self.translations.NoFileSelected[self.gui_structure.option_language.get_value()],
-                5000,
-            )
+            LOGGER.error(self.translations.NoFileSelected[self.gui_structure.option_language.get_value()])
 
     def fun_save_as(self) -> None:
         """
@@ -1017,7 +1008,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if not all(option.check_value() for option, _ in self.gui_structure.list_of_options):
             for option, _ in self.gui_structure.list_of_options:
                 if not option.check_value():
-                    self.status_bar.showMessage(f"Wrong value in option with label: {option.label_text}", 5000)
+                    LOGGER.info(f"Wrong value in option with label: {option.label_text}")
                     return False
         return True
 
@@ -1125,13 +1116,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.progress_bar.setValue(round(val * 100))
         # hide labels and progressBar if all scenarios are calculated
         if isclose(val, 1):
-            self.label_status.hide()
-            self.progress_bar.hide()
+            self.status_bar_progress_bar.hide()
             # show message that calculation is finished
-            self.status_bar.showMessage(
-                self.translations.Calculation_Finished[self.gui_structure.option_language.get_value()],
-                5000,
-            )
+            LOGGER.info(self.translations.Calculation_Finished[self.gui_structure.option_language.get_value()])
 
     def thread_function(self, results: tuple[DataStorage, int]) -> None:
         """

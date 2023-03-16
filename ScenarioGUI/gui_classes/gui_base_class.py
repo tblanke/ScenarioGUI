@@ -7,7 +7,8 @@ import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
 
-from ..global_settings import BLACK, DARK, FOLDER, FONT, FONT_SIZE, GREY, ICON_NAME, LIGHT, LIGHT_SELECT, WHITE
+from ..global_settings import BLACK, DARK, FOLDER, FONT, FONT_SIZE, GREY, ICON_NAME, LIGHT, LIGHT_SELECT, LOGGER, WHITE
+from .status_bar_logger import StatusBar
 
 
 class BaseUI:
@@ -17,7 +18,7 @@ class BaseUI:
     """
 
     menu_language: QtW.QMenu
-    status_bar: QtW.QStatusBar
+    status_bar: StatusBar
     tool_bar: QtW.QToolBar
     menu_scenario: QtW.QMenu
     menu_settings: QtW.QMenu
@@ -321,10 +322,11 @@ class BaseUI:
         self.horizontal_layout_start_buttons = QtW.QHBoxLayout()
         self.horizontal_layout_start_buttons.setObjectName("horizontalLayout_2")
         
-        self.status_bar = QtW.QStatusBar(ghe_tool)
-        self.status_bar.setObjectName("status_bar")
-        self.status_bar.setStyleSheet(f"QStatusBar::item{'{'}border:None;{'}'}QStatusBar{'{'}color:{WHITE};background-color: {DARK};{'}'}")
-        self.horizontal_layout_start_buttons.addWidget(self.status_bar)
+        self.status_bar = StatusBar(ghe_tool)
+        self.status_bar.widget.setObjectName("status_bar")
+        self.status_bar.widget.setStyleSheet(f"QStatusBar::item{'{'}border:None;{'}'}QStatusBar{'{'}color:{WHITE};background-color: {DARK};{'}'}")
+        self.horizontal_layout_start_buttons.addWidget(self.status_bar.widget)
+        LOGGER.addHandler(self.status_bar)
         
         self.horizontal_spacer_start_buttons = QtW.QSpacerItem(40, 20, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
 
