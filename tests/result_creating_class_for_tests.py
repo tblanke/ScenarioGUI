@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 
 class ResultsClass:
-    def __init__(self, a: int, b: int):
+    def __init__(self, a: int =  1, b: int = 2):
         self.a = a
         self.b = b
         self.result = None
@@ -14,8 +14,11 @@ class ResultsClass:
 
     def subtract(self):
         if self.a > 190:
-            raise ValueError
+            raise ValueError("Value above 190")
         self.result = self.a - self.b
+
+    def get_result(self) -> float:
+        return self.result
 
     def create_plot(self, legend: bool = False) -> tuple[plt.Figure, plt.Axes]:
         fig = plt.figure()

@@ -9,7 +9,7 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
-from ...global_settings import DARK, FOLDER, GREY, LIGHT, WHITE
+import ScenarioGUI.global_settings as globs
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -141,18 +141,18 @@ class Aim:
         None
         """
         icon11 = QtG.QIcon()
-        icon11.addFile(f"{FOLDER}/icons/{self.icon}")
+        icon11.addFile(f"{globs.FOLDER}/icons/{self.icon}")
         self.widget.setParent(frame)
         push_button = self.widget
         push_button.setIcon(icon11)
         push_button.setMinimumSize(QtC.QSize(0, 60))
         push_button.setMaximumSize(QtC.QSize(16777215, 60))
         push_button.setStyleSheet(
-            f"QPushButton{'{'}border: 3px solid {DARK};border-radius: 15px;color:{WHITE};gridline-color: {LIGHT};background-color: {GREY};font-weight:700;{'}'}"
-            f"QPushButton:hover{'{'}border: 3px solid {DARK};background-color:{LIGHT};{'}'}"
-            f"QPushButton:checked{'{'}border:3px solid {LIGHT};background-color:{LIGHT};{'}'}\n"
-            f"QPushButton:disabled{'{'}border: 3px solid {GREY};border-radius: 5px;color: {WHITE};gridline-color: {GREY};background-color: {GREY};{'}'}\n"
-            f"QPushButton:disabled:hover{'{'}background-color: {DARK};{'}'}"
+            f"QPushButton{'{'}border: 3px solid {globs.DARK};border-radius: 15px;color:{globs.WHITE};gridline-color: {globs.LIGHT};background-color: {globs.GREY};font-weight:700;{'}'}"
+            f"QPushButton:hover{'{'}border: 3px solid {globs.DARK};background-color:{globs.LIGHT};{'}'}"
+            f"QPushButton:checked{'{'}border:3px solid {globs.LIGHT};background-color:{globs.LIGHT};{'}'}\n"
+            f"QPushButton:disabled{'{'}border: 3px solid {globs.GREY};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.GREY};background-color: {globs.GREY};{'}'}\n"
+            f"QPushButton:disabled:hover{'{'}background-color: {globs.DARK};{'}'}"
         )
         push_button.setIconSize(QtC.QSize(30, 30))
         push_button.setCheckable(True)

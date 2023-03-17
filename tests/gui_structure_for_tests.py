@@ -4,8 +4,19 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
-from ScenarioGUI.gui_classes.gui_structure_classes import Aim, ButtonBox, Category, FigureOption, FileNameBox, FloatBox, Hint, IntBox, Page, ResultFigure, \
-    ResultText
+from ScenarioGUI.gui_classes.gui_structure_classes import (
+    Aim,
+    ButtonBox,
+    Category,
+    FigureOption,
+    FileNameBox,
+    FloatBox,
+    Hint,
+    IntBox,
+    Page,
+    ResultFigure,
+    ResultText,
+)
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
@@ -72,7 +83,7 @@ class GUI(GuiStructure):
         self.result_text_add = ResultText(
             "Result", category=self.numerical_results, prefix="Result: ", suffix="m"
         )
-        self.result_text_add.text_to_be_shown("ResultsClass", "result")
+        self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
         self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2))
         self.result_text_sub = ResultText(
             "Result", category=self.numerical_results, prefix="Result: ", suffix="m"

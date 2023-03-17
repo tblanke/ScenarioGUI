@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
 
-from ...global_settings import WHITE
+import ScenarioGUI.global_settings as globs
 from .functions import check
 from .option import Option
 
@@ -222,8 +222,8 @@ class ListBox(Option):
         layout = self.create_frame(frame, layout_parent)
         self.widget.setParent(self.frame)
         self.widget.setStyleSheet(
-            f"QFrame {'{'}border: 1px solid {WHITE};border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;{'}'}"
-            f"QComboBox{'{'}border: 1px solid {WHITE};border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;{'}'}"
+            f"QFrame {'{'}border: 1px solid {globs.WHITE};border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;{'}'}"
+            f"QComboBox{'{'}border: 1px solid {globs.WHITE};border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;{'}'}"
         )
         self.widget.addItems(self.entries)
         self.widget.setCurrentIndex(self.default_value)

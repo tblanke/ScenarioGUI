@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
-from ...global_settings import LIGHT, WHITE
+import ScenarioGUI.global_settings as globs
 from .hint import Hint
 from .result_text import ResultText
 
@@ -152,15 +152,15 @@ class Category:
         self.label.setParent(page)
         self.label.setText(self.label_text)
         self.label.setStyleSheet(
-            f"QLabel {'{'}border: 1px solid  {LIGHT};border-top-left-radius: 15px;border-top-right-radius: 15px;background-color:  {LIGHT};padding: 5px 0px;\n"
-            f"	color:  {WHITE};font-weight:700;{'}'}"
+            f"QLabel {'{'}border: 1px solid  {globs.LIGHT};border-top-left-radius: 15px;border-top-right-radius: 15px;background-color:  {globs.LIGHT};padding: 5px 0px;\n"
+            f"	color:  {globs.WHITE};font-weight:700;{'}'}"
         )
         self.label.setAlignment(QtC.Qt.AlignCenter | QtC.Qt.AlignVCenter)
         layout.addWidget(self.label)
         self.frame.setParent(page)
         self.frame.setStyleSheet(
-            f"QFrame{'{'}border: 1px solid {LIGHT};border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;{'}'}\n"
-            f"QLabel{'{'}border: 0px solid {WHITE};{'}'}"
+            f"QFrame{'{'}border: 1px solid {globs.LIGHT};border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;{'}'}\n"
+            f"QLabel{'{'}border: 0px solid {globs.WHITE};{'}'}"
         )
         self.frame.setFrameShape(QtW.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtW.QFrame.Raised)
@@ -220,8 +220,8 @@ class Category:
         graphic_view.setMinimumSize(QtC.QSize(0, 0))
         graphic_view.setMaximumSize(QtC.QSize(100, 16777215))
         graphic_view.setStyleSheet(
-            f"QFrame{'{'}border: 1px solid {LIGHT};border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;{'}'}\n"
-            f"QLabel{'{'}border: 0px solid {WHITE};{'}'}"
+            f"QFrame{'{'}border: 1px solid {globs.LIGHT};border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;{'}'}\n"
+            f"QLabel{'{'}border: 0px solid {globs.WHITE};{'}'}"
         )
 
         layout.addWidget(graphic_view)

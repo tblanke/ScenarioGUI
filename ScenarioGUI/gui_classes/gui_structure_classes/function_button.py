@@ -9,7 +9,7 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
-from ...global_settings import FOLDER, WHITE
+import ScenarioGUI.global_settings as globs
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -73,7 +73,7 @@ class FunctionButton:
         self.button.setText(f"  {self.button_text}  ")
         icon = QtG.QIcon()
         # icon11.addPixmap(QtGui_QPixmap(icon), QtGui_QIcon.Normal, QtGui_QIcon.Off)
-        icon.addFile(f"{FOLDER}/icons/{self.icon}")
+        icon.addFile(f"{globs.FOLDER}/icons/{self.icon}")
         self.button.setIcon(icon)
         self.button.setIconSize(QtC.QSize(20, 20))
         self.button.setMinimumWidth(100)
@@ -81,7 +81,7 @@ class FunctionButton:
         self.frame.setParent(frame)
         self.frame.setFrameShape(QtW.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtW.QFrame.Raised)
-        self.frame.setStyleSheet(f"QFrame{'{'}border: 0px solid {WHITE};border-radius: 0px;{'}'}")
+        self.frame.setStyleSheet(f"QFrame{'{'}border: 0px solid {globs.WHITE};border-radius: 0px;{'}'}")
         layout = QtW.QHBoxLayout(self.frame)
         layout.setSpacing(6)
         layout.setContentsMargins(0, 0, 0, 0)

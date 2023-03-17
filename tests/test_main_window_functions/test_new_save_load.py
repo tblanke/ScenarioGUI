@@ -1,8 +1,9 @@
-import PySide6.QtWidgets as QtW
-import PySide6.QtCore as QtC
 import os
-import keyboard
 from pathlib import Path
+
+import keyboard
+import PySide6.QtCore as QtC
+import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
@@ -29,6 +30,11 @@ def test_save_load_new(qtbot):
     main_window.delete_backup()
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations)
     main_window.add_scenario()
+    main_window.start_current_scenario_calculation(True)
+    with qtbot.waitSignal(main_window.threads[0].any_signal, raising=False):
+        main_window.threads[0].run()
+        main_window.threads[0].any_signal.connect(main_window.thread_function)
+    main_window.save_scenario()
     # set filenames
     filename_1 = f"test_1.{global_vars.FILE_EXTENSION}"
     filename_2 = f"test_2.{global_vars.FILE_EXTENSION}"

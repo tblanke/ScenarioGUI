@@ -11,11 +11,14 @@ from sys import argv
 from time import sleep
 from typing import TYPE_CHECKING, Callable
 
+from matplotlib import pyplot as plt
+
 import ScenarioGUI.global_settings as global_vars
 from examples.translation_class import Translations
 from ScenarioGUI.global_settings import FILE_EXTENSION, GUI_NAME
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
-from ScenarioGUI.gui_classes.gui_structure_classes import Aim, Category, FileNameBox, FloatBox, Hint, IntBox, Page, ResultText
+from ScenarioGUI.gui_classes.gui_structure_classes import Aim, ButtonBox, Category, FigureOption, FileNameBox, FloatBox, Hint, IntBox, Page, ResultFigure, \
+    ResultText
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
@@ -25,20 +28,35 @@ is_frozen = getattr(sys, "frozen", False) and os_system == "Windows"  # pragma: 
 
 
 class ResultsClass:
-    def __init__(self, a: int, b: int):
+    def __init__(self, a: int =  1, b: int = 2):
         self.a = a
         self.b = b
         self.result = None
 
     def adding(self):
-        sleep(5)
         self.result = self.a + self.b
 
     def subtract(self):
+        if self.a > 190:
+            raise ValueError
         self.result = self.a - self.b
 
+    def get_result(self) -> float:
+        return self.result
+
+    def create_plot(self, legend: bool = False) -> tuple[plt.Figure, plt.Axes]:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        # set axes labels
+        ax.set_xlabel(r"Time (year)")
+        ax.set_ylabel(r"Temperature ($^\circ C$)")
+        ax.hlines(self.a, 0, self.b, colors="r", linestyles="dashed", label="line", lw=1)
+        if legend:
+            ax.legend()
+        return fig, ax
+
     def _to_dict(self) -> dict:
-        return {"a":self.a, "b": self.b, "result": self.result}
+        return {"a" : self.a, "b": self.b, "result": self.result}
 
     def _from_dict(self, dictionary: dict):
         self.a = dictionary["a"]
@@ -52,6 +70,7 @@ class GUI(GuiStructure):
         self.page_inputs = Page(name="Inputs", button_name="Inputs", icon="Add.svg")
         self.aim_add = Aim(label="Adding", icon="Add", page=self.page_inputs)
         self.aim_sub = Aim(label="Substract", icon="Delete", page=self.page_inputs)
+        self.aim_plot = Aim(label="Plot", icon="Parameters", page=self.page_inputs)
         self.category_inputs = Category(page=self.page_inputs, label="Inputs")
         self.int_a = IntBox(
             label="a",
@@ -60,20 +79,20 @@ class GUI(GuiStructure):
             maximal_value=200,
             category=self.category_inputs,
         )
-        self.int_b = IntBox(
+
+        self.float_b = FloatBox(
             label="b",
-            default_value=2,
+            default_value=100,
             minimal_value=0,
-            maximal_value=200,
+            maximal_value=1000,
+            decimal_number=2,
             category=self.category_inputs,
         )
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
-        self.create_results_page()
-        self.numerical_results = Category(
-            page=self.page_result, label="Numerical results"
-        )
+
+        self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 
         self.category_grid = Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(5)
@@ -87,34 +106,51 @@ class GUI(GuiStructure):
             category=self.category_grid,
         )
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.float_b = FloatBox(
+        self.float_small = FloatBox(
             label="",
             default_value=2,
             minimal_value=0,
             maximal_value=200,
-            decimal_number=1,
+            decimal_number=2,
             category=self.category_grid,
+        )
+
+        self.create_results_page()
+        self.numerical_results = Category(
+            page=self.page_result, label="Numerical results"
         )
 
         self.result_text_add = ResultText(
             "Result", category=self.numerical_results, prefix="Result: ", suffix="m"
         )
-        self.result_text_add.text_to_be_shown("ResultsClass", "result")
+        self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
         self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2))
         self.result_text_sub = ResultText(
             "Result", category=self.numerical_results, prefix="Result: ", suffix="m"
         )
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
+
+        self.figure_results = ResultFigure(label="Plot", page=self.page_result)
+        self.legend_figure_results = FigureOption(category=self.figure_results,
+                                                              label="Legend on",
+                                                              param="legend",
+                                                              default=0,
+                                                              entries=["No", "Yes"],
+                                                              entries_values=[False, True])
+
+        self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_sub.add_link_2_show(self.result_text_sub)
+        self.aim_plot.add_link_2_show(self.figure_results)
 
         self.create_settings_page()
         self.create_lists()
 
 
 def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
-    result = ResultsClass(data.int_a, data.int_b)
+    result = ResultsClass(data.int_a, data.float_b)
     return result, result.adding if data.aim_add else result.subtract
 
 

@@ -7,7 +7,8 @@ import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
 
-from ..global_settings import BLACK, DARK, FOLDER, FONT, FONT_SIZE, GREY, ICON_NAME, LIGHT, LIGHT_SELECT, LOGGER, WHITE
+import ScenarioGUI.global_settings as globs
+
 from .status_bar_logger import StatusBar
 
 
@@ -67,34 +68,35 @@ class BaseUI:
         size_policy.setHeightForWidth(ghe_tool.sizePolicy().hasHeightForWidth())
         ghe_tool.setSizePolicy(size_policy)
         ghe_tool.setMaximumSize(QtC.QSize(16777215, 16777215))
-        font = QtG.QFont()
-        font.setFamilies([FONT])
-        font.setPointSize(FONT_SIZE)
-        font.setBold(False)
-        font.setItalic(False)
-        ghe_tool.setFont(font)
+        globs.FONT = QtG.QFont()
+        globs.FONT.setFamilies([globs.FONT])
+        globs.FONT.setPointSize(globs.FONT_SIZE)
+        globs.FONT.setBold(False)
+        globs.FONT.setItalic(False)
+        ghe_tool.setFont(globs.FONT)
         icon = QtG.QIcon()
-        icon.addFile(f"{FOLDER}/icons/{ICON_NAME}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon.addFile(f"{globs.FOLDER}/icons/{globs.ICON_NAME}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         ghe_tool.setWindowIcon(icon)
         ghe_tool.setStyleSheet(
-            f"*{'{'}color: {WHITE};font: {FONT_SIZE}pt '{FONT}';background-color: {DARK};selection-background-color: {LIGHT};"
-            f"alternate-background-color: {LIGHT};{'}'}\n"
-            f"QPushButton{'{'}border: 3px solid {LIGHT};border-radius: 5px;color:{WHITE};gridline-color:{LIGHT};background-color:{LIGHT};"
-            f"font: 700 11pt '{font}';{'}'}"
-            f"QPushButton:hover{'{'}background-color: {DARK};{'}'}\n"
-            f"QPushButton:disabled{'{'}border: 3px solid {GREY};border-radius: 5px;color: {WHITE};gridline-color: {GREY};background-color: {GREY};{'}'}\n"
-            f"QPushButton:disabled:hover{'{'}background-color: {DARK};{'}'}\n"
-            f"QComboBox{'{'}border: 1px solid {WHITE};border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;{'}'}\n"
-            f"QSpinBox{'{'}selection-color: {WHITE};selection-background-color: {LIGHT};border: 1px solid {WHITE};font: 11pt '{FONT}';{'}'}\n"
-            f"QLineEdit{'{'}border: 3px solid {LIGHT};border-radius: 5px;color: {WHITE};gridline-color: {LIGHT};background-color: {LIGHT};font-weight:500;\n"
-            f"selection-background-color: {LIGHT_SELECT};{'}'}\n"
-            f"QLineEdit:hover{'{'}background-color: {DARK};{'}'}"
-            f"QToolTip{'{'}color: {WHITE}; background-color: {DARK}; border: 1px solid {LIGHT};border-radius: 4px;{'}'}"
-            f"QTabBar::tab{'{'}background-color: {DARK};padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;color: {WHITE};{'}'}"
-            f"QTabBar::tab:selected, QTabBar::tab:hover{'{'}background-color: {LIGHT};{'}'}"
-            f"QTabBar::tab:selected{'{'}background-color: {LIGHT};{'}'}"
-            f"QTabBar::tab:!selected{'{'}background-color:  {DARK};{'}'}"
-            f"QTabWidget::pane{'{'}border: 1px solid {WHITE};{'}'}"
+            f"*{'{'}color: {globs.WHITE}; font: {globs.FONT_SIZE}pt '{globs.FONT}';background-color: {globs.DARK};selection-background-color: {globs.LIGHT};"
+            f"alternate-background-color: {globs.LIGHT};{'}'}\n"
+            f"QPushButton{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color:{globs.WHITE};gridline-color:{globs.LIGHT};background-color:{globs.LIGHT};"
+            f"font: 700 11pt '{globs.FONT}';{'}'}"
+            f"QPushButton:hover{'{'}background-color: {globs.DARK};{'}'}\n"
+            f"QPushButton:disabled{'{'}border: 3px solid {globs.GREY};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.GREY};background-color: {globs.GREY};{'}'}\n"
+            f"QPushButton:disabled:hover{'{'}background-color: {globs.DARK};{'}'}\n"
+            f"QComboBox{'{'}border: 1px solid {globs.WHITE};border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;{'}'}\n"
+            f"QSpinBox{'{'}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};border: 1px solid {globs.WHITE}; font: 11pt '{globs.FONT}';{'}'}\n"
+            f"QLineEdit{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.LIGHT};background-color: "
+            f"{globs.LIGHT};font-weight:500;\n"
+            f"selection-background-color: {globs.LIGHT_SELECT};{'}'}\n"
+            f"QLineEdit:hover{'{'}background-color: {globs.DARK};{'}'}"
+            f"QToolTip{'{'}color: {globs.WHITE}; background-color: {globs.DARK}; border: 1px solid {globs.LIGHT};border-radius: 4px;{'}'}"
+            f"QTabBar::tab{'{'}background-color: {globs.DARK};padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;color: {globs.WHITE};{'}'}"
+            f"QTabBar::tab:selected, QTabBar::tab:hover{'{'}background-color: {globs.LIGHT};{'}'}"
+            f"QTabBar::tab:selected{'{'}background-color: {globs.LIGHT};{'}'}"
+            f"QTabBar::tab:!selected{'{'}background-color:  {globs.DARK};{'}'}"
+            f"QTabWidget::pane{'{'}border: 1px solid {globs.WHITE};{'}'}"
             f"QTabWidget::tab-bar{'{'}left: 5px;{'}'}"
         )
         self.action_new = QtG.QAction(ghe_tool)
@@ -103,35 +105,35 @@ class BaseUI:
         self.action_new.setChecked(False)
         self.action_new.setEnabled(True)
         icon1 = QtG.QIcon()
-        icon1.addFile(f"{FOLDER}/icons/New.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon1.addFile(f"{FOLDER}/icons/New_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon1.addFile(f"{globs.FOLDER}/icons/New.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon1.addFile(f"{globs.FOLDER}/icons/New_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_new.setIcon(icon1)
         self.action_save = QtG.QAction(ghe_tool)
         self.action_save.setObjectName("actionSave")
         self.action_save.setEnabled(True)
         icon2 = QtG.QIcon()
-        icon2.addFile(f"{FOLDER}/icons/Save.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon2.addFile(f"{FOLDER}/icons/Save_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon2.addFile(f"{globs.FOLDER}/icons/Save.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon2.addFile(f"{globs.FOLDER}/icons/Save_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_save.setIcon(icon2)
         self.action_open = QtG.QAction(ghe_tool)
         self.action_open.setObjectName("actionOpen")
         self.action_open.setEnabled(True)
         icon3 = QtG.QIcon()
-        icon3.addFile(f"{FOLDER}/icons/Open.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon3.addFile(f"{FOLDER}/icons/Open_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon3.addFile(f"{globs.FOLDER}/icons/Open.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon3.addFile(f"{globs.FOLDER}/icons/Open_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_open.setIcon(icon3)
         self.action_start_multiple = QtG.QAction(ghe_tool)
         self.action_start_multiple.setObjectName("action_start_multiple")
         self.action_start_multiple.setEnabled(True)
         icon4 = QtG.QIcon()
         icon4.addFile(
-            f"{FOLDER}/icons/Start_multiple_inv.svg",
+            f"{globs.FOLDER}/icons/Start_multiple_inv.svg",
             QtC.QSize(),
             QtG.QIcon.Normal,
             QtG.QIcon.Off,
         )
         icon4.addFile(
-            f"{FOLDER}/icons/Start_multiple.svg",
+            f"{globs.FOLDER}/icons/Start_multiple.svg",
             QtC.QSize(),
             QtG.QIcon.Active,
             QtG.QIcon.Off,
@@ -141,36 +143,36 @@ class BaseUI:
         self.action_update_scenario.setObjectName("actionUpdate_Scenario")
         icon7 = QtG.QIcon()
         icon7.addFile(
-            f"{FOLDER}/icons/Update_Inv.svg",
+            f"{globs.FOLDER}/icons/Update_Inv.svg",
             QtC.QSize(),
             QtG.QIcon.Normal,
             QtG.QIcon.Off,
         )
-        icon7.addFile(f"{FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon7.addFile(f"{globs.FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_update_scenario.setIcon(icon7)
         self.action_add_scenario = QtG.QAction(ghe_tool)
         self.action_add_scenario.setObjectName("actionAdd_Scenario")
         icon8 = QtG.QIcon()
-        icon8.addFile(f"{FOLDER}/icons/Add_Inv.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon8.addFile(f"{FOLDER}/icons/Add.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon8.addFile(f"{globs.FOLDER}/icons/Add_Inv.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon8.addFile(f"{globs.FOLDER}/icons/Add.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_add_scenario.setIcon(icon8)
         self.action_delete_scenario = QtG.QAction(ghe_tool)
         self.action_delete_scenario.setObjectName("actionDelete_scenario")
         icon9 = QtG.QIcon()
         icon9.addFile(
-            f"{FOLDER}/icons/Delete_Inv.svg",
+            f"{globs.FOLDER}/icons/Delete_Inv.svg",
             QtC.QSize(),
             QtG.QIcon.Normal,
             QtG.QIcon.Off,
         )
-        icon9.addFile(f"{FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon9.addFile(f"{globs.FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_delete_scenario.setIcon(icon9)
         self.action_save_as = QtG.QAction(ghe_tool)
         self.action_save_as.setObjectName("actionSave_As")
         icon10 = QtG.QIcon()
-        icon10.addFile(f"{FOLDER}/icons/SaveAs.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon10.addFile(f"{globs.FOLDER}/icons/SaveAs.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon10.addFile(
-            f"{FOLDER}/icons/Save_As_Inv.svg",
+            f"{globs.FOLDER}/icons/Save_As_Inv.svg",
             QtC.QSize(),
             QtG.QIcon.Active,
             QtG.QIcon.Off,
@@ -180,23 +182,23 @@ class BaseUI:
         self.action_rename_scenario.setObjectName("actionRename_scenario")
         icon14 = QtG.QIcon()
         icon14.addFile(
-            f"{FOLDER}/icons/Rename_Inv.svg",
+            f"{globs.FOLDER}/icons/Rename_Inv.svg",
             QtC.QSize(),
             QtG.QIcon.Normal,
             QtG.QIcon.Off,
         )
-        icon14.addFile(f"{FOLDER}/icons/Rename.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon14.addFile(f"{globs.FOLDER}/icons/Rename.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_rename_scenario.setIcon(icon14)
         self.action_start_single = QtG.QAction(ghe_tool)
         self.action_start_single.setObjectName("action_start_single")
         icon15 = QtG.QIcon()
         icon15.addFile(
-            f"{FOLDER}/icons/Start_inv.svg",
+            f"{globs.FOLDER}/icons/Start_inv.svg",
             QtC.QSize(),
             QtG.QIcon.Normal,
             QtG.QIcon.Off,
         )
-        icon15.addFile(f"{FOLDER}/icons/Start.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon15.addFile(f"{globs.FOLDER}/icons/Start.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_start_single.setIcon(icon15)
         self.central_widget = QtW.QWidget(ghe_tool)
         self.central_widget.setObjectName("central_widget")
@@ -215,7 +217,7 @@ class BaseUI:
         self.push_button_save_scenario.setMaximumSize(QtC.QSize(250, 30))
         self.push_button_save_scenario.setStyleSheet("text-align:left;")
         icon18 = QtG.QIcon()
-        icon18.addFile(f"{FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon18.addFile(f"{globs.FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         self.push_button_save_scenario.setIcon(icon18)
         self.push_button_save_scenario.setIconSize(QtC.QSize(20, 20))
 
@@ -227,7 +229,7 @@ class BaseUI:
         self.push_button_add_scenario.setMaximumSize(QtC.QSize(250, 30))
         self.push_button_add_scenario.setStyleSheet("text-align:left;")
         icon19 = QtG.QIcon()
-        icon19.addFile(f"{FOLDER}/icons/Add.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon19.addFile(f"{globs.FOLDER}/icons/Add.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         self.push_button_add_scenario.setIcon(icon19)
         self.push_button_add_scenario.setIconSize(QtC.QSize(20, 20))
 
@@ -239,7 +241,7 @@ class BaseUI:
         self.push_button_delete_scenario.setMaximumSize(QtC.QSize(250, 30))
         self.push_button_delete_scenario.setStyleSheet("text-align:left;")
         icon20 = QtG.QIcon()
-        icon20.addFile(f"{FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon20.addFile(f"{globs.FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         self.push_button_delete_scenario.setIcon(icon20)
         self.push_button_delete_scenario.setIconSize(QtC.QSize(20, 20))
 
@@ -251,7 +253,7 @@ class BaseUI:
         self.button_rename_scenario.setMaximumSize(QtC.QSize(250, 30))
         self.button_rename_scenario.setStyleSheet("text-align:left;")
         icon21 = QtG.QIcon()
-        icon21.addFile(f"{FOLDER}/icons/Rename.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon21.addFile(f"{globs.FOLDER}/icons/Rename.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         self.button_rename_scenario.setIcon(icon21)
         self.button_rename_scenario.setIconSize(QtC.QSize(20, 20))
 
@@ -264,10 +266,10 @@ class BaseUI:
         self.list_widget_scenario.setSizePolicy(size_policy)
         self.list_widget_scenario.setMaximumSize(QtC.QSize(16666711, 16666711))
         self.list_widget_scenario.setStyleSheet(
-            f"*{'{'}border: 1px solid {WHITE};{'}'}\n"
+            f"*{'{'}border: 1px solid {globs.WHITE};{'}'}\n"
             "QListWidget{outline: 0;}\n"
-            f"QListWidget::item:selected{'{'}background:{LIGHT};color: {WHITE};border: 0px solid {WHITE};{'}'}\n"
-            f"QListWidget::item:hover{'{'}border: 1px solid {WHITE};color: {WHITE};{'}'}QListWidget:disabled{'{'}background-color: {GREY};{'}'}"
+            f"QListWidget::item:selected{'{'}background:{globs.LIGHT};color: {globs.WHITE};border: 0px solid {globs.WHITE};{'}'}\n"
+            f"QListWidget::item:hover{'{'}border: 1px solid {globs.WHITE};color: {globs.WHITE};{'}'}QListWidget:disabled{'{'}background-color: {globs.GREY};{'}'}"
         )
         self.list_widget_scenario.setSizeAdjustPolicy(QtW.QAbstractScrollArea.AdjustToContents)
         self.list_widget_scenario.setAutoScrollMargin(10)
@@ -311,8 +313,8 @@ class BaseUI:
         self.progress_bar = QtW.QProgressBar(self.central_widget)
         self.progress_bar.setObjectName("progress_bar")
         self.progress_bar.setStyleSheet(
-            f"QProgressBar{'{'}border: 1px solid {WHITE};border-radius: 10px;text-align: center;color: {WHITE};{'}'}\n"
-            f"QProgressBar::chunk{'{'}background-color: {LIGHT}; border-radius: 10px;{'}'}"
+            f"QProgressBar{'{'}border: 1px solid {globs.WHITE};border-radius: 10px;text-align: center;color: {globs.WHITE};{'}'}\n"
+            f"QProgressBar::chunk{'{'}background-color: {globs.LIGHT}; border-radius: 10px;{'}'}"
         )
         self.progress_bar.setValue(0)
         self.horizontal_layout_progress_bar.addWidget(self.progress_bar)
@@ -324,9 +326,9 @@ class BaseUI:
         
         self.status_bar = StatusBar(ghe_tool)
         self.status_bar.widget.setObjectName("status_bar")
-        self.status_bar.widget.setStyleSheet(f"QStatusBar::item{'{'}border:None;{'}'}QStatusBar{'{'}color:{WHITE};background-color: {DARK};{'}'}")
+        self.status_bar.widget.setStyleSheet(f"QStatusBar::item{'{'}border:None;{'}'}QStatusBar{'{'}color:{globs.WHITE};background-color: {globs.DARK};{'}'}")
         self.horizontal_layout_start_buttons.addWidget(self.status_bar.widget)
-        LOGGER.addHandler(self.status_bar)
+        globs.LOGGER.addHandler(self.status_bar)
         
         self.horizontal_spacer_start_buttons = QtW.QSpacerItem(40, 20, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
 
@@ -337,7 +339,7 @@ class BaseUI:
         self.push_button_start_single.setMinimumSize(QtC.QSize(100, 40))
         self.push_button_start_single.setMaximumSize(QtC.QSize(16777215, 40))
         icon32 = QtG.QIcon()
-        icon32.addFile(f"{FOLDER}/icons/Start.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon32.addFile(f"{globs.FOLDER}/icons/Start.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         self.push_button_start_single.setIcon(icon32)
         self.push_button_start_single.setIconSize(QtC.QSize(24, 24))
 
@@ -349,7 +351,7 @@ class BaseUI:
         self.push_button_start_multiple.setMaximumSize(QtC.QSize(16777215, 40))
         icon33 = QtG.QIcon()
         icon33.addFile(
-            f"{FOLDER}/icons/Start_multiple.svg",
+            f"{globs.FOLDER}/icons/Start_multiple.svg",
             QtC.QSize(),
             QtG.QIcon.Normal,
             QtG.QIcon.Off,
@@ -364,7 +366,7 @@ class BaseUI:
         self.push_button_cancel.setMinimumSize(QtC.QSize(100, 40))
         self.push_button_cancel.setMaximumSize(QtC.QSize(16777215, 40))
         icon34 = QtG.QIcon()
-        icon34.addFile(f"{FOLDER}/icons/Exit.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon34.addFile(f"{globs.FOLDER}/icons/Exit.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         self.push_button_cancel.setIcon(icon34)
         self.push_button_cancel.setIconSize(QtC.QSize(24, 24))
 
@@ -380,18 +382,18 @@ class BaseUI:
         self.menubar.setEnabled(True)
         self.menubar.setGeometry(QtC.QRect(0, 0, 1226, 30))
         self.menubar.setStyleSheet(
-            f"QMenuBar::item{'{'}background-color: {DARK};{'}'}\n"
-            f"QMenuBar::item:pressed{'{'}background-color: {LIGHT};{'}'}\n"
-            f"QMenuBar::item:selected{'{'}background-color: {LIGHT};{'}'}\n"
-            f"QToolTip{'{'} color: {WHITE}; background-color: {BLACK}; border: none; {'}'}"
+            f"QMenuBar::item{'{'}background-color: {globs.DARK};{'}'}\n"
+            f"QMenuBar::item:pressed{'{'}background-color: {globs.LIGHT};{'}'}\n"
+            f"QMenuBar::item:selected{'{'}background-color: {globs.LIGHT};{'}'}\n"
+            f"QToolTip{'{'} color: {globs.WHITE}; background-color: {globs.BLACK}; border: none; {'}'}"
         )
         self.menubar.setNativeMenuBar(True)
         self.menu_file = QtW.QMenu(self.menubar)
         self.menu_file.setObjectName("menuFile")
         self.menu_file.setStyleSheet(
-            f"QtG.QAction::icon {'{'} background-color:{LIGHT};selection-background-color: {LIGHT};{'}'}\n"
-            f"*{'{'}	background-color: {DARK};{'}'}\n"
-            f"*:hover{'{'}background-color: {LIGHT};{'}'}"
+            f"QtG.QAction::icon {'{'} background-color:{globs.LIGHT};selection-background-color: {globs.LIGHT};{'}'}\n"
+            f"*{'{'}	background-color: {globs.DARK};{'}'}\n"
+            f"*:hover{'{'}background-color: {globs.LIGHT};{'}'}"
         )
         self.menu_file.setTearOffEnabled(False)
         self.menu_calculation = QtW.QMenu(self.menubar)
@@ -402,9 +404,9 @@ class BaseUI:
         self.menu_language.setObjectName("menuLanguage")
         self.menu_language.setEnabled(True)
         icon35 = QtG.QIcon()
-        icon35.addFile(f"{FOLDER}/icons/Language.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon35.addFile(f"{globs.FOLDER}/icons/Language.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon35.addFile(
-            f"{FOLDER}/icons/Language_Inv.svg",
+            f"{globs.FOLDER}/icons/Language_Inv.svg",
             QtC.QSize(),
             QtG.QIcon.Active,
             QtG.QIcon.Off,
@@ -416,9 +418,9 @@ class BaseUI:
         self.tool_bar = QtW.QToolBar(ghe_tool)
         self.tool_bar.setObjectName("toolBar")
         self.tool_bar.setStyleSheet(
-            f"QAction::icon {'{'} background-color:{LIGHT};selection-background-color: {LIGHT};{'}'}\n"
-            f"*{'{'}	background-color: {DARK};{'}'}\n"
-            f"*:hover{'{'}background-color: {LIGHT};{'}'}"
+            f"QAction::icon {'{'} background-color:{globs.LIGHT};selection-background-color: {globs.LIGHT};{'}'}\n"
+            f"*{'{'}	background-color: {globs.DARK};{'}'}\n"
+            f"*:hover{'{'}background-color: {globs.LIGHT};{'}'}"
         )
         self.tool_bar.setMovable(False)
         ghe_tool.addToolBar(QtC.Qt.TopToolBarArea, self.tool_bar)

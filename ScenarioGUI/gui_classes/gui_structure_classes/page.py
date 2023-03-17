@@ -10,7 +10,7 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
-from ...global_settings import FOLDER, FONT, FONT_SIZE, LIGHT, WHITE
+import ScenarioGUI.global_settings as globs
 from .aim import Aim
 from .functions import _update_opponent_not_change, _update_opponent_toggle, check_aim_options
 
@@ -166,7 +166,7 @@ class Page:
         layout.setSpacing(0)
         self.label.setParent(central_widget)
         label: QtW.QLabel = self.label
-        label.setStyleSheet(f'font: {FONT_SIZE+4}pt "{FONT}";font-weight:700;')
+        label.setStyleSheet(f'font: {globs.FONT_SIZE+4}pt "{globs.FONT}";font-weight:700;')
         label.setText(self.name)
         layout.addWidget(label)
         spacer_label = QtW.QLabel(self.page)
@@ -204,7 +204,7 @@ class Page:
         self.button.setParent(central_widget)
         self.button.setMinimumSize(QtC.QSize(100, 100))
         icon23 = QtG.QIcon()
-        icon23.addFile(f"{FOLDER}/icons/{self.icon}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon23.addFile(f"{globs.FOLDER}/icons/{self.icon}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         self.button.setIcon(icon23)
         self.button.setIconSize(QtC.QSize(24, 24))
         self.button.setText(self.button_name)
@@ -235,9 +235,9 @@ class Page:
         """
         upper_frame = QtW.QFrame(scroll_area_content)
         upper_frame.setStyleSheet(
-            f"QFrame {'{'}border: 1px solid {LIGHT};border-top-left-radius: 15px;border-top-right-radius: 15px;"
+            f"QFrame {'{'}border: 1px solid {globs.LIGHT};border-top-left-radius: 15px;border-top-right-radius: 15px;"
             f"border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;{'}'}\n"
-            f"QLabel{'{'}border: 0px solid {WHITE};{'}'}"
+            f"QLabel{'{'}border: 0px solid {globs.WHITE};{'}'}"
         )
         upper_frame.setFrameShape(QtW.QFrame.StyledPanel)
         upper_frame.setFrameShadow(QtW.QFrame.Raised)
@@ -321,7 +321,7 @@ class Page:
             self.push_button_previous.setMaximumSize(QtC.QSize(16777215, 30))
             icon = QtG.QIcon()
             icon.addFile(
-                f"{FOLDER}/icons/ArrowLeft.svg",
+                f"{globs.FOLDER}/icons/ArrowLeft.svg",
                 QtC.QSize(),
                 QtG.QIcon.Normal,
                 QtG.QIcon.Off,
@@ -343,7 +343,7 @@ class Page:
             self.push_button_next.setLayoutDirection(QtC.Qt.RightToLeft)
             icon = QtG.QIcon()
             icon.addFile(
-                f"{FOLDER}/icons/ArrowRight.svg",
+                f"{globs.FOLDER}/icons/ArrowRight.svg",
                 QtC.QSize(),
                 QtG.QIcon.Normal,
                 QtG.QIcon.Off,

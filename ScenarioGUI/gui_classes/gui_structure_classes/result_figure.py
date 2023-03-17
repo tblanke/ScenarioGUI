@@ -12,7 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
-from ...global_settings import FOLDER, LIGHT, WHITE, set_graph_layout
+import ScenarioGUI.global_settings as globs
 from .category import Category
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -50,7 +50,7 @@ class ResultFigure(Category):
         super().__init__(label, page)
         self.frame_canvas: QtW.QFrame = QtW.QFrame(self.frame)
         self.layout_frame_canvas: QtW.QVBoxLayout = QtW.QVBoxLayout(self.frame_canvas)
-        set_graph_layout()
+        globs.set_graph_layout()
         self.fig: plt.Figure = plt.figure()
         self.ax: plt.Axes | None = self.fig.add_subplot(111)
         self.canvas: FigureCanvas = FigureCanvas(self.fig)
@@ -68,7 +68,7 @@ class ResultFigure(Category):
         ]:
             icon = QtG.QIcon()
             icon.addFile(
-                f"{FOLDER}/gui/icons/{icon_name}.svg",
+                f"{globs.FOLDER}/icons/{icon_name}.svg",
                 QtC.QSize(),
                 QtG.QIcon.Normal,
                 QtG.QIcon.Off,
@@ -116,7 +116,7 @@ class ResultFigure(Category):
         ]:
             icon = QtG.QIcon()
             icon.addFile(
-                f"{FOLDER}/gui/icons/{icon_name}.svg",
+                f"{globs.FOLDER}/icons/{icon_name}.svg",
                 QtC.QSize(),
                 QtG.QIcon.Normal,
                 QtG.QIcon.Off,
@@ -151,8 +151,8 @@ class ResultFigure(Category):
         # create frame with no border for the frames inside the NavigationToolbar
         self.frame_canvas.setParent(page)
         self.frame_canvas.setStyleSheet(
-            f"QFrame{'{'}border: 0px solid {LIGHT};border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;{'}'}\n"
-            f"QLabel{'{'}border: 0px solid {WHITE};{'}'}"
+            f"QFrame{'{'}border: 0px solid {globs.LIGHT};border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;{'}'}\n"
+            f"QLabel{'{'}border: 0px solid {globs.WHITE};{'}'}"
         )
         self.frame_canvas.setFrameShape(QtW.QFrame.StyledPanel)
         self.frame_canvas.setFrameShadow(QtW.QFrame.Raised)

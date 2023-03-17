@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
 
-from ...global_settings import WARNING
+import ScenarioGUI.global_settings as globs
 
 if TYPE_CHECKING:  # pragma: no cover
     from .category import Category
@@ -79,7 +79,7 @@ class Hint:
         self.label.setParent(frame)
         self.label.setText(self.hint)
         if self.warning:
-            self.label.setStyleSheet(f"color: {WARNING};")
+            self.label.setStyleSheet(f"color: {globs.WARNING};")
         self.label.setWordWrap(True)
         if row is not None and isinstance(layout_parent, QtW.QGridLayout):
             layout_parent.addWidget(self.label, column, row)

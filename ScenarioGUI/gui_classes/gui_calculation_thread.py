@@ -4,9 +4,12 @@ aims in the GUI.
 """
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC
+
+import ScenarioGUI.global_settings as globs
 
 if TYPE_CHECKING:  # pragma: no cover
     from .gui_data_storage import DataStorage
@@ -48,12 +51,12 @@ class CalcProblem(QtC.QThread):
         -------
         None
         """
-        from ..global_settings import DATA_2_RESULTS_FUNCTION
-        results, func = DATA_2_RESULTS_FUNCTION(self.ds)
+        results, func = globs.DATA_2_RESULTS_FUNCTION(self.ds)
 
         try:
             func()
         except ValueError as err:
+            logging.exception(f"{err}")
             self.ds.debug_message = err
             # save bore field in Datastorage
             self.ds.results = None

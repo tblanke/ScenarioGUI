@@ -1,5 +1,5 @@
-import PySide6.QtWidgets as QtW
 import PySide6.QtCore as QtC
+import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow

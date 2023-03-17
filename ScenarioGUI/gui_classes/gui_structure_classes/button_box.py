@@ -8,7 +8,8 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
 
-from ...global_settings import DARK, GREY, LIGHT, WHITE
+import ScenarioGUI.global_settings as globs
+
 from .functions import _update_opponent_not_change, _update_opponent_toggle, check
 from .option import Option
 
@@ -234,11 +235,11 @@ class ButtonBox(Option):
             widget.setParent(self.frame)
             widget.setText(f" {entry} ")
             widget.setStyleSheet(
-                f"QPushButton{'{'}border: 3px solid {DARK};border-radius: 5px;gridline-color: {LIGHT};background-color: {GREY};font-weight:700;{'}'}"
-                f"QPushButton:hover{'{'}border: 3px solid {DARK};background-color:{LIGHT};{'}'}"
-                f"QPushButton:checked{'{'}border:3px solid {LIGHT};background-color:{LIGHT};{'}'}\n"
-                f"QPushButton:disabled{'{'}border: 3px solid {GREY};border-radius: 5px;color: {WHITE};gridline-color: {GREY};background-color: {GREY};{'}'}\n"
-                f"QPushButton:disabled:hover{'{'}background-color: {DARK};{'}'}"
+                f"QPushButton{'{'}border: 3px solid {globs.DARK};border-radius: 5px;gridline-color: {globs.LIGHT};background-color: {globs.GREY};font-weight:700;{'}'}"
+                f"QPushButton:hover{'{'}border: 3px solid {globs.DARK};background-color:{globs.LIGHT};{'}'}"
+                f"QPushButton:checked{'{'}border:3px solid {globs.LIGHT};background-color:{globs.LIGHT};{'}'}\n"
+                f"QPushButton:disabled{'{'}border: 3px solid {globs.GREY};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.GREY};background-color: {globs.GREY};{'}'}\n"
+                f"QPushButton:disabled:hover{'{'}background-color: {globs.DARK};{'}'}"
             )
             widget.setCheckable(True)
             widget.setChecked(idx == self.default_value)

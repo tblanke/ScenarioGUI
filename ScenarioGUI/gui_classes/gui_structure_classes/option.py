@@ -8,7 +8,8 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
 
-from ...global_settings import WHITE
+
+import ScenarioGUI.global_settings as globs
 from .aim import Aim
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -231,7 +232,7 @@ class Option(metaclass=abc.ABCMeta):
         self.frame.setParent(frame)
         self.frame.setFrameShape(QtW.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtW.QFrame.Raised)
-        self.frame.setStyleSheet("QFrame {\n" f"	border: 0px solid {WHITE};\n" "	border-radius: 0px;\n" "  }\n")
+        self.frame.setStyleSheet("QFrame {\n" f"	border: 0px solid {globs.WHITE};\n" "	border-radius: 0px;\n" "  }\n")
         layout = QtW.QHBoxLayout(self.frame)
         layout.setSpacing(6)
         layout.setContentsMargins(0, 0, 0, 0)
