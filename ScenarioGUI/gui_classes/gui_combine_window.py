@@ -376,6 +376,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
+        # return if not checking
+        if not self.checking:
+            return
         # if no old item is selected do nothing and return
         if old_row_item is None:
             # change entries to new scenario values
@@ -719,8 +722,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if exists(self.backup_file):
             self._load_from_data(self.backup_file)
             # change language to english if no change has happened
+            self.checking = False
             if self.gui_structure.option_language.get_value() == 0:
                 self.change_language()
+            self.checking = True
             return
         # change language to english
         self.change_language()
