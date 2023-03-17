@@ -3,7 +3,7 @@
 % You can adapt this file completely to your liking, but it should at least
 % contain the root `toctree` directive.
 
-# Welcome to GHEtool's documentation!
+# Welcome to ScenarioGUI's documentation!
 Dear visitor
 
 Welcome on this ReadTheDocs for the open-source borefield sizing tool GHEtool (v2.1.1).

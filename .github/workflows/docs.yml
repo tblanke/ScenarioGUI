@@ -5,6 +5,8 @@ jobs:
   notebooks:
     name: "Build the notebooks for the docs"
     runs-on: ubuntu-latest
+    with:
+      python-version: "3.10"
     steps:
       - uses: actions/checkout@v2
       
