@@ -7,14 +7,13 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 from platform import system
-from sys import argv
+from sys import argv, exit as sys_exit
 from typing import TYPE_CHECKING
 
 from matplotlib import pyplot as plt
 
 import ScenarioGUI.global_settings as global_vars
 from examples.translation_class import Translations
-from ScenarioGUI.global_settings import FILE_EXTENSION, GUI_NAME
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
 from ScenarioGUI.gui_classes.gui_structure_classes import (
     Aim,
@@ -200,40 +199,18 @@ global_vars.DATA_2_RESULTS_FUNCTION = data_2_results
 
 
 def run(path_list=None):  # pragma: no cover
-    if is_frozen:
-        import pyi_splash
+    import PySide6.QtWidgets as QtW
 
-        pyi_splash.update_text("Loading .")
-    from sys import exit as sys_exit
-
-    if is_frozen:
-        pyi_splash.update_text("Loading ..")
-
-    from PySide6.QtWidgets import QApplication as QtWidgets_QApplication
-    from PySide6.QtWidgets import QMainWindow as QtWidgets_QMainWindow
-
-    from ScenarioGUI.global_settings import VERSION
+    from ScenarioGUI.global_settings import FILE_EXTENSION
     from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-
-    if is_frozen:
-        pyi_splash.update_text("Loading ...")
+    from ScenarioGUI.gui_classes.translation_class import Translations
 
     # init application
-    app = QtWidgets_QApplication()
-    # set version and id
-    my_app_id = f"{GUI_NAME} v{VERSION}"  # arbitrary string
-    if os_system == "Windows":
-        from ctypes import windll as ctypes_windll
-
-        ctypes_windll.shell32.SetCurrentProcessExplicitAppUserModelID(my_app_id)
-    app.setApplicationName(GUI_NAME)
-    app.setApplicationVersion(f"v{VERSION}")
+    app = QtW.QApplication()
     # init window
-    window = QtWidgets_QMainWindow()
+    window = QtW.QMainWindow()
     # init gui window
     main_window = MainWindow(window, app, GUI, Translations)
-    if is_frozen:
-        pyi_splash.update_text("Loading ...")
     # load file if it is in path list
     if path_list is not None:
         main_window.filename = (
@@ -243,8 +220,6 @@ def run(path_list=None):  # pragma: no cover
         main_window.fun_load_known_filename()
 
     # show window
-    if is_frozen:
-        pyi_splash.close()
     window.showMaximized()
     # close app
     sys_exit(app.exec())

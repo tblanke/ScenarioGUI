@@ -1,5 +1,5 @@
 ***************
-gui_classes.py
+gui_structure_classes.py
 ***************
 
 .. automodule:: ScenarioGUI.gui_classes.gui_structure_classes

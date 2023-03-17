@@ -220,6 +220,43 @@ def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
     return result, result.adding
 ```
 
+The gui can then be start like this:
+
+```Python
+from sys import argv, exit as sys_exit
+
+def run(path_list=None):  # pragma: no cover
+    import PySide6.QtWidgets as QtW
+
+    from ScenarioGUI.global_settings import FILE_EXTENSION
+    from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
+    from ScenarioGUI.gui_classes.translation_class import Translations
+
+    # init application
+    app = QtW.QApplication()
+    # init window
+    window = QtW.QMainWindow()
+    # init gui window
+    main_window = MainWindow(window, app, GUI, Translations)
+    # load file if it is in path list
+    if path_list is not None:
+        main_window.filename = (
+            [path for path in path_list if path.endswith(f".{FILE_EXTENSION}")][0],
+            0,
+        )
+        main_window.fun_load_known_filename()
+
+    # show window
+    window.showMaximized()
+    # close app
+    sys_exit(app.exec())
+
+
+if __name__ == "__main__":  # pragma: no cover
+    # pass system args like a file to read
+    run(argv if len(argv) > 1 else None)
+```
+
 A full list of functionalities is given below.
 
 ## Functionalities
