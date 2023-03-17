@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
-
+from PySide6 import QtGui
 
 import ScenarioGUI.global_settings as globs
 from .option import Option
@@ -69,6 +69,7 @@ class FileNameBox(Option):
         """
         super().__init__(label, default_value, category)
         self.widget: QtW.QLineEdit = QtW.QLineEdit(self.default_parent)
+        # self.widget.setEchoMode(QtW.QLineEdit.Password)
         self.dialog_text: str = dialog_text
         self.error_text: str = error_text
         self.button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
