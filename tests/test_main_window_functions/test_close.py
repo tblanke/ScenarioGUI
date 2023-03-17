@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 import keyboard
 import PySide6.QtCore as QtC

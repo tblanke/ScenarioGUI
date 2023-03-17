@@ -70,6 +70,7 @@ def test_change_scenario(qtbot):
         # handle dialog now
         if isinstance(main_window.dialog, QtW.QMessageBox):
             main_window.dialog.buttons()[0].click()
+
     # test if closing the window is not changing the value and scenario
     QtC.QTimer.singleShot(100, close)
     main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(1))
@@ -130,4 +131,3 @@ def test_change_scenario(qtbot):
     assert isclose(main_window.list_ds[0].float_b, 4)
     assert isclose(main_window.list_ds[1].float_b, 3)
     main_window.delete_backup()
-    

@@ -40,7 +40,7 @@ def test_toggle_buttons(qtbot):
     main_window.gui_structure.button_box.widget[val_before].click()
     val_after = main_window.gui_structure.button_box.get_value()
     assert val_before == val_after
-    main_window.gui_structure.button_box.widget[val_before+1].click()
+    main_window.gui_structure.button_box.widget[val_before + 1].click()
     val_after = main_window.gui_structure.button_box.get_value()
     assert val_before + 1 == val_after
     # toggle behaviour

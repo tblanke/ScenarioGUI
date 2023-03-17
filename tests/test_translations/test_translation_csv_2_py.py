@@ -10,6 +10,7 @@ def test_csv_2_py():
     translate_csv_2_class(folder.joinpath("Translations.csv"), folder)
     d_f = pd.read_csv(folder.joinpath("Translations.csv"), sep=";")
     from .translation_class import Translations
+
     translation = Translations()
     for name, trans_1, trans_2 in zip(d_f["name"], d_f["English"], d_f["German"], strict=True):
         assert getattr(translation, name)[0] == trans_1

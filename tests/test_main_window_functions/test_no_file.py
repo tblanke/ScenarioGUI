@@ -1,5 +1,3 @@
-from math import isclose
-
 import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as global_vars

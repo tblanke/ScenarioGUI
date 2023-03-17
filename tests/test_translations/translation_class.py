@@ -63,7 +63,7 @@ class Translations:  # pragma: no cover
     )
 
     def __init__(self):
-        self.languages: List[str] = ["English", "German"]
+        self.languages: list[str] = ["English", "German"]
         self.action_add_scenario: list[str] = ["Add scenario", "Szenario hinzufügen"]
         self.action_delete_scenario: list[str] = ["Delete scenario", "Szenario löschen"]
         self.action_new: list[str] = ["New Project", "Neues Projekt"]

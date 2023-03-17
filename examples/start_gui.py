@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from platform import system
 from sys import argv
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from matplotlib import pyplot as plt
 
@@ -16,19 +16,31 @@ import ScenarioGUI.global_settings as global_vars
 from examples.translation_class import Translations
 from ScenarioGUI.global_settings import FILE_EXTENSION, GUI_NAME
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
-from ScenarioGUI.gui_classes.gui_structure_classes import Aim, ButtonBox, Category, FigureOption, FileNameBox, FloatBox, FunctionButton, Hint, IntBox, Page, \
-    ResultFigure, \
-    ResultText
+from ScenarioGUI.gui_classes.gui_structure_classes import (
+    Aim,
+    ButtonBox,
+    Category,
+    FigureOption,
+    FileNameBox,
+    FloatBox,
+    FunctionButton,
+    Hint,
+    IntBox,
+    Page,
+    ResultFigure,
+    ResultText,
+)
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
+    from collections.abc import Callable
 
 os_system = system()
 is_frozen = getattr(sys, "frozen", False) and os_system == "Windows"  # pragma: no cover
 
 
 class ResultsClass:
-    def __init__(self, a: int =  1, b: int = 2):
+    def __init__(self, a: int = 1, b: int = 2):
         self.a = a
         self.b = b
         self.result = None
@@ -56,7 +68,7 @@ class ResultsClass:
         return fig, ax
 
     def _to_dict(self) -> dict:
-        return {"a" : self.a, "b": self.b, "result": self.result}
+        return {"a": self.a, "b": self.b, "result": self.result}
 
     def _from_dict(self, dictionary: dict):
         self.a = dictionary["a"]
@@ -140,28 +152,19 @@ class GUI(GuiStructure):
         self.category_grid.activate_graphic_right()
 
         self.create_results_page()
-        self.numerical_results = Category(
-            page=self.page_result, label="Numerical results"
-        )
+        self.numerical_results = Category(page=self.page_result, label="Numerical results")
 
-        self.result_text_add = ResultText(
-            "Result", category=self.numerical_results, prefix="Result: ", suffix="m"
-        )
+        self.result_text_add = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
         self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2))
-        self.result_text_sub = ResultText(
-            "Result", category=self.numerical_results, prefix="Result: ", suffix="m"
-        )
+        self.result_text_sub = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
 
         self.figure_results = ResultFigure(label="Plot", page=self.page_result)
-        self.legend_figure_results = FigureOption(category=self.figure_results,
-                                                              label="Legend on",
-                                                              param="legend",
-                                                              default=0,
-                                                              entries=["No", "Yes"],
-                                                              entries_values=[False, True])
+        self.legend_figure_results = FigureOption(
+            category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
+        )
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
@@ -181,7 +184,16 @@ def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
     result = ResultsClass(data.int_a, data.float_b)
     return result, result.adding if data.aim_add else result.subtract
 
-
+global_vars.FONT = "Arial"
+global_vars.FONT_SIZE = 12
+global_vars.FILE_EXTENSION = "tool"
+global_vars.DARK = "rgb(0,0,0)"
+global_vars.LIGHT = "rgb(255,204,0)"
+global_vars.GUI_NAME = "My GUI name"
+global_vars.ICON_NAME = "icon"
+global_vars.VERSION = "0.2.0"
+folder = Path("__file__").parent
+global_vars.FOLDER = folder
 global_vars.ResultsClass = ResultsClass
 global_vars.DATA_2_RESULTS_FUNCTION = data_2_results
 

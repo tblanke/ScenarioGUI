@@ -54,80 +54,166 @@ Python.org/3.9/library/venv.html) and in [this article](https://www.freecodecamp
 
 ### Get started with ScenarioGUI
 
-To get started with ScenarioGUI, one needs to create a Borefield object. This is done in the following steps.
+The GUI can be customized using the global setting. There the font and font size can be set. Furthermore, the gui name, icon, version, saving file extension  
+can be set. Several 
+colors like the DARK background and the LIGHT Foreground color can be set as well. A folder containing an icons folder can be given. This one needs to 
+contain at least the icon contained under ScenarioGUI/icons. Besides a results creating class and a data 2 results function needs to be specified. They will 
+be explained in more detail later.
 
 ```Python
-from ScenarioGUI import Borefield, GroundData
+import ScenarioGUI.global_settings as global_vars
+from pathlib import Path
+global_vars.FONT = "Arial"
+global_vars.FONT_SIZE = 12
+global_vars.GUI_NAME = "My GUI name"
+global_vars.ICON_NAME = "icon"
+global_vars.VERSION = "0.2.0"
+global_vars.FILE_EXTENSION = "tool"
+global_vars.DARK = "rgb(0,0,0)"
+global_vars.LIGHT = "rgb(255,204,0)"
+folder = Path("__file__").parent
+global_vars.FOLDER = folder
+global_vars.ResultsClass = ResultsClass
+global_vars.DATA_2_RESULTS_FUNCTION = data_2_results 
 ```
 
-After importing the necessary classes, one sets all the relevant ground data and borehole equivalent resistance.
+To create your own GUI part you can inherit from the GuiStructure provided by this lib and add more pages, categories and input field as you like.
 
 ```Python
-data = GroundData(3,   # ground thermal conductivity (W/mK)
-                  10,  # initial/undisturbed ground temperature (deg C)
-                  0.2, # borehole equivalent resistance (mK/W)
-                  2.4*10**6) # volumetric heat capacity of the ground (J/m3K) 
-```
+from ScenarioGUI.gui_classes.gui_structure import GuiStructure
+from ScenarioGUI.gui_classes.gui_structure_classes import (
+    Aim,
+    ButtonBox,
+    Category,
+    FigureOption,
+    FileNameBox,
+    FloatBox,
+    FunctionButton,
+    Hint,
+    IntBox,
+    ListBox,
+    Page,
+    ResultFigure,
+    ResultText,
+)
+from typing import TYPE_CHECKING
 
-Furthermore, one needs to set the peak and monthly baseload for both heating and cooling.
+if TYPE_CHECKING:
+    import PySide6.QtWidgets as QtW
+    from examples.translation_class import Translations
 
-```Python
-peak_cooling = [0., 0, 34., 69., 133., 187., 213., 240., 160., 37., 0., 0.]   # Peak cooling in kW
-peak_heating = [160., 142, 102., 55., 0., 0., 0., 0., 40.4, 85., 119., 136.]  # Peak heating in kW
+class GUI(GuiStructure):
+    """your own customized GUI"""
+    def __init__(self, default_parent: QtW.QWidget, translations: Translations):
+        # first init the parent clas
+        super().__init__(default_parent, translations)
+        # add a first page called "Inputs" and has a button name of "Input" and has an icon "Add.svg"
+        self.page_inputs = Page(name="Inputs", button_name="Input", icon="Add.svg")
+        # Then several aims can be added to the page with different names and icons
+        self.aim_add = Aim(label="Adding", icon="Add", page=self.page_inputs)
+        self.aim_sub = Aim(label="Substract", icon="Delete", page=self.page_inputs)
+        self.aim_plot = Aim(label="Plot", icon="Parameters", page=self.page_inputs)
+        # a category with the label "Inputs" can be added to the inputs page like:
+        self.category_inputs = Category(label="Inputs", page=self.page_inputs)
+        # an integer box can be added with different options like this (some of these options are optional):
+        self.int_a = IntBox(label="a",default_value=2,minimal_value=0,maximal_value=200,step=2,category=self.category_inputs)
+        # a float box can be added with different options like this (some of these options are optional):
+        self.float_b = FloatBox(
+            label="b",
+            default_value=100,
+            minimal_value=0,
+            maximal_value=1000,
+            decimal_number=2,
+            step=0.5,
+            category=self.category_inputs,
+        )
+        # a button box can be added with different options like this
+        self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
+        # the button box can also be a list box for many options
+        self.list_box = ListBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
+        # a filename box can be added with different options like this
+        file = "./example_data.csv"
+        self.filename = FileNameBox(label="Filename", default_value=file, dialog_text="Hello", error_text="no file found", category=self.category_inputs)
+        # a function button can be implemented like this:
+        self.function_button = FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
+        # the function ("func") which will be called every time the button is clicked can be defined as follows:
+        self.page_inputs.add_function_called_if_button_clicked(func)
 
-monthly_load_heating = [46500.0, 44400.0, 37500.0, 29700.0, 19200.0, 0.0, 0.0, 0.0, 18300.0, 26100.0, 35100.0, 43200.0]        # in kWh
-monthly_load_cooling = [4000.0, 8000.0, 8000.0, 8000.0, 12000.0, 16000.0, 32000.0, 32000.0, 16000.0, 12000.0, 8000.0, 4000.0]  # in kWh
-```
+        self.category_grid = Category(page=self.page_inputs, label="Grid")
+        self.category_grid.activate_grid_layout(3)
+        self.hint_1 = Hint(category=self.category_grid, hint="Grid example")
+        # int boxes and float boxes with no label are displayed small in a grid layout
+        self.int_small_1 = IntBox(
+            label="",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=200,
+            category=self.category_grid,
+        )
+        # int boxes and float boxes with no label are displayed small in a grid layout
+        self.float_small_1 = FloatBox(
+            label="",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=200,
+            decimal_number=2,
+            category=self.category_grid,
+        )
+        self.hint_2 = Hint(category=self.category_grid, hint="Grid example")
+        # int boxes and float boxes with no label are displayed small in a grid layout
+        self.int_small_2 = IntBox(
+            label="",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=200,
+            category=self.category_grid,
+        )
+        # int boxes and float boxes with no label are displayed small in a grid layout
+        self.float_small_2 = FloatBox(
+            label="",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=200,
+            decimal_number=2,
+            category=self.category_grid,
+        )
+        self.category_grid.activate_graphic_left()
+        self.category_grid.activate_graphic_right()
 
-Next, one creates the borefield object in ScenarioGUI and sets the temperature constraints and the ground data.
+        self.create_results_page()
+        self.numerical_results = Category(page=self.page_result, label="Numerical results")
 
-```Python
-# create the borefield object
-borefield = Borefield(simulation_period=20,
-                      peak_heating=peak_heating,
-                      peak_cooling=peak_cooling,
-                      baseload_heating=monthly_load_heating,
-                      baseload_cooling=monthly_load_cooling)
+        self.result_text_add = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
+        self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
+        self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2))
+        self.result_text_sub = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
+        self.result_text_sub.text_to_be_shown("ResultsClass", "result")
+        self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
 
-borefield.set_ground_parameters(data)
+        self.figure_results = ResultFigure(label="Plot", page=self.page_result)
+        self.legend_figure_results = FigureOption(
+            category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
+        )
 
-# set temperature boundaries
-borefield.set_max_ground_temperature(16)  # maximum temperature
-borefield.set_min_ground_temperature(0)  # minimum temperature
-```
+        self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
-```Python
-# set a rectangular borefield
-borefield.create_rectangular_borefield(10, 12, 6, 6, 110, 4, 0.075)
-```
+        self.aim_add.add_link_2_show(self.result_text_add)
+        self.aim_sub.add_link_2_show(self.result_text_sub)
+        self.aim_plot.add_link_2_show(self.figure_results)
 
-Note that the borefield can also be set using the pygfunction package.
-
-```Python
-import pygfunction as gt
-
-# set a rectangular borefield
-borefield_gt = gt.boreholes.rectangle_field(10, 12, 6, 6, 110, 1, 0.075) 
-borefield.set_borefield(borefield_gt)
-```
-
-Once a Borefield object is created, one can make use of all the functionalities of ScenarioGUI. One can for example size the borefield using:
-
-```Python
-depth = borefield.size(100)
-print("The borehole depth is: ", depth, "m")
-```
-
-Or one can plot the temperature profile by using
-
-```Python
-borefield.print_temperature_profile(legend=True)
+        self.create_settings_page()
+        self.create_lists()
+        self.page_inputs.set_next_page(self.page_result)
+        self.page_result.set_previous_page(self.page_inputs)
+        self.page_result.set_next_page(self.page_settings)
+        self.page_result.set_previous_page(self.page_result)
 ```
 
 A full list of functionalities is given below.
 
 ## Functionalities
-ScenarioGUI offers functionalities of value to all different disciplines working with borefields. The features are available both in the code environment and in the GUI.
+ScenarioGUI offers functionalities of value to all different disciplines which would like to create a GUI for different scenarios. These scenario can thern 
+be easily compared. 
 For more information about the functionalities of ScenarioGUI, please visit the [ReadTheDocs](https://scenariogui.readthedocs.org).
 
 ## License

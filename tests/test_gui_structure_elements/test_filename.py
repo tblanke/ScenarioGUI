@@ -1,8 +1,6 @@
-from pathlib import Path, PurePath
+from pathlib import Path
 
 import keyboard
-import numpy as np
-import pandas as pd
 import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW
 

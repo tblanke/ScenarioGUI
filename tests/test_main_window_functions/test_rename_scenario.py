@@ -1,5 +1,5 @@
-import PySide6.QtWidgets as QtW
 import PySide6.QtCore as QtC
+import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
@@ -53,7 +53,7 @@ def test_rename_scenario(qtbot):
             QtW.QApplication.processEvents()
         # handle dialog now
         if isinstance(main_window.dialog, QtW.QInputDialog):
-            main_window.dialog.setTextValue('')
+            main_window.dialog.setTextValue("")
             main_window.dialog.accept()
 
     def close_dialog():
@@ -69,6 +69,7 @@ def test_rename_scenario(qtbot):
         # handle dialog now
         if isinstance(main_window.dialog, QtW.QInputDialog):
             main_window.dialog.reject()
+
     # get old item name
     old_name = main_window.list_widget_scenario.item(0).text()
     # enter nothing in the text box and not change the name

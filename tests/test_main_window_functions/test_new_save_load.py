@@ -55,11 +55,15 @@ def test_save_load_new(qtbot):
     QtC.QTimer.singleShot(1200, lambda: keyboard.press("enter"))
     main_window.action_save.trigger()
     # check if filename is set correctly
-    assert (Path(main_window.filename[0]), main_window.filename[1]) == (main_window.default_path.joinpath(filename_1),
-                                                                        f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    assert (Path(main_window.filename[0]), main_window.filename[1]) == (
+        main_window.default_path.joinpath(filename_1),
+        f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
+    )
     # check if filename is set correctly
-    assert (Path(main_window.filename[0]), main_window.filename[1]) == (main_window.default_path.joinpath(filename_1),
-                                                                        f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    assert (Path(main_window.filename[0]), main_window.filename[1]) == (
+        main_window.default_path.joinpath(filename_1),
+        f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
+    )
     # get old list and add a new scenario
     list_old = main_window.list_ds.copy()
     main_window.add_scenario()
@@ -70,25 +74,30 @@ def test_save_load_new(qtbot):
     QtC.QTimer.singleShot(1200, lambda: keyboard.press("enter"))
     main_window.action_save_as.trigger()
     # check if filename is set correctly
-    assert (Path(main_window.filename[0]), main_window.filename[1]) == (main_window.default_path.joinpath(filename_2),
-                                                                        f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    assert (Path(main_window.filename[0]), main_window.filename[1]) == (
+        main_window.default_path.joinpath(filename_2),
+        f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
+    )
     # trigger open function and set filename 1
     QtC.QTimer.singleShot(1000, lambda: keyboard.write(filename_1))
     QtC.QTimer.singleShot(1200, lambda: keyboard.press("enter"))
     main_window.action_open.trigger()
     # check if filename is imported correctly and the data storages as well
-    assert (Path(main_window.filename[0]), main_window.filename[1]) == (main_window.default_path.joinpath(filename_1),
-                                                                        f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    assert (Path(main_window.filename[0]), main_window.filename[1]) == (
+        main_window.default_path.joinpath(filename_1),
+        f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
+    )
     assert list_old == main_window.list_ds
     # set a different filename and test new action
     QtC.QTimer.singleShot(1000, lambda: keyboard.write(filename_3))
     QtC.QTimer.singleShot(1200, lambda: keyboard.press("enter"))
     main_window.action_new.trigger()
-    assert (Path(main_window.filename[0]), main_window.filename[1]) == (main_window.default_path.joinpath(filename_3),
-                                                                        f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    assert (Path(main_window.filename[0]), main_window.filename[1]) == (
+        main_window.default_path.joinpath(filename_3),
+        f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
+    )
     assert len(main_window.list_ds) < 1
     main_window.filename = (filename_1, filename_1)
     main_window.fun_load_known_filename()
     assert main_window.status_bar.widget.currentMessage() == main_window.translations.no_file_selected[0]
     main_window.delete_backup()
-    

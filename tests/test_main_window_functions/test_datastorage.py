@@ -1,6 +1,3 @@
-from math import isclose
-
-import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as global_vars
@@ -24,12 +21,13 @@ def test_datastorage(qtbot):
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations)
     main_window.save_scenario()
     main_window.add_scenario()
-    assert not main_window.list_ds[0] == 2
+    assert main_window.list_ds[0] != 2
     assert main_window.list_ds[0] == main_window.list_ds[1]
     val_old = main_window.list_ds[1].float_b
     main_window.list_ds[1].float_b = 1
-    assert not main_window.list_ds[1] == main_window.list_ds[0]
+    assert main_window.list_ds[1] != main_window.list_ds[0]
     main_window.list_ds[1].float_b = val_old
     assert main_window.list_ds[0] == main_window.list_ds[1]
     main_window.list_ds[1].list_options_aims.append("no_real_option")
-    assert not main_window.list_ds[1] == main_window.list_ds[0]
+    assert main_window.list_ds[1] != main_window.list_ds[0]
+    main_window.delete_backup()

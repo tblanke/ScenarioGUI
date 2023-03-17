@@ -60,4 +60,3 @@ def test_auto_save(qtbot):
     assert len(main_window.list_ds) == 1
     assert main_window.list_widget_scenario.count() == 1
     main_window.delete_backup()
-    

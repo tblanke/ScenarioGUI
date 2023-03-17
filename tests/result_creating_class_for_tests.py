@@ -1,10 +1,10 @@
-from typing import Callable
+from collections.abc import Callable
 
 from matplotlib import pyplot as plt
 
 
 class ResultsClass:
-    def __init__(self, a: int =  1, b: int = 2):
+    def __init__(self, a: int = 1, b: int = 2):
         self.a = a
         self.b = b
         self.result = None
@@ -32,7 +32,7 @@ class ResultsClass:
         return fig, ax
 
     def _to_dict(self) -> dict:
-        return {"a" : self.a, "b": self.b, "result": self.result}
+        return {"a": self.a, "b": self.b, "result": self.result}
 
     def _from_dict(self, dictionary: dict):
         self.a = dictionary["a"]
