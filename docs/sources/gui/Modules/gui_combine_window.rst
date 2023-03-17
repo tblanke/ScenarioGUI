@@ -2,6 +2,6 @@
 gui_combine_window.py
 *********************
 
-.. automodule:: GHEtool.gui.gui_combine_window
+.. automodule:: ScenarioGUI.gui_classes.gui_combine_window
     :members:
     :show-inheritance:

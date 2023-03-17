@@ -2,6 +2,6 @@
 gui_classes.py
 ***************
 
-.. automodule:: GHEtool.gui.gui_classes
+.. automodule:: ScenarioGUI.gui_classes.gui_structure_classes
     :members:
     :show-inheritance:

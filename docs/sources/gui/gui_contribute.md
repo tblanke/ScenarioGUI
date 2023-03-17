@@ -9,7 +9,5 @@ It explains the general way the GUI is setup, how options can be added and how (
 
 gui/gui_contribute.md
 gui/gui_structure.md
-gui/gui_new_options.md
 gui/gui_translations.md
-gui/gui_FAQ.md
 ```

@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/tblanke/ScenarioGUI/branch/main/graph/badge.svg?token=P7WX73BTVH)](https://codecov.io/gh/tblanke/ScenarioGUI)
 [![Downloads](https://static.pepy.tech/personalized-badge/scenariogui?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads)](https://pepy.tech/project/scenariogui)
 [![Downloads](https://static.pepy.tech/personalized-badge/scenariogui?period=week&units=international_system&left_color=black&right_color=orange&left_text=Downloads%20last%20week)](https://pepy.tech/project/scenariogui)
-[![Read the Docs](https://readthedocs.org/projects/scenariogui/badge/?version=stable)](https://scenariogui.readthedocs.io/en/stable/)
+[![Documentation Status](https://readthedocs.org/projects/scenariogui/badge/?version=latest)](https://scenariogui.readthedocs.io/en/latest/?badge=latest)
 
 ## What is *ScenarioGUI*?
 
