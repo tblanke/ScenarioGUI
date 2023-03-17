@@ -138,75 +138,86 @@ class GUI(GuiStructure):
         self.function_button = FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
         # the function ("func") which will be called every time the button is clicked can be defined as follows:
         self.page_inputs.add_function_called_if_button_clicked(func)
-
-        self.category_grid = Category(page=self.page_inputs, label="Grid")
-        self.category_grid.activate_grid_layout(3)
-        self.hint_1 = Hint(category=self.category_grid, hint="Grid example")
-        # int boxes and float boxes with no label are displayed small in a grid layout
-        self.int_small_1 = IntBox(
-            label="",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            category=self.category_grid,
-        )
-        # int boxes and float boxes with no label are displayed small in a grid layout
-        self.float_small_1 = FloatBox(
-            label="",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            decimal_number=2,
-            category=self.category_grid,
-        )
-        self.hint_2 = Hint(category=self.category_grid, hint="Grid example")
-        # int boxes and float boxes with no label are displayed small in a grid layout
-        self.int_small_2 = IntBox(
-            label="",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            category=self.category_grid,
-        )
-        # int boxes and float boxes with no label are displayed small in a grid layout
-        self.float_small_2 = FloatBox(
-            label="",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            decimal_number=2,
-            category=self.category_grid,
-        )
-        self.category_grid.activate_graphic_left()
-        self.category_grid.activate_graphic_right()
-
+        # A Hint can be implemented (if warning is True the option is displayed in WARNING color) like:
+        self.hint = Hint(hint="Very important hint", category=self.category_inputs, warning=False)
+        # The results page must be created like this:
         self.create_results_page()
+        # then a category for numerical results can be added
         self.numerical_results = Category(page=self.page_result, label="Numerical results")
-
+        # A text result calling the get_results function from the ResultsClass and rounding it to 2 decimals can be set like this: 
         self.result_text_add = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
         self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2))
-        self.result_text_sub = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
-        self.result_text_sub.text_to_be_shown("ResultsClass", "result")
-        self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
-
+        # a results figure calling the create_plot function from ResultsClass which is returning a tuple of a plt.Figure and plt.Axes can be implemented 
+        # like this:
         self.figure_results = ResultFigure(label="Plot", page=self.page_result)
+        self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+        # this figure can then be linked to an option to display the legend like this:
         self.legend_figure_results = FigureOption(
             category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
-        )
-
-        self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
-
+        )        
+        # with this function the results options will be displayed if one of the aims is selected
         self.aim_add.add_link_2_show(self.result_text_add)
-        self.aim_sub.add_link_2_show(self.result_text_sub)
         self.aim_plot.add_link_2_show(self.figure_results)
-
+        # The settings page must be created like this:
         self.create_settings_page()
+        # This function needs to be called to update the page, category and option lists
         self.create_lists()
+        # links to next or previous pages can be set like this:
         self.page_inputs.set_next_page(self.page_result)
         self.page_result.set_previous_page(self.page_inputs)
         self.page_result.set_next_page(self.page_settings)
         self.page_result.set_previous_page(self.page_result)
+```
+
+The ResultsClass needs to have a "_to_dict", "_from_dict" and all function defined in the ResulText and ResultFigure options. Furthermore, it needs to be 
+creatable without any inputs.
+
+```Python
+from collections.abc import Callable
+import matplotlib.pyplot as plt
+
+class ResultsClass:
+    """Example results class"""
+    def __init__(self, a: int = 1, b: int = 2):
+        self.a = a
+        self.b = b
+        self.result = None
+
+    def adding(self):
+        """adding a and b"""
+        self.result = self.a + self.b
+
+    def get_result(self) -> float:
+        """returns the result"""
+        return self.result
+
+    def create_plot(self, legend: bool = False) -> tuple[plt.Figure, plt.Axes]:
+        """Creates a plot"""
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        # set axes labels
+        ax.set_xlabel(r"Time (year)")
+        ax.set_ylabel(r"Temperature ($^\circ C$)")
+        ax.hlines(self.a, 0, self.b, colors="r", linestyles="dashed", label="line", lw=1)
+        if legend:
+            ax.legend()
+        return fig, ax
+
+    def _to_dict(self) -> dict:
+        """creates a dictionary from the class variables"""
+        return {"a": self.a, "b": self.b, "result": self.result}
+
+    def _from_dict(self, dictionary: dict):
+        """creates the class from a dictionary"""
+        self.a = dictionary["a"]
+        self.b = dictionary["b"]
+        self.result = dictionary["result"]
+
+def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
+    """casts the data in the Datastorage to the results class and the function which should be called"""
+    result = ResultsClass(data.int_a, data.float_b)
+    return result, result.adding
 ```
 
 A full list of functionalities is given below.

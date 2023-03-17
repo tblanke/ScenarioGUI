@@ -76,6 +76,11 @@ class ResultsClass:
         self.result = dictionary["result"]
 
 
+def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
+    result = ResultsClass(data.int_a, data.float_b)
+    return result, result.adding if data.aim_add else result.subtract
+
+
 class GUI(GuiStructure):
     def __init__(self, default_parent: QtW.QWidget, translations: Translations):
         super().__init__(default_parent, translations)
@@ -179,10 +184,6 @@ class GUI(GuiStructure):
         self.page_result.set_next_page(self.page_settings)
         self.page_result.set_previous_page(self.page_result)
 
-
-def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
-    result = ResultsClass(data.int_a, data.float_b)
-    return result, result.adding if data.aim_add else result.subtract
 
 global_vars.FONT = "Arial"
 global_vars.FONT_SIZE = 12
