@@ -26,7 +26,7 @@ jobs:
           pip install -r requirements_dev.txt
           pip install -e .
       - name: Test with pytest
-        run: pytest --cov=./ --cov-report=xml
+        run: pytest --cov=./ --cov-report=xml --timeout=30
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v3
         with:

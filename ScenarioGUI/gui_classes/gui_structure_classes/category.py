@@ -46,9 +46,9 @@ class Category:
         .. figure:: _static/Example_Category.PNG
         """
         self.label_text: str = label
-        self.label: QtW.QLabel = QtW.QLabel(self.default_parent)
-        self.list_of_options: list[Option | Hint | FunctionButton] = []
         self.frame: QtW.QFrame = QtW.QFrame(self.default_parent)
+        self.label: QtW.QLabel = QtW.QLabel(self.frame)
+        self.list_of_options: list[Option | Hint | FunctionButton] = []
         self.graphic_left: QtW.QGraphicsView | bool | None = None
         self.graphic_right: QtW.QGraphicsView | bool | None = None
         self.grid_layout: int = 0
@@ -175,7 +175,7 @@ class Category:
 
         # check if the category should be made with a grid layout
         if self.grid_layout > 0:
-            self.layout_frame = QtW.QGridLayout(self.frame)
+            self.layout_frame = QtW.QGridLayout()
             row = 0
             column = 0
             for option in self.list_of_options:
@@ -192,7 +192,7 @@ class Category:
                 row += 1
         else:
             # create category with grid layout
-            self.layout_frame = QtW.QVBoxLayout(self.frame)
+            self.layout_frame = QtW.QVBoxLayout()
             for option in self.list_of_options:
                 option.create_widget(self.frame, self.layout_frame)
 

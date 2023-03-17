@@ -28,3 +28,4 @@ def test_results_figure(qtbot):
     assert main_window.gui_structure.figure_results.label.text() == "Hello"
     assert main_window.gui_structure.figure_results.ax.get_ylabel() == "Y-Values"
     assert main_window.gui_structure.figure_results.ax.get_xlabel() == "X-Values"
+    main_window.delete_backup()

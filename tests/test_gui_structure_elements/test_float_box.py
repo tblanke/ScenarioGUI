@@ -1,5 +1,6 @@
 import numpy as np
 import PySide6.QtWidgets as QtW
+import pytest
 
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
@@ -49,5 +50,8 @@ def test_float_box(qtbot):
     assert not main_window.gui_structure.int_a.is_hidden()
     float_b.set_value(220)
     assert not main_window.gui_structure.int_a.is_hidden()
+    # test set text
+    main_window.gui_structure.float_b.set_text("Hello")
+    assert main_window.gui_structure.float_b.label.text() == "Hello"
     main_window.delete_backup()
     

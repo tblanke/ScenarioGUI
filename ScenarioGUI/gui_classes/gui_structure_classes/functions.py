@@ -95,16 +95,8 @@ def check(
     list_false = [(option, idx) for option, idx in linked_options if idx != index]
     list_true = [(option, idx) for option, idx in linked_options if idx == index]
     for option, _ in list_false:
-        if isinstance(option, list):
-            for opt in option:
-                opt.hide()
-            continue
         option.hide()
     for option, _ in list_true:
-        if isinstance(option, list):
-            for opt in option:
-                opt.show()
-            continue
         option.show()
 
 
@@ -128,18 +120,10 @@ def check_aim_options(list_aim: list[Aim]) -> None:
     # hide all the options related to the not-checked aims
     for aim in list_false:
         for option in aim.list_options:
-            if isinstance(option, list):
-                for opt in option:
-                    opt.hide()
-                continue
             option.hide()
     # show all the options related to the checked aims
     for aim in list_true:
         for option in aim.list_options:
-            if isinstance(option, list):
-                for opt in option:
-                    opt.show()
-                continue
             option.show()
 
 

@@ -26,3 +26,4 @@ def test_category(qtbot):
     assert not main_window.gui_structure.category_language.is_hidden()
     main_window.gui_structure.category_language.hide()
     assert main_window.gui_structure.category_language.is_hidden()
+    main_window.delete_backup()

@@ -341,6 +341,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         idx: int = self.list_widget_scenario.currentRow()
         if self.list_ds:
             # remove results object
+            self.list_ds[idx].close_figures()
             self.list_ds[idx].results = None
         # abort here if autosave scenarios is used
         if self.gui_structure.option_auto_saving.get_value() == 1:
@@ -1342,6 +1343,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # check if inputs should be saved and if successfully set closing variable to true
         close: bool = self.fun_save() if reply == QtW.QMessageBox.Save else True
         # stop all calculation threads
-        [i.terminate() for i in self.threads]
+        _ = [i.terminate() for i in self.threads]
+        # close figures
+        _ = [d_s.close_figures() for d_s in self.list_ds]
         # close window if close variable is true else not
         event.accept() if close else event.ignore()

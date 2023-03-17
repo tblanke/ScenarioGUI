@@ -67,7 +67,7 @@ class Page:
         self.page: QtW.QWidget = QtW.QWidget(self.default_parent)
         self.previous_page: Page | None = None
         self.next_page: Page | None = None
-        self.upper_frame: list[Aim | Option | Category] = []
+        self.upper_frame: list[Aim] = []
         self.functions_button_clicked: list[Callable] = []
 
     def add_function_called_if_button_clicked(self, function_to_be_called: Callable) -> None:
@@ -177,7 +177,7 @@ class Page:
         scroll_area.setFrameShape(QtW.QFrame.NoFrame)
         scroll_area.setLineWidth(0)
         scroll_area.setWidgetResizable(True)
-        scroll_area_content = QtW.QWidget(self.page)
+        scroll_area_content = QtW.QWidget(scroll_area)
         scroll_area_content.setGeometry(QtC.QRect(0, 0, 864, 695))
         scroll_area.setWidget(scroll_area_content)
         layout.addWidget(scroll_area)
@@ -187,7 +187,7 @@ class Page:
         stacked_widget.addWidget(self.page)
         if self.upper_frame:
             self.create_upper_frame(scroll_area_content, scroll_area_layout)
-        label_gap = QtW.QLabel(central_widget)
+        label_gap = QtW.QLabel(scroll_area_content)
         label_gap.setMinimumSize(QtC.QSize(0, 6))
         label_gap.setMaximumSize(QtC.QSize(16777215, 6))
 
@@ -247,10 +247,7 @@ class Page:
         grid_layout.setHorizontalSpacing(6)
         scroll_area_layout.addWidget(upper_frame)
         for idx, option in enumerate(self.upper_frame):
-            if isinstance(option, Aim):
-                option.create_widget(upper_frame, grid_layout, idx)
-                continue
-            option.create_widget(upper_frame, grid_layout)
+            option.create_widget(upper_frame, grid_layout, idx)
 
         list_aims: list[Aim] = [aim for aim in self.upper_frame if isinstance(aim, Aim)]
         if list_aims:
@@ -313,7 +310,7 @@ class Page:
         if self.previous_page is None and self.next_page is None:
             return
 
-        horizontal_layout = QtW.QHBoxLayout(scroll_area_layout.parent())
+        horizontal_layout = QtW.QHBoxLayout()
 
         if self.previous_page is not None:
             self.push_button_previous = QtW.QPushButton(central_widget)

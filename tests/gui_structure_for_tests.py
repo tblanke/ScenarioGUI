@@ -13,7 +13,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     FloatBox,
     FunctionButton, Hint,
     IntBox,
-    Page,
+    ListBox, Page,
     ResultFigure,
     ResultText,
 )
@@ -56,6 +56,13 @@ class GUI(GuiStructure):
 
         self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 
+        self.list_box = ListBox(
+            label="List box",
+            default_index=0,
+            entries=["0", "1", "2", "3"],
+            category=self.category_inputs,
+        )
+
         self.category_grid = Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
         self.hint_1 = Hint(category=self.category_grid, hint="Grid example")
@@ -86,16 +93,21 @@ class GUI(GuiStructure):
             category=self.category_grid,
         )
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.float_small_2 = FloatBox(
+        self.list_small_2 = ListBox(
             label="",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            decimal_number=2,
+            default_index=0,
+            entries=["0","1","2","3"],
             category=self.category_grid,
         )
         self.category_grid.activate_graphic_left()
         self.category_grid.activate_graphic_right()
+
+        self.button_box.add_link_2_show(self.hint_1, on_index=1)
+        self.list_small_2.add_link_2_show(self.hint_2, on_index=1)
+        self.aim_add.add_link_2_show(self.int_small_2)
+
+        self.int_small_2.add_aim_option_2_be_set_for_check(self.aim_plot)
+        self.float_small_1.add_aim_option_2_be_set_for_check(self.aim_add)
 
         self.create_results_page()
         self.numerical_results = Category(
@@ -134,3 +146,9 @@ class GUI(GuiStructure):
         self.page_result.set_previous_page(self.page_inputs)
         self.page_result.set_next_page(self.page_settings)
         self.page_result.set_previous_page(self.page_result)
+
+        self.counter = 0
+        self.page_inputs.add_function_called_if_button_clicked(self.count)
+
+    def count(self):
+        self.counter += 1
