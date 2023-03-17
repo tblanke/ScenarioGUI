@@ -8,7 +8,6 @@ import sys
 from pathlib import Path
 from platform import system
 from sys import argv
-from time import sleep
 from typing import TYPE_CHECKING, Callable
 
 from matplotlib import pyplot as plt

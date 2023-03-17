@@ -3,48 +3,38 @@
 [![PyPI version](https://badge.fury.io/py/ScenarioGUI.svg)](https://badge.fury.io/py/ScenarioGUI)
 [![Tests](https://github.com/tblanke/ScenarioGUI/actions/workflows/test.yml/badge.svg)](https://github.com/tblanke/ScenarioGUI/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/tblanke/ScenarioGUI/branch/main/graph/badge.svg?token=P7WX73BTVH)](https://codecov.io/gh/tblanke/ScenarioGUI)
-[![DOI](https://joss.theoj.org/papers/10.21105/joss.04406/status.svg)](https://doi.org/10.21105/joss.04406)
 [![Downloads](https://static.pepy.tech/personalized-badge/scenariogui?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads)](https://pepy.tech/project/scenariogui)
 [![Downloads](https://static.pepy.tech/personalized-badge/scenariogui?period=week&units=international_system&left_color=black&right_color=orange&left_text=Downloads%20last%20week)](https://pepy.tech/project/scenariogui)
 [![Read the Docs](https://readthedocs.org/projects/scenariogui/badge/?version=stable)](https://scenariogui.readthedocs.io/en/stable/)
 
 ## What is *ScenarioGUI*?
 
-<img src="https://raw.githubusercontent.com/tblanke/ScenarioGUI/main/ScenarioGUI/icons/icon.png" width="110" align="left">
+<img src="https://raw.githubusercontent.com/tblanke/ScenarioGUI/main/ScenarioGUI/icons/icon.svg?token=GHSAT0AAAAAAB35NE3HTGDVH5ORMOVJSVC4ZAUOABA" width="110" align="left">
 
-ScenarioGUI is a Python package that contains all the functionalities needed to deal with borefield design. It is developed for both researchers and practitioners.
-The core of this package is the automated sizing of borefield under different conditions. By making use of combination of just-in-time calculations of thermal ground responses (using [pygfunction](https://github.com/MassimoCimmino/pygfunction)) with
-intelligent interpolation, this automated sizing can be done in the order of milliseconds. Please visit our website [https://ScenarioGUI.eu](https://ScenarioGUI.eu) for more information.
+ScenarioGUI is a Python package that contains many functionalities to design your own Graphical User Interfaces (GUI). It should help to create and maintain 
+scenario based GUIs.
 
 #### Read The Docs
 ScenarioGUI has an elaborate documentation were all the functionalities of the tool are explained, with examples.
 This can be found on [ScenarioGUI.readthedocs.io](https://scenariogui.readthedocs.io).
 
-#### Graphical user interface
-ScenarioGUI also comes with a *graphical user interface (GUI)*. This GUI is prebuilt as an exe-file (only for Windows platforms currently) because this provides access to all the functionalities without coding. A setup to install the GUI at the user-defined place is also implemented and available at [https://ScenarioGUI.eu](https://ScenarioGUI.eu).
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/tblanke/ScenarioGUI/main/docs/sources/gui/_figure/ScenarioGUI.PNG" width="600">
-</p>
 
 ## Requirements
 This code is tested with Python 3.10 and 3.11 and requires the following libraries (the versions mentioned are the ones with which the code is tested)
 
-* Numpy (>=1.20.2)
-* Scipy (>=1.6.2)
-* Matplotlib (>=3.4.1)
-* Pygfunction (>=2.2.1)
-* Openpyxl (>=3.0.7)
-* Pandas (>=1.2.4)
-
-For the GUI
-
-* PySide6 (>=6.4.1)
-* configparser (>=5.3.0)
+* PySide6>=6.4.1
+* matplotlib>=3.5.2
+* numpy>=1.23.1
+* pandas>=1.4.3
+* black>=23.1.0
 
 For the tests
 
-* Pytest (>=7.1.2)
+* pytest>=7.1.2
+* pytest-cov>=3.0.0
+* pytest-timeout>=2.1.0
+* pytest-qt>=4.1.0
+* keyboard>=0.13.5
 
 ## Quick start
 ### Installation
@@ -55,25 +45,12 @@ One can install ScenarioGUI by running Pip and running the command
 pip install ScenarioGUI
 ```
 
-or one can install a newer development version using
-
-```
-pip install --extra-index-url https://test.pypi.org/simple/ ScenarioGUI
-```
-
 Developers can clone this repository.
 
-It is a good practise to use virtual environments (venv) when working on a (new) Python project so different Python and package versions don't conflict with eachother. For ScenarioGUI, Python 3.8 or higher is recommended. General information about Python virtual environments can be found [here](https://docs.Python.org/3.9/library/venv.html) and in [this article](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/).
+It is a good practise to use virtual environments (venv) when working on a (new) Python project so different Python and package versions don't conflict with 
+eachother. For ScenarioGUI, Python 3.10 or higher is recommended. General information about Python virtual environments can be found [here](https://docs.
+Python.org/3.9/library/venv.html) and in [this article](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/).
 
-### Check installation
-
-To check whether everything is installed correctly, run the following command
-
-```
-pytest --pyargs ScenarioGUI
-```
-
-This runs some predefined cases to see whether all the internal dependencies work correctly. All test should pass successfully.
 
 ### Get started with ScenarioGUI
 
@@ -163,44 +140,4 @@ See [ScenarioGUI license](LICENSE).
 - Do you have a great idea for a new feature?
 - Do you have a specific remark/problem?
 
-Please do contact us at [wouter@scenariogui.eu](mailto:wouter@scenariogui.eu).
-
-## Citation
-Please cite ScenarioGUI using the JOSS paper.
-
-Peere, W., Blanke, T.(2022). ScenarioGUI: An open-source tool for borefield sizing in Python. _Journal of Open Source Software, 7_(76), 4406, https://doi.org/10.21105/joss.04406
-
-For more information on how to cite ScenarioGUI, please visit the ReadTheDocs at [ScenarioGUI.readthedocs.io](https://scenariogui.readthedocs.io/en/stable/).
-
-
-## References
-
-### Development of ScenarioGUI
-Peere, W., Blanke, T. (2022). ScenarioGUI: An open-source tool for borefield sizing in Python. _Journal of Open Source Software, 7_(76), 4406, https://doi.org/10.21105/joss.04406
-
-Peere, W., Picard, D., Cupeiro Figueroa, I., Boydens, W., and Helsen, L. (2021). Validated combined first and last year borefield sizing methodology. In _Proceedings of International Building Simulation Conference 2021_. Brugge (Belgium), 1-3 September 2021. https://doi.org/10.26868/25222708.2021.30180
-
-Peere, W. (2020). Methode voor economische optimalisatie van geothermische verwarmings- en koelsystemen. Master thesis, Department of Mechanical Engineering,
-KU Leuven, Belgium.
-
-### Applications/Mentions of ScenarioGUI
-
-Cimmino, M., Cook., J. C. (2022). pygfunction 2.2 : New Features and Improvements in Accuracy and Computational Efficiency. In _Proceedings of IGSHPA Research Track 2022_. Las Vegas (USA), 6-8 December 2022. https://doi.org/10.22488/okstate.22.000015
-
-Verleyen, L., Peere, W., Michiels, E., Boydens, W., Helsen, L. (2022). The beauty of reason and insight: a story about 30 years old borefield equations. _IEA HPT Magazine 40_(3), 36-39, https://doi.org/10.23697/6q4n-3223
-
-Peere, W., Boydens, W., Helsen, L. (2022). ScenarioGUI: een open-sourcetool voor boorvelddimensionering. Presented at the 15e warmtepompsymposium: van uitdaging naar aanpak, Quadrivium, Heverlee, België.
-
-Peere, W., Coninx, M., De Nies, J., Hermans, L., Boydens, W., Helsen, L. (2022). Cost-efficient Cooling of Buildings by means of Borefields with Active and Passive Cooling. Presented at the 15e warmtepompsymposium: van uitdaging naar aanpak, Quadrivium, Heverlee, België.
-
-Peere, W. (2022). Technologieën voor de energietransitie. Presented at the Energietransitie in meergezinswoningen en kantoorgebouwen: uitdagingen!, VUB Brussel Bruxelles - U Residence.
-
-Sharifi., M. (2022). Early-Stage Integrated Design Methods for Hybrid GEOTABS Buildings. PhD thesis, Department of Architecture and Urban Planning, Faculty of Engineering and Architecture, Ghent University.
-
-Coninx, M., De Nies, J. (2022). Cost-efficient Cooling of Buildings by means of Borefields with Active and Passive Cooling. Master thesis, Department of Mechanical Engineering, KU Leuven, Belgium.
-
-Michiels, E. (2022). Dimensionering van meerdere gekoppelde boorvelden op basis van het type vraagprofiel en de verbinding met de gebruikers. Master thesis, Department of Mechanical Engineering, KU Leuven, Belgium.
-
-Vanpoucke, B. (2022). Optimale dimensionering van boorvelden door een variabel massadebiet. Master thesis, Department of Mechanical Engineering, KU Leuven, Belgium.
-
-Haesen R., Hermans L. (2021). Design and Assessment of Low-carbon Residential District Concepts with (Collective) Seasonal Thermal Energy Storage. Master thesis, Departement of Mechanical Engineering, KU Leuven, Belgium.
+Please do contact us at [blanke@fh-aachen.de](mailto:blanke@fh-aachen.de).

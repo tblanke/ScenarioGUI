@@ -31,6 +31,7 @@ currentdir = dirname(realpath(__file__))
 parentdir = dirname(currentdir)
 path.append(parentdir)
 
+
 # main GUI class
 class MainWindow(QtW.QMainWindow, BaseUI):
     """
@@ -89,14 +90,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # check if backup folder exits and otherwise create it
         makedirs(dirname(self.backup_file), exist_ok=True)
         makedirs(dirname(self.default_path), exist_ok=True)
-        for idx, (name, icon, short_cut) in enumerate(
-            zip(
-                self.translations.languages,
-                self.translations.icon,
-                self.translations.short_cut,
-                strict=True
-            )
-        ):
+        for idx, (name, icon, short_cut) in enumerate(zip(self.translations.languages, self.translations.icon, self.translations.short_cut, strict=True)):
             self._create_action_language(idx, name, icon, short_cut)
         # add languages to combo box
         self.gui_structure.option_language.widget.addItems(self.translations.languages)
@@ -526,7 +520,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # return if no scenarios exits
         if not self.list_ds:
-            return 
+            return
 
         def set_name(text):
             # sets the name of the current scenario to text
@@ -792,7 +786,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # set and change the window title
         self.filename = saving["filename"]
         general_changes(saving["names"])
-
 
     def _save_to_data(self, location: str | PurePath) -> None:
         """

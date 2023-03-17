@@ -10,9 +10,9 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
-from PySide6 import QtGui
 
 import ScenarioGUI.global_settings as globs
+
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -192,7 +192,8 @@ class FileNameBox(Option):
         layout = self.create_frame(frame, layout_parent, False)
         self.widget.setParent(self.frame)
         self.widget.setStyleSheet(
-            f"QLineEdit{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.LIGHT};background-color: {globs.LIGHT};font-weight:500;\n"
+            f"QLineEdit{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.LIGHT};"
+            f"background-color: {globs.LIGHT};font-weight:500;\n"
             f"selection-background-color: {globs.LIGHT_SELECT};{'}'}\n"
             f"QLineEdit:hover{'{'}background-color: {globs.DARK};{'}'}"
         )

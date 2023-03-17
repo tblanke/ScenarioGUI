@@ -4,7 +4,6 @@ aims in the GUI.
 """
 from __future__ import annotations
 
-import logging
 from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC
@@ -56,7 +55,6 @@ class CalcProblem(QtC.QThread):
         try:
             func()
         except ValueError as err:
-            logging.exception(f"{err}")
             self.ds.debug_message = err
             # save bore field in Datastorage
             self.ds.results = None

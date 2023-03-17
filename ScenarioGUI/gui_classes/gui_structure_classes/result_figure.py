@@ -13,6 +13,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 import ScenarioGUI.global_settings as globs
+
 from .category import Category
 
 if TYPE_CHECKING:  # pragma: no cover

@@ -11,6 +11,7 @@ import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+
 from .aim import Aim
 from .functions import _update_opponent_not_change, _update_opponent_toggle, check_aim_options
 
@@ -18,7 +19,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
     from .category import Category
-    from .option import Option
 
 
 class Page:

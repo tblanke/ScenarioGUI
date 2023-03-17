@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
 
-
 import ScenarioGUI.global_settings as globs
+
 from .aim import Aim
 
 if TYPE_CHECKING:  # pragma: no cover

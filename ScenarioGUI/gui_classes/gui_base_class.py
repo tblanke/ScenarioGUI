@@ -57,7 +57,7 @@ class BaseUI:
     action_new: QtG.QAction
     frame_progress_bar: QtW.QFrame
     status_bar_progress_bar: QtW.QStatusBar
-    
+
     def setup_ui(self, ghe_tool):
         if not ghe_tool.objectName():
             ghe_tool.setObjectName("GHEtool")
@@ -80,15 +80,18 @@ class BaseUI:
         ghe_tool.setStyleSheet(
             f"*{'{'}color: {globs.WHITE}; font: {globs.FONT_SIZE}pt '{globs.FONT}';background-color: {globs.DARK};selection-background-color: {globs.LIGHT};"
             f"alternate-background-color: {globs.LIGHT};{'}'}\n"
-            f"QPushButton{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color:{globs.WHITE};gridline-color:{globs.LIGHT};background-color:{globs.LIGHT};"
-            f"font: 700 11pt '{globs.FONT}';{'}'}"
+            f"QPushButton{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color:{globs.WHITE};gridline-color:{globs.LIGHT};"
+            f"background-color:{globs.LIGHT};"
+            f"font: 700 {globs.FONT_SIZE}pt '{globs.FONT}';{'}'}"
             f"QPushButton:hover{'{'}background-color: {globs.DARK};{'}'}\n"
-            f"QPushButton:disabled{'{'}border: 3px solid {globs.GREY};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.GREY};background-color: {globs.GREY};{'}'}\n"
+            f"QPushButton:disabled{'{'}border: 3px solid {globs.GREY};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.GREY};"
+            f"background-color: {globs.GREY};{'}'}\n"
             f"QPushButton:disabled:hover{'{'}background-color: {globs.DARK};{'}'}\n"
             f"QComboBox{'{'}border: 1px solid {globs.WHITE};border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;{'}'}\n"
-            f"QSpinBox{'{'}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};border: 1px solid {globs.WHITE}; font: 11pt '{globs.FONT}';{'}'}\n"
+            f"QSpinBox{'{'}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};border: 1px solid {globs.WHITE}; "
+            f"font: {globs.FONT_SIZE}pt '{globs.FONT}';{'}'}\n"
             f"QLineEdit{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.LIGHT};background-color: "
-            f"{globs.LIGHT};font-weight:500;\n"
+            f"{globs.LIGHT};font-weight:700;\n"
             f"selection-background-color: {globs.LIGHT_SELECT};{'}'}\n"
             f"QLineEdit:hover{'{'}background-color: {globs.DARK};{'}'}"
             f"QToolTip{'{'}color: {globs.WHITE}; background-color: {globs.DARK}; border: 1px solid {globs.LIGHT};border-radius: 4px;{'}'}"
@@ -269,7 +272,8 @@ class BaseUI:
             f"*{'{'}border: 1px solid {globs.WHITE};{'}'}\n"
             "QListWidget{outline: 0;}\n"
             f"QListWidget::item:selected{'{'}background:{globs.LIGHT};color: {globs.WHITE};border: 0px solid {globs.WHITE};{'}'}\n"
-            f"QListWidget::item:hover{'{'}border: 1px solid {globs.WHITE};color: {globs.WHITE};{'}'}QListWidget:disabled{'{'}background-color: {globs.GREY};{'}'}"
+            f"QListWidget::item:hover{'{'}border: 1px solid {globs.WHITE};color: {globs.WHITE};{'}'}"
+            f"QListWidget:disabled{'{'}background-color: {globs.GREY};{'}'}"
         )
         self.list_widget_scenario.setSizeAdjustPolicy(QtW.QAbstractScrollArea.AdjustToContents)
         self.list_widget_scenario.setAutoScrollMargin(10)
@@ -320,16 +324,16 @@ class BaseUI:
         self.horizontal_layout_progress_bar.addWidget(self.progress_bar)
 
         self.vertical_layout_main.addWidget(self.frame_progress_bar)
-        
+
         self.horizontal_layout_start_buttons = QtW.QHBoxLayout()
         self.horizontal_layout_start_buttons.setObjectName("horizontalLayout_2")
-        
+
         self.status_bar = StatusBar(ghe_tool)
         self.status_bar.widget.setObjectName("status_bar")
         self.status_bar.widget.setStyleSheet(f"QStatusBar::item{'{'}border:None;{'}'}QStatusBar{'{'}color:{globs.WHITE};background-color: {globs.DARK};{'}'}")
         self.horizontal_layout_start_buttons.addWidget(self.status_bar.widget)
         globs.LOGGER.addHandler(self.status_bar)
-        
+
         self.horizontal_spacer_start_buttons = QtW.QSpacerItem(40, 20, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
 
         self.horizontal_layout_start_buttons.addItem(self.horizontal_spacer_start_buttons)

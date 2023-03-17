@@ -9,8 +9,9 @@ from typing import TYPE_CHECKING
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
-from .option import Option
 import ScenarioGUI.global_settings as globs
+
+from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -259,7 +260,8 @@ class FloatBox(Option):
         layout = self.create_frame(frame, layout_parent)
         self.widget.setParent(self.frame)
         self.widget.setStyleSheet(
-            f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};border: 1px solid {globs.WHITE};font: 11pt "Lexend Light";{"}"}'
+            f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};'
+            f'border: 1px solid {globs.WHITE};font: {globs.FONT_SIZE}pt "{globs.FONT}";{"}"}'
         )
         self.widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
         self.widget.setProperty("showGroupSeparator", True)

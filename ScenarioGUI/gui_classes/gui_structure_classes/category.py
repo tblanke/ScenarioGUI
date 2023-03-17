@@ -9,6 +9,7 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+
 from .hint import Hint
 from .result_text import ResultText
 
@@ -152,7 +153,8 @@ class Category:
         self.label.setParent(page)
         self.label.setText(self.label_text)
         self.label.setStyleSheet(
-            f"QLabel {'{'}border: 1px solid  {globs.LIGHT};border-top-left-radius: 15px;border-top-right-radius: 15px;background-color:  {globs.LIGHT};padding: 5px 0px;\n"
+            f"QLabel {'{'}border: 1px solid  {globs.LIGHT};border-top-left-radius: 15px;border-top-right-radius: 15px;"
+            f"background-color:  {globs.LIGHT};padding: 5px 0px;\n"
             f"	color:  {globs.WHITE};font-weight:700;{'}'}"
         )
         self.label.setAlignment(QtC.Qt.AlignCenter | QtC.Qt.AlignVCenter)
