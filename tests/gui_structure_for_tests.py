@@ -11,7 +11,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     FigureOption,
     FileNameBox,
     FloatBox,
-    Hint,
+    FunctionButton, Hint,
     IntBox,
     Page,
     ResultFigure,
@@ -52,13 +52,15 @@ class GUI(GuiStructure):
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
 
+        self.function_button = FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
+
         self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 
         self.category_grid = Category(page=self.page_inputs, label="Grid")
-        self.category_grid.activate_grid_layout(5)
+        self.category_grid.activate_grid_layout(3)
         self.hint_1 = Hint(category=self.category_grid, hint="Grid example")
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.int_small = IntBox(
+        self.int_small_1 = IntBox(
             label="",
             default_value=2,
             minimal_value=0,
@@ -66,7 +68,7 @@ class GUI(GuiStructure):
             category=self.category_grid,
         )
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.float_small = FloatBox(
+        self.float_small_1 = FloatBox(
             label="",
             default_value=2,
             minimal_value=0,
@@ -74,6 +76,26 @@ class GUI(GuiStructure):
             decimal_number=2,
             category=self.category_grid,
         )
+        self.hint_2 = Hint(category=self.category_grid, hint="Grid example")
+        # int boxes and float boxes with no label are displayed small in a grid layout
+        self.int_small_2 = IntBox(
+            label="",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=200,
+            category=self.category_grid,
+        )
+        # int boxes and float boxes with no label are displayed small in a grid layout
+        self.float_small_2 = FloatBox(
+            label="",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=200,
+            decimal_number=2,
+            category=self.category_grid,
+        )
+        self.category_grid.activate_graphic_left()
+        self.category_grid.activate_graphic_right()
 
         self.create_results_page()
         self.numerical_results = Category(
@@ -107,3 +129,8 @@ class GUI(GuiStructure):
 
         self.create_settings_page()
         self.create_lists()
+
+        self.page_inputs.set_next_page(self.page_result)
+        self.page_result.set_previous_page(self.page_inputs)
+        self.page_result.set_next_page(self.page_settings)
+        self.page_result.set_previous_page(self.page_result)

@@ -105,7 +105,7 @@ def test_change_scenario(qtbot):
     assert main_window.list_widget_scenario.currentItem().text()[-1] != "*"
     # check if just one * is added if multiple options are changed
     main_window.gui_structure.float_b.set_value(4)
-    main_window.gui_structure.float_small.set_value(4)
+    main_window.gui_structure.float_small_1.set_value(4)
     assert main_window.list_widget_scenario.currentItem().text()[-1] == "*"
     assert main_window.list_widget_scenario.currentItem().text()[-2] != "**"
     main_window.save_scenario()

@@ -58,6 +58,7 @@ class Translations:  # pragma: no cover
         "choose_load",
         "option_toggle_buttons",
         "no_file_selected",
+        "aim_add",
         "languages",
     )
 
@@ -130,3 +131,4 @@ class Translations:  # pragma: no cover
         self.choose_load: list[str] = ["Choose file to load scenarios", "Wählen Sie Datei zum Laden von Szenarien"]
         self.option_toggle_buttons: list[str] = ["Use toggle buttons?:, no , yes ", "Umschalterbutton?:, Nein , Ja "]
         self.no_file_selected: list[str] = ["No file selected.", "Keine Datei ausgewählt."]
+        self.aim_add: list[str] = ["Adding", "Addieren"]
