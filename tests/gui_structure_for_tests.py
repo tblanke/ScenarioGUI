@@ -17,7 +17,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     ListBox,
     Page,
     ResultFigure,
-    ResultText,
+    ResultText, TextBox,
 )
 
 if TYPE_CHECKING:
@@ -64,6 +64,8 @@ class GUI(GuiStructure):
             entries=["0", "1", "2", "3"],
             category=self.category_inputs,
         )
+
+        self.text_box = TextBox(label="Login", default_text="Example text 15", category=self.category_inputs)
 
         self.category_grid = Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)

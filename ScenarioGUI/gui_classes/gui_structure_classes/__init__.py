@@ -14,6 +14,7 @@ from .option import Option
 from .page import Page
 from .result_figure import ResultFigure
 from .result_text import ResultText
+from .text_box import TextBox
 
 __all__ = [
     "Aim",
@@ -30,4 +31,5 @@ __all__ = [
     "Page",
     "ResultFigure",
     "ResultText",
+    "TextBox",
 ]

@@ -28,6 +28,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     Page,
     ResultFigure,
     ResultText,
+    TextBox,
 )
 
 if TYPE_CHECKING:
@@ -112,7 +113,9 @@ class GUI(GuiStructure):
 
         self.function_button = FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
 
-        self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
+        self.text_box = TextBox(label="Login", default_text="Hello", category=self.category_inputs)
+        self.text_box.deactivate_size_limit()
+        self.pass_word = TextBox(label="Password", default_text="", category=self.category_inputs, password=True)
 
         self.category_grid = Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)

@@ -69,7 +69,6 @@ class FileNameBox(Option):
         """
         super().__init__(label, default_value, category)
         self.widget: QtW.QLineEdit = QtW.QLineEdit(self.default_parent)
-        # self.widget.setEchoMode(QtW.QLineEdit.Password)
         self.dialog_text: str = dialog_text
         self.error_text: str = error_text
         self.button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
