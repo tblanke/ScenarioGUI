@@ -16,6 +16,7 @@ from ..result_creating_class_for_tests import ResultsClass, data_2_results
 global_vars.ResultsClass = ResultsClass
 global_vars.DATA_2_RESULTS_FUNCTION = data_2_results
 
+
 def test_backup(qtbot):
     # init gui window
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations)

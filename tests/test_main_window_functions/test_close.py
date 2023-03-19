@@ -34,7 +34,7 @@ def test_close(qtbot):
     # set filenames
     filename_1 = f"test_1.{global_vars.FILE_EXTENSION}"
     # delete files if they already exists
-    if os.path.exists(main_window.default_path.joinpath(filename_1)):
+    if os.path.exists(main_window.default_path.joinpath(filename_1)):  # pragma: no cover
         os.remove(main_window.default_path.joinpath(filename_1))
 
     def close():

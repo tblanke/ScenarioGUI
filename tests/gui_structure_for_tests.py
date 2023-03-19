@@ -103,6 +103,7 @@ class GUI(GuiStructure):
             entries=["0", "1", "2", "3"],
             category=self.category_grid,
         )
+        self.text_box_small = TextBox(label="", default_text="Example text 15", category=self.category_grid, password=True)
         self.category_grid.activate_graphic_left()
         self.category_grid.activate_graphic_right()
 
