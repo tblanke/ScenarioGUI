@@ -14,8 +14,13 @@ from .aim import Aim
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
+    from typing import Protocol
 
     from .category import Category
+
+    class CategoryOrFlexibleOption(Protocol):
+        """class with list_of_options"""
+        list_of_options :list [Option]
 
 
 class Option(metaclass=abc.ABCMeta):
@@ -29,7 +34,7 @@ class Option(metaclass=abc.ABCMeta):
         self,
         label: str,
         default_value: bool | int | float | str,
-        category: Category,
+        category: CategoryOrFlexibleOption,
     ):
         """
         Parameters
@@ -38,7 +43,7 @@ class Option(metaclass=abc.ABCMeta):
             The label related to the option
         default_value : bool, int, float, str
             The default value of the option
-        category : Category
+        category : Category FlexibleOption
             The category in which the option should be placed
         """
         self.label_text: str = label
@@ -236,7 +241,6 @@ class Option(metaclass=abc.ABCMeta):
         layout = QtW.QHBoxLayout(self.frame)
         layout.setSpacing(6)
         layout.setContentsMargins(0, 0, 0, 0)
-        self.label.setParent(frame)
         self.label.setText(self.label_text)
         layout.addWidget(self.label)
         if create_spacer:

@@ -16,7 +16,7 @@ from .option import Option
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
-    from .category import Category
+    from .option import CategoryOrFlexibleOption
     from .function_button import FunctionButton
     from .hint import Hint
 
@@ -31,7 +31,7 @@ class FloatBox(Option):
         self,
         label: str,
         default_value: float,
-        category: Category,
+        category: CategoryOrFlexibleOption,
         *,
         decimal_number: int = 0,
         minimal_value: float = 0.0,
@@ -46,7 +46,7 @@ class FloatBox(Option):
             The label of the FloatBox
         default_value : float
             The default value of the FloatBox
-        category : Category
+        category : Category FlexibleOption
             Category in which the FloatBox should be placed
         decimal_number : int
             Number of decimal points in the FloatBox

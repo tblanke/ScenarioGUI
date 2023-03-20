@@ -13,6 +13,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from .option import Option
+from copy import deepcopy
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -20,42 +21,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
-
-
-class OptionNames(Enum):
-    FLOAT = auto()  # 1
-    INT = auto()  # 2
-    TEXT = auto()  # 3
-    LIST = auto()  # 4
-    BUTTON = auto()  # 5
-
-
-class FloatOption:
-    name = OptionNames.FLOAT
-
-    def __init__(self, *, default_value: float = 0.0, decimal_number: int = 0, minimal_value: float = 0.0, maximal_value: float = 100.0, step: float = 1.0):
-        """
-
-        Parameters
-        ----------
-        default_value : float
-            The default value of the FloatBox
-        decimal_number : int
-            Number of decimal points in the FloatBox
-        minimal_value : float
-            Minimal value of the FloatBox
-        maximal_value : float
-            Maximal value of the FloatBox
-        step : float
-            The step by which the value of the FloatBox should change when the
-            increase or decrease buttons are pressed.
-        """
-        self.default_value = default_value
-        self.decimal_number = decimal_number
-        self.minimal_value = minimal_value
-        self.maximal_value = maximal_value
-        self.step = step
-
 
 
 class FlexibleAmount(Option):
@@ -67,7 +32,7 @@ class FlexibleAmount(Option):
     def __init__(
         self,
         label: str,
-        entries: list[],
+        entry_mame: str,
         category: Category,
     ):
         """
@@ -76,19 +41,8 @@ class FlexibleAmount(Option):
         ----------
         label : str
             The label of the FloatBox
-        default_value : float
-            The default value of the FloatBox
         category : Category
             Category in which the FloatBox should be placed
-        decimal_number : int
-            Number of decimal points in the FloatBox
-        minimal_value : float
-            Minimal value of the FloatBox
-        maximal_value : float
-            Maximal value of the FloatBox
-        step : float
-            The step by which the value of the FloatBox should change when the
-            increase or decrease buttons are pressed.
 
         Examples
         --------
@@ -105,25 +59,54 @@ class FlexibleAmount(Option):
         .. figure:: _static/Example_Float_Box.PNG
 
         """
-        super().__init__(label, default_value, category)
-        self.decimal_number: int = decimal_number
-        self.minimal_value: float = minimal_value
-        self.maximal_value: float = maximal_value
-        self.step: float = step
-        self.widget: QtW.QDoubleSpinBox = QtW.QDoubleSpinBox(self.default_parent)
+        super().__init__(label, 0, category)
+        self.category = category
+        self.entry_name: str = entry_mame
+        self.list_of_options: list[Option] = []
+        self.add_button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
+        self.delete_button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
+        self.add_button.clicked.connect(self.add_entry)
+        self.delete_button.clicked.connect(self.del_entry)
+        self.entries: list[QtW.QFrame] = []
 
-    def get_value(self) -> float:
+    def add_entry(self) -> None:
+        frame: QtW.QFrame = QtW.QFrame(self.category.frame)
+        frame.setFrameShape(QtW.QFrame.StyledPanel)
+        frame.setFrameShadow(QtW.QFrame.Raised)
+        frame.setStyleSheet("QFrame {\n" f"	border: 0px solid {globs.WHITE};\n" "	border-radius: 0px;\n" "  }\n")
+        self.entries.append(frame)
+        layout = QtW.QHBoxLayout(frame)
+        layout.setSpacing(6)
+        layout.setContentsMargins(0, 0, 0, 0)
+        label = QtW.QLabel(self.frame)
+        label.setText(self.entry_name)
+        layout.addWidget(self.label)
+        spacer = QtW.QSpacerItem(1, 1, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
+        layout.addItem(spacer)
+        for option in self.list_of_options:
+            option = deepcopy(option)
+            option.label_text = ""
+            option.create_widget(frame, layout)
+        self.category.layout_frame.addWidget(self.frame)
+
+    def del_entry(self) -> None:
+        entry = self.entries[-1]
+        for child in entry.children():
+            child.setParent(None)
+        entry.setParent(None)
+
+    def get_value(self) -> list[tuple[str, float, int, bool]]:
         """
         This function gets the value of the FloatBox.
 
         Returns
         -------
-        float
-            Value of the FloatBox
+        list of values
+            Values of the FlexibleAmount
         """
         return self.widget.value()
 
-    def set_value(self, value: float) -> None:
+    def set_value(self, value: list[tuple[str, float, int, bool]]) -> None:
         """
         This function sets the value of the FloatBox.
 
