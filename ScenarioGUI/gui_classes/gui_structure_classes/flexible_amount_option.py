@@ -64,12 +64,14 @@ class FlexibleAmount(Option):
         self.entries: list[QtW.QFrame] = []
         self.option_entries: list[list[Option]] = []
         self.option_classes: list[tuple[type[Option], dict, str]] = []
+        self.buttons: list[tuple[QtW.QPushButton, QtW.QPushButton]] = []
         
     def add_option(self, option: type[Option], name: str, **kwargs):
         self.option_classes.append((option, kwargs, name))
 
     def _add_entry(self) -> None:
         length = len(self.option_entries)
+        print(f'Here{len(self.option_entries)}')
         label = QtW.QLabel(self.frame)
         label.setText(f"{self.entry_name} {length + 1}")
         self.frame.layout().addWidget(label, length + 1, 0)
@@ -87,26 +89,24 @@ class FlexibleAmount(Option):
         add_button.setText(" + ")
         delete_button.setText(" - ")
         add_button.clicked.connect(self._add_entry)
-        delete_button.clicked.connect(partial(self._del_entry, row=length + 1))
+        delete_button.clicked.connect(partial(self._del_entry, button=delete_button))
         self.frame.layout().addWidget(add_button, length + 1, i)
         self.frame.layout().addWidget(delete_button, length + 1, i + 1)
+        self.buttons.append((add_button, delete_button))
 
-    def _del_entry(self, *, row: int | None = None) -> None:
-        row = len(self.option_entries) if row is None else row
-        if row <= 1:
-            return 
-        del self.option_entries[row - 1]
-        for item in [self.frame.layout().itemAtPosition(row, i) for i in range(len(self.option_classes) + 4) 
-                     if self.frame.layout().itemAtPosition(row, i) is not None]:
-            item.widget().setParent(None)
-        for row in range(row + 1, len(self.option_entries) + 1):
-            print(f'Here{len(self.option_entries)}')
-            for i in range(len(self.option_classes) + 4):
-                item = self.frame.layout().itemAtPosition(row, i)
-                if item is not None:
-                    self.frame.layout().addWidget(item.widget(), row - 1, i)
+    def _del_entry(self, *, button: QtW.QPushButton | None = None) -> None:
+        length = len(self.option_entries)
+        idx = [idx for idx, (_, but) in enumerate(self.buttons) if but == button]
+        row = length if button is None else length if not idx else idx[0]
+        print(f"row: {row}, {len(self.buttons)}")
+        if row == length and row == 0:
+            return
+        values = self.get_value()
+        print(f"row: {row}, {len(self.buttons)}, values {len(values)}")
+        del values[row]
+        self.set_value(values)
 
-    def get_value(self) -> list[tuple[str | float | int | bool]]:
+    def get_value(self) -> list[list[str | float | int | bool]]:
         """
         This function gets the value of the FloatBox.
 
@@ -115,10 +115,9 @@ class FlexibleAmount(Option):
         list of values
             Values of the FlexibleAmount
         """
-        return 0
-        return [i.get_value() for i in frame.children for frame in self.entries]
+        return [[option.get_value() for option in option_tuple] for option_tuple in self.option_entries]
 
-    def set_value(self, value: list[tuple[str, float, int, bool]]) -> None:
+    def set_value(self, value: list[list[str, float, int, bool]]) -> None:
         """
         This function sets the value of the FloatBox.
 
@@ -131,8 +130,25 @@ class FlexibleAmount(Option):
         -------
         None
         """
-        return
-        self.widget.setValue(value)
+        len_options = len(self.option_entries)
+        if len(value) < len_options:
+            for length in range(len(value), len_options):
+                for item in [self.frame.layout().itemAtPosition(length, i) for i in range(len(self.option_classes) + 4)
+                             if self.frame.layout().itemAtPosition(length, i) is not None]:
+
+                    item.widget().setParent(None)
+                del self.option_entries[length]
+            #for length in reversed(range(len(value), len_options)):
+            self.buttons = self.buttons[:len(value)]
+        else:
+            for _ in range(len_options, len(value) + 1):
+                self._add_entry()
+        print(len(value), len_options)
+        for options, values in zip(self.option_entries, value, strict=True):
+            for option, val in zip(options, values, strict=True):
+                option.set_value(val)
+
+        #[[option.set_value(value) for option in option_tuple] for option_tuple in self.option_entries]
 
     def _init_links(self) -> None:
         """
