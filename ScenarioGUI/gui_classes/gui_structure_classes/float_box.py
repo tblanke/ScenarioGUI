@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
-
 import ScenarioGUI.global_settings as globs
 
 from .option import Option
@@ -16,7 +15,7 @@ from .option import Option
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
-    from .option import CategoryOrFlexibleOption
+    from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
 
@@ -31,7 +30,7 @@ class FloatBox(Option):
         self,
         label: str,
         default_value: float,
-        category: CategoryOrFlexibleOption,
+        category: Category,
         *,
         decimal_number: int = 0,
         minimal_value: float = 0.0,
@@ -46,7 +45,7 @@ class FloatBox(Option):
             The label of the FloatBox
         default_value : float
             The default value of the FloatBox
-        category : Category FlexibleOption
+        category : Category
             Category in which the FloatBox should be placed
         decimal_number : int
             Number of decimal points in the FloatBox

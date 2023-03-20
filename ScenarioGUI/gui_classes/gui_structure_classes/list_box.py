@@ -7,7 +7,6 @@ from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
-
 import ScenarioGUI.global_settings as globs
 
 from .functions import check
@@ -228,9 +227,11 @@ class ListBox(Option):
         )
         self.widget.addItems(self.entries)
         self.widget.setCurrentIndex(self.default_value)
-        self.widget.setMaximumWidth(100)
-        self.widget.setMinimumWidth(100)
+        if self.limit_size:
+            self.widget.setMaximumWidth(100)
+            self.widget.setMinimumWidth(100)
         self.widget.currentIndexChanged.connect(ft_partial(check, self.linked_options, self))  # pylint: disable=E1101
+        self.widget.setMinimumHeight(28)
         if row is not None and isinstance(layout_parent, QtW.QGridLayout):
             layout_parent.addWidget(self.widget, column, row)
             return

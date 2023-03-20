@@ -7,13 +7,12 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 from platform import system
-from sys import argv, exit as sys_exit
+from sys import argv
+from sys import exit as sys_exit
 from typing import TYPE_CHECKING
 
-from matplotlib import pyplot as plt
-
 import ScenarioGUI.global_settings as global_vars
-from examples.translation_class import Translations
+from matplotlib import pyplot as plt
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
 from ScenarioGUI.gui_classes.gui_structure_classes import (
     Aim,
@@ -21,19 +20,24 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     Category,
     FigureOption,
     FileNameBox,
+    FlexibleAmount,
     FloatBox,
     FunctionButton,
     Hint,
     IntBox,
+    ListBox,
     Page,
     ResultFigure,
     ResultText,
     TextBox,
 )
 
+from examples.translation_class import Translations
+
 if TYPE_CHECKING:
-    import PySide6.QtWidgets as QtW
     from collections.abc import Callable
+
+    import PySide6.QtWidgets as QtW
 
 os_system = system()
 is_frozen = getattr(sys, "frozen", False) and os_system == "Windows"  # pragma: no cover
@@ -116,6 +120,12 @@ class GUI(GuiStructure):
         self.text_box = TextBox(label="Login", default_text="Hello", category=self.category_inputs)
         self.text_box.deactivate_size_limit()
         self.pass_word = TextBox(label="Password", default_text="", category=self.category_inputs, password=True)
+        
+        self.flex_option = FlexibleAmount(label="layers", entry_mame="Layer", category=self.category_inputs)
+        self.flex_option.add_option(TextBox, name="name", default_text="layer")
+        self.flex_option.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5)
+        self.flex_option.add_option(IntBox, name="amount", default_value=4, minimal_value=2)
+        self.flex_option.add_option(ListBox, name="amount", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
 
         self.category_grid = Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
@@ -203,7 +213,6 @@ global_vars.DATA_2_RESULTS_FUNCTION = data_2_results
 
 def run(path_list=None):  # pragma: no cover
     import PySide6.QtWidgets as QtW
-
     from ScenarioGUI.global_settings import FILE_EXTENSION
     from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
     from ScenarioGUI.gui_classes.translation_class import Translations

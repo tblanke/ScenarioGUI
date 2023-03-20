@@ -7,7 +7,6 @@ import abc
 from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
-
 import ScenarioGUI.global_settings as globs
 
 from .aim import Aim
@@ -16,7 +15,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
     from typing import Protocol
 
-    from .category import Category
 
     class CategoryOrFlexibleOption(Protocol):
         """class with list_of_options"""
