@@ -30,7 +30,7 @@ def test_flex_amount_option(qtbot):
     assert len(flex_option.get_value()) == flex_option.default_value + 1
     flex_option._del_entry()
     assert len(flex_option.get_value()) == flex_option.default_value
-    flex_option.set_value([['Name',1,2,0]])
+    flex_option.set_value([['Name', 1, 2, 0]])
     assert len(flex_option.get_value()) == 1
     flex_option._del_entry()
     assert len(flex_option.get_value()) == 1
@@ -61,7 +61,7 @@ def test_flex_amount_option(qtbot):
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 5, values[0][1])
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 10, values[1][1])
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 15, values[2][1])
-    
+
     flex_option._init_links()
     assert not flex_option.check_linked_value((2, None))
     assert not flex_option.check_linked_value((None, 20))
