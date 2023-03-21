@@ -1,7 +1,7 @@
 import PySide6.QtWidgets as QtW
-
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
+
 from tests.gui_structure_for_tests import GUI
 from tests.result_creating_class_for_tests import ResultsClass, data_2_results
 from tests.test_translations.translation_class import Translations
@@ -25,6 +25,6 @@ def test_results_figure(qtbot):
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     # check text output
     assert main_window.gui_structure.figure_results.label.text() == "Hello"
-    assert main_window.gui_structure.figure_results.ax.get_ylabel() == "Y-Values"
-    assert main_window.gui_structure.figure_results.ax.get_xlabel() == "X-Values"
+    assert main_window.gui_structure.figure_results.a_x.get_ylabel() == "Y-Values"
+    assert main_window.gui_structure.figure_results.a_x.get_xlabel() == "X-Values"
     main_window.delete_backup()

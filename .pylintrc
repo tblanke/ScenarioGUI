@@ -1,0 +1,6 @@
+[FORMAT]
+max-line-length=160
+ignored-modules=PySide6
+
+[MISCELLANEOUS]
+notes=FIXME,XXX

@@ -119,9 +119,9 @@ class GUI(GuiStructure):
 
         self.text_box = TextBox(label="Login", default_text="Hello", category=self.category_inputs)
         self.text_box.deactivate_size_limit()
-        self.pass_word = TextBox(label="Password", default_text="", category=self.category_inputs, password=True)
+        self.pass_word = TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
         
-        self.flex_option = FlexibleAmount(label="layers", entry_mame="Layer", category=self.category_inputs)
+        self.flex_option = FlexibleAmount(label="layers", default_length=2, entry_mame="Layer", category=self.category_inputs)
         self.flex_option.add_option(TextBox, name="name", default_text="layer")
         self.flex_option.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5)
         self.flex_option.add_option(IntBox, name="amount", default_value=4, minimal_value=2)

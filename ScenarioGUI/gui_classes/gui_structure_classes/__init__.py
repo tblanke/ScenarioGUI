@@ -1,3 +1,7 @@
+"""
+Basic GuiStructure with minimal functionalities
+"""
+
 from __future__ import annotations
 
 from .aim import Aim

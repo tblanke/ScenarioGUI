@@ -27,51 +27,53 @@ class FlexibleAmount(Option):
     The FloatBox can be used to input floating point numbers.
     """
 
+    COUNTER: int = 0
+
     def __init__(
-        self,
-        label: str,
-        entry_mame: str,
-        category: Category,
+            self,
+            label: str,
+            default_length: int,
+            entry_mame: str,
+            category: Category,
     ):
         """
 
         Parameters
         ----------
         label : str
-            The label of the FloatBox
+            The label of the Option
+        default_length : int
+            how many entries should exists per default?
+        entry_mame: str
+            name of the entries
         category : Category
             Category in which the FloatBox should be placed
 
         Examples
         --------
-        >>> option_float = FloatBox(label='Float label text',
-        >>>                         default_value=0.5,
+        >>> option_float = FlexibleAmount(label='flexible option',
+        >>>                         default_length=2,
         >>>                         category=category_example,
-        >>>                         decimal_number=2,
-        >>>                         minimal_value=0,
-        >>>                         maximal_value=1,
-        >>>                         step=0.1)
+        >>>                         entry_mame="layer")
 
         Gives:
 
-        .. figure:: _static/Example_Float_Box.PNG
+        .. figure:: _static/Example_Flexible_Amount.PNG
 
         """
-        super().__init__(label, 0, category)
+        super().__init__(label, default_length, category)
         self.category = category
         self.entry_name: str = entry_mame
         self.list_of_options: list[Option] = []
         self.entries: list[QtW.QFrame] = []
         self.option_entries: list[list[Option]] = []
         self.option_classes: list[tuple[type[Option], dict, str]] = []
-        self.buttons: list[tuple[QtW.QPushButton, QtW.QPushButton]] = []
-        
+
     def add_option(self, option: type[Option], name: str, **kwargs):
         self.option_classes.append((option, kwargs, name))
 
     def _add_entry(self) -> None:
         length = len(self.option_entries)
-        print(f'Here{len(self.option_entries)}')
         label = QtW.QLabel(self.frame)
         label.setText(f"{self.entry_name} {length + 1}")
         self.frame.layout().addWidget(label, length + 1, 0)
@@ -80,29 +82,38 @@ class FlexibleAmount(Option):
         for option, kwargs, _ in self.option_classes:
             option_i = option(**kwargs, category=self, label="")
             option_i.label_text = ""
-            option_i.create_widget(self.frame, self.frame.layout(), column= length + 1, row=i)
+            option_i.create_widget(self.frame, self.frame.layout(), column=length + 1, row=i)
             options.append(option_i)
-            i+=1
+            i += 1
         self.option_entries.append(options)
-        add_button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
-        delete_button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
-        add_button.setText(" + ")
-        delete_button.setText(" - ")
-        add_button.clicked.connect(self._add_entry)
-        delete_button.clicked.connect(partial(self._del_entry, button=delete_button))
+        add_button: QtW.QPushButton = QtW.QPushButton(text=" + ", parent=self.frame, clicked=partial(self._add_entry_at_row, row=length))
+        delete_button: QtW.QPushButton = QtW.QPushButton(text=" - ", parent=self.frame, clicked=partial(self._del_entry, row=length))
         self.frame.layout().addWidget(add_button, length + 1, i)
         self.frame.layout().addWidget(delete_button, length + 1, i + 1)
-        self.buttons.append((add_button, delete_button))
 
-    def _del_entry(self, *, button: QtW.QPushButton | None = None) -> None:
+    def _add_entry_at_row(self, row: int):
+        values = self.get_value()
+        values.insert(row + 1, values[row]) if row + 1 < len(values) else values.append(values[row])
+        self.set_value(values)
+
+    def _del_entry(self, *, row: int | None = None) -> None:
+        """
+        delete an entry.
+
+        Parameters
+        ----------
+        row : int | None
+            row in which should be deleted (None = last one)
+
+        Returns
+        -------
+            None
+        """
         length = len(self.option_entries)
-        idx = [idx for idx, (_, but) in enumerate(self.buttons) if but == button]
-        row = length if button is None else length if not idx else idx[0]
-        print(f"row: {row}, {len(self.buttons)}")
-        if row == length and row == 0:
+        row = length if row is None else row
+        if row == length - 1 == 0:
             return
         values = self.get_value()
-        print(f"row: {row}, {len(self.buttons)}, values {len(values)}")
         del values[row]
         self.set_value(values)
 
@@ -119,12 +130,12 @@ class FlexibleAmount(Option):
 
     def set_value(self, value: list[list[str, float, int, bool]]) -> None:
         """
-        This function sets the value of the FloatBox.
+        This function sets the value of the Flexible Amount option.
 
         Parameters
         ----------
-        value : float
-            Value to which the FloatBox should be set.
+        value : list of list of float, int, str, bool
+            Value to which the option should be set.
 
         Returns
         -------
@@ -133,22 +144,17 @@ class FlexibleAmount(Option):
         len_options = len(self.option_entries)
         if len(value) < len_options:
             for length in range(len(value), len_options):
-                for item in [self.frame.layout().itemAtPosition(length, i) for i in range(len(self.option_classes) + 4)
-                             if self.frame.layout().itemAtPosition(length, i) is not None]:
-
+                for item in [self.frame.layout().itemAtPosition(length + 1, i) for i in range(len(self.option_classes) + 4)
+                             if self.frame.layout().itemAtPosition(length + 1, i) is not None]:
                     item.widget().setParent(None)
                 del self.option_entries[length]
-            #for length in reversed(range(len(value), len_options)):
-            self.buttons = self.buttons[:len(value)]
         else:
-            for _ in range(len_options, len(value) + 1):
+            for _ in range(len_options, len(value)):
                 self._add_entry()
-        print(len(value), len_options)
+
         for options, values in zip(self.option_entries, value, strict=True):
             for option, val in zip(options, values, strict=True):
                 option.set_value(val)
-
-        #[[option.set_value(value) for option in option_tuple] for option_tuple in self.option_entries]
 
     def _init_links(self) -> None:
         """
@@ -173,14 +179,14 @@ class FlexibleAmount(Option):
         bool
             True if the value is between the minimal and maximal value
         """
-        return
+        return True
         return self.minimal_value <= self.get_value() <= self.maximal_value
 
     def add_link_2_show(
-        self,
-        option: Option | Category | FunctionButton | Hint,
-        below: float = None,
-        above: float = None,
+            self,
+            option: Option | Category | FunctionButton | Hint,
+            below: float = None,
+            above: float = None,
     ) -> None:
         """
         This function couples the visibility of an option to the value of the FloatBox object.
@@ -205,16 +211,16 @@ class FlexibleAmount(Option):
 
         >>> option_float.add_link_2_show(option=option_linked, below=0.1, above=0.9)
         """
-        return 
+        return
         self.linked_options.append((option, (below, above)))
         self.widget.valueChanged.connect(ft_partial(self.show_option, option, below, above))
 
     def show_option(
-        self,
-        option: Option | Category | FunctionButton | Hint,
-        below: float | None,
-        above: float | None,
-        args=None,
+            self,
+            option: Option | Category | FunctionButton | Hint,
+            below: float | None,
+            above: float | None,
+            args=None,
     ):
         """
         This function shows the option if the value of the FloatBox is between the below and above value.
@@ -234,7 +240,7 @@ class FlexibleAmount(Option):
         -------
         None
         """
-        return 
+        return
         if below is not None and self.get_value() < below:
             return option.show()
         if above is not None and self.get_value() > above:
@@ -276,16 +282,16 @@ class FlexibleAmount(Option):
         -------
         None
         """
-        return 
+        return
         self.widget.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
 
     def create_widget(
-        self,
-        frame: QtW.QFrame,
-        layout_parent: QtW.QLayout,
-        *,
-        row: int = None,
-        column: int = None,
+            self,
+            frame: QtW.QFrame,
+            layout_parent: QtW.QLayout,
+            *,
+            row: int = None,
+            column: int = None,
     ) -> None:
         """
         This functions creates the FloatBox widget in the frame.
@@ -333,12 +339,12 @@ class FlexibleAmount(Option):
         self.frame.setFrameShape(QtW.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtW.QFrame.Raised)
         layout_parent_i.addWidget(self.frame)
-        #spacer_label = QtW.QLabel(frame_i)
-        #spacer_label.setMinimumHeight(6)
-        #spacer_label.setMaximumHeight(6)
-        #layout_parent_i.addWidget(spacer_label)
+        # spacer_label = QtW.QLabel(frame_i)
+        # spacer_label.setMinimumHeight(6)
+        # spacer_label.setMaximumHeight(6)
+        # layout_parent_i.addWidget(spacer_label)
         QtW.QGridLayout(self.frame)
-        
+
         spacer = QtW.QSpacerItem(1, 1, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
         self.frame.layout().addItem(spacer)
         i = 2
@@ -346,7 +352,7 @@ class FlexibleAmount(Option):
             label = QtW.QLabel(frame)
             label.setText(name)
             self.frame.layout().addWidget(label, 0, i)
-            i+=1
-            
-        self._add_entry()
+            i += 1
+
+        _ = [self._add_entry() for _ in range(self.default_value)]
         layout_parent_i.addWidget(self.frame)

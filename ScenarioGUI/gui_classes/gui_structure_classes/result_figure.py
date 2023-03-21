@@ -9,10 +9,9 @@ import matplotlib.pyplot as plt
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
+import ScenarioGUI.global_settings as globs
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-
-import ScenarioGUI.global_settings as globs
 
 from .category import Category
 
@@ -53,7 +52,7 @@ class ResultFigure(Category):
         self.layout_frame_canvas: QtW.QVBoxLayout = QtW.QVBoxLayout(self.frame_canvas)
         globs.set_graph_layout()
         self.fig: plt.Figure = plt.figure()
-        self.ax: plt.Axes | None = self.fig.add_subplot(111)
+        self.a_x: plt.Axes | None = self.fig.add_subplot(111)
         self.canvas: FigureCanvas = FigureCanvas(self.fig)
         # create navigation toolbar and replace icons with white ones
         self.toolbar: NavigationToolbar = NavigationToolbar(self.canvas, None, True)
@@ -96,9 +95,9 @@ class ResultFigure(Category):
         None
         """
         self.fig = fig
-        self.ax = fig.get_axes()[0]
-        self.ax.set_xlabel(self.x_axes_text)
-        self.ax.set_ylabel(self.y_axes_text)
+        self.a_x = fig.get_axes()[0]
+        self.a_x.set_xlabel(self.x_axes_text)
+        self.a_x.set_ylabel(self.y_axes_text)
         self.toolbar.home()
         self.canvas.hide()
         self.toolbar.hide()
@@ -183,8 +182,8 @@ class ResultFigure(Category):
         self.label.setText(self.label_text)
         self.y_axes_text: str = entry_name[1]
         self.x_axes_text: str = entry_name[2]
-        self.ax.set_xlabel(self.x_axes_text)
-        self.ax.set_ylabel(self.y_axes_text)
+        self.a_x.set_xlabel(self.x_axes_text)
+        self.a_x.set_ylabel(self.y_axes_text)
 
     def fig_to_be_shown(
         self,

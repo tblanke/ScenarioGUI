@@ -1,3 +1,6 @@
+"""
+global settings of scenario gui
+"""
 from __future__ import annotations
 
 import logging
@@ -28,8 +31,8 @@ FOLDER: Path = Path(__file__).parent
 # get current version
 path = Path(FOLDER).parent
 config = ConfigParser()
-with open(path.joinpath("setup.cfg")) as file:
-    config.read_file(file)
+# with open(path.joinpath("setup.cfg"), "r") as file:
+config.read(path.joinpath("setup.cfg"))
 VERSION = config.get("metadata", "version")
 
 FILE_EXTENSION: str = "scenario"

@@ -18,7 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     class CategoryOrFlexibleOption(Protocol):
         """class with list_of_options"""
-        list_of_options :list [Option]
+        list_of_options: list[Option]
 
 
 class Option(metaclass=abc.ABCMeta):
