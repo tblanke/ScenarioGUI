@@ -164,7 +164,7 @@ class FlexibleAmount(Option):
             label.setText(f"{self.entry_name} {idx + 1}")
         for idx, (name, (_, kwargs, _)) in enumerate(zip(entry_name[2:], self.option_classes, strict=False)):
             self.frame.layout().itemAtPosition(0, idx + 2).widget().setText(name)
-            kwargs["label"] = name
+            self.option_classes[idx] = (self.option_classes[idx][0], self.option_classes[idx][1], name)
 
     def set_value(self, value: list[list[str, float, int, bool]]) -> None:
         """
@@ -317,6 +317,8 @@ class FlexibleAmount(Option):
         None
         """
         self.func_on_change = function_to_be_called
+        for option in self.list_of_options:
+            option.change_event(function_to_be_called)
 
     def create_widget(
             self,

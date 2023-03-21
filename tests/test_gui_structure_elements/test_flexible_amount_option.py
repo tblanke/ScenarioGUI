@@ -30,6 +30,11 @@ def test_flex_amount_option(qtbot):
     assert len(flex_option.get_value()) == flex_option.default_value + 1
     flex_option._del_entry()
     assert len(flex_option.get_value()) == flex_option.default_value
+    flex_option.set_value([['Name',1,2,0]])
+    assert len(flex_option.get_value()) == 1
+    flex_option._del_entry()
+    assert len(flex_option.get_value()) == 1
+    flex_option._add_entry()
     flex_option._add_entry()
     flex_option.frame.layout().itemAtPosition(1, 3).widget().setValue(flex_option.option_classes[1][1]["default_value"] + 5)
     flex_option.frame.layout().itemAtPosition(2, 3).widget().setValue(flex_option.option_classes[1][1]["default_value"] + 10)
@@ -61,6 +66,7 @@ def test_flex_amount_option(qtbot):
     assert not flex_option.check_linked_value((2, None))
     assert not flex_option.check_linked_value((None, 20))
     assert flex_option.check_linked_value((4, 20))
+    assert flex_option.check_linked_value((None, 2))
     main_window.gui_structure.page_inputs.button.click()
     flex_option._init_links()
     assert not main_window.gui_structure.hint_flex.is_hidden()

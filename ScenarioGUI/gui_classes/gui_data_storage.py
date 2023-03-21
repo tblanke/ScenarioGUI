@@ -138,18 +138,6 @@ class DataStorage:
         for i in self.list_options_aims:
             if not hasattr(self, i) or not hasattr(other, i):
                 return False
-            if isinstance(getattr(self, i), list):
-                if len(getattr(self, i)) != len(getattr(other, i)):
-                    return False
-                for org, oth in zip(getattr(self, i), getattr(other, i), strict= True):
-                    if isinstance(org, list):
-                        if len(org) != len(oth):
-                            return False
-                        for org_i, oth_i in zip(org, oth, strict=True):
-                            if org_i != oth_i:
-                                return False
-                    if org != oth:
-                        return False
             if getattr(self, i) != getattr(other, i):
                 return False
         # if all match return true
