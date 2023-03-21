@@ -57,3 +57,5 @@ tool_imported;scenario gui imported;scenario gui importiert
 choose_load;Choose file to load scenarios;Wählen Sie Datei zum Laden von Szenarien
 option_toggle_buttons;Use toggle buttons?:, no , yes ;Umschalterbutton?:, Nein , Ja 
 no_file_selected;No file selected.;Keine Datei ausgewählt.
+flex_option;layers,Layer,name,thickness,amount,amount;Schichten,Schicht,Name,Dicke,Anzahl,Anzahl
+page_inputs;Inputs,Input;Eingaben,Eingabe

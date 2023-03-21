@@ -121,11 +121,13 @@ class GUI(GuiStructure):
         self.text_box.deactivate_size_limit()
         self.pass_word = TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
         
-        self.flex_option = FlexibleAmount(label="layers", default_length=2, entry_mame="Layer", category=self.category_inputs)
+        self.flex_option = FlexibleAmount(label="layers", default_length=2, entry_mame="Layer", category=self.category_inputs, min_length=2)
         self.flex_option.add_option(TextBox, name="name", default_text="layer")
         self.flex_option.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5)
         self.flex_option.add_option(IntBox, name="amount", default_value=4, minimal_value=2)
         self.flex_option.add_option(ListBox, name="amount", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
+        self.hint_flex = Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
+        self.flex_option.add_link_2_show(self.hint_flex, 2, 6)
 
         self.category_grid = Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
@@ -215,7 +217,6 @@ def run(path_list=None):  # pragma: no cover
     import PySide6.QtWidgets as QtW
     from ScenarioGUI.global_settings import FILE_EXTENSION
     from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-    from ScenarioGUI.gui_classes.translation_class import Translations
 
     # init application
     app = QtW.QApplication()

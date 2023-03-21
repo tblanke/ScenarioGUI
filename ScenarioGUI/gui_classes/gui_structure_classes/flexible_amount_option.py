@@ -4,7 +4,6 @@ float box option class
 from __future__ import annotations
 
 from functools import partial
-from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
@@ -35,6 +34,9 @@ class FlexibleAmount(Option):
             default_length: int,
             entry_mame: str,
             category: Category,
+            *, 
+            min_length: int | None = None,
+            max_length: int | None = None,
     ):
         """
 
@@ -48,6 +50,10 @@ class FlexibleAmount(Option):
             name of the entries
         category : Category
             Category in which the FloatBox should be placed
+        min_length: int | None
+            minimal option length
+        max_length: int | None
+            maximal option length
 
         Examples
         --------
@@ -65,10 +71,11 @@ class FlexibleAmount(Option):
         self.category = category
         self.entry_name: str = entry_mame
         self.list_of_options: list[Option] = []
-        self.entries: list[QtW.QFrame] = []
         self.option_entries: list[list[Option]] = []
         self.option_classes: list[tuple[type[Option], dict, str]] = []
-
+        self.func_on_change: Callable[[]] | None = None
+        self.len_limits: tuple[int | None, int | None] = (min_length, max_length)
+        
     def add_option(self, option: type[Option], name: str, **kwargs):
         self.option_classes.append((option, kwargs, name))
 
@@ -81,7 +88,7 @@ class FlexibleAmount(Option):
         i = 2
         for option, kwargs, _ in self.option_classes:
             option_i = option(**kwargs, category=self, label="")
-            option_i.label_text = ""
+            option_i.change_event(self.func_on_change)
             option_i.create_widget(self.frame, self.frame.layout(), column=length + 1, row=i)
             options.append(option_i)
             i += 1
@@ -95,6 +102,9 @@ class FlexibleAmount(Option):
         values = self.get_value()
         values.insert(row + 1, values[row]) if row + 1 < len(values) else values.append(values[row])
         self.set_value(values)
+        for option, (min_length, max_length) in self.linked_options:
+            self.show_option(option, min_length, max_length)
+        self.func_on_change()
 
     def _del_entry(self, *, row: int | None = None) -> None:
         """
@@ -110,12 +120,15 @@ class FlexibleAmount(Option):
             None
         """
         length = len(self.option_entries)
-        row = length if row is None else row
+        row = (length - 1) if row is None else row
         if row == length - 1 == 0:
             return
         values = self.get_value()
         del values[row]
         self.set_value(values)
+        for option, (min_length, max_length) in self.linked_options:
+            self.show_option(option, min_length, max_length)
+        self.func_on_change()
 
     def get_value(self) -> list[list[str | float | int | bool]]:
         """
@@ -127,6 +140,31 @@ class FlexibleAmount(Option):
             Values of the FlexibleAmount
         """
         return [[option.get_value() for option in option_tuple] for option_tuple in self.option_entries]
+    
+    def set_text(self, name: str) -> None:
+        """
+        This function sets the label text.
+
+        Parameters
+        ----------
+        name : str
+            Label name of the object
+
+        Returns
+        -------
+        None
+        """
+        entry_name: list[str, str] = name.split(",")
+        self.label_text = entry_name[0]
+        self.label.setText(self.label_text)
+        self.entry_name = entry_name[1]
+        length = len(self.option_entries)
+        for idx, label in enumerate([item.widget() for item in [self.frame.layout().itemAtPosition(i, 0) for i in range(1, length + 1)] 
+                                     if item is not None]):
+            label.setText(f"{self.entry_name} {idx + 1}")
+        for idx, (name, (_, kwargs, _)) in enumerate(zip(entry_name[2:], self.option_classes, strict=False)):
+            self.frame.layout().itemAtPosition(0, idx + 2).widget().setText(name)
+            kwargs["label"] = name
 
     def set_value(self, value: list[list[str, float, int, bool]]) -> None:
         """
@@ -143,7 +181,7 @@ class FlexibleAmount(Option):
         """
         len_options = len(self.option_entries)
         if len(value) < len_options:
-            for length in range(len(value), len_options):
+            for length in reversed(range(len(value), len_options)):
                 for item in [self.frame.layout().itemAtPosition(length + 1, i) for i in range(len(self.option_classes) + 4)
                              if self.frame.layout().itemAtPosition(length + 1, i) is not None]:
                     item.widget().setParent(None)
@@ -151,6 +189,9 @@ class FlexibleAmount(Option):
         else:
             for _ in range(len_options, len(value)):
                 self._add_entry()
+                
+        self.func_on_change()
+        self._init_links()
 
         for options, values in zip(self.option_entries, value, strict=True):
             for option, val in zip(options, values, strict=True):
@@ -164,29 +205,26 @@ class FlexibleAmount(Option):
         -------
         None
         """
-        return
-        current_value: float = self.get_value()
-        self.set_value(current_value * 1.1)
-        self.set_value(current_value)
+        for option, (min_length, max_length) in self.linked_options:
+            self.show_option(option, min_length, max_length)
 
     def _check_value(self) -> bool:
         """
-        This function checks if the value of the FloatBox is between the minimal_value
-        and maximal_value.
+        This function checks if the value of the Option is between the minimal_length
+        and maximal_length.
 
         Returns
         -------
         bool
-            True if the value is between the minimal and maximal value
+            True if the value is between the minimal and maximal length
         """
-        return True
-        return self.minimal_value <= self.get_value() <= self.maximal_value
+        return not self.check_linked_value(self.len_limits)
 
     def add_link_2_show(
             self,
             option: Option | Category | FunctionButton | Hint,
-            below: float = None,
-            above: float = None,
+            min_length: int = None,
+            max_length: int = None,
     ) -> None:
         """
         This function couples the visibility of an option to the value of the FloatBox object.
@@ -195,10 +233,10 @@ class FlexibleAmount(Option):
         ----------
         option : Option, Category, FunctionButton, Hint
             Option which visibility should be linked to the value of the FloatBox.
-        below : float
-            Lower threshold of the FloatBox value below which the linked option will be hidden
-        above : float
-            Higher threshold of the FloatBox value above which the linked option will be hidden
+        min_length : int
+            length of the Options below which the linked option will be hidden
+        max_length : int
+            length of the Options above which the linked option will be hidden
 
         Returns
         -------
@@ -209,17 +247,15 @@ class FlexibleAmount(Option):
         This function can be used to couple the FloatBox value to other options, hints, function buttons or categories.
         In the example below, 'option linked' will be shown if the float value is below 0.1 or above 0.9.
 
-        >>> option_float.add_link_2_show(option=option_linked, below=0.1, above=0.9)
+        >>> option_flex.add_link_2_show(option=option_linked, min_length=2, max_length=10)
         """
-        return
-        self.linked_options.append((option, (below, above)))
-        self.widget.valueChanged.connect(ft_partial(self.show_option, option, below, above))
+        self.linked_options.append((option, (min_length, max_length)))
 
     def show_option(
             self,
             option: Option | Category | FunctionButton | Hint,
-            below: float | None,
-            above: float | None,
+            min_length: int | None,
+            max_length: int | None,
             args=None,
     ):
         """
@@ -231,19 +267,18 @@ class FlexibleAmount(Option):
         ----------
         option : Option, Category, FunctionButton, Hint
             Option to be shown or hidden
-        below : float (optional)
-            Lower threshold of the FloatBox value below which the linked option will be hidden
-        above : float (optional)
-            Higher threshold of the FloatBox value above which the linked option will be hidden
+        min_length : int (optional)
+            value length of the Option below which the linked option will be hidden
+        max_length : int (optional)
+            value length of the Option above which the linked option will be hidden
 
         Returns
         -------
         None
         """
-        return
-        if below is not None and self.get_value() < below:
+        if min_length is not None and len(self.get_value()) < min_length:
             return option.show()
-        if above is not None and self.get_value() > above:
+        if max_length is not None and len(self.get_value()) > max_length:
             return option.show()
         option.hide()
 
@@ -261,11 +296,10 @@ class FlexibleAmount(Option):
         bool
             True if the linked "option" should be shown
         """
-        return False
-        below, above = value
-        if below is not None and self.get_value() < below:
+        min_length, max_length = value
+        if min_length is not None and len(self.get_value()) < min_length:
             return True
-        if above is not None and self.get_value() > above:
+        if max_length is not None and len(self.get_value()) > max_length:
             return True
         return False
 
@@ -282,8 +316,7 @@ class FlexibleAmount(Option):
         -------
         None
         """
-        return
-        self.widget.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        self.func_on_change = function_to_be_called
 
     def create_widget(
             self,

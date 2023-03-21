@@ -58,11 +58,13 @@ class Translations:  # pragma: no cover
         "choose_load",
         "option_toggle_buttons",
         "no_file_selected",
+        "flex_option",
+        "page_inputs",
         "languages",
     )
 
     def __init__(self):
-        self.languages: List[str] = ["English", "German"]
+        self.languages: list[str] = ["English", "German"]
         self.action_add_scenario: list[str] = ["Add scenario", "Szenario hinzufügen"]
         self.action_delete_scenario: list[str] = ["Delete scenario", "Szenario löschen"]
         self.action_new: list[str] = ["New Project", "Neues Projekt"]
@@ -130,3 +132,5 @@ class Translations:  # pragma: no cover
         self.choose_load: list[str] = ["Choose file to load scenarios", "Wählen Sie Datei zum Laden von Szenarien"]
         self.option_toggle_buttons: list[str] = ["Use toggle buttons?:, no , yes ", "Umschalterbutton?:, Nein , Ja "]
         self.no_file_selected: list[str] = ["No file selected.", "Keine Datei ausgewählt."]
+        self.flex_option: list[str] = ["layers,Layer,name,thickness,amount,amount", "Schichten,Schicht,Name,Dicke,Anzahl,Anzahl"]
+        self.page_inputs: list[str] = ["Inputs,Input", "Eingaben,Eingabe"]
