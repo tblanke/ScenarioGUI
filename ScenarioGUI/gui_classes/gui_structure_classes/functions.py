@@ -90,7 +90,10 @@ def check(
     -------
     None
     """
-    index = index if option_input.get_value() == index else option_input.get_value()
+    if isinstance(option_input.get_value(), tuple):
+        index = index if option_input.get_value()[0] == index else option_input.get_value()[0]
+    else:
+        index = index if option_input.get_value() == index else option_input.get_value()
     list_false = [(option, idx) for option, idx in linked_options if idx != index]
     list_true = [(option, idx) for option, idx in linked_options if idx == index]
     for option, _ in list_false:

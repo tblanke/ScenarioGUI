@@ -25,7 +25,7 @@ def test_language(qtbot):
 
     for idx, action in enumerate(main_window.menu_language.actions()):
         action.trigger()
-        assert main_window.gui_structure.option_language.get_value() == idx
+        assert main_window.gui_structure.option_language.get_value()[0] == idx
 
     main_window.menu_language.actions()[0].trigger()
     main_window.delete_backup()

@@ -16,9 +16,9 @@ def test_list_box(qtbot):
     main_window.delete_backup()
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations)
     # test set value
-    assert main_window.gui_structure.list_small_2.get_value() == main_window.gui_structure.list_small_2.default_value
+    assert main_window.gui_structure.list_small_2.get_value()[0] == main_window.gui_structure.list_small_2.default_value
     main_window.gui_structure.list_small_2.set_value(main_window.gui_structure.list_small_2.default_value + 1)
-    assert main_window.gui_structure.list_small_2.get_value() == main_window.gui_structure.list_small_2.default_value + 1
+    assert main_window.gui_structure.list_small_2.get_value()[0] == main_window.gui_structure.list_small_2.default_value + 1
     # test links
     main_window.gui_structure.list_small_2.set_value(0)
     assert main_window.gui_structure.hint_2.is_hidden()
