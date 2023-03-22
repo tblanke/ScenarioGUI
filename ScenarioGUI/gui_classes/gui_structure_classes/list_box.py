@@ -229,7 +229,7 @@ class ListBox(Option):
         self.widget.addItems(self.entries)
         self.widget.setCurrentIndex(self.default_value)
         if self.limit_size:
-            self.widget.setMaximumWidth(100)
+            # self.widget.setMaximumWidth(100)
             self.widget.setMinimumWidth(100)
         self.widget.currentIndexChanged.connect(ft_partial(check, self.linked_options, self))  # pylint: disable=E1101
         self.widget.setMinimumHeight(28)
