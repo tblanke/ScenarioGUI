@@ -33,6 +33,7 @@ def test_save_load_new(qtbot):
     main_window.add_scenario()
     main_window.gui_structure.float_b.set_value(1.1)
     main_window.gui_structure.int_a.set_value(10)
+    main_window.gui_structure.list_small_2.set_value(2)
     main_window.start_current_scenario_calculation(True)
     with qtbot.waitSignal(main_window.threads[0].any_signal, raising=False):
         main_window.threads[0].run()

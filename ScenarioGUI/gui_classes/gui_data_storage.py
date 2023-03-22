@@ -99,7 +99,7 @@ class DataStorage:
             Dictionary with the values of the class
         """
         # get all normal values
-        return {key: value for key, value in self.__dict__.items() if isinstance(value, int | bool | float | str)}
+        return {key: value for key, value in self.__dict__.items() if isinstance(value, int | bool | float | str | tuple)}
 
     def from_dict(self, data: dict):
         """

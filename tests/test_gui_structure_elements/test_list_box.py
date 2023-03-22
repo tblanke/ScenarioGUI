@@ -30,4 +30,11 @@ def test_list_box(qtbot):
     for i, val in zip(range(4), ["4", "5", "6", "7"], strict=True):
         assert main_window.gui_structure.list_box.widget.itemText(i) == val
 
+    main_window.gui_structure.list_small_2.set_value(2)
+    assert main_window.gui_structure.list_small_2.get_value()[0] == 2
+    main_window.gui_structure.list_small_2.set_value((3, "Hi"))
+    assert main_window.gui_structure.list_small_2.get_value() == (3, "3")
+    main_window.gui_structure.list_small_2._init_links()
+    assert main_window.gui_structure.list_small_2.get_value() == (3, "3")
+
     main_window.delete_backup()

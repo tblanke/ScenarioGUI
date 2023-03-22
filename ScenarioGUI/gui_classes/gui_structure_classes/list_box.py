@@ -96,7 +96,6 @@ class ListBox(Option):
             self.widget.setCurrentIndex(value)
             return
         self.widget.setCurrentIndex(value[0])
-        self.widget.setCurrentText(value[1])
 
     def _init_links(self) -> None:
         """
