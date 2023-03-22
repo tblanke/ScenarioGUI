@@ -8,9 +8,10 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC
 
-import ScenarioGUI.global_settings as globs
-
 if TYPE_CHECKING:  # pragma: no cover
+    from collections.abc import Callable
+    from functools import partial
+
     from .gui_data_storage import DataStorage
 
 
@@ -21,7 +22,17 @@ class CalcProblem(QtC.QThread):
 
     any_signal = QtC.Signal(tuple)
 
-    def __init__(self, ds: DataStorage, idx: int, parent=None) -> None:
+    def __init__(
+        self,
+        ds: DataStorage,
+        idx: int,
+        parent=None,
+        *,
+        data_2_results_function: Callable[
+            [DataStorage],
+            tuple[object, partial[[], None]] | tuple[object, Callable[[], None]],
+        ],
+    ) -> None:
         """
         This function initialises the calculation class.
 
@@ -33,11 +44,14 @@ class CalcProblem(QtC.QThread):
             Index of the current calculation thread
         parent :
             Parent class of the calculation problem
+        data_2_results_function : Callable
+            function to create the results class and a function to be called in the thread
         """
         super().__init__(parent)  # init parent class
         # set datastorage and index
         self.ds = ds
         self.idx = idx
+        self.data_2_results_function = data_2_results_function
 
     def run(self) -> None:
         """
@@ -50,7 +64,7 @@ class CalcProblem(QtC.QThread):
         -------
         None
         """
-        results, func = globs.DATA_2_RESULTS_FUNCTION(self.ds)
+        results, func = self.data_2_results_function(self.ds)
 
         try:
             func()
