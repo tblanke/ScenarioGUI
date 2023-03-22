@@ -23,9 +23,22 @@ from .gui_structure_classes import FigureOption, Option
 from .gui_structure_classes.functions import check_aim_options, show_linked_options
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+    from typing import Protocol
+
     from ScenarioGUI.gui_classes.gui_structure import GuiStructure
 
     from .translation_class import Translations
+
+    class ResultsClass(Protocol):
+        """Testing"""
+
+        def _to_dict(self) -> dict:
+            """creates a dict from class data"""
+
+        def _from_dict(self, dictionary: dict) -> None:
+            """creates a class from dict data"""
+
 
 currentdir = dirname(realpath(__file__))
 parentdir = dirname(currentdir)
@@ -48,6 +61,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         app: QtW.QApplication,
         gui_structure: type[GuiStructure],
         translations: type[Translations],
+        *,
+        result_creating_class: type[ResultsClass],
+        data_2_results_function: Callable[
+            [DataStorage],
+            tuple[object, ft_partial[[], None]] | tuple[object, Callable[[], None]],
+        ],
     ) -> MainWindow:
         """
 
@@ -57,6 +76,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             Q widget as main window where everything is happening
         app : QtW.QApplication
             The widget for the application itself
+        result_creating_class: Object with _from_dict and _to_dict function
+            results creating class
+        data_2_results_function : Callable
+            function to create the results class and a function to be called in the thread
 
         Returns
         -------
@@ -69,6 +92,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         super().setup_ui(dialog)
         # pyside6-rcc icons.qrc -o icons_rc.py
         self.translations: Translations = translations()  # init translation class
+
+        self.result_creating_class = result_creating_class
+        self.data_2_results_function = data_2_results_function
 
         self.gui_structure = gui_structure(self.central_widget, self.translations)
         [page.create_page(self.central_widget, self.stacked_widget, self.vertical_layout_menu) for page in self.gui_structure.list_of_pages]
@@ -785,7 +811,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             if results is None:
                 ds.results = None
             else:
-                ds.results = globs.ResultsClass()
+                ds.results = self.result_creating_class()
                 ds.results._from_dict(results)
             self.list_ds.append(ds)
         # set and change the window title
@@ -1138,7 +1164,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # add scenario if no list of scenarios exits else save current scenario
         self.add_scenario() if not self.list_ds else self.save_scenario()
         # create list of threads with scenarios that have not been calculated
-        self.threads = [CalcProblem(DS, idx) for idx, DS in enumerate(self.list_ds) if DS.results is None]
+        self.threads = [CalcProblem(DS, idx, data_2_results_function=self.data_2_results_function) for idx, DS in enumerate(self.list_ds) if DS.results is None]
         # set number of to calculate scenarios
         self.number_of_scenarios: int = len(self.threads)
         if self.number_of_scenarios < 1:
@@ -1196,7 +1222,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # initialize finished scenarios counting variable
         self.finished = 0
         # create list of threads with calculation to be made
-        self.threads = [CalcProblem(ds, idx)]
+        self.threads = [CalcProblem(ds, idx, data_2_results_function=self.data_2_results_function)]
         # set number of to calculate scenarios
         self.number_of_scenarios = len(self.threads)
         # update progress bar
@@ -1241,7 +1267,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # get Datastorage of selected scenario
         ds: DataStorage = self.list_ds[self.list_widget_scenario.currentRow()]
         # get results of selected scenario
-        results: globs.ResultsClass = ds.results
+        results: ResultsClass = ds.results
 
         # set debug message
         if ds.debug_message:
