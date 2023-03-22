@@ -68,7 +68,7 @@ class ListBox(Option):
         """
         return self.widget.currentText()
 
-    def get_value(self) -> int:
+    def get_value(self) -> tuple[int, str]:
         """
         This function gets the value (i.e. index) of the ListBox.
 
@@ -77,9 +77,9 @@ class ListBox(Option):
         int
             Value/index of the ListBox
         """
-        return self.widget.currentIndex()
+        return self.widget.currentIndex(), self.widget.currentText()
 
-    def set_value(self, value: int) -> None:
+    def set_value(self, value: tuple[int, str]) -> None:
         """
         This function sets the value/index of the ListBox.
 
@@ -92,7 +92,7 @@ class ListBox(Option):
         -------
         None
         """
-        self.widget.setCurrentIndex(value)
+        self.widget.setCurrentIndex(value[0])
 
     def _init_links(self) -> None:
         """
