@@ -30,5 +30,5 @@ def test_no_load_save_file(qtbot):
     assert main_window.status_bar.widget.currentMessage() == main_window.translations.no_file_selected[0]
     # check if the current error message is shown with a wrong save file/folder
     main_window._save_to_data("hello/not_there.GHEtool")
-    assert main_window.status_bar.widget.currentMessage() == main_window.translations.no_file_selected[main_window.gui_structure.option_language.get_value()]
+    assert main_window.status_bar.widget.currentMessage() == main_window.translations.no_file_selected[main_window.gui_structure.option_language.get_value()[0]]
     main_window.delete_backup()

@@ -68,7 +68,7 @@ class ListBox(Option):
         """
         return self.widget.currentText()
 
-    def get_value(self) -> int:
+    def get_value(self) -> tuple[int, str]:
         """
         This function gets the value (i.e. index) of the ListBox.
 
@@ -77,9 +77,9 @@ class ListBox(Option):
         int
             Value/index of the ListBox
         """
-        return self.widget.currentIndex()
+        return self.widget.currentIndex(), self.widget.currentText()
 
-    def set_value(self, value: int) -> None:
+    def set_value(self, value: tuple[int, str] | int) -> None:
         """
         This function sets the value/index of the ListBox.
 
@@ -92,7 +92,11 @@ class ListBox(Option):
         -------
         None
         """
-        self.widget.setCurrentIndex(value)
+        if isinstance(value, int):
+            self.widget.setCurrentIndex(value)
+            return
+        self.widget.setCurrentIndex(value[0])
+        self.widget.setCurrentText(value[1])
 
     def _init_links(self) -> None:
         """
@@ -102,8 +106,8 @@ class ListBox(Option):
         -------
         None
         """
-        current_value: int = self.get_value()
-        self.set_value(0 if current_value != 0 else 1)
+        current_value = self.get_value()
+        self.set_value(0 if current_value[0] != 0 else 1)
         self.set_value(current_value)
 
     def _check_value(self) -> bool:
@@ -176,7 +180,7 @@ class ListBox(Option):
         bool
             True if the linked "option" should be shown
         """
-        return self.get_value() == value
+        return self.widget.currentIndex() == value
 
     def change_event(self, function_to_be_called: Callable) -> None:
         """
