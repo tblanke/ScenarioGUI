@@ -33,10 +33,10 @@ if TYPE_CHECKING:
     class ResultsClass(Protocol):
         """Testing"""
 
-        def _to_dict(self) -> dict:
+        def to_dict(self) -> dict:
             """creates a dict from class data"""
 
-        def _from_dict(self, dictionary: dict) -> None:
+        def from_dict(self, dictionary: dict) -> ResultsClass:
             """creates a class from dict data"""
 
 
@@ -76,7 +76,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             Q widget as main window where everything is happening
         app : QtW.QApplication
             The widget for the application itself
-        result_creating_class: Object with _from_dict and _to_dict function
+        result_creating_class: Object with from_dict and to_dict function
             results creating class
         data_2_results_function : Callable
             function to create the results class and a function to be called in the thread
@@ -793,8 +793,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.list_widget_scenario.clear()
             self.list_widget_scenario.addItems(scenarios)
             self.list_widget_scenario.setCurrentRow(0)
+            self.list_ds[0].set_values(self.gui_structure)
             self.check_results()
-
         try:
             # open file and get data
             with open(location) as file:
@@ -811,8 +811,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             if results is None:
                 ds.results = None
             else:
-                ds.results = self.result_creating_class()
-                ds.results._from_dict(results)
+                ds.results = self.result_creating_class.from_dict(results)
             self.list_ds.append(ds)
         # set and change the window title
         self.filename = saving["filename"]
@@ -839,7 +838,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             "names": scenario_names,
             "version": globs.VERSION,
             "values": [ds.to_dict() for ds in self.list_ds],
-            "results": [ds.results._to_dict() if ds.results is not None else None for ds in self.list_ds],
+            "results": [ds.results.to_dict() if ds.results is not None else None for ds in self.list_ds],
         }
         try:
             # write data to back up file
