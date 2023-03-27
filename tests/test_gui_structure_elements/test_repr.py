@@ -16,7 +16,7 @@ def test_repr(qtbot):
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations)
     # assert main_window.gui_structure.figure_temperature_profile.__repr__() == "ResultFigure; Label: Temperature evolution"
     assert main_window.gui_structure.category_inputs.__repr__() == "Category; Label: Inputs"
-    assert main_window.gui_structure.option_toggle_buttons.__repr__() == "ButtonBox; Label: Use toggle buttons?:; Value: 1"
+    assert main_window.gui_structure.option_toggle_buttons.__repr__() == "ButtonBox; Label: Use toggle buttons?:, no , yes ; Value: 1"
     assert main_window.gui_structure.hint_1.__repr__() == "Hint; Hint: Grid example; Warning: False"
     assert main_window.gui_structure.float_b.__repr__() == "FloatBox; Label: b; Value: 100.0"
     assert main_window.gui_structure.int_a.__repr__() == "IntBox; Label: a; Value: 2"

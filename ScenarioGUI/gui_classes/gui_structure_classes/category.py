@@ -27,26 +27,26 @@ class Category:
 
     default_parent: QtW.QWidget | None = None
 
-    def __init__(self, label: str, page: Page):
+    def __init__(self, label: str | list[str], page: Page):
         """
 
         Parameters
         ----------
-        label : str
+        label : str | List[str]
             Label of the category
         page : Page
             Page on which the category should be placed
 
         Examples
         --------
-        >>> category_example = Category(label='Example category',
+        >>> category_example = Category(label="Example category",  # or self.translations.category_example if category_example is in Translation class
         >>>                             page=page_example)
 
         Gives:
 
         .. figure:: _static/Example_Category.PNG
         """
-        self.label_text: str = label
+        self.label_text: list[str] = [label] if isinstance(label, str) else label
         self.frame: QtW.QFrame = QtW.QFrame(self.default_parent)
         self.label: QtW.QLabel = QtW.QLabel(self.frame)
         self.list_of_options: list[Option | Hint | FunctionButton] = []
@@ -130,7 +130,6 @@ class Category:
         -------
         None
         """
-        self.label_text = name
         self.label.setText(name)
 
     def create_widget(self, page: QtW.QWidget, layout: QtW.QLayout):
@@ -151,7 +150,7 @@ class Category:
         None
         """
         self.label.setParent(page)
-        self.label.setText(self.label_text)
+        self.label.setText(self.label_text[0])
         self.label.setStyleSheet(
             f"QLabel {'{'}border: 1px solid  {globs.LIGHT};border-top-left-radius: 15px;border-top-right-radius: 15px;"
             f"background-color:  {globs.LIGHT};padding: 5px 0px;\n"
@@ -279,5 +278,20 @@ class Category:
         """
         return self.frame.isHidden()
 
+    def translate(self, idx: int) -> None:
+        """
+        Translates the label.
+
+        Parameters
+        ----------
+        idx: int
+            index of language
+
+        Returns
+        -------
+        None
+        """
+        self.set_text(self.label_text[idx])
+
     def __repr__(self):
-        return f"{type(self).__name__}; Label: {self.label_text}"
+        return f'{type(self).__name__}; Label: {self.label_text[0]}'

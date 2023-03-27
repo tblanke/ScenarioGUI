@@ -29,7 +29,7 @@ class TextBox(Option):
 
     def __init__(
         self,
-        label: str,
+        label: str | list[str],
         default_text: str,
         category: Category,
         *,
@@ -40,8 +40,8 @@ class TextBox(Option):
 
         Parameters
         ----------
-        label : str
-            The label of the TextBox
+        label : str | list[str]
+            The labels of the TextBox for differnt languages
         default_text : float
             The default value of the TextBox
         category : Category
@@ -53,9 +53,9 @@ class TextBox(Option):
 
         Examples
         --------
-        >>> option_float = TextBox(label='Text label text',
-        >>>                         default_text="example text",
-        >>>                         category=category_example)
+        >>> option_text = TextBox(label='Text label text',  # or self.translations.option_text if option_text is in Translation class
+        >>>                       default_text="example text",
+        >>>                       category=category_example)
 
         Gives:
 

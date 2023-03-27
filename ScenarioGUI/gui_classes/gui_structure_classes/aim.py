@@ -39,13 +39,13 @@ class Aim:
 
     default_parent: QtW.QWidget | None = None
 
-    def __init__(self, label: str, icon: str, page: Page):
+    def __init__(self, label: str | list[str], icon: str, page: Page):
         """
 
         Parameters
         ----------
-        label : str
-            Name of the Aim
+        label : str | list[str]
+            Names of the Aim for different languages
         icon : str
             Path to the icon for the Aim
         page : Page
@@ -53,7 +53,7 @@ class Aim:
 
         Examples
         --------
-        >>> aim_example = Aim(label='Example aim',
+        >>> aim_example = Aim(label="Example aim",  # or self.translations.aim_example if aim_example is in Translation class
         >>>                   icon="example_icon.svg",
         >>>                   page=page_aim)
 
@@ -62,7 +62,7 @@ class Aim:
         .. figure:: _static/Example_Aim.PNG
 
         """
-        self.label: str = label
+        self.label: list[str] = [label] if isinstance(label, str) else label
         self.icon: str = icon
         self.widget: QtW.QPushButton = QtW.QPushButton(self.default_parent)
         self.list_options: list[Option | Category | FunctionButton] = []
@@ -158,5 +158,20 @@ class Aim:
         )
         push_button.setIconSize(QtC.QSize(30, 30))
         push_button.setCheckable(True)
-        push_button.setText(self.label)
+        push_button.setText(self.label[0])
         layout.addWidget(push_button, int(idx / 2), 0 if divmod(idx, 2)[1] == 0 else 1, 1, 1)
+
+    def translate(self, idx: int) -> None:
+        """
+        Translates the label.
+
+        Parameters
+        ----------
+        idx: int
+            index of language
+
+        Returns
+        -------
+        None
+        """
+        self.set_text(self.label[idx])

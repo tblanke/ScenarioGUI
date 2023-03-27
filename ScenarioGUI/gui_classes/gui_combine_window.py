@@ -99,15 +99,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.list_widget_scenario.clear()  # reset list widget with stored scenarios
         self.changedFile: bool = False  # set change file variable to false
         self.ax: list = []  # axes of figure
-        self.axBorehole = None
-        self.number_of_scenarios: int = 1  # number of scenarios
-        self.finished: int = 1  # number of finished scenarios
         self.threads: list[CalcProblem] = []  # list of calculation threads
         self.list_ds: list[DataStorage] = []  # list of data storages
-        self.sizeB = QtC.QSize(48, 48)  # size of big logo on push button
-        self.sizeS = QtC.QSize(24, 24)  # size of small logo on push button
-        self.sizePushB = QtC.QSize(150, 75)  # size of big push button
-        self.sizePushS = QtC.QSize(75, 75)  # size of small push button
+        self.size_b = QtC.QSize(48, 48)  # size of big logo on push button
+        self.size_s = QtC.QSize(24, 24)  # size of small logo on push button
+        self.size_push_b = QtC.QSize(150, 75)  # size of big push button
+        self.size_push_s = QtC.QSize(75, 75)  # size of small push button
         # init links from buttons to functions
         self.set_links()
         # set event filter for push button sizing
@@ -291,15 +288,15 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         button.setText(name)  # set name to button
         # size big or small QPushButton depending on input
         if big:
-            button.setIconSize(self.sizeS)
-            button.setMaximumSize(self.sizePushB)
-            button.setMinimumSize(self.sizePushB)
-            button.resize(self.sizePushB)
+            button.setIconSize(self.size_s)
+            button.setMaximumSize(self.size_push_b)
+            button.setMinimumSize(self.size_push_b)
+            button.resize(self.size_push_b)
             return
-        button.setIconSize(self.sizeB)
-        button.setMaximumSize(self.sizePushS)
-        button.setMinimumSize(self.sizePushS)
-        button.resize(self.sizePushS)
+        button.setIconSize(self.size_b)
+        button.setMaximumSize(self.size_push_s)
+        button.setMinimumSize(self.size_push_s)
+        button.resize(self.size_push_s)
 
     def change(self) -> None:
         """
@@ -1074,7 +1071,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # show label and progress bar if calculation started otherwise hide them
         self.status_bar_progress_bar.show()
         # calculate percentage of calculated scenario
-        val = val / self.number_of_scenarios
+        val = val / len(self.threads)
         # set percentage to progress bar
         self.progress_bar.setValue(round(val * 100))
         # hide labels and progressBar if all scenarios are calculated
@@ -1083,7 +1080,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             # show message that calculation is finished
             globs.LOGGER.info(self.translations.Calculation_Finished[self.gui_structure.option_language.get_value()])
 
-    def thread_function(self, results: tuple[DataStorage, int]) -> None:
+    def thread_function(self, results: tuple[DataStorage, int, CalcProblem]) -> None:
         """
         This function closes the thread of the old calculation and stores it results.
         It increments the number of calculated scenarios, and calls to update the progress bar.
@@ -1099,7 +1096,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # stop finished thread
-        self.threads[self.finished].terminate()
+        results[2].terminate()
 
         try:
             self.list_ds[results[1]] = results[0]
@@ -1107,22 +1104,23 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             return
 
         # count number of finished calculated scenarios
-        self.finished += 1
+        open_threads = [thread for thread in self.threads if not thread.isRunning() and not thread.isFinished()]
+        n_closed_threads = len(self.threads) - len(open_threads)
         # update progress bar
-        self.update_bar(self.finished)
+        self.update_bar(n_closed_threads)
         # if number of finished is the number that has to be calculated enable buttons and actions and change page to
         # results page
-        if self.finished == self.number_of_scenarios:
-            self.push_button_start_multiple.setEnabled(True)
-            self.push_button_start_single.setEnabled(True)
-            self.push_button_save_scenario.setEnabled(True)
-            self.action_start_single.setEnabled(True)
-            self.action_start_multiple.setEnabled(True)
-            self.gui_structure.page_result.button.click()
+        if open_threads:        # start new thread
+            open_threads[0].start()
+            open_threads[0].any_signal.connect(self.thread_function)
             return
-        # start new thread
-        self.threads[self.finished].start()
-        self.threads[self.finished].any_signal.connect(self.thread_function)
+        # display results
+        self.push_button_start_multiple.setEnabled(True)
+        self.push_button_start_single.setEnabled(True)
+        self.push_button_save_scenario.setEnabled(True)
+        self.action_start_single.setEnabled(True)
+        self.action_start_multiple.setEnabled(True)
+        self.gui_structure.page_result.button.click()
 
     def start_multiple_scenarios_calculation(self) -> None:
         """
@@ -1138,10 +1136,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # add scenario if no list of scenarios exits else save current scenario
         self.add_scenario() if not self.list_ds else self.save_scenario()
         # create list of threads with scenarios that have not been calculated
-        self.threads = [CalcProblem(DS, idx) for idx, DS in enumerate(self.list_ds) if DS.results is None]
+        self.threads = [CalcProblem(d_s, idx) for idx, d_s in enumerate(self.list_ds) if d_s.results is None]
         # set number of to calculate scenarios
-        self.number_of_scenarios: int = len(self.threads)
-        if self.number_of_scenarios < 1:
+        if len(self.threads) < 1:
             return
         # disable buttons and actions to avoid two calculation at once
         self.push_button_start_multiple.setEnabled(False)
@@ -1149,15 +1146,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.push_button_save_scenario.setEnabled(False)
         self.action_start_single.setEnabled(False)
         self.action_start_multiple.setEnabled(False)
-        # initialize finished scenarios counting variable
-        self.finished: int = 0
         # update progress bar
         self.update_bar(0)
         # start calculation if at least one scenario has to be calculated
-        if self.number_of_scenarios > 0:
-            self.threads[0].start()
-            self.threads[0].any_signal.connect(self.thread_function)
-            return
+        for thread in self.threads[:self.gui_structure.option_n_threads.get_value()]:
+            thread.start()
+            thread.any_signal.connect(self.thread_function)
 
     def start_current_scenario_calculation(self, no_run: bool = False) -> None:
         """
@@ -1193,12 +1187,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.push_button_save_scenario.setEnabled(False)
         self.action_start_single.setEnabled(False)
         self.action_start_multiple.setEnabled(False)
-        # initialize finished scenarios counting variable
-        self.finished = 0
         # create list of threads with calculation to be made
         self.threads = [CalcProblem(ds, idx)]
-        # set number of to calculate scenarios
-        self.number_of_scenarios = len(self.threads)
         # update progress bar
         self.update_bar(0)
         # start calculation

@@ -58,7 +58,12 @@ class Translations:  # pragma: no cover
         "choose_load",
         "option_toggle_buttons",
         "no_file_selected",
-        "aim_add",
+        "option_n_threads",
+        "cat_no_results",
+        "text_no_result",
+        "category_save_scenario",
+        "option_auto_saving",
+        "hint_saving",
         "languages",
     )
 
@@ -131,4 +136,12 @@ class Translations:  # pragma: no cover
         self.choose_load: list[str] = ["Choose file to load scenarios", "Wählen Sie Datei zum Laden von Szenarien"]
         self.option_toggle_buttons: list[str] = ["Use toggle buttons?:, no , yes ", "Umschalterbutton?:, Nein , Ja "]
         self.no_file_selected: list[str] = ["No file selected.", "Keine Datei ausgewählt."]
-        self.aim_add: list[str] = ["Adding", "Addieren"]
+        self.option_n_threads: list[str] = ["Number of parallel threads [-]: ", "Anzahl an parallelen Prozessen [-]:"]
+        self.cat_no_results: list[str] = ["No results", "Keine Ergebnisse"]
+        self.text_no_result: list[str] = ["No results are yet calculated", "Es wurden noch keine Ergebnisse berechnet"]
+        self.category_save_scenario: list[str] = ["Scenario settings", "Szenarioeinstellungen"]
+        self.option_auto_saving: list[str] = ["Use automatic saving?, no , yes ", "Automatisches speichern nutzen?, Nein, Ja"]
+        self.hint_saving: list[str] = [
+            "If Auto saving is selected the scenario will automatically saved if a scenario is changed. Otherwise the scenario has to be saved with the Update scenario button in the upper left corner if the changes should not be lost.",
+            "Wenn Automatisch speichern ausgewählt ist, wird das Szenario automatisch gespeichert, wenn ein Szenario geändert wird. Andernfalls muss das Szenario mit der Schaltfläche Szenario aktualisieren in der oberen linken Ecke gespeichert werden, wenn die Änderungen nicht verloren gehen sollen.",
+        ]

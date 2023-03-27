@@ -25,12 +25,12 @@ class FunctionButton:
 
     default_parent: QtW.QWidget | None = None
 
-    def __init__(self, button_text: str, icon: str, category: Category):
+    def __init__(self, button_text: str | list[str], icon: str, category: Category):
         """
 
         Parameters
         ----------
-        button_text : str
+        button_text : list[str]
             The label of the FunctionButton
         icon : str
             Location of the icon for the FunctionButton
@@ -39,8 +39,9 @@ class FunctionButton:
 
         Examples
         --------
-        >>> function_example = FunctionButton(button_text='Press Here to activate function',
-        >>>                                   icon=':/icons/icons/example_icon.svg',
+        >>> function_example = FunctionButton(button_text="Press Here to activate function",
+        >>> # or self.translations.function_example if function_example is in Translation class
+        >>>                                   icon=":/icons/icons/example_icon.svg",
         >>>                                   category=category_example)
 
         Gives:
@@ -48,7 +49,7 @@ class FunctionButton:
         .. figure:: _static/Example_Function_Button.PNG
 
         """
-        self.button_text: str = button_text
+        self.button_text: list[str] = [button_text] if isinstance(button_text, str) else button_text
         self.icon: str = icon
         self.frame: QtW.QFrame = QtW.QFrame(self.default_parent)
         self.button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
@@ -70,7 +71,7 @@ class FunctionButton:
         None
         """
         self.button.setParent(frame)
-        self.button.setText(f"  {self.button_text}  ")
+        self.button.setText(f"  {self.button_text[0]}  ")
         icon = QtG.QIcon()
         # icon11.addPixmap(QtGui_QPixmap(icon), QtGui_QIcon.Normal, QtGui_QIcon.Off)
         icon.addFile(f"{globs.FOLDER}/icons/{self.icon}")
@@ -138,8 +139,7 @@ class FunctionButton:
         -------
         None
         """
-        self.button_text: str = name
-        self.button.setText(self.button_text)
+        self.button.setText(name)
 
     def change_event(self, function_to_be_called: Callable, *args) -> None:
         """

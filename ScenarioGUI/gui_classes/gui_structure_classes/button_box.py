@@ -29,13 +29,13 @@ class ButtonBox(Option):
 
     TOGGLE: bool = True
 
-    def __init__(self, label: str, default_index: int, entries: list[str], category: Category):
+    def __init__(self, label: str | list[str], default_index: int, entries: list[str], category: Category):
         """
 
         Parameters
         ----------
-        label : str
-            The label of the ButtonBox
+        label : str | List[str]
+            The labels of the ButtonBox for different languages
         default_index : int
             The default index of the ButtonBox
         entries : List[str]
@@ -45,7 +45,7 @@ class ButtonBox(Option):
 
         Examples
         --------
-        >>> option_buttons = ButtonBox(label='Button box label text',
+        >>> option_buttons = ButtonBox(label="Button box label text",  # or self.translations.option_buttons if option_buttons is in Translation class
         >>>                            default_index=0,
         >>>                            entries=['option 1', 'option 2'],
         >>>                            category=category_example)
@@ -181,10 +181,9 @@ class ButtonBox(Option):
         -------
         None
         """
-        entry_name: list[str, str] = name.split(",")
-        self.label_text = entry_name[0]
-        self.label.setText(self.label_text)
-        for button, button_name in zip(self.widget, entry_name[1:], strict=True):
+        entry_name: list[str] = name.split(",")
+        self.label.setText(entry_name[0])
+        for button, button_name in zip(self.widget, entry_name[1:], strict=False):
             button.setText(f" {button_name.replace('++', ',')} ")
 
     def check_linked_value(self, value: int) -> bool:

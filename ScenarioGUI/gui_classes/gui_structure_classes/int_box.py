@@ -29,7 +29,7 @@ class IntBox(Option):
 
     def __init__(
         self,
-        label: str,
+        label: str | list[str],
         default_value: int,
         category: Category,
         *,
@@ -41,7 +41,7 @@ class IntBox(Option):
 
         Parameters
         ----------
-        label : str
+        label : str | List[str]
             The label of the IntBox
         default_value : int
             The default value of the IntBox
@@ -57,12 +57,12 @@ class IntBox(Option):
 
         Examples
         --------
-        >>> option_float = IntBox(label='Int label text',
-        >>>                       default_value=2,
-        >>>                       category=category_example,
-        >>>                       minimal_value=0,
-        >>>                       maximal_value=12,
-        >>>                       step=2)
+        >>> option_int = IntBox(label="Int label text",  # or self.translations.hint_example if hint_example is in Translation class
+        >>>                     default_value=2,
+        >>>                     category=category_example,
+        >>>                     minimal_value=0,
+        >>>                     maximal_value=12,
+        >>>                     step=2)
 
         Gives:
 
