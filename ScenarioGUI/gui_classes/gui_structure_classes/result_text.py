@@ -16,13 +16,14 @@ class ResultText(Hint):
     The ResultText option can be used to show text results in the results page.
     """
 
-    def __init__(self, result_name: str, category: Category, prefix: str = "", suffix: str = ""):
+    def __init__(self, result_name: str | list[str], category: Category, *, prefix: str | None = None, suffix: str | None = None):
         """
 
         Parameters
         ----------
-        result_name : str
-            Name of the result (will be overwritten by the result anyway)
+        result_name : str | list[str]
+            String with the prefix and suffix text.\n
+            These strings are separated by ","
         category : Category
             Category in which the ResultText should be placed
         prefix : str
@@ -34,7 +35,10 @@ class ResultText(Hint):
         --------
         The example below show the text result for the borefield depth.
 
-        >>> self.result_text_depth = ResultText("Depth", category=self.numerical_results, prefix="Depth: ", suffix="m")
+        >>> self.result_text_depth = ResultText("Depth",  # or self.translations.result_text_depth if result_text_depth is in Translation class
+        >>>                                     category=self.numerical_results,
+        >>>                                     prefix="Depth: ",
+        >>>                                     suffix="m")
         >>> self.result_text_depth.text_to_be_shown("Borefield", "H")
         >>> self.result_text_depth.function_to_convert_to_text(lambda x: round(x, 2))
 
@@ -43,12 +47,13 @@ class ResultText(Hint):
         .. figure:: _static/Example_ResultText.PNG
 
         """
+        result_name = [f"{result_name},{prefix},{suffix}"] if isinstance(result_name, str) else result_name
         super().__init__(result_name, category, warning=False)
         self.class_name: str = ""
         self.var_name: str = ""
-        self.prefix: str = prefix
-        self.suffix: str = suffix
         self._callable = lambda x: f"{x}"
+        self.prefix = prefix
+        self.suffix = suffix
 
     def text_to_be_shown(self, class_name: str = "Borefield", var_name: str = "H") -> None:
         """

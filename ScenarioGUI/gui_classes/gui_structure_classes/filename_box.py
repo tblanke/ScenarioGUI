@@ -29,7 +29,7 @@ class FileNameBox(Option):
 
     def __init__(
         self,
-        label: str,
+        label: str | list[str],
         default_value: str,
         category: Category,
         *,
@@ -40,26 +40,23 @@ class FileNameBox(Option):
 
         Parameters
         ----------
-        label : str
-            The label of the FileNameBox
+        label : str | list[str]
+            The labels of the FileNameBox for different languages
         default_value : int
             The default value of the FileNameBox
+        category : Category
+            Category in which the FileNameBox should be placed
         dialog_text : str
             Text to be displayed in the top bar of the dialog box
         error_text : str
-            Error text be be shown in the status_bar
-        status_bar : QtW.QStatusBar
-            Status bar to put in an error message related to the file import
-        category : Category
-            Category in which the FileNameBox should be placed
+            Error text to be shown in the status_bar
 
         Examples
         --------
-        >>> option_file = FileNameBox(label='File name box label text',
+        >>> option_file = FileNameBox(label="File name box label text",  # or self.translations.option_file if option_file is in Translation class
         >>>                           default_value='example_file.XX',
         >>>                           dialog_text='Choose *.XX file',
         >>>                           error_text='no file found',
-        >>>                           status_bar=status_bar,
         >>>                           category=category_example)
 
         Gives:

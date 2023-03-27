@@ -21,7 +21,7 @@ class FigureOption(ButtonBox):
     def __init__(
         self,
         category: ResultFigure,
-        label: str,
+        label: str | list[str],
         param: str,
         default: int,
         *,
@@ -34,8 +34,8 @@ class FigureOption(ButtonBox):
         ----------
         category : ResultFigure
             Category in which the FigureOption should be placed
-        label : str
-            The label of the FigureOption
+        label : str | list[str]
+            The labels of the FigureOption for different languages
         param : str
             Name of the argument in the function that is used to generate the figure
         default : int
@@ -49,12 +49,12 @@ class FigureOption(ButtonBox):
         --------
         The example below adds the legende on/off option to the temperature profile figure.
 
-        >>> FigureOption(category=self.figure_temperature_profile,
-        >>>              label="Legend on",
-        >>>              param="legend",
-        >>>              default=0,
-        >>>              entries=["No", "Yes"],
-        >>>              entries_values=[False, True])
+        >>> self.option_figure = FigureOption(category=self.figure_temperature_profile,
+        >>>                                   label="Legend on?",  # or self.translations.option_figure if option_figure is in Translation class
+        >>>                                   param="legend",
+        >>>                                   default=0,
+        >>>                                   entries=[" No ", " Yes "],
+        >>>                                   entries_values=[False, True])
 
         Gives:
 

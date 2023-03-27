@@ -73,7 +73,7 @@ class CalcProblem(QtC.QThread):
             # save bore field in Datastorage
             self.ds.results = None
             # return Datastorage as signal
-            self.any_signal.emit((self.ds, self.idx))
+            self.any_signal.emit((self.ds, self.idx, self))
             return
 
         # set debug message to ""
@@ -82,5 +82,5 @@ class CalcProblem(QtC.QThread):
         # save borefield in Datastorage
         self.ds.results = results
         # return Datastorage as signal
-        self.any_signal.emit((self.ds, self.idx))
+        self.any_signal.emit((self.ds, self.idx, self))
         return

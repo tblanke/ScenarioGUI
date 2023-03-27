@@ -48,6 +48,8 @@ class ResultsClass:
         self.result = None
 
     def adding(self):
+        from time import sleep
+        sleep(2)
         self.result = self.a + self.b
 
     def subtract(self):
@@ -205,7 +207,6 @@ def run(path_list=None):  # pragma: no cover
     import PySide6.QtWidgets as QtW
     from ScenarioGUI.global_settings import FILE_EXTENSION
     from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-    from ScenarioGUI.gui_classes.translation_class import Translations
 
     # init application
     app = QtW.QApplication()
