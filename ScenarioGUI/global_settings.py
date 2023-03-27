@@ -4,13 +4,6 @@ import logging
 from configparser import ConfigParser
 from pathlib import Path
 from platform import system
-from typing import TYPE_CHECKING, Protocol
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
-    from functools import partial
-
-    from .gui_classes.gui_data_storage import DataStorage
 
 WHITE: str = "rgb(255, 255, 255)"
 LIGHT: str = "rgb(84, 188, 235)"
@@ -38,26 +31,6 @@ ICON_NAME: str = "icon.svg"
 
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
-
-
-class ResultsClass(Protocol):
-    """Testing"""
-
-    def _to_dict(self) -> dict:
-        """creates a dict from class data"""
-
-    def _from_dict(self, dictionary: dict) -> None:
-        """creates a class from dict data"""
-
-
-def func(d_s: DataStorage) -> tuple[ResultsClass, Callable[[], None]]:
-    """Example function"""
-
-
-DATA_2_RESULTS_FUNCTION: Callable[
-    [DataStorage],
-    tuple[ResultsClass, partial[[], None]] | tuple[ResultsClass, Callable[[], None]],
-] = func
 
 
 def set_graph_layout() -> None:

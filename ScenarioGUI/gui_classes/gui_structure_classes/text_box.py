@@ -3,7 +3,6 @@ text box option class
 """
 from __future__ import annotations
 
-from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
@@ -17,8 +16,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
     from .category import Category
-    from .function_button import FunctionButton
-    from .hint import Hint
 
 
 class TextBox(Option):
@@ -26,7 +23,6 @@ class TextBox(Option):
     This class contains all the functionalities of the TextBox option in the GUI.
     The TextBox can be used to input text.
     """
-
     def __init__(
         self,
         label: str | list[str],

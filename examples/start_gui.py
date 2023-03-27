@@ -7,13 +7,12 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 from platform import system
-from sys import argv, exit as sys_exit
+from sys import argv
+from sys import exit as sys_exit
 from typing import TYPE_CHECKING
 
-from matplotlib import pyplot as plt
-
 import ScenarioGUI.global_settings as global_vars
-from examples.translation_class import Translations
+from matplotlib import pyplot as plt
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
 from ScenarioGUI.gui_classes.gui_structure_classes import (
     Aim,
@@ -31,9 +30,12 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     TextBox,
 )
 
+from examples.translation_class import Translations
+
 if TYPE_CHECKING:
-    import PySide6.QtWidgets as QtW
     from collections.abc import Callable
+
+    import PySide6.QtWidgets as QtW
 
 os_system = system()
 is_frozen = getattr(sys, "frozen", False) and os_system == "Windows"  # pragma: no cover
@@ -199,13 +201,10 @@ global_vars.ICON_NAME = "icon"
 global_vars.VERSION = "0.2.0"
 folder = Path("__file__").parent
 global_vars.FOLDER = folder
-global_vars.ResultsClass = ResultsClass
-global_vars.DATA_2_RESULTS_FUNCTION = data_2_results
 
 
 def run(path_list=None):  # pragma: no cover
     import PySide6.QtWidgets as QtW
-
     from ScenarioGUI.global_settings import FILE_EXTENSION
     from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
@@ -214,7 +213,7 @@ def run(path_list=None):  # pragma: no cover
     # init window
     window = QtW.QMainWindow()
     # init gui window
-    main_window = MainWindow(window, app, GUI, Translations)
+    main_window = MainWindow(window, app, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     # load file if it is in path list
     if path_list is not None:
         main_window.filename = (

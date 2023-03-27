@@ -23,9 +23,22 @@ from .gui_structure_classes import FigureOption, Option
 from .gui_structure_classes.functions import check_aim_options, show_linked_options
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+    from typing import Protocol
+
     from ScenarioGUI.gui_classes.gui_structure import GuiStructure
 
     from .translation_class import Translations
+
+    class ResultsClass(Protocol):
+        """Testing"""
+
+        def to_dict(self) -> dict:
+            """creates a dict from class data"""
+
+        def from_dict(self, dictionary: dict) -> ResultsClass:
+            """creates a class from dict data"""
+
 
 currentdir = dirname(realpath(__file__))
 parentdir = dirname(currentdir)
@@ -48,6 +61,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         app: QtW.QApplication,
         gui_structure: type[GuiStructure],
         translations: type[Translations],
+        *,
+        result_creating_class: type[ResultsClass],
+        data_2_results_function: Callable[
+            [DataStorage],
+            tuple[object, ft_partial[[], None]] | tuple[object, Callable[[], None]],
+        ],
     ) -> MainWindow:
         """
 
@@ -57,6 +76,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             Q widget as main window where everything is happening
         app : QtW.QApplication
             The widget for the application itself
+        result_creating_class: Object with from_dict and to_dict function
+            results creating class
+        data_2_results_function : Callable
+            function to create the results class and a function to be called in the thread
 
         Returns
         -------
@@ -69,6 +92,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         super().setup_ui(dialog)
         # pyside6-rcc icons.qrc -o icons_rc.py
         self.translations: Translations = translations()  # init translation class
+
+        self.result_creating_class = result_creating_class
+        self.data_2_results_function = data_2_results_function
 
         self.gui_structure = gui_structure(self.central_widget, self.translations)
         [page.create_page(self.central_widget, self.stacked_widget, self.vertical_layout_menu) for page in self.gui_structure.list_of_pages]
@@ -124,7 +150,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         [option.init_links() for option, _ in self.gui_structure.list_of_options]
 
-        globs.LOGGER.info(self.translations.tool_imported[self.gui_structure.option_language.get_value()])
+        globs.LOGGER.info(self.translations.tool_imported[self.gui_structure.option_language.get_value()[0]])
         # allow checking of changes
         self.checking: bool = True
 
@@ -426,9 +452,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             # set Icon to question mark icon
             self.dialog.setIcon(QtW.QMessageBox.Question)
             # set label text to leave scenario text depending on language selected
-            self.dialog.setText(self.translations.label_LeaveScenarioText[self.gui_structure.option_language.get_value()])
+            self.dialog.setText(self.translations.label_LeaveScenarioText[self.gui_structure.option_language.get_value()[0]])
             # set window text to  leave scenario text depending on language selected
-            self.dialog.setWindowTitle(self.translations.label_CancelTitle[self.gui_structure.option_language.get_value()])
+            self.dialog.setWindowTitle(self.translations.label_CancelTitle[self.gui_structure.option_language.get_value()[0]])
             # set standard buttons to save, close and cancel
             self.dialog.setStandardButtons(QtW.QMessageBox.Save | QtW.QMessageBox.Close | QtW.QMessageBox.Cancel)
             # get save, close and cancel button
@@ -436,9 +462,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             button_cl = self.dialog.button(QtW.QMessageBox.Close)
             button_ca = self.dialog.button(QtW.QMessageBox.Cancel)
             # set save, close and cancel button text depending on language selected
-            button_s.setText(f"{self.translations.push_button_save_scenario[self.gui_structure.option_language.get_value()]} ")
-            button_cl.setText(f"{self.translations.label_LeaveScenario[self.gui_structure.option_language.get_value()]} ")
-            button_ca.setText(f"{self.translations.label_StayScenario[self.gui_structure.option_language.get_value()]} ")
+            button_s.setText(f"{self.translations.push_button_save_scenario[self.gui_structure.option_language.get_value()[0]]} ")
+            button_cl.setText(f"{self.translations.label_LeaveScenario[self.gui_structure.option_language.get_value()[0]]} ")
+            button_ca.setText(f"{self.translations.label_StayScenario[self.gui_structure.option_language.get_value()[0]]} ")
             # set  save, close and cancel button icon
             self.set_push_button_icon(button_s, "Save_Inv")
             self.set_push_button_icon(button_cl, "Exit")
@@ -539,10 +565,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         # create dialog box to ask for a new name
         self.dialog = QtW.QInputDialog(self.dia)
-        self.dialog.setWindowTitle(self.translations.label_new_scenario[self.gui_structure.option_language.get_value()])
-        self.dialog.setLabelText(f"{self.translations.new_name[self.gui_structure.option_language.get_value()]}{item.text()}")
-        self.dialog.setOkButtonText(self.translations.label_okay[self.gui_structure.option_language.get_value()])  # +++
-        self.dialog.setCancelButtonText(self.translations.label_abort[self.gui_structure.option_language.get_value()])  # +++
+        self.dialog.setWindowTitle(self.translations.label_new_scenario[self.gui_structure.option_language.get_value()[0]])
+        self.dialog.setLabelText(f"{self.translations.new_name[self.gui_structure.option_language.get_value()[0]]}{item.text()}")
+        self.dialog.setOkButtonText(self.translations.label_okay[self.gui_structure.option_language.get_value()[0]])  # +++
+        self.dialog.setCancelButtonText(self.translations.label_abort[self.gui_structure.option_language.get_value()[0]])  # +++
         li = self.dialog.findChildren(QtW.QPushButton)
         self.set_push_button_icon(li[0], "Okay")
         self.set_push_button_icon(li[1], "Abort")
@@ -666,24 +692,24 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         # check if list scenario names are not unique
         li_str_match: list[bool] = [
-            self.list_widget_scenario.item(idx).text() == f"{self.translations.scenarioString[self.gui_structure.option_language.get_value()]}: {idx + 1}"
+            self.list_widget_scenario.item(idx).text() == f"{self.translations.scenarioString[self.gui_structure.option_language.get_value()[0]]}: {idx + 1}"
             for idx in range(amount)
         ]
         # update all label, pushButtons, action and Menu names
         for i in [j for j in self.translations.__slots__ if hasattr(self, j)]:
             if isinstance(getattr(self, i), QtW.QMenu):
-                getattr(self, i).setTitle(getattr(self.translations, i)[self.gui_structure.option_language.get_value()])
+                getattr(self, i).setTitle(getattr(self.translations, i)[self.gui_structure.option_language.get_value()[0]])
                 continue
-            getattr(self, i).setText(getattr(self.translations, i)[self.gui_structure.option_language.get_value()])
+            getattr(self, i).setText(getattr(self.translations, i)[self.gui_structure.option_language.get_value()[0]])
         # set translation of toolbox items
-        self.gui_structure.translate(self.gui_structure.option_language.get_value(), self.translations)
+        self.gui_structure.translate(self.gui_structure.option_language.get_value()[0], self.translations)
         for idx, name in enumerate(self.translations.languages):
             self.gui_structure.option_language.widget.setItemText(idx, name)
         # set small PushButtons
         self.check_page_button_layout(False)
         # replace scenario names if they are not unique
         scenarios: list = [
-            f"{self.translations.scenarioString[self.gui_structure.option_language.get_value()]}: {i}"
+            f"{self.translations.scenarioString[self.gui_structure.option_language.get_value()[0]]}: {i}"
             if li_str_match[i - 1]
             else self.list_widget_scenario.item(i - 1).text()
             for i in range(1, amount + 1)
@@ -720,14 +746,14 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self._load_from_data(self.backup_file)
             # change language to english if no change has happened
             self.checking = False
-            if self.gui_structure.option_language.get_value() == 0:
+            if self.gui_structure.option_language.get_value()[0] == 0:
                 self.change_language()
             self.checking = True
             return
         # change language to english
         self.change_language()
         # show message that no backup file is found
-        globs.LOGGER.error(self.translations.no_backup_file[self.gui_structure.option_language.get_value()])
+        globs.LOGGER.error(self.translations.no_backup_file[self.gui_structure.option_language.get_value()[0]])
 
     def fun_save_auto(self) -> None:
         """
@@ -764,14 +790,14 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.list_widget_scenario.clear()
             self.list_widget_scenario.addItems(scenarios)
             self.list_widget_scenario.setCurrentRow(0)
+            self.list_ds[0].set_values(self.gui_structure)
             self.check_results()
-
         try:
             # open file and get data
             with open(location) as file:
                 saving = load(file)
         except FileNotFoundError:
-            globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()])
+            globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()[0]])
             return
 
         # write data to variables
@@ -782,8 +808,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             if results is None:
                 ds.results = None
             else:
-                ds.results = globs.ResultsClass()
-                ds.results._from_dict(results)
+                ds.results = self.result_creating_class.from_dict(results)
             self.list_ds.append(ds)
         # set and change the window title
         self.filename = saving["filename"]
@@ -810,14 +835,14 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             "names": scenario_names,
             "version": globs.VERSION,
             "values": [ds.to_dict() for ds in self.list_ds],
-            "results": [ds.results._to_dict() if ds.results is not None else None for ds in self.list_ds],
+            "results": [ds.results.to_dict() if ds.results is not None else None for ds in self.list_ds],
         }
         try:
             # write data to back up file
             with open(location, "w") as file:
                 dump(saving, file, indent=1)
         except FileNotFoundError:
-            globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()])
+            globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()[0]])
         except PermissionError:  # pragma: no cover
             globs.LOGGER.error("PermissionError")
 
@@ -833,7 +858,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # open interface and get file name
         self.filename = QtW.QFileDialog.getOpenFileName(
             self.central_widget,
-            caption=self.translations.choose_load[self.gui_structure.option_language.get_value()],
+            caption=self.translations.choose_load[self.gui_structure.option_language.get_value()[0]],
             filter=f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})",
             dir=str(self.default_path),
         )
@@ -883,7 +908,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if self.filename == MainWindow.filename_default:
             self.filename: tuple = QtW.QFileDialog.getSaveFileName(
                 self.central_widget,
-                caption=self.translations.Save[self.gui_structure.option_language.get_value()],
+                caption=self.translations.Save[self.gui_structure.option_language.get_value()[0]],
                 filter=f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})",
                 dir=str(self.default_path),
             )
@@ -1041,7 +1066,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # append new scenario to List of DataStorages
         self.list_ds.append(DataStorage(self.gui_structure))
         # add new scenario name and item to list widget
-        string = f"{self.translations.scenarioString[self.gui_structure.option_language.get_value()]}: {number + 1}"
+        string = f"{self.translations.scenarioString[self.gui_structure.option_language.get_value()[0]]}: {number + 1}"
         list_of_scenarios = [self.list_widget_scenario.item(x).text().split("*")[0] for x in range(self.list_widget_scenario.count())]
         if string in list_of_scenarios:
             string += "(2)"
@@ -1078,7 +1103,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if isclose(val, 1):
             self.status_bar_progress_bar.hide()
             # show message that calculation is finished
-            globs.LOGGER.info(self.translations.Calculation_Finished[self.gui_structure.option_language.get_value()])
+            globs.LOGGER.info(self.translations.Calculation_Finished[self.gui_structure.option_language.get_value()[0]])
 
     def thread_function(self, results: tuple[DataStorage, int, CalcProblem]) -> None:
         """
@@ -1136,7 +1161,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # add scenario if no list of scenarios exits else save current scenario
         self.add_scenario() if not self.list_ds else self.save_scenario()
         # create list of threads with scenarios that have not been calculated
-        self.threads = [CalcProblem(d_s, idx) for idx, d_s in enumerate(self.list_ds) if d_s.results is None]
+        self.threads = [CalcProblem(DS, idx, data_2_results_function=self.data_2_results_function) for idx, DS in enumerate(self.list_ds) if DS.results is None]
         # set number of to calculate scenarios
         if len(self.threads) < 1:
             return
@@ -1188,7 +1213,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.action_start_single.setEnabled(False)
         self.action_start_multiple.setEnabled(False)
         # create list of threads with calculation to be made
-        self.threads = [CalcProblem(ds, idx)]
+        self.threads = [CalcProblem(ds, idx, data_2_results_function=self.data_2_results_function)]
         # update progress bar
         self.update_bar(0)
         # start calculation
@@ -1216,7 +1241,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 for cat in self.gui_structure.page_result.list_categories:
                     cat.hide(results=True)
                 self.gui_structure.cat_no_result.show()
-                self.gui_structure.text_no_result.set_text(self.translations.not_calculated[self.gui_structure.option_language.get_value()])
+                self.gui_structure.text_no_result.set_text(self.translations.not_calculated[self.gui_structure.option_language.get_value()[0]])
                 return
             update_results()
             for cat in self.gui_structure.page_result.list_categories:
@@ -1231,7 +1256,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # get Datastorage of selected scenario
         ds: DataStorage = self.list_ds[self.list_widget_scenario.currentRow()]
         # get results of selected scenario
-        results: globs.ResultsClass = ds.results
+        results: ResultsClass = ds.results
 
         # set debug message
         if ds.debug_message:
@@ -1304,9 +1329,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # set Icon to question mark icon
         self.dialog.setIcon(QtW.QMessageBox.Question)
         # set label text to cancel text depending on language selected
-        self.dialog.setText(self.translations.label_CancelText[self.gui_structure.option_language.get_value()])
+        self.dialog.setText(self.translations.label_CancelText[self.gui_structure.option_language.get_value()[0]])
         # set window text to cancel text depending on language selected
-        self.dialog.setWindowTitle(self.translations.label_CancelTitle[self.gui_structure.option_language.get_value()])
+        self.dialog.setWindowTitle(self.translations.label_CancelTitle[self.gui_structure.option_language.get_value()[0]])
         # set standard buttons to save, close and cancel
         self.dialog.setStandardButtons(QtW.QMessageBox.Save | QtW.QMessageBox.Close | QtW.QMessageBox.Cancel)
         # get save, close and cancel button
@@ -1314,9 +1339,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         button_cl = self.dialog.button(QtW.QMessageBox.Close)
         button_ca = self.dialog.button(QtW.QMessageBox.Cancel)
         # set save, close and cancel button text depending on language selected
-        button_s.setText(f"{self.translations.label_Save[self.gui_structure.option_language.get_value()]} ")
-        button_cl.setText(f"{self.translations.label_close[self.gui_structure.option_language.get_value()]} ")
-        button_ca.setText(f"{self.translations.label_cancel[self.gui_structure.option_language.get_value()]} ")
+        button_s.setText(f"{self.translations.label_Save[self.gui_structure.option_language.get_value()[0]]} ")
+        button_cl.setText(f"{self.translations.label_close[self.gui_structure.option_language.get_value()[0]]} ")
+        button_ca.setText(f"{self.translations.label_cancel[self.gui_structure.option_language.get_value()[0]]} ")
         # set  save, close and cancel button icon
         self.set_push_button_icon(button_s, "Save_Inv")
         self.set_push_button_icon(button_cl, "Exit")
