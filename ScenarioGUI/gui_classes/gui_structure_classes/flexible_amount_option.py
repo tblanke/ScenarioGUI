@@ -30,7 +30,7 @@ class FlexibleAmount(Option):
 
     def __init__(
             self,
-            label: str,
+            label: str | list[str],
             default_length: int,
             entry_mame: str,
             category: Category,
@@ -42,7 +42,7 @@ class FlexibleAmount(Option):
 
         Parameters
         ----------
-        label : str
+        label : str | list[str]
             The label of the Option
         default_length : int
             how many entries should exists per default?
@@ -57,10 +57,10 @@ class FlexibleAmount(Option):
 
         Examples
         --------
-        >>> option_float = FlexibleAmount(label='flexible option',
-        >>>                         default_length=2,
-        >>>                         category=category_example,
-        >>>                         entry_mame="layer")
+        >>> option_flex = FlexibleAmount(label='flexible option',  # or self.translations.option_flex if option_flex is in Translation class
+        >>>                              default_length=2,
+        >>>                              category=category_example,
+        >>>                              entry_mame="layer")
 
         Gives:
 
