@@ -209,8 +209,6 @@ global_vars.ICON_NAME = "icon"
 global_vars.VERSION = "0.2.0"
 folder = Path("__file__").parent
 global_vars.FOLDER = folder
-global_vars.ResultsClass = ResultsClass
-global_vars.DATA_2_RESULTS_FUNCTION = data_2_results
 
 
 def run(path_list=None):  # pragma: no cover
@@ -223,7 +221,7 @@ def run(path_list=None):  # pragma: no cover
     # init window
     window = QtW.QMainWindow()
     # init gui window
-    main_window = MainWindow(window, app, GUI, Translations)
+    main_window = MainWindow(window, app, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     # load file if it is in path list
     if path_list is not None:
         main_window.filename = (

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections.abc import Callable
 
 from matplotlib import pyplot as plt
@@ -31,13 +32,16 @@ class ResultsClass:
             ax.legend()
         return fig, ax
 
-    def _to_dict(self) -> dict:
+    def to_dict(self) -> dict:
         return {"a": self.a, "b": self.b, "result": self.result}
 
-    def _from_dict(self, dictionary: dict):
-        self.a = dictionary["a"]
-        self.b = dictionary["b"]
-        self.result = dictionary["result"]
+    @staticmethod
+    def from_dict(dictionary: dict) -> ResultsClass:
+        res = ResultsClass()
+        res.a = dictionary["a"]
+        res.b = dictionary["b"]
+        res.result = dictionary["result"]
+        return res
 
 
 def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:

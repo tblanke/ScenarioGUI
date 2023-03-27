@@ -1,27 +1,18 @@
-import os
-from pathlib import Path
 
-import keyboard
-import PySide6.QtCore as QtC
-import PySide6.QtWidgets as QtW
 import numpy as np
-
-import ScenarioGUI.global_settings as global_vars
+import PySide6.QtWidgets as QtW
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 from ScenarioGUI.gui_classes.translation_class import Translations
 
 from ..gui_structure_for_tests import GUI
 from ..result_creating_class_for_tests import ResultsClass, data_2_results
 
-global_vars.ResultsClass = ResultsClass
-global_vars.DATA_2_RESULTS_FUNCTION = data_2_results
-
 
 def test_backup(qtbot):
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations)
+    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations)
+    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     main_window.add_scenario()
     main_window.gui_structure.float_b.set_value(1.1)
     main_window.gui_structure.int_a.set_value(10)
