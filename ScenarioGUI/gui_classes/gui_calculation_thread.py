@@ -24,7 +24,7 @@ class CalcProblem(QtC.QThread):
 
     def __init__(
         self,
-        ds: DataStorage,
+        d_s: DataStorage,
         idx: int,
         parent=None,
         *,
@@ -64,7 +64,7 @@ class CalcProblem(QtC.QThread):
         -------
         None
         """
-        results, func = self.data_2_results_function(self.ds)
+        results, func = self.data_2_results_function(self.d_s)
 
         try:
             func()

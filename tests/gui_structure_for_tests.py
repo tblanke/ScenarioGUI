@@ -151,7 +151,6 @@ class GUI(GuiStructure):
         self.page_inputs.set_next_page(self.page_result)
         self.page_result.set_previous_page(self.page_inputs)
         self.page_result.set_next_page(self.page_settings)
-        self.page_settings.set_previous_page(self.page_result)
 
         self.counter = 0
         self.page_inputs.add_function_called_if_button_clicked(self.count)

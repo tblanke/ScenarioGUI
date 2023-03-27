@@ -35,7 +35,8 @@ if TYPE_CHECKING:
         def to_dict(self) -> dict:
             """creates a dict from class data"""
 
-        def from_dict(self, dictionary: dict) -> ResultsClass:
+        @staticmethod
+        def from_dict(dictionary: dict) -> ResultsClass:
             """creates a class from dict data"""
 
 
@@ -810,8 +811,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             if results is None:
                 d_s.results = None
             else:
-                ds.results = self.result_creating_class.from_dict(results)
-            self.list_ds.append(ds)
+                d_s.results = self.result_creating_class.from_dict(results)
+            self.list_ds.append(d_s)
         # set and change the window title
         self.filename = saving["filename"]
         general_changes(saving["names"])
