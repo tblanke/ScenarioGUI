@@ -15,6 +15,19 @@ if TYPE_CHECKING:
 
 
 def translate_csv_2_class(csv_file_with_path: str | Path, target_path: str | Path):
+    """
+    function to create a translation class
+     
+    Parameters
+    ----------
+    csv_file_with_path: str | Path
+        path to translation csv file including csv file
+    target_path: str | Path
+        target path for translation class
+    Returns
+    -------
+        None
+    """
     d_f = read_csv(csv_file_with_path, sep=";", encoding="utf-8")
 
     file_name = FOLDER.joinpath(f"{target_path}/translation_class.py")

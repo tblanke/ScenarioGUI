@@ -68,9 +68,11 @@ def test_run(qtbot):
     main_window.add_scenario()
     main_window.gui_structure.int_a.set_value(main_window.gui_structure.int_a.get_value() + 5)
     main_window.save_scenario()
-    main_window.start_current_scenario_calculation(False)
+    main_window.start_current_scenario_calculation(True)
     with qtbot.waitSignal(main_window.threads[0].any_signal, raising=False):
-        QtW.QApplication.processEvents()
+        main_window.threads[0].run()
+        main_window.threads[0].any_signal.connect(main_window.thread_function)
+        main_window.display_results()
 
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     main_window.list_widget_scenario.setCurrentItem(item)

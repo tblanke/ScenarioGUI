@@ -13,7 +13,6 @@ from typing import TYPE_CHECKING
 import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
-
 import ScenarioGUI.global_settings as globs
 
 from .gui_base_class import BaseUI
@@ -370,9 +369,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # get text string of current scenario
         text: str = self.list_widget_scenario.currentItem().text()
         # create current data storage
-        ds: DataStorage = DataStorage(self.gui_structure)
+        d_s: DataStorage = DataStorage(self.gui_structure)
         # check if current data storage is equal to the previous one then delete the *
-        if self.list_ds and ds == self.list_ds[idx]:
+        if self.list_ds and d_s == self.list_ds[idx]:
             if text[-1] != "*":
                 return
             self.list_widget_scenario.item(idx).setText(text[:-1])
@@ -412,7 +411,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         def return_2_old_item():
             # change item to old item by thread, because I have not found a direct way which is not lost after
             # return
-            ds = DataStorage(self.gui_structure)
+            d_s = DataStorage(self.gui_structure)
             t = QtC.QTimer(self)
 
             def returning():
@@ -420,7 +419,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 self.checking = False
                 self.list_widget_scenario.setCurrentItem(old_row_item)
                 # set values of selected Datastorage
-                ds.set_values(self.gui_structure)
+                d_s.set_values(self.gui_structure)
                 self.checking = True
                 self.list_widget_scenario.blockSignals(False)
                 t.stop()
@@ -804,13 +803,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # write data to variables
         self.list_ds = []
         for val, results in zip(saving["values"], saving["results"]):
-            ds = DataStorage(self.gui_structure)
-            ds.from_dict(val)
+            d_s = DataStorage(self.gui_structure)
+            d_s.from_dict(val)
             if results is None:
-                ds.results = None
+                d_s.results = None
             else:
-                ds.results = self.result_creating_class.from_dict(results)
-            self.list_ds.append(ds)
+                d_s.results = self.result_creating_class.from_dict(results)
+            self.list_ds.append(d_s)
         # set and change the window title
         self.filename = saving["filename"]
         general_changes(saving["names"])
@@ -977,9 +976,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # deactivate checking for changes
         self.checking: bool = False
         # get selected Datastorage from list
-        ds: DataStorage = self.list_ds[idx]
+        d_s: DataStorage = self.list_ds[idx]
         # set values of selected Datastorage
-        ds.set_values(self.gui_structure)
+        d_s.set_values(self.gui_structure)
         # refresh results if results page is selected
         self.display_results() if self.stacked_widget.currentWidget() == self.gui_structure.page_result.page else None
         # activate checking for changed

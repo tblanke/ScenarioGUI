@@ -20,10 +20,12 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     Category,
     FigureOption,
     FileNameBox,
+    FlexibleAmount,
     FloatBox,
     FunctionButton,
     Hint,
     IntBox,
+    ListBox,
     Page,
     ResultFigure,
     ResultText,
@@ -88,7 +90,7 @@ def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
 class GUI(GuiStructure):
     def __init__(self, default_parent: QtW.QWidget, translations: Translations):
         super().__init__(default_parent, translations)
-        self.page_inputs = Page(name="Inputs", button_name="Inputs", icon="Add.svg")
+        self.page_inputs = Page(name=self.translations.page_inputs, button_name="Inputs", icon="Add.svg")
         self.aim_add = Aim(label="Adding", icon="Add", page=self.page_inputs)
         self.aim_sub = Aim(label="Substract", icon="Delete", page=self.page_inputs)
         self.aim_plot = Aim(label="Plot", icon="Parameters", page=self.page_inputs)
@@ -119,7 +121,15 @@ class GUI(GuiStructure):
 
         self.text_box = TextBox(label="Login", default_text="Hello", category=self.category_inputs)
         self.text_box.deactivate_size_limit()
-        self.pass_word = TextBox(label="Password", default_text="", category=self.category_inputs, password=True)
+        self.pass_word = TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
+        
+        self.flex_option = FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs, min_length=2)
+        self.flex_option.add_option(TextBox, name="name", default_text="layer")
+        self.flex_option.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5)
+        self.flex_option.add_option(IntBox, name="amount", default_value=4, minimal_value=2)
+        self.flex_option.add_option(ListBox, name="amount", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
+        self.hint_flex = Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
+        self.flex_option.add_link_2_show(self.hint_flex, 2, 6)
 
         self.category_grid = Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
@@ -188,7 +198,7 @@ class GUI(GuiStructure):
         self.page_inputs.set_next_page(self.page_result)
         self.page_result.set_previous_page(self.page_inputs)
         self.page_result.set_next_page(self.page_settings)
-        self.page_result.set_previous_page(self.page_result)
+        self.page_settings.set_previous_page(self.page_result)
 
 
 global_vars.FONT = "Arial"

@@ -21,6 +21,6 @@ def test_results_figure(qtbot):
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     # check text output
     assert main_window.gui_structure.figure_results.label.text() == "Hello"
-    assert main_window.gui_structure.figure_results.ax.get_ylabel() == "Y-Values"
-    assert main_window.gui_structure.figure_results.ax.get_xlabel() == "X-Values"
+    assert main_window.gui_structure.figure_results.a_x.get_ylabel() == "Y-Values"
+    assert main_window.gui_structure.figure_results.a_x.get_xlabel() == "X-Values"
     main_window.delete_backup()
