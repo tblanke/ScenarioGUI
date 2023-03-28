@@ -70,7 +70,7 @@ def test_close(qtbot):
 
     QtC.QTimer.singleShot(250, save)
     QtC.QTimer.singleShot(270, lambda: keyboard.write(filename_1))
-    QtC.QTimer.singleShot(280, lambda: keyboard.press("enter"))
+    QtC.QTimer.singleShot(300, lambda: keyboard.press("enter"))
     main_window.close()
 
     QtC.QTimer.singleShot(250, exit_window)
