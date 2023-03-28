@@ -54,27 +54,29 @@ Python.org/3.9/library/venv.html) and in [this article](https://www.freecodecamp
 
 ### Get started with ScenarioGUI
 
-The GUI can be customized using the global setting. There the font and font size can be set. Furthermore, the gui name, icon, version, saving file extension  
-can be set. Several 
-colors like the DARK background and the LIGHT Foreground color can be set as well. A folder containing an icons folder can be given. This one needs to 
-contain at least the icon contained under ScenarioGUI/icons. Besides a results creating class and a data 2 results function needs to be specified. They will 
-be explained in more detail later.
+The GUI can be customized using a gui_config.ini file. There the font and font size can be set. Furthermore, the gui name, icon, version, saving file 
+extension can be set. Several colors like the DARK background and the LIGHT Foreground color can be set as well. A folder containing an icons folder can be given. This one needs to 
+contain at least the icon contained under ScenarioGUI/icons. 
 
-```Python
-import ScenarioGUI.global_settings as global_vars
-from pathlib import Path
-global_vars.FONT = "Arial"
-global_vars.FONT_SIZE = 12
-global_vars.GUI_NAME = "My GUI name"
-global_vars.ICON_NAME = "icon"
-global_vars.VERSION = "0.2.0"
-global_vars.FILE_EXTENSION = "tool"
-global_vars.DARK = "rgb(0,0,0)"
-global_vars.LIGHT = "rgb(255,204,0)"
-folder = Path("__file__").parent
-global_vars.FOLDER = folder
-global_vars.ResultsClass = ResultsClass
-global_vars.DATA_2_RESULTS_FUNCTION = data_2_results 
+```file
+[COLORS]
+WHITE: rgb(255, 255, 255)
+LIGHT: rgb(84, 188, 235)
+LIGHT_SELECT: rgb(42, 126, 179)
+DARK: rgb(0, 64, 122)
+GREY: rgb(100, 100, 100)
+WARNING: rgb(255, 200, 87)
+BLACK: rgb(0, 0, 0)
+
+[DEFAULT]
+FILE_EXTENSION: scenario
+GUI_NAME: Scenario GUI
+ICON_NAME: icon.svg
+PATH_2_ICONS: ./ScenarioGUI/
+FONT_WINDOWS: Arial
+FONT_MAC: Helvetica
+FONT_SIZE_WINDOWS: 12
+FONT_SIZE_MAC: 14
 ```
 
 To create your own GUI part you can inherit from the GuiStructure provided by this lib and add more pages, categories and input field as you like.
@@ -237,7 +239,7 @@ def run(path_list=None):  # pragma: no cover
     # init window
     window = QtW.QMainWindow()
     # init gui window
-    main_window = MainWindow(window, app, GUI, Translations)
+    main_window = MainWindow(window, app, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     # load file if it is in path list
     if path_list is not None:
         main_window.filename = (
