@@ -68,30 +68,30 @@ def test_change_scenario(qtbot):
             main_window.dialog.buttons()[0].click()
 
     # test if closing the window is not changing the value and scenario
-    QtC.QTimer.singleShot(100, close)
+    QtC.QTimer.singleShot(200, close)
     main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(1))
     assert isclose(main_window.gui_structure.float_b.get_value(), 2.3)
-    qtbot.wait(100)
+    qtbot.wait(200)
     assert main_window.list_widget_scenario.currentRow() == 0
     # test if canceling the window is not changing the value and scenario
-    QtC.QTimer.singleShot(100, abort)
+    QtC.QTimer.singleShot(200, abort)
     main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(1))
     assert isclose(main_window.gui_structure.float_b.get_value(), 2.3)
-    qtbot.wait(100)
+    qtbot.wait(200)
     assert main_window.list_widget_scenario.currentRow() == 0
     # test if exiting the window is rejecting the changed the value and changing the scenario
-    QtC.QTimer.singleShot(100, exit_window)
+    QtC.QTimer.singleShot(200, exit_window)
     main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(1))
-    qtbot.wait(100)
+    qtbot.wait(200)
     assert isclose(main_window.gui_structure.float_b.get_value(), 1.1)
     assert isclose(main_window.list_ds[0].float_b, 2.1)
     assert main_window.list_widget_scenario.currentRow() == 1
     # change a value to trigger pop up window
     main_window.gui_structure.float_b.set_value(3)
     # test if saving is saving the changed the value and changing the scenario
-    QtC.QTimer.singleShot(100, save)
+    QtC.QTimer.singleShot(200, save)
     main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(0))
-    qtbot.wait(100)
+    qtbot.wait(200)
     assert isclose(main_window.list_ds[1].float_b, 3)
     assert main_window.list_widget_scenario.currentRow() == 0
     # check if the * is removed when it is changed to old values
@@ -118,7 +118,7 @@ def test_change_scenario(qtbot):
     # check if the value is stored and the scenario is changed
     main_window.gui_structure.float_b.set_value(4)
     main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(1))
-    qtbot.wait(100)
+    qtbot.wait(200)
     assert isclose(main_window.list_ds[0].float_b, 4)
     assert main_window.list_widget_scenario.currentRow() == 1
     # check if nothing is changed when scenarios are switched
