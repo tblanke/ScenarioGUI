@@ -23,7 +23,7 @@ def get_path_for_file(start_path: Path, filename: str) -> Path:
 
 config.read(get_path_for_file(path, "gui_config.ini").joinpath("gui_config.ini"))
 
-FOLDER: Path = get_path_for_file(path.joinpath(config['DEFAULT']["PATH_2_ICONS"]), "icons")
+FOLDER: Path = get_path_for_file(get_path_for_file(path, config['DEFAULT']["PATH_2_ICONS"]).joinpath(config['DEFAULT']["PATH_2_ICONS"]), "icons")
 
 WHITE: str = config['COLORS']["WHITE"]
 LIGHT: str = config['COLORS']["LIGHT"]
