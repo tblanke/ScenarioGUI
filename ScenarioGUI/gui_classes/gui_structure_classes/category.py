@@ -183,7 +183,7 @@ class Category:
                 if isinstance(option, Hint):
                     option.create_widget(self.frame, self.layout_frame, row=row, column=column)
                 else:
-                    if not option.label_text:
+                    if option.label_text == [""]:
                         option.deactivate_size_limit()
                     option.create_widget(self.frame, self.layout_frame, row=row, column=column)
                 if row == self.grid_layout - 1:

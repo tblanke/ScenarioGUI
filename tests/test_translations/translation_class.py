@@ -64,6 +64,8 @@ class Translations:  # pragma: no cover
         "category_save_scenario",
         "option_auto_saving",
         "hint_saving",
+        "aim_add",
+        "aim_sub",
         "languages",
     )
 
@@ -145,3 +147,5 @@ class Translations:  # pragma: no cover
             "If Auto saving is selected the scenario will automatically saved if a scenario is changed. Otherwise the scenario has to be saved with the Update scenario button in the upper left corner if the changes should not be lost.",
             "Wenn Automatisch speichern ausgewählt ist, wird das Szenario automatisch gespeichert, wenn ein Szenario geändert wird. Andernfalls muss das Szenario mit der Schaltfläche Szenario aktualisieren in der oberen linken Ecke gespeichert werden, wenn die Änderungen nicht verloren gehen sollen.",
         ]
+        self.aim_add: list[str] = ["Adding", "Addieren"]
+        self.aim_sub: list[str] = ["Substract", "Subtrahieren"]
