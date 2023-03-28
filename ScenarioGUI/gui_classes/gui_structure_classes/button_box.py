@@ -183,7 +183,7 @@ class ButtonBox(Option):
         """
         entry_name: list[str] = name.split(",")
         self.label.setText(entry_name[0])
-        for button, button_name in zip(self.widget, entry_name[1:], strict=False):
+        for button, button_name in zip(self.widget, entry_name[1:]):
             button.setText(f" {button_name.replace('++', ',')} ")
 
     def check_linked_value(self, value: int) -> bool:
@@ -230,7 +230,7 @@ class ButtonBox(Option):
         None
         """
         layout = self.create_frame(frame, layout_parent)
-        for idx, (entry, widget) in enumerate(zip(self.entries, self.widget, strict=True)):
+        for idx, (entry, widget) in enumerate(zip(self.entries, self.widget)):
             widget.setParent(self.frame)
             widget.setText(f" {entry} ")
             widget.setStyleSheet(

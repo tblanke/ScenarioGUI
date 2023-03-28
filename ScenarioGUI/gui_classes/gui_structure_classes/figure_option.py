@@ -100,4 +100,3 @@ class FigureOption(ButtonBox):
                 if not button.isChecked():
                     button.click()
                 break
-        return

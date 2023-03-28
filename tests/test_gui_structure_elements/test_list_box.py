@@ -1,6 +1,6 @@
 import PySide6.QtWidgets as QtW
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
+from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 from tests.gui_structure_for_tests import GUI
 from tests.result_creating_class_for_tests import ResultsClass, data_2_results
 from tests.test_translations.translation_class import Translations
@@ -23,7 +23,7 @@ def test_list_box(qtbot):
     # test set text
     main_window.gui_structure.list_box.set_text("Hello,4,5,6,7")
     assert main_window.gui_structure.list_box.label.text() == "Hello"
-    for i, val in zip(range(4), ["4", "5", "6", "7"], strict=True):
+    for i, val in zip(range(4), ["4", "5", "6", "7"]):
         assert main_window.gui_structure.list_box.widget.itemText(i) == val
 
     main_window.gui_structure.list_small_2.set_value(2)

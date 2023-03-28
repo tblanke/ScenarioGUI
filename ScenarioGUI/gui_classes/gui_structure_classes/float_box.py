@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
+
 import ScenarioGUI.global_settings as globs
 
 from .option import Option

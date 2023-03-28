@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
+
 import ScenarioGUI.global_settings as globs
 
 from .option import Option
@@ -161,7 +162,7 @@ class FlexibleAmount(Option):
         for idx, label in enumerate([item.widget() for item in [self.frame.layout().itemAtPosition(i, 0) for i in range(1, length + 1)] 
                                      if item is not None]):
             label.setText(f"{self.entry_name} {idx + 1}")
-        for idx, (name, (_, kwargs, _)) in enumerate(zip(entry_name[2:], self.option_classes, strict=False)):
+        for idx, name in enumerate(entry_name[2:]):
             self.frame.layout().itemAtPosition(0, idx + 2).widget().setText(name)
             self.option_classes[idx] = (self.option_classes[idx][0], self.option_classes[idx][1], name)
 
@@ -192,8 +193,8 @@ class FlexibleAmount(Option):
         self.func_on_change()
         self._init_links()
 
-        for options, values in zip(self.option_entries, value, strict=True):
-            for option, val in zip(options, values, strict=True):
+        for options, values in zip(self.option_entries, value):
+            for option, val in zip(options, values):
                 option.set_value(val)
 
     def _init_links(self) -> None:

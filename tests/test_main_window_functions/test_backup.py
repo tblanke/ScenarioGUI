@@ -1,11 +1,12 @@
 
 import numpy as np
 import PySide6.QtWidgets as QtW
+
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-from ScenarioGUI.gui_classes.translation_class import Translations
 
 from ..gui_structure_for_tests import GUI
 from ..result_creating_class_for_tests import ResultsClass, data_2_results
+from ..test_translations.translation_class import Translations
 
 
 def test_backup(qtbot):
@@ -21,7 +22,7 @@ def test_backup(qtbot):
 
     main_window.load_backup()
     # check if the imported values are the same
-    for ds_old, ds_new in zip(list_old, main_window.list_ds, strict=True):
+    for ds_old, ds_new in zip(list_old, main_window.list_ds):
         for option in ds_new.list_options_aims:
             if isinstance(getattr(ds_old, option), (int, float)):
                 assert np.isclose(getattr(ds_old, option), getattr(ds_new, option))
@@ -39,7 +40,7 @@ def test_backup(qtbot):
     list_old = main_window.list_ds.copy()
     main_window.load_backup()
     # check if the imported values are the same
-    for ds_old, ds_new in zip(list_old, main_window.list_ds, strict=True):
+    for ds_old, ds_new in zip(list_old, main_window.list_ds):
         for option in ds_new.list_options_aims:
             if isinstance(getattr(ds_old, option), (int, float)):
                 assert np.isclose(getattr(ds_old, option), getattr(ds_new, option))

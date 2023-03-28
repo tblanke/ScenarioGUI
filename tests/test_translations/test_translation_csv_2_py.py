@@ -12,6 +12,6 @@ def test_csv_2_py():
     from .translation_class import Translations
 
     translation = Translations()
-    for name, trans_1, trans_2 in zip(d_f["name"], d_f["English"], d_f["German"], strict=True):
+    for name, trans_1, trans_2 in zip(d_f["name"], d_f["English"], d_f["German"]):
         assert getattr(translation, name)[0] == trans_1
         assert getattr(translation, name)[1] == trans_2

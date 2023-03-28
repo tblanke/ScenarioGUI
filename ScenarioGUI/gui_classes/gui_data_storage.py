@@ -3,7 +3,6 @@ data storage class script
 """
 from __future__ import annotations
 
-import logging
 from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
@@ -100,7 +99,7 @@ class DataStorage:
             Dictionary with the values of the class
         """
         # get all normal values
-        return {key: value for key, value in self.__dict__.items() if isinstance(value, int | bool | float | str | tuple)}
+        return {key: value for key, value in self.__dict__.items() if isinstance(value, (int, bool, float, str, tuple))}
 
     def from_dict(self, data: dict):
         """

@@ -5,12 +5,13 @@ import keyboard
 import numpy as np
 import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW
+
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-from ScenarioGUI.gui_classes.translation_class import Translations
 
 from ..gui_structure_for_tests import GUI
 from ..result_creating_class_for_tests import ResultsClass, data_2_results
+from ..test_translations.translation_class import Translations
 
 
 def test_save_load_new(qtbot):
@@ -89,7 +90,7 @@ def test_save_load_new(qtbot):
         f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
     )
     # check if the imported values are the same
-    for ds_old, ds_new in zip(list_old, main_window.list_ds, strict=True):
+    for ds_old, ds_new in zip(list_old, main_window.list_ds):
         for option in ds_new.list_options_aims:
             if isinstance(getattr(ds_old, option), (int, float)):
                 assert np.isclose(getattr(ds_old, option), getattr(ds_new, option))

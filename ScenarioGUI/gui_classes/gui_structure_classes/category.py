@@ -183,7 +183,7 @@ class Category:
                 if isinstance(option, Hint):
                     option.create_widget(self.frame, self.layout_frame, row=row, column=column)
                 else:
-                    if not option.label_text:
+                    if option.label_text == [""]:
                         option.deactivate_size_limit()
                     option.create_widget(self.frame, self.layout_frame, row=row, column=column)
                 if row == self.grid_layout - 1:
@@ -294,4 +294,4 @@ class Category:
         self.set_text(self.label_text[idx])
 
     def __repr__(self):
-        return f'{type(self).__name__}; Label: {self.label_text[0]}'
+        return f"{type(self).__name__}; Label: {self.label_text[0]}"
