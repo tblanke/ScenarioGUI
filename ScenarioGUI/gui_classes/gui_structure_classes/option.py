@@ -227,7 +227,7 @@ class Option(metaclass=abc.ABCMeta):
             The frame created for this option
         """
 
-        if not self.label_text:
+        if self.label_text == [""]:
             self.frame.setParent(None)
             self.frame = frame
             return frame.layout()
@@ -336,4 +336,4 @@ class Option(metaclass=abc.ABCMeta):
         self.set_text(self.label_text[idx])
 
     def __repr__(self):
-        return f'{type(self).__name__}; Label: {self.label_text[0]}; Value: {self.get_value()}'
+        return f"{type(self).__name__}; Label: {self.label_text[0]}; Value: {self.get_value()}"
