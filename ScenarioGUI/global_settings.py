@@ -8,29 +8,41 @@ from configparser import ConfigParser
 from pathlib import Path
 from platform import system
 
-WHITE: str = "rgb(255, 255, 255)"
-LIGHT: str = "rgb(84, 188, 235)"
-LIGHT_SELECT: str = "rgb(42, 126, 179)"
-DARK: str = "rgb(0, 64, 122)"
-GREY: str = "rgb(100, 100, 100)"
-WARNING: str = "rgb(255, 200, 87)"
-BLACK: str = "rgb(0, 0, 0)"
+path = Path(".").absolute()
+config = ConfigParser()
 
-FONT = "Arial" if system() == "Windows" else "Helvetica"  # Arial
-FONT_SIZE = 11 if system() == "Windows" else 14
 
-FOLDER: Path = Path(__file__).parent
+def get_path_for_file(start_path: Path, filename: str) -> Path:
+    path_i = start_path
+    for i in range(10):
+        if path_i.joinpath(filename).exists():
+            return path_i
+        path_i = path_i.parent
+    raise ValueError
+
+
+config.read(get_path_for_file(path, "gui_config.ini").joinpath("gui_config.ini"))
+
+FOLDER: Path = get_path_for_file(get_path_for_file(path, config['DEFAULT']["PATH_2_ICONS"]).joinpath(config['DEFAULT']["PATH_2_ICONS"]), "icons")
+
+WHITE: str = config['COLORS']["WHITE"]
+LIGHT: str = config['COLORS']["LIGHT"]
+LIGHT_SELECT: str = config['COLORS']["LIGHT_SELECT"]
+DARK: str = config['COLORS']["DARK"]
+GREY: str = config['COLORS']["GREY"]
+WARNING: str = config['COLORS']["WARNING"]
+BLACK: str = config['COLORS']["BLACK"]
+
+FONT = config['DEFAULT']["FONT_WINDOWS"] if system() == "Windows" else config['DEFAULT']["FONT_MAC"]
+FONT_SIZE = int(config['DEFAULT']["FONT_SIZE_WINDOWS"] if system() == "Windows" else config['DEFAULT']["FONT_SIZE_MAC"])
+
+FILE_EXTENSION: str = config['DEFAULT']["FILE_EXTENSION"]
+GUI_NAME: str = config['DEFAULT']["GUI_NAME"]
+ICON_NAME: str = config['DEFAULT']["ICON_NAME"]
 
 # get current version
-path = Path(FOLDER).parent
-config = ConfigParser()
-# with open(path.joinpath("setup.cfg"), "r") as file:
-config.read(path.joinpath("setup.cfg"))
+config.read(config.read(get_path_for_file(path, "setup.cfg").joinpath("setup.cfg")))
 VERSION = config.get("metadata", "version")
-
-FILE_EXTENSION: str = "scenario"
-GUI_NAME: str = "Scenario GUI"
-ICON_NAME: str = "icon.svg"
 
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)

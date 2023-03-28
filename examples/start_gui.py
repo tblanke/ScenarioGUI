@@ -73,13 +73,14 @@ class ResultsClass:
             ax.legend()
         return fig, ax
 
-    def _to_dict(self) -> dict:
+    def to_dict(self) -> dict:
         return {"a": self.a, "b": self.b, "result": self.result}
 
-    def _from_dict(self, dictionary: dict):
-        self.a = dictionary["a"]
-        self.b = dictionary["b"]
-        self.result = dictionary["result"]
+    @staticmethod
+    def from_dict(dictionary: dict) -> ResultsClass:
+        res = ResultsClass(dictionary["a"], dictionary["b"])
+        res.result = dictionary["result"]
+        return res
 
 
 def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
@@ -200,7 +201,7 @@ class GUI(GuiStructure):
         self.page_result.set_next_page(self.page_settings)
         self.page_settings.set_previous_page(self.page_result)
 
-
+"""
 global_vars.FONT = "Arial"
 global_vars.FONT_SIZE = 12
 global_vars.FILE_EXTENSION = "tool"
@@ -211,7 +212,7 @@ global_vars.ICON_NAME = "icon"
 global_vars.VERSION = "0.2.0"
 folder = Path("__file__").parent
 global_vars.FOLDER = folder
-
+"""
 
 def run(path_list=None):  # pragma: no cover
     import PySide6.QtWidgets as QtW
