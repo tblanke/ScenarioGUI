@@ -155,8 +155,7 @@ class FlexibleAmount(Option):
         None
         """
         entry_name: list[str, str] = name.split(",")
-        self.label_text = entry_name[0]
-        self.label.setText(self.label_text)
+        self.label.setText(entry_name[0])
         self.entry_name = entry_name[1]
         length = len(self.option_entries)
         for idx, label in enumerate([item.widget() for item in [self.frame.layout().itemAtPosition(i, 0) for i in range(1, length + 1)] 
@@ -357,7 +356,7 @@ class FlexibleAmount(Option):
         layout_parent_i.setSpacing(0)
         layout_parent_i.setContentsMargins(0, 0, 0, 0)
         self.label.setParent(frame_i)
-        self.label.setText(self.label_text)
+        self.label.setText(self.label_text[0])
         self.label.setStyleSheet(
             f"QLabel {'{'}border: 1px solid  {globs.LIGHT};border-top-left-radius: 15px;border-top-right-radius: 15px;"
             f"border-bottom-left-radius: 0px;border-top-bottom-radius: 0px;"

@@ -30,7 +30,7 @@ def test_flex_amount_option(qtbot):
     assert len(flex_option.get_value()) == flex_option.default_value + 1
     flex_option._del_entry()
     assert len(flex_option.get_value()) == flex_option.default_value
-    flex_option.set_value([['Name', 1, 2, 0]])
+    flex_option.set_value([["Name", 1, 2, 0]])
     assert len(flex_option.get_value()) == 1
     flex_option._del_entry()
     assert len(flex_option.get_value()) == 1
