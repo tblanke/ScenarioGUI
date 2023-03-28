@@ -333,4 +333,4 @@ class Option(metaclass=abc.ABCMeta):
         self.set_text(self.label_text[idx])
 
     def __repr__(self):
-        return f'{type(self).__name__}; Label: {self.label_text[0]}; Value: {self.get_value()}'
+        return f"{type(self).__name__}; Label: {self.label_text[0]}; Value: {self.get_value()}"

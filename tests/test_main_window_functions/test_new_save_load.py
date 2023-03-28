@@ -89,7 +89,7 @@ def test_save_load_new(qtbot):
         f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
     )
     # check if the imported values are the same
-    for ds_old, ds_new in zip(list_old, main_window.list_ds, strict=True):
+    for ds_old, ds_new in zip(list_old, main_window.list_ds):
         for option in ds_new.list_options_aims:
             if isinstance(getattr(ds_old, option), (int, float)):
                 assert np.isclose(getattr(ds_old, option), getattr(ds_new, option))

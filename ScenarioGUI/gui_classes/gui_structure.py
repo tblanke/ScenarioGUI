@@ -2,12 +2,28 @@
 This document contains all the information relevant for the GUI.
 It contains all the options, categories etc. that should appear on the GUI.
 """
+from __future__ import annotations
 
-import PySide6.QtWidgets as QtW
+from typing import TYPE_CHECKING
 
-from ScenarioGUI.gui_classes.gui_structure_classes import Aim, ButtonBox, Category, FunctionButton, Hint, ListBox, Option, Page, ResultFigure, ResultText, \
-    IntBox
-from ScenarioGUI.gui_classes.translation_class import Translations
+from ScenarioGUI.gui_classes.gui_structure_classes import (
+    Aim,
+    ButtonBox,
+    Category,
+    FunctionButton,
+    Hint,
+    IntBox,
+    ListBox,
+    Option,
+    Page,
+    ResultFigure,
+    ResultText,
+)
+
+if TYPE_CHECKING:
+    import PySide6.QtWidgets as QtW
+
+    from ScenarioGUI.gui_classes.translation_class import Translations
 
 
 class GuiStructure:

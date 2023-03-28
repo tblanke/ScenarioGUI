@@ -3,7 +3,6 @@ data storage class script
 """
 from __future__ import annotations
 
-import logging
 from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
@@ -75,7 +74,6 @@ class DataStorage:
         [aim.widget.setChecked(False) for aim, _ in gui_structure.list_of_aims]
         # run over options to hide or show the relevant ones
         [aim.widget.click() for aim, name in gui_structure.list_of_aims if getattr(self, name)]
-        print("set_values")
         [option.set_value(getattr(self, name)) for option, name in gui_structure.list_of_options if hasattr(self, name)]
         gui_structure.change_toggle_button()
 
@@ -101,7 +99,7 @@ class DataStorage:
             Dictionary with the values of the class
         """
         # get all normal values
-        return {key: value for key, value in self.__dict__.items() if isinstance(value, int | bool | float | str | tuple)}
+        return {key: value for key, value in self.__dict__.items() if isinstance(value, (int, bool, float, str, tuple))}
 
     def from_dict(self, data: dict):
         """

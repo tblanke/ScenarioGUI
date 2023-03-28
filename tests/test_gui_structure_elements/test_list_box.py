@@ -23,7 +23,7 @@ def test_list_box(qtbot):
     # test set text
     main_window.gui_structure.list_box.set_text("Hello,4,5,6,7")
     assert main_window.gui_structure.list_box.label.text() == "Hello"
-    for i, val in zip(range(4), ["4", "5", "6", "7"], strict=True):
+    for i, val in zip(range(4), ["4", "5", "6", "7"]):
         assert main_window.gui_structure.list_box.widget.itemText(i) == val
 
     main_window.gui_structure.list_small_2.set_value(2)

@@ -36,7 +36,8 @@ if TYPE_CHECKING:
         def to_dict(self) -> dict:
             """creates a dict from class data"""
 
-        def from_dict(self, dictionary: dict) -> ResultsClass:
+        @staticmethod
+        def from_dict(dictionary: dict) -> ResultsClass:
             """creates a class from dict data"""
 
 
@@ -116,7 +117,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # check if backup folder exits and otherwise create it
         makedirs(dirname(self.backup_file), exist_ok=True)
         makedirs(dirname(self.default_path), exist_ok=True)
-        for idx, (name, icon, short_cut) in enumerate(zip(self.translations.languages, self.translations.icon, self.translations.short_cut, strict=True)):
+        for idx, (name, icon, short_cut) in enumerate(zip(self.translations.languages, self.translations.icon, self.translations.short_cut)):
             self._create_action_language(idx, name, icon, short_cut)
         # add languages to combo box
         self.gui_structure.option_language.widget.addItems(self.translations.languages)
@@ -802,7 +803,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         # write data to variables
         self.list_ds = []
-        for val, results in zip(saving["values"], saving["results"], strict=True):
+        for val, results in zip(saving["values"], saving["results"]):
             ds = DataStorage(self.gui_structure)
             ds.from_dict(val)
             if results is None:

@@ -21,7 +21,7 @@ def test_backup(qtbot):
 
     main_window.load_backup()
     # check if the imported values are the same
-    for ds_old, ds_new in zip(list_old, main_window.list_ds, strict=True):
+    for ds_old, ds_new in zip(list_old, main_window.list_ds):
         for option in ds_new.list_options_aims:
             if isinstance(getattr(ds_old, option), (int, float)):
                 assert np.isclose(getattr(ds_old, option), getattr(ds_new, option))
@@ -39,7 +39,7 @@ def test_backup(qtbot):
     list_old = main_window.list_ds.copy()
     main_window.load_backup()
     # check if the imported values are the same
-    for ds_old, ds_new in zip(list_old, main_window.list_ds, strict=True):
+    for ds_old, ds_new in zip(list_old, main_window.list_ds):
         for option in ds_new.list_options_aims:
             if isinstance(getattr(ds_old, option), (int, float)):
                 assert np.isclose(getattr(ds_old, option), getattr(ds_new, option))

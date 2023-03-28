@@ -27,7 +27,7 @@ def translate_csv_2_class(csv_file_with_path: str | Path, target_path: str | Pat
         file.write(f"\t{text}\n")
         file.write("\tdef __init__(self):\n")
         file.write(f"\t\tself.languages: list[str] = {d_f.columns[1:].to_list()}\n")
-        for name, translations in zip(d_f["name"], d_f.iloc[:, 1:].to_numpy(), strict=True):
+        for name, translations in zip(d_f["name"], d_f.iloc[:, 1:].to_numpy()):
             text = f"self.{name}: list[str] = {translations.tolist()}"
             file.write(f"\t\t{text}\n")
 

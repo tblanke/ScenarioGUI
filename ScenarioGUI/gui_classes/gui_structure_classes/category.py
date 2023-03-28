@@ -294,4 +294,4 @@ class Category:
         self.set_text(self.label_text[idx])
 
     def __repr__(self):
-        return f'{type(self).__name__}; Label: {self.label_text[0]}'
+        return f"{type(self).__name__}; Label: {self.label_text[0]}"
