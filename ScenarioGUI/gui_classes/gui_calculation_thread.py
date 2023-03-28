@@ -24,7 +24,7 @@ class CalcProblem(QtC.QThread):
 
     def __init__(
         self,
-        ds: DataStorage,
+        d_s: DataStorage,
         idx: int,
         parent=None,
         *,
@@ -38,7 +38,7 @@ class CalcProblem(QtC.QThread):
 
         Parameters
         ----------
-        ds : DataStorage
+        d_s : DataStorage
             DataStorage object with all the date to perform the calculation for
         idx : int
             Index of the current calculation thread
@@ -49,7 +49,7 @@ class CalcProblem(QtC.QThread):
         """
         super().__init__(parent)  # init parent class
         # set datastorage and index
-        self.ds = ds
+        self.d_s = d_s
         self.idx = idx
         self.data_2_results_function = data_2_results_function
 
@@ -64,23 +64,23 @@ class CalcProblem(QtC.QThread):
         -------
         None
         """
-        results, func = self.data_2_results_function(self.ds)
+        results, func = self.data_2_results_function(self.d_s)
 
         try:
             func()
         except ValueError as err:
-            self.ds.debug_message = err
+            self.d_s.debug_message = err
             # save bore field in Datastorage
-            self.ds.results = None
+            self.d_s.results = None
             # return Datastorage as signal
-            self.any_signal.emit((self.ds, self.idx, self))
+            self.any_signal.emit((self.d_s, self.idx, self))
             return
 
         # set debug message to ""
-        self.ds.debug_message = ""
+        self.d_s.debug_message = ""
 
         # save borefield in Datastorage
-        self.ds.results = results
+        self.d_s.results = results
         # return Datastorage as signal
-        self.any_signal.emit((self.ds, self.idx, self))
+        self.any_signal.emit((self.d_s, self.idx, self))
         return

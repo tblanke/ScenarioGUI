@@ -7,15 +7,18 @@ import abc
 from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
-
 import ScenarioGUI.global_settings as globs
 
 from .aim import Aim
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
+    from typing import Protocol
 
-    from .category import Category
+
+    class CategoryOrFlexibleOption(Protocol):
+        """class with list_of_options"""
+        list_of_options: list[Option]
 
 
 class Option(metaclass=abc.ABCMeta):
@@ -29,7 +32,7 @@ class Option(metaclass=abc.ABCMeta):
         self,
         label: str | list[str],
         default_value: bool | int | float | str,
-        category: Category,
+        category: CategoryOrFlexibleOption,
     ):
         """
         Parameters
@@ -38,7 +41,7 @@ class Option(metaclass=abc.ABCMeta):
             The label related to the option
         default_value : bool, int, float, str
             The default value of the option
-        category : Category
+        category : Category FlexibleOption
             The category in which the option should be placed
         """
         self.label_text: list[str] = [label] if isinstance(label, str) else label
@@ -224,7 +227,7 @@ class Option(metaclass=abc.ABCMeta):
             The frame created for this option
         """
 
-        if not self.label_text:
+        if self.label_text == [""]:
             self.frame.setParent(None)
             self.frame = frame
             return frame.layout()
@@ -333,4 +336,4 @@ class Option(metaclass=abc.ABCMeta):
         self.set_text(self.label_text[idx])
 
     def __repr__(self):
-        return f'{type(self).__name__}; Label: {self.label_text[0]}; Value: {self.get_value()}'
+        return f"{type(self).__name__}; Label: {self.label_text[0]}; Value: {self.get_value()}"

@@ -1,3 +1,7 @@
+"""
+Basic GuiStructure with minimal functionalities
+"""
+
 from __future__ import annotations
 
 from .aim import Aim
@@ -5,6 +9,7 @@ from .button_box import ButtonBox
 from .category import Category
 from .figure_option import FigureOption
 from .filename_box import FileNameBox
+from .flexible_amount_option import FlexibleAmount
 from .float_box import FloatBox
 from .function_button import FunctionButton
 from .hint import Hint
@@ -32,4 +37,5 @@ __all__ = [
     "ResultFigure",
     "ResultText",
     "TextBox",
+    "FlexibleAmount",
 ]
