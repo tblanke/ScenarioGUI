@@ -125,7 +125,7 @@ class GUI(GuiStructure):
         self.float_small_1.add_aim_option_2_be_set_for_check(self.aim_add)
 
         self.create_results_page()
-        self.numerical_results = Category(page=self.page_result, label="Numerical results")
+        self.numerical_results = Category(page=self.page_result, label=["Numerical results"])
 
         self.result_text_add = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
@@ -134,9 +134,9 @@ class GUI(GuiStructure):
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
 
-        self.figure_results = ResultFigure(label="Plot", page=self.page_result)
+        self.figure_results = ResultFigure(label=["Plot"], page=self.page_result)
         self.legend_figure_results = FigureOption(
-            category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
+            category=self.figure_results, label=["Legend on"], param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
         )
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")

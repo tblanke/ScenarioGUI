@@ -27,12 +27,12 @@ class ListBox(Option):
     The ListBox can be used to select one option out of many (sort of like the ButtonBox)
     """
 
-    def __init__(self, label: str, default_index: int, entries: list[str], category: Category):
+    def __init__(self, label: str | list[str], default_index: int, entries: list[str], category: Category):
         """
 
         Parameters
         ----------
-        label : str
+        label : List[str]
             The label of the ListBox
         default_index : int
             The default index of the ListBox
@@ -43,7 +43,7 @@ class ListBox(Option):
 
         Examples
         --------
-        >>> option_list = ListBox(label='List box label text',
+        >>> option_list = ListBox(label="List box label text",  # or self.translations.hint_example if hint_example is in Translation class
         >>>                       default_index=0,
         >>>                       entries=['Option 1', 'Option 2'],
         >>>                       category=category_example)
@@ -135,8 +135,7 @@ class ListBox(Option):
         None
         """
         entry_name: list[str, str] = name.split(",")
-        self.label_text = entry_name[0]
-        self.label.setText(self.label_text)
+        self.label.setText(entry_name[0])
         for idx, name in enumerate(entry_name[1:]):
             self.widget.setItemText(idx, name)
 

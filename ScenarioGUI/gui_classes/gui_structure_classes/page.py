@@ -32,12 +32,12 @@ class Page:
     default_parent: QtW.QWidget | None = None
     TOGGLE: bool = True
 
-    def __init__(self, name: str, button_name: str, icon: str):
+    def __init__(self, name: str | list[str], button_name: str, icon: str):
         """
 
         Parameters
         ----------
-        name : str
+        name : str | List[str]
             Name of the page (shown on top of the Page)
         button_name : str
             Text to be shown on the button for the Page
@@ -47,7 +47,7 @@ class Page:
         Examples
         --------
 
-        >>> page_example = Page(name='Example page',
+        >>> page_example = Page(name="Example page",  #  or self.translations.page_example if page_example is in Translations class
         >>>                     button_name='Name of\\nthe button',
         >>>                     icon="example_icon.svg")
 
@@ -55,7 +55,7 @@ class Page:
 
         .. figure:: _static/Example_Page.PNG
         """
-        self.name: str = name
+        self.name: list[str] = [name] if isinstance(name, str) else name
         self.button_name: str = button_name
         self.icon: str = icon
         self.push_button_next: QtW.QPushButton | None = None
@@ -100,10 +100,8 @@ class Page:
         None
         """
         entry_name: list[str, str] = name.split(",")
-        self.name = entry_name[1]
-        self.button_name = entry_name[0].replace("@", "\n")
-        self.label.setText(self.name)
-        self.button.setText(self.button_name)
+        self.label.setText(entry_name[1])
+        self.button.setText(entry_name[0].replace("@", "\n"))
         if self.push_button_previous is not None:
             self.push_button_previous.setText(self.previous_label)
         if self.push_button_next is not None:
@@ -167,7 +165,7 @@ class Page:
         self.label.setParent(central_widget)
         label: QtW.QLabel = self.label
         label.setStyleSheet(f'font: {globs.FONT_SIZE+4}pt "{globs.FONT}";font-weight:700;')
-        label.setText(self.name)
+        label.setText(self.name[0].split(",")[0])
         layout.addWidget(label)
         spacer_label = QtW.QLabel(self.page)
         spacer_label.setMinimumHeight(6)
@@ -353,3 +351,18 @@ class Page:
             self.push_button_next.clicked.connect(self.next_page.button.click)  # pylint: disable=E1101
 
         scroll_area_layout.addLayout(horizontal_layout)
+
+    def translate(self, idx: int) -> None:
+        """
+        Translates the label.
+
+        Parameters
+        ----------
+        idx: int
+            index of language
+
+        Returns
+        -------
+        None
+        """
+        self.set_text(self.name[idx])

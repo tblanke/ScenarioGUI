@@ -5,7 +5,8 @@ It contains all the options, categories etc. that should appear on the GUI.
 
 import PySide6.QtWidgets as QtW
 
-from ScenarioGUI.gui_classes.gui_structure_classes import Aim, ButtonBox, Category, FunctionButton, Hint, ListBox, Option, Page, ResultFigure, ResultText
+from ScenarioGUI.gui_classes.gui_structure_classes import Aim, ButtonBox, Category, FunctionButton, Hint, ListBox, Option, Page, ResultFigure, ResultText, \
+    IntBox
 from ScenarioGUI.gui_classes.translation_class import Translations
 
 
@@ -58,9 +59,9 @@ class GuiStructure:
         -------
             None
         """
-        self.page_result = Page("Results", "Results", "Result.svg")
-        self.cat_no_result = Category(page=self.page_result, label="No results")
-        self.text_no_result = Hint("No results are yet calculated", category=self.cat_no_result, warning=True)
+        self.page_result = Page(self.translations.page_result, "Results", "Result.svg")
+        self.cat_no_result = Category(page=self.page_result, label=self.translations.cat_no_results)
+        self.text_no_result = Hint(self.translations.text_no_result, category=self.cat_no_result, warning=True)
 
     def create_settings_page(self):
         """
@@ -69,37 +70,36 @@ class GuiStructure:
         -------
             None
         """
-        self.page_settings = Page("Settings", "Settings", "Settings.svg")
+        self.page_settings = Page(self.translations.page_settings, "Settings", "Settings.svg")
 
-        self.category_language = Category(page=self.page_settings, label="Language")
+        self.category_language = Category(page=self.page_settings, label=self.translations.category_language)
 
         self.option_language = ListBox(
             category=self.category_language,
-            label="Language: ",
+            label=self.translations.option_language,
             default_index=0,
             entries=[],
         )
 
-        self.category_save_scenario = Category(page=self.page_settings, label="Scenario saving settings")
+        self.category_save_scenario = Category(page=self.page_settings, label=self.translations.category_save_scenario)
 
         self.option_toggle_buttons = ButtonBox(
-            label="Toggle buttons?:",
+            label=self.translations.option_toggle_buttons,
             default_index=1,
             entries=[" no ", " yes "],
             category=self.category_save_scenario,
         )
         self.option_toggle_buttons.change_event(self.change_toggle_button)
+        self.option_n_threads = IntBox(label=self.translations.option_n_threads, default_value=2, category=self.category_save_scenario, minimal_value=1)
         self.option_auto_saving = ButtonBox(
-            label="Use automatic saving?:",
+            label=self.translations.option_auto_saving,
             default_index=0,
             entries=[" no ", " yes "],
             category=self.category_save_scenario,
         )
         self.hint_saving = Hint(
             category=self.category_save_scenario,
-            hint="If Auto saving is selected the scenario will automatically saved if a scenario"
-            " is changed. Otherwise the scenario has to be saved with the Update scenario "
-            "button in the upper left corner if the changes should not be lost. ",
+            hint=self.translations.hint_saving,
         )
 
     def create_lists(self):
@@ -156,4 +156,4 @@ class GuiStructure:
         Page.previous_label = translation.label_previous[index]
         for name in [j for j in translation.__slots__ if hasattr(self, j)]:
             entry: Option | Hint | FunctionButton | Page | Category = getattr(self, name)
-            entry.set_text(getattr(translation, name)[index])
+            entry.translate(index)

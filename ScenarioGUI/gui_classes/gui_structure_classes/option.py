@@ -30,21 +30,21 @@ class Option(metaclass=abc.ABCMeta):
 
     def __init__(
         self,
-        label: str,
+        label: str | list[str],
         default_value: bool | int | float | str,
         category: CategoryOrFlexibleOption,
     ):
         """
         Parameters
         ----------
-        label : str
+        label : List[str]
             The label related to the option
         default_value : bool, int, float, str
             The default value of the option
         category : Category FlexibleOption
             The category in which the option should be placed
         """
-        self.label_text: str = label
+        self.label_text: list[str] = [label] if isinstance(label, str) else label
         self.default_value: bool | int | float | str = default_value
         self.widget: QtW.QWidget | None = None
         self.frame: QtW.QFrame = QtW.QFrame(self.default_parent)
@@ -195,7 +195,6 @@ class Option(metaclass=abc.ABCMeta):
         -------
         None
         """
-        self.label_text = name
         self.label.setText(name)
 
     def deactivate_size_limit(self) -> None:
@@ -239,7 +238,8 @@ class Option(metaclass=abc.ABCMeta):
         layout = QtW.QHBoxLayout(self.frame)
         layout.setSpacing(6)
         layout.setContentsMargins(0, 0, 0, 0)
-        self.label.setText(self.label_text)
+        self.label.setParent(frame)
+        self.label.setText(self.label_text[0])
         layout.addWidget(self.label)
         if create_spacer:
             spacer = QtW.QSpacerItem(1, 1, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
@@ -320,5 +320,20 @@ class Option(metaclass=abc.ABCMeta):
         None
         """
 
+    def translate(self, idx: int) -> None:
+        """
+        Translates the label.
+
+        Parameters
+        ----------
+        idx: int
+            index of language
+
+        Returns
+        -------
+        None
+        """
+        self.set_text(self.label_text[idx])
+
     def __repr__(self):
-        return f"{type(self).__name__}; Label: {self.label_text}; Value: {self.get_value()}"
+        return f'{type(self).__name__}; Label: {self.label_text[0]}; Value: {self.get_value()}'

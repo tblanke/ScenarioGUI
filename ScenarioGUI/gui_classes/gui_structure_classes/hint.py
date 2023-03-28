@@ -21,12 +21,12 @@ class Hint:
 
     default_parent: QtW.QWidget | None = None
 
-    def __init__(self, hint: str, category: Category, warning: bool = False):
+    def __init__(self, hint: str | list[str], category: Category, warning: bool = False):
         """
 
         Parameters
         ----------
-        hint : str
+        hint : List[str]
             Text of the hint
         category : Category
             Category in which the Hint should be placed
@@ -35,7 +35,7 @@ class Hint:
 
         Examples
         --------
-        >>> hint_example = Hint(hint='This is a hint to something important.',
+        >>> hint_example = Hint(hint="This is a hint to something important.",  # or self.translations.hint_example if hint_example is in Translation class
         >>>                     category=category_example,
         >>>                     warning=True)
 
@@ -44,7 +44,7 @@ class Hint:
         .. figure:: _static/Example_Hint.PNG
 
         """
-        self.hint: str = hint
+        self.hint: list[str] = [hint] if isinstance(hint, str) else hint
         self.label: QtW.QLabel = QtW.QLabel(self.default_parent)
         self.warning = warning
         category.list_of_options.append(self)
@@ -77,7 +77,7 @@ class Hint:
         None
         """
         self.label.setParent(frame)
-        self.label.setText(self.hint)
+        self.label.setText(self.hint[0])
         if self.warning:
             self.label.setStyleSheet(f"color: {globs.WARNING};")
         self.label.setWordWrap(True)
@@ -130,8 +130,22 @@ class Hint:
         -------
         None
         """
-        self.hint: str = name
-        self.label.setText(self.hint)
+        self.label.setText(name)
+
+    def translate(self, idx: int) -> None:
+        """
+        Translates the label.
+
+        Parameters
+        ----------
+        idx: int
+            index of language
+
+        Returns
+        -------
+        None
+        """
+        self.set_text(self.hint[idx])
 
     def __repr__(self):
-        return f"{type(self).__name__}; Hint: {self.hint}; Warning: {self.warning}"
+        return f"{type(self).__name__}; Hint: {self.hint[0]}; Warning: {self.warning}"

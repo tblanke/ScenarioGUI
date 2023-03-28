@@ -28,7 +28,7 @@ class FloatBox(Option):
 
     def __init__(
         self,
-        label: str,
+        label: str | list[str],
         default_value: float,
         category: Category,
         *,
@@ -41,7 +41,7 @@ class FloatBox(Option):
 
         Parameters
         ----------
-        label : str
+        label : str | List[str]
             The label of the FloatBox
         default_value : float
             The default value of the FloatBox
@@ -59,7 +59,7 @@ class FloatBox(Option):
 
         Examples
         --------
-        >>> option_float = FloatBox(label='Float label text',
+        >>> option_float = FloatBox(label="Float label text",  # or self.translations.option_float if option_float is in Translation class
         >>>                         default_value=0.5,
         >>>                         category=category_example,
         >>>                         decimal_number=2,

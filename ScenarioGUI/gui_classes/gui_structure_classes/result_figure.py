@@ -26,12 +26,12 @@ class ResultFigure(Category):
     It is a category showing a figure and optionally a couple of FigureOptions to alter this figure.
     """
 
-    def __init__(self, label: str, page: Page):
+    def __init__(self, label: str | list[str], page: Page):
         """
 
         Parameters
         ----------
-        label : str
+        label : str | List[str]
             Label text of the ResultFigure
         page : Page
             Page where the ResultFigure should be placed (the result page)
@@ -40,8 +40,8 @@ class ResultFigure(Category):
         --------
         The code below generates a ResultFigure category named 'Temperature evolution'.
 
-        >>> ResultFigure(label="Temperature evolution",
-        >>>              page=self.page_result)
+        >>> self.results_fig = ResultFigure(label="Temperature evolution",  # or self.translations.results_fig if results_fig is in Translation class
+        >>>                                 page=self.page_result)
 
         Gives (note that the FigureOption for the legend is also included):
 
