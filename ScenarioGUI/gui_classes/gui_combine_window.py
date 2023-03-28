@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
+
 import ScenarioGUI.global_settings as globs
 
 from .gui_base_class import BaseUI
