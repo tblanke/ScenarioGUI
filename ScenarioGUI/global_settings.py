@@ -12,7 +12,7 @@ path = Path(".").absolute()
 config = ConfigParser()
 
 
-def get_path_for_file(start_path: Path, filename: str)-> Path:
+def get_path_for_file(start_path: Path, filename: str) -> Path:
     path_i = start_path
     for i in range(10):
         if path_i.joinpath(filename).exists():

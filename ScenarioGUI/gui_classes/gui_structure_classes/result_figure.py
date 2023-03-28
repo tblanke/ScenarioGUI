@@ -179,8 +179,7 @@ class ResultFigure(Category):
         None
         """
         entry_name: list[str, str] = name.split(",")
-        self.label_text = entry_name[0]
-        self.label.setText(self.label_text)
+        self.label.setText(entry_name[0])
         self.y_axes_text: str = entry_name[1]
         self.x_axes_text: str = entry_name[2]
         self.a_x.set_xlabel(self.x_axes_text)
