@@ -3,6 +3,8 @@ This document contains some base functionality for the GUI.
 It contains a function to reformat the graphs to a layout for the gui,
 and it contains the main class that creates the framework for the GUI (top bar etc.)
 """
+from platform import system
+
 import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
@@ -533,3 +535,6 @@ class BaseUI:
         self.tool_bar.setWindowTitle("toolBar")
         self.status_bar_progress_bar.addPermanentWidget(self.frame_progress_bar, 1)
         self.status_bar_progress_bar.hide()
+        # hide toolbar if MAC
+        if system() == "Darwin":
+            self.tool_bar.hide()
