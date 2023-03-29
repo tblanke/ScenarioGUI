@@ -360,7 +360,7 @@ class FlexibleAmount(Option):
         self.label.setText(self.label_text[0])
         self.label.setStyleSheet(
             f"QLabel {'{'}border: 1px solid  {globs.LIGHT};border-top-left-radius: 15px;border-top-right-radius: 15px;"
-            f"border-bottom-left-radius: 0px;border-top-bottom-radius: 0px;"
+            f"border-bottom-left-radius: 0px;border-top-right-radius: 0px;"
             f"background-color:  {globs.LIGHT};padding: 5px 0px;\n"
             f"	color:  {globs.WHITE};font-weight:700;{'}'}"
         )
