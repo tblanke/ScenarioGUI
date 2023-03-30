@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import copy
 import matplotlib.pyplot as plt
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
@@ -95,7 +96,8 @@ class ResultFigure(Category):
         -------
         None
         """
-        self.fig = fig
+        plt.close(self.fig)
+        self.fig = copy.copy(fig)
         self.a_x = fig.get_axes()[0]
         self.a_x.set_xlabel(self.x_axes_text)
         self.a_x.set_ylabel(self.y_axes_text)
