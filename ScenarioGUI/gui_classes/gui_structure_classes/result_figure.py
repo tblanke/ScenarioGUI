@@ -96,6 +96,7 @@ class ResultFigure(Category):
         -------
         None
         """
+        plt.close(self.fig)
         self.fig = copy.copy(fig)
         self.a_x = fig.get_axes()[0]
         self.a_x.set_xlabel(self.x_axes_text)

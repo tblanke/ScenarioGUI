@@ -229,7 +229,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         ]:
             option.change_event(self.change)
         for option, _ in [(opt, name) for opt, name in self.gui_structure.list_of_options if isinstance(opt, FigureOption)]:
-            option.change_event(self.remove_previous_calculated_results)
+            option.change_event(self.change_figure_option)
         for option, _ in self.gui_structure.list_of_aims:
             option.change_event(self.change)
 
@@ -253,6 +253,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.list_widget_scenario.currentItemChanged.connect(self.scenario_is_changed)
         self.list_widget_scenario.itemSelectionChanged.connect(self._always_scenario_selected)
         self.dia.closeEvent = self.closeEvent
+
+    def change_figure_option(self):
+        d_s = self.list_ds[self.list_widget_scenario.currentRow()]
+        for option, name in [(opt, name) for opt, name in self.gui_structure.list_of_options if isinstance(opt, FigureOption)]:
+            setattr(d_s, name, option.get_value())
+        self.remove_previous_calculated_results()
 
     def remove_previous_calculated_results(self):
         """
