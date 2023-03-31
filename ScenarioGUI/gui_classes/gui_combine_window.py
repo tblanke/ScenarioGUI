@@ -260,7 +260,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         filename: tuple = QtW.QFileDialog.getSaveFileName(
             self.central_widget,
             caption=result_export.caption,
-            filter=f"{result_export.FILE_EXTENSION} (*.{result_export.FILE_EXTENSION})",
+            filter=f".{result_export.file_extension} (*.{result_export.file_extension})",
             dir=str(self.default_path),
         )
         d_s = self.list_ds[self.list_widget_scenario.currentRow()]

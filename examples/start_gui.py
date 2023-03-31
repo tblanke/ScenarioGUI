@@ -117,7 +117,8 @@ class GUI(GuiStructure):
         )
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
-        self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
+        self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
+                                    file_extension="txt")
 
         self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 
@@ -186,7 +187,8 @@ class GUI(GuiStructure):
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
 
-        self.result_export = ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export)
+        self.result_export = ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
+                                          caption="Select file", file_extension="txt")
 
         self.figure_results = ResultFigure(label="Plot", page=self.page_result)
         self.legend_figure_results = FigureOption(

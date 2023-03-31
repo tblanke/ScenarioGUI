@@ -26,7 +26,8 @@ class ResultExport(FunctionButton):
 
     default_parent: QtW.QWidget | None = None
 
-    def __init__(self, button_text: str | list[str], icon: str, category: Category, export_function: str | Callable[[str]]):
+    def __init__(self, button_text: str | list[str], icon: str, *, category: Category, export_function: str | Callable[[str]], file_extension: str = "",
+                 caption: str):
         """
 
         Parameters
@@ -37,12 +38,18 @@ class ResultExport(FunctionButton):
             Location of the icon for the FunctionButton
         category : Category
             Category in which the FunctionButton should be placed
+        export_function : str, Callable
+            export funciton nam
+        file_extension : str
+            file exentsion for export file
+        caption : str
+            caption of pop up window
 
         Examples
         --------
-        >>> function_example = FunctionButton(button_text="Press Here to activate function",
+        >>> function_example = ResultExport(button_text="Press Here to activate function",
         >>> # or self.translations.function_example if function_example is in Translation class
-        >>>                                   icon=":/icons/icons/example_icon.svg",
+        >>>                                   icon="example_icon.svg",
         >>>                                   category=category_example)
 
         Gives:
@@ -51,9 +58,23 @@ class ResultExport(FunctionButton):
 
         """
         super().__init__(button_text, icon, category)
-        self.FILE_EXTENSION: str = ".txt"
-        self.caption: str = "Selecte file"
+        self.file_extension: str = file_extension
+        self.caption: str = caption
         self.export_function: str = export_function if isinstance(export_function, str) else export_function.__name__
+
+    def set_text(self, name: str):
+        """
+        set text
+
+        Parameters
+        ----------
+        name: str
+            button text, caption separated by comma
+        """
+        names = name.split(",")
+        super().set_text(names[0])
+        if len(names) > 1:
+            self.caption = names[1]
 
     def change_event(self, function_to_be_called: Callable, *args) -> None:
         """

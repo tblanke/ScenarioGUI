@@ -33,4 +33,9 @@ def test_results_export(qtbot):
         data = f.read()
 
     assert data == f"result: {main_window.list_ds[main_window.list_widget_scenario.currentRow()].results.result}"
+
+    # test set text
+    main_window.gui_structure.export_results.set_text("Hello,Set")
+    assert main_window.gui_structure.export_results.button.text() == "Hello"
+    assert main_window.gui_structure.export_results.caption == "Set"
     main_window.delete_backup()

@@ -35,6 +35,7 @@ class FileNameBox(Option):
         *,
         dialog_text: str = "",
         error_text: str = "",
+        file_extension: str = "csv"
     ):
         """
 
@@ -57,6 +58,7 @@ class FileNameBox(Option):
         >>>                           default_value='example_file.XX',
         >>>                           dialog_text='Choose *.XX file',
         >>>                           error_text='no file found',
+        >>>                           file_extension="csv",
         >>>                           category=category_example)
 
         Gives:
@@ -69,6 +71,7 @@ class FileNameBox(Option):
         self.dialog_text: str = dialog_text
         self.error_text: str = error_text
         self.button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
+        self.file_extension = file_extension
 
     def get_value(self) -> str:
         """
@@ -212,7 +215,8 @@ class FileNameBox(Option):
         None
         """
         # try to ask for a file otherwise show message in status bar
-        filename = QtW.QFileDialog.getOpenFileName(self.frame, caption=self.dialog_text, filter="(*.csv)", dir=str(Path.home()))
+        filename = QtW.QFileDialog.getOpenFileName(self.frame, caption=self.dialog_text,
+                                                   filter=f".{self.file_extension} (*.{self.file_extension})", dir=str(Path.home()))
         if not filename[0]:
             logging.error(self.error_text)
             return
