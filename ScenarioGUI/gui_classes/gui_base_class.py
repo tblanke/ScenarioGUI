@@ -536,5 +536,5 @@ class BaseUI:
         self.status_bar_progress_bar.addPermanentWidget(self.frame_progress_bar, 1)
         self.status_bar_progress_bar.hide()
         # hide toolbar if MAC
-        if system() == "Darwin":
+        if system() == "Darwin":  # pragma: no cover
             self.tool_bar.hide()

@@ -20,6 +20,7 @@ from .page import Page
 from .result_figure import ResultFigure
 from .result_text import ResultText
 from .text_box import TextBox
+from .result_export import ResultExport
 
 __all__ = [
     "Aim",
@@ -36,6 +37,7 @@ __all__ = [
     "Page",
     "ResultFigure",
     "ResultText",
+    "ResultExport",
     "TextBox",
     "FlexibleAmount",
 ]

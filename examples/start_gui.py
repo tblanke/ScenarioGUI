@@ -11,7 +11,6 @@ from sys import argv
 from sys import exit as sys_exit
 from typing import TYPE_CHECKING
 
-import ScenarioGUI.global_settings as global_vars
 from matplotlib import pyplot as plt
 from ScenarioGUI.gui_classes.gui_structure import GuiStructure
 from ScenarioGUI.gui_classes.gui_structure_classes import (
@@ -27,7 +26,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     IntBox,
     ListBox,
     Page,
-    ResultFigure,
+    ResultExport, ResultFigure,
     ResultText,
     TextBox,
 )
@@ -61,6 +60,10 @@ class ResultsClass:
 
     def get_result(self) -> float:
         return self.result
+
+    def export(self, filename: str):
+        with open(filename, "w") as file:
+            file.write(f"result: {self.result}")
 
     def create_plot(self, legend: bool = False) -> tuple[plt.Figure, plt.Axes]:
         fig = plt.figure()
@@ -114,7 +117,8 @@ class GUI(GuiStructure):
         )
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
-        self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
+        self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
+                                    file_extension="txt")
 
         self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 
@@ -183,6 +187,9 @@ class GUI(GuiStructure):
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
 
+        self.result_export = ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
+                                          caption="Select file", file_extension="txt")
+
         self.figure_results = ResultFigure(label="Plot", page=self.page_result)
         self.legend_figure_results = FigureOption(
             category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
@@ -191,6 +198,7 @@ class GUI(GuiStructure):
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
         self.aim_add.add_link_2_show(self.result_text_add)
+        self.aim_add.add_link_2_show(self.result_export)
         self.aim_sub.add_link_2_show(self.result_text_sub)
         self.aim_plot.add_link_2_show(self.figure_results)
 

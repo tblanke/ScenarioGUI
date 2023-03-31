@@ -18,7 +18,7 @@ def get_path_for_file(start_path: Path, filename: str) -> Path:
         if path_i.joinpath(filename).exists():
             return path_i
         path_i = path_i.parent
-    raise ValueError
+    raise FileNotFoundError
 
 
 config.read(get_path_for_file(path, "gui_config.ini").joinpath("gui_config.ini"))

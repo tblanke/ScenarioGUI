@@ -19,7 +19,7 @@ import ScenarioGUI.global_settings as globs
 from .gui_base_class import BaseUI
 from .gui_calculation_thread import CalcProblem
 from .gui_data_storage import DataStorage
-from .gui_structure_classes import FigureOption, Option
+from .gui_structure_classes import FigureOption, Option, ResultExport
 from .gui_structure_classes.functions import check_aim_options, show_linked_options
 
 if TYPE_CHECKING:
@@ -230,6 +230,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             option.change_event(self.change)
         for option, _ in [(opt, name) for opt, name in self.gui_structure.list_of_options if isinstance(opt, FigureOption)]:
             option.change_event(self.change_figure_option)
+        for option, _ in [(opt, name) for opt, name in self.gui_structure.list_of_result_exports]:
+            option.change_event(ft_partial(self.export_results, option))
         for option, _ in self.gui_structure.list_of_aims:
             option.change_event(self.change)
 
@@ -253,6 +255,16 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.list_widget_scenario.currentItemChanged.connect(self.scenario_is_changed)
         self.list_widget_scenario.itemSelectionChanged.connect(self._always_scenario_selected)
         self.dia.closeEvent = self.closeEvent
+
+    def export_results(self, result_export: ResultExport):
+        filename: tuple = QtW.QFileDialog.getSaveFileName(
+            self.central_widget,
+            caption=result_export.caption,
+            filter=f".{result_export.file_extension} (*.{result_export.file_extension})",
+            dir=str(self.default_path),
+        )
+        d_s = self.list_ds[self.list_widget_scenario.currentRow()]
+        getattr(d_s.results, result_export.export_function)(filename[0])
 
     def change_figure_option(self):
         d_s = self.list_ds[self.list_widget_scenario.currentRow()]

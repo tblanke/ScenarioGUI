@@ -17,7 +17,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     IntBox,
     ListBox,
     Page,
-    ResultFigure,
+    ResultExport, ResultFigure,
     ResultText,
     TextBox,
 )
@@ -133,6 +133,10 @@ class GUI(GuiStructure):
         self.result_text_sub = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
+
+        self.export_results = ResultExport(
+            "Export", icon="Download", category=self.numerical_results, export_function="export", caption="Please select file", file_extension="txt"
+        )
 
         self.figure_results = ResultFigure(label=["Plot"], page=self.page_result)
         self.legend_figure_results = FigureOption(
