@@ -22,6 +22,10 @@ class ResultsClass:
     def get_result(self) -> float:
         return self.result
 
+    def export(self, filename: str):
+        with open(filename, "w") as file:
+            file.write(f"result: {self.result}")
+
     def create_plot(self, legend: bool = False) -> tuple[plt.Figure, plt.Axes]:
         fig = plt.figure()
         ax = fig.add_subplot(111)

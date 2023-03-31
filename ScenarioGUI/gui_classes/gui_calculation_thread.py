@@ -64,11 +64,11 @@ class CalcProblem(QtC.QThread):
         -------
         None
         """
-        results, func = self.data_2_results_function(self.d_s)
 
         try:
+            results, func = self.data_2_results_function(self.d_s)
             func()
-        except ValueError as err:
+        except Exception as err:
             self.d_s.debug_message = err
             # save bore field in Datastorage
             self.d_s.results = None

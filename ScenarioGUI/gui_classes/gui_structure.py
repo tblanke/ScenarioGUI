@@ -16,7 +16,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     ListBox,
     Option,
     Page,
-    ResultFigure,
+    ResultExport, ResultFigure,
     ResultText,
 )
 
@@ -65,6 +65,7 @@ class GuiStructure:
 
         self.list_of_result_texts: list[tuple[ResultText, str]] = []
         self.list_of_result_figures: list[tuple[ResultFigure, str]] = []
+        self.list_of_result_exports: list[tuple[ResultExport, str]] = []
 
         self.list_of_options_with_dependent_results: list[tuple[Option, str]] = []
 
@@ -132,10 +133,13 @@ class GuiStructure:
         self.list_of_result_figures: list[tuple[ResultFigure, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultFigure)
         ]
-
+        self.list_of_result_exports: list[tuple[ResultExport, str]] = [
+            (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultExport)
+        ]
         self.list_of_options_with_dependent_results: list[tuple[Option, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option) if getattr(self, name).linked_options
         ]
+
 
     def change_toggle_button(self) -> None:
         """

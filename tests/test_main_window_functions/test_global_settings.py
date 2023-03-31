@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import PySide6.QtWidgets as QtW
+from pytest import raises
 
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
@@ -38,6 +39,11 @@ def test_global_settings(qtbot):
     assert globs.GUI_NAME == "Scenario GUI"
     assert globs.ICON_NAME == "icon.svg"
 
-    assert globs.FOLDER == globs.path.joinpath("./ScenarioGUI")
+    assert globs.path.joinpath("./ScenarioGUI") == globs.FOLDER
+    # test get_path_for_file function
+    assert globs.path == globs.get_path_for_file(globs.path.joinpath("./ScenarioGUI/gui_classes/gui_structure_classes"), "gui_config.ini")
+    # test file not found error
+    with raises(FileNotFoundError):
+        assert globs.path == globs.get_path_for_file(globs.path.joinpath("./ScenarioGUI/gui_classes/gui_structure_classes"), "not_exists.ini")
 
     main_window.delete_backup()
