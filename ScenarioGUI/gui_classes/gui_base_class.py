@@ -71,7 +71,7 @@ class BaseUI:
         ghe_tool.setSizePolicy(size_policy)
         ghe_tool.setMaximumSize(QtC.QSize(16777215, 16777215))
         font = QtG.QFont()
-        font.setFamilies([globs.FONT])
+        font.setFamily(globs.FONT)
         font.setPointSize(globs.FONT_SIZE)
         font.setBold(False)
         font.setItalic(False)
