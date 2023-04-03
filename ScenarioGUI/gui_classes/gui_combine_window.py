@@ -13,7 +13,6 @@ from typing import TYPE_CHECKING
 import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
-
 import ScenarioGUI.global_settings as globs
 
 from .gui_base_class import BaseUI
@@ -1296,9 +1295,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
             fig = getattr(ds, fig_name)
             if fig is None:
+                globs.set_graph_layout()
                 # create axes and drawing
                 fig, ax_new = getattr(results, fig_obj.function_name)(**fig_obj.kwargs)
                 fig_obj.replace_figure(fig)
+                globs.set_graph_layout()
                 # show everything
                 fig_obj.show()
                 fig_obj.canvas.show()
@@ -1307,7 +1308,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 # set figure to datastorage
                 setattr(ds, fig_name, fig)
                 continue
+            globs.set_graph_layout()
             fig_obj.replace_figure(fig)
+            globs.set_graph_layout()
             # show everything
             fig_obj.show()
             fig_obj.canvas.show()

@@ -4,6 +4,7 @@ It contains all the options, categories etc. that should appear on the GUI.
 """
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 
 from ScenarioGUI.gui_classes.gui_structure_classes import (
@@ -176,4 +177,7 @@ class GuiStructure:
         Page.previous_label = translation.label_previous[index]
         for name in [j for j in translation.__slots__ if hasattr(self, j)]:
             entry: Option | Hint | FunctionButton | Page | Category = getattr(self, name)
-            entry.translate(index)
+            try:
+                entry.translate(index)
+            except IndexError:
+                logging.error(name)
