@@ -81,7 +81,6 @@ class Aim:
         -------
         None
         """
-        self.label = name
         self.widget.setText(name)
 
     def change_event(self, function_to_be_called: Callable, *args) -> None:

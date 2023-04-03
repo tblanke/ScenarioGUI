@@ -3,17 +3,16 @@ result figure class script
 """
 from __future__ import annotations
 
+import copy
 from typing import TYPE_CHECKING
 
-import copy
 import matplotlib.pyplot as plt
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
+import ScenarioGUI.global_settings as globs
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-
-import ScenarioGUI.global_settings as globs
 
 from .category import Category
 
@@ -28,7 +27,7 @@ class ResultFigure(Category):
     It is a category showing a figure and optionally a couple of FigureOptions to alter this figure.
     """
 
-    def __init__(self, label: str | list[str], page: Page):
+    def __init__(self, label: str | list[str], page: Page, x_axes_text: str | None = None, y_axes_text: str| None = None):
         """
 
         Parameters
@@ -43,7 +42,9 @@ class ResultFigure(Category):
         The code below generates a ResultFigure category named 'Temperature evolution'.
 
         >>> self.results_fig = ResultFigure(label="Temperature evolution",  # or self.translations.results_fig if results_fig is in Translation class
-        >>>                                 page=self.page_result)
+        >>>                                 page=self.page_result,
+        >>>                                 x_axes_text="x_axes-label",
+        >>>                                 y_axes_text="y_axes-label")
 
         Gives (note that the FigureOption for the legend is also included):
 
@@ -79,8 +80,8 @@ class ResultFigure(Category):
         self._kwargs: dict = {}
         self.function_name: str = ""
         self.class_name: str = ""
-        self.x_axes_text: str = ""
-        self.y_axes_text: str = ""
+        self.x_axes_text: str = "" if x_axes_text is None else x_axes_text
+        self.y_axes_text: str = "" if y_axes_text is None else y_axes_text
         self.to_show: bool = True
 
     def replace_figure(self, fig: plt.Figure) -> None:
@@ -189,8 +190,8 @@ class ResultFigure(Category):
 
     def fig_to_be_shown(
         self,
-        class_name: str = "Borefield",
-        function_name: str = "print_temperature_profile",
+        class_name: str,
+        function_name: str,
         **kwargs,
     ) -> None:
         """

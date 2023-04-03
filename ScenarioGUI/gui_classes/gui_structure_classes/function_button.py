@@ -157,3 +157,18 @@ class FunctionButton:
         None
         """
         self.button.clicked.connect(lambda: function_to_be_called(*args))
+
+    def translate(self, idx: int) -> None:
+        """
+        Translates the label.
+
+        Parameters
+        ----------
+        idx: int
+            index of language
+
+        Returns
+        -------
+        None
+        """
+        self.set_text(self.button_text[idx])
