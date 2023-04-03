@@ -210,23 +210,14 @@ class GUI(GuiStructure):
         self.page_result.set_next_page(self.page_settings)
         self.page_settings.set_previous_page(self.page_result)
 
-"""
-global_vars.FONT = "Arial"
-global_vars.FONT_SIZE = 12
-global_vars.FILE_EXTENSION = "tool"
-global_vars.DARK = "rgb(0,0,0)"
-global_vars.LIGHT = "rgb(255,204,0)"
-global_vars.GUI_NAME = "My GUI name"
-global_vars.ICON_NAME = "icon"
-global_vars.VERSION = "0.2.0"
-folder = Path("__file__").parent
-global_vars.FOLDER = folder
-"""
 
 def run(path_list=None):  # pragma: no cover
     import PySide6.QtWidgets as QtW
     from ScenarioGUI.global_settings import FILE_EXTENSION
     from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
+    from ScenarioGUI.global_settings import load
+
+    load(Path("gui_config.ini"))
 
     # init application
     app = QtW.QApplication()

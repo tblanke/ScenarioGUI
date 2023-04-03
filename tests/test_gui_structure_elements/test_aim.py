@@ -16,11 +16,7 @@ def test_aim(qtbot):
     qtbot: qtbot
         bot for the GUI
     """
-    # init gui window
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-
     if not main_window.gui_structure.aim_plot.widget.isChecked():
         main_window.gui_structure.aim_plot.widget.click()
 

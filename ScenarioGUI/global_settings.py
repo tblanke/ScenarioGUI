@@ -22,28 +22,62 @@ def get_path_for_file(start_path: Path, filename: str) -> Path:
     raise FileNotFoundError
 
 
-config.read(get_path_for_file(path, "gui_config.ini").joinpath("gui_config.ini"))
+FOLDER: Path = Path("./icons")
 
-FOLDER: Path = get_path_for_file(get_path_for_file(path, config['DEFAULT']["PATH_2_ICONS"]).joinpath(config['DEFAULT']["PATH_2_ICONS"]), "icons")
+WHITE: str = "rgb(0,0,0)"
+LIGHT: str = "rgb(0,0,0)"
+LIGHT_SELECT: str = "rgb(0,0,0)"
+DARK: str = "rgb(0,0,0)"
+GREY: str = "rgb(0,0,0)"
+WARNING: str = "rgb(0,0,0)"
+BLACK: str = "rgb(0,0,0)"
 
-WHITE: str = config['COLORS']["WHITE"]
-LIGHT: str = config['COLORS']["LIGHT"]
-LIGHT_SELECT: str = config['COLORS']["LIGHT_SELECT"]
-DARK: str = config['COLORS']["DARK"]
-GREY: str = config['COLORS']["GREY"]
-WARNING: str = config['COLORS']["WARNING"]
-BLACK: str = config['COLORS']["BLACK"]
+FONT = "None"
+FONT_SIZE = 6
 
-FONT = config['DEFAULT']["FONT_WINDOWS"] if system() == "Windows" else config['DEFAULT']["FONT_MAC"]
-FONT_SIZE = int(config['DEFAULT']["FONT_SIZE_WINDOWS"] if system() == "Windows" else config['DEFAULT']["FONT_SIZE_MAC"])
-
-FILE_EXTENSION: str = config['DEFAULT']["FILE_EXTENSION"]
-GUI_NAME: str = config['DEFAULT']["GUI_NAME"]
-ICON_NAME: str = config['DEFAULT']["ICON_NAME"]
+FILE_EXTENSION: str = "nothing"
+GUI_NAME: str = "None"
+ICON_NAME: str = "icon"
 
 # get current version
 config.read(config.read(get_path_for_file(path, "setup.cfg").joinpath("setup.cfg")))
 VERSION = config.get("metadata", "version")
+
+
+def load(gui_file: str | Path):
+    config.read(gui_file)
+
+    global FOLDER
+    global WHITE
+    global LIGHT
+    global LIGHT_SELECT
+    global DARK
+    global GREY
+    global WARNING
+    global BLACK
+    global FONT
+    global FONT_SIZE
+    global FILE_EXTENSION
+    global GUI_NAME
+    global ICON_NAME
+
+    FOLDER = get_path_for_file(get_path_for_file(path, config['DEFAULT']["PATH_2_ICONS"]).joinpath(config['DEFAULT']["PATH_2_ICONS"]), "icons")
+
+    WHITE = config['COLORS']["WHITE"]
+    LIGHT = config['COLORS']["LIGHT"]
+    LIGHT_SELECT = config['COLORS']["LIGHT_SELECT"]
+    DARK = config['COLORS']["DARK"]
+    GREY = config['COLORS']["GREY"]
+    WARNING = config['COLORS']["WARNING"]
+    BLACK = config['COLORS']["BLACK"]
+
+    FONT = config['DEFAULT']["FONT_WINDOWS"] if system() == "Windows" else config['DEFAULT']["FONT_MAC"]
+    FONT_SIZE = int(config['DEFAULT']["FONT_SIZE_WINDOWS"] if system() == "Windows" else config['DEFAULT']["FONT_SIZE_MAC"])
+
+    FILE_EXTENSION = config['DEFAULT']["FILE_EXTENSION"]
+    GUI_NAME = config['DEFAULT']["GUI_NAME"]
+    ICON_NAME = config['DEFAULT']["ICON_NAME"]
+
 
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
