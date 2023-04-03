@@ -14,9 +14,10 @@ config = ConfigParser()
 
 def get_path_for_file(start_path: Path, filename: str) -> Path:
     path_i = start_path
-    for i in range(10):
-        if path_i.joinpath(filename).exists():
-            return path_i
+    for i in range(4):
+        items = [item.parent for item in path_i.glob(f"**/{filename}")]
+        if items:
+            return items[0]
         path_i = path_i.parent
     raise FileNotFoundError
 
