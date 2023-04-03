@@ -6,7 +6,7 @@
 # Welcome to ScenarioGUI's documentation!
 Dear visitor
 
-Welcome on this ReadTheDocs for the open-source tool ScenarioGUI (v0.1.0).
+Welcome on this ReadTheDocs for the open-source tool ScenarioGUI (v0.1.3).
 
 Here one can find (extensive) documentation of ScenarioGUI. Please find below the content of this ReadTheDocs.
 
