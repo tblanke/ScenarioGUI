@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file including pl
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.1.3] - 2023-04-03
+
+### Added gui_config.ini will be also searched in child folders
+
 ## [0.1.2] - 2023-04-03
 
 ### Added 
