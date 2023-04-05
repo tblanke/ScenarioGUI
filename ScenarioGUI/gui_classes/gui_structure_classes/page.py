@@ -101,7 +101,8 @@ class Page:
         """
         entry_name: list[str, str] = name.split(",")
         self.label.setText(entry_name[1])
-        self.button.setText(entry_name[0].replace("@", "\n"))
+        self.button_name = entry_name[0].replace("@", "\n")
+        self.button.setText(self.button_name)
         if self.push_button_previous is not None:
             self.push_button_previous.setText(self.previous_label)
         if self.push_button_next is not None:
