@@ -12,25 +12,8 @@ from sys import exit as sys_exit
 from typing import TYPE_CHECKING
 
 from matplotlib import pyplot as plt
-from ScenarioGUI.gui_classes.gui_structure import GuiStructure
-from ScenarioGUI.gui_classes.gui_structure_classes import (
-    Aim,
-    ButtonBox,
-    Category,
-    FigureOption,
-    FileNameBox,
-    FlexibleAmount,
-    FloatBox,
-    FunctionButton,
-    Hint,
-    IntBox,
-    ListBox,
-    Page,
-    ResultExport,
-    ResultFigure,
-    ResultText,
-    TextBox,
-)
+from ScenarioGUI import GuiStructure
+from ScenarioGUI import elements as els
 
 from examples.translation_class import Translations
 
@@ -95,12 +78,12 @@ def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
 class GUI(GuiStructure):
     def __init__(self, default_parent: QtW.QWidget, translations: Translations):
         super().__init__(default_parent, translations)
-        self.page_inputs = Page(name=self.translations.page_inputs, button_name="Inputs", icon="Add.svg")
-        self.aim_add = Aim(label="Adding", icon="Add", page=self.page_inputs)
-        self.aim_sub = Aim(label="Substract", icon="Delete", page=self.page_inputs)
-        self.aim_plot = Aim(label="Plot", icon="Parameters", page=self.page_inputs)
-        self.category_inputs = Category(page=self.page_inputs, label="Inputs")
-        self.int_a = IntBox(
+        self.page_inputs = els.Page(name=self.translations.page_inputs, button_name="Inputs", icon="Add.svg")
+        self.aim_add = els.Aim(label="Adding", icon="Add", page=self.page_inputs)
+        self.aim_sub = els.Aim(label="Substract", icon="Delete", page=self.page_inputs)
+        self.aim_plot = els.Aim(label="Plot", icon="Parameters", page=self.page_inputs)
+        self.category_inputs = els.Category(page=self.page_inputs, label="Inputs")
+        self.int_a = els.IntBox(
             label="a",
             default_value=2,
             minimal_value=0,
@@ -108,7 +91,7 @@ class GUI(GuiStructure):
             category=self.category_inputs,
         )
 
-        self.float_b = FloatBox(
+        self.float_b = els.FloatBox(
             label="b",
             default_value=100,
             minimal_value=0,
@@ -118,30 +101,30 @@ class GUI(GuiStructure):
         )
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
-        self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
+        self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
                                     file_extension="txt")
 
-        self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
+        self.button_box = els.ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 
-        self.function_button = FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
+        self.function_button = els.FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
 
-        self.text_box = TextBox(label="Login", default_text="Hello", category=self.category_inputs)
+        self.text_box = els.TextBox(label="Login", default_text="Hello", category=self.category_inputs)
         self.text_box.deactivate_size_limit()
-        self.pass_word = TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
+        self.pass_word = els.TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
         
-        self.flex_option = FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs, min_length=2)
-        self.flex_option.add_option(TextBox, name="name", default_text="layer")
-        self.flex_option.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5)
-        self.flex_option.add_option(IntBox, name="amount", default_value=4, minimal_value=2)
-        self.flex_option.add_option(ListBox, name="amount", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
-        self.hint_flex = Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
+        self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs, min_length=2)
+        self.flex_option.add_option(els.TextBox, name="name", default_text="layer")
+        self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5)
+        self.flex_option.add_option(els.IntBox, name="amount", default_value=4, minimal_value=2)
+        self.flex_option.add_option(els.ListBox, name="amount", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
+        self.hint_flex = els.Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
         self.flex_option.add_link_2_show(self.hint_flex, 2, 6)
 
-        self.category_grid = Category(page=self.page_inputs, label="Grid")
+        self.category_grid = els.Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
-        self.hint_1 = Hint(category=self.category_grid, hint="Grid example")
+        self.hint_1 = els.Hint(category=self.category_grid, hint="Grid example")
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.int_small_1 = IntBox(
+        self.int_small_1 = els.IntBox(
             label="",
             default_value=2,
             minimal_value=0,
@@ -149,7 +132,7 @@ class GUI(GuiStructure):
             category=self.category_grid,
         )
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.float_small_1 = FloatBox(
+        self.float_small_1 = els.FloatBox(
             label="",
             default_value=2,
             minimal_value=0,
@@ -157,9 +140,9 @@ class GUI(GuiStructure):
             decimal_number=2,
             category=self.category_grid,
         )
-        self.hint_2 = Hint(category=self.category_grid, hint="Grid example")
+        self.hint_2 = els.Hint(category=self.category_grid, hint="Grid example")
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.int_small_2 = IntBox(
+        self.int_small_2 = els.IntBox(
             label="",
             default_value=2,
             minimal_value=0,
@@ -167,7 +150,7 @@ class GUI(GuiStructure):
             category=self.category_grid,
         )
         # int boxes and float boxes with no label are displayed small in a grid layout
-        self.float_small_2 = FloatBox(
+        self.float_small_2 = els.FloatBox(
             label="",
             default_value=2,
             minimal_value=0,
@@ -179,20 +162,20 @@ class GUI(GuiStructure):
         self.category_grid.activate_graphic_right()
 
         self.create_results_page()
-        self.numerical_results = Category(page=self.page_result, label="Numerical results")
+        self.numerical_results = els.Category(page=self.page_result, label="Numerical results")
 
-        self.result_text_add = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
+        self.result_text_add = els.ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
         self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2))
-        self.result_text_sub = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
+        self.result_text_sub = els.ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
 
-        self.result_export = ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
+        self.result_export = els.ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
                                           caption="Select file", file_extension="txt")
 
-        self.figure_results = ResultFigure(label="Plot", page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
-        self.legend_figure_results = FigureOption(
+        self.figure_results = els.ResultFigure(label="Plot", page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
+        self.legend_figure_results = els.FigureOption(
             category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
         )
 
@@ -215,9 +198,9 @@ def run(path_list=None):  # pragma: no cover
     import PySide6.QtWidgets as QtW
     from ScenarioGUI.global_settings import FILE_EXTENSION
     from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-    from ScenarioGUI.global_settings import load
+    from ScenarioGUI import load_config
 
-    load(Path("gui_config.ini"))
+    load_config(Path("gui_config.ini"))
 
     # init application
     app = QtW.QApplication()

@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ScenarioGUI.gui_classes.gui_structure import GuiStructure
+from ScenarioGUI import GuiStructure
 from ScenarioGUI.gui_classes.gui_structure_classes import (
     Aim,
     ButtonBox,

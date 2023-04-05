@@ -82,22 +82,8 @@ FONT_SIZE_MAC: 14
 To create your own GUI part you can inherit from the GuiStructure provided by this lib and add more pages, categories and input field as you like.
 
 ```Python
-from ScenarioGUI.gui_classes.gui_structure import GuiStructure
-from ScenarioGUI.gui_classes.gui_structure_classes import (
-    Aim,
-    ButtonBox,
-    Category,
-    FigureOption,
-    FileNameBox,
-    FloatBox,
-    FunctionButton,
-    Hint,
-    IntBox,
-    ListBox,
-    Page,
-    ResultFigure,
-    ResultText,
-)
+from ScenarioGUI import GuiStructure
+from ScenarioGUI import elements as els
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -110,17 +96,17 @@ class GUI(GuiStructure):
         # first init the parent clas
         super().__init__(default_parent, translations)
         # add a first page called "Inputs" and has a button name of "Input" and has an icon "Add.svg"
-        self.page_inputs = Page(name="Inputs", button_name="Input", icon="Add.svg")
+        self.page_inputs = els.Page(name="Inputs", button_name="Input", icon="Add.svg")
         # Then several aims can be added to the page with different names and icons
-        self.aim_add = Aim(label="Adding", icon="Add", page=self.page_inputs)
-        self.aim_sub = Aim(label="Substract", icon="Delete", page=self.page_inputs)
-        self.aim_plot = Aim(label="Plot", icon="Parameters", page=self.page_inputs)
+        self.aim_add = els.Aim(label="Adding", icon="Add", page=self.page_inputs)
+        self.aim_sub = els.Aim(label="Substract", icon="Delete", page=self.page_inputs)
+        self.aim_plot = els.Aim(label="Plot", icon="Parameters", page=self.page_inputs)
         # a category with the label "Inputs" can be added to the inputs page like:
-        self.category_inputs = Category(label="Inputs", page=self.page_inputs)
+        self.category_inputs = els.Category(label="Inputs", page=self.page_inputs)
         # an integer box can be added with different options like this (some of these options are optional):
-        self.int_a = IntBox(label="a",default_value=2,minimal_value=0,maximal_value=200,step=2,category=self.category_inputs)
+        self.int_a = els.IntBox(label="a",default_value=2,minimal_value=0,maximal_value=200,step=2,category=self.category_inputs)
         # a float box can be added with different options like this (some of these options are optional):
-        self.float_b = FloatBox(
+        self.float_b = els.FloatBox(
             label="b",
             default_value=100,
             minimal_value=0,
@@ -130,32 +116,32 @@ class GUI(GuiStructure):
             category=self.category_inputs,
         )
         # a button box can be added with different options like this
-        self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
+        self.button_box = els.ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
         # the button box can also be a list box for many options
-        self.list_box = ListBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
+        self.list_box = els.ListBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
         # a filename box can be added with different options like this
         file = "./example_data.csv"
-        self.filename = FileNameBox(label="Filename", default_value=file, dialog_text="Hello", error_text="no file found", category=self.category_inputs)
+        self.filename = els.FileNameBox(label="Filename", default_value=file, dialog_text="Hello", error_text="no file found", category=self.category_inputs)
         # a function button can be implemented like this:
-        self.function_button = FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
+        self.function_button = els.FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
         # the function ("func") which will be called every time the button is clicked can be defined as follows:
         self.page_inputs.add_function_called_if_button_clicked(func)
         # A Hint can be implemented (if warning is True the option is displayed in WARNING color) like:
-        self.hint = Hint(hint="Very important hint", category=self.category_inputs, warning=False)
+        self.hint = els.Hint(hint="Very important hint", category=self.category_inputs, warning=False)
         # The results page must be created like this:
         self.create_results_page()
         # then a category for numerical results can be added
-        self.numerical_results = Category(page=self.page_result, label="Numerical results")
+        self.numerical_results = els.Category(page=self.page_result, label="Numerical results")
         # A text result calling the get_results function from the ResultsClass and rounding it to 2 decimals can be set like this: 
-        self.result_text_add = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
+        self.result_text_add = els.ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
         self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2))
         # a results figure calling the create_plot function from ResultsClass which is returning a tuple of a plt.Figure and plt.Axes can be implemented 
         # like this:
-        self.figure_results = ResultFigure(label="Plot", page=self.page_result)
+        self.figure_results = els.ResultFigure(label="Plot", page=self.page_result)
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
         # this figure can then be linked to an option to display the legend like this:
-        self.legend_figure_results = FigureOption(
+        self.legend_figure_results = els.FigureOption(
             category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
         )        
         # with this function the results options will be displayed if one of the aims is selected
@@ -231,7 +217,8 @@ def run(path_list=None):  # pragma: no cover
     import PySide6.QtWidgets as QtW
 
     from ScenarioGUI.global_settings import FILE_EXTENSION
-    from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
+    from ScenarioGUI import MainWindow
+    # import your own Translation class a script to create one from a csv file is given as well
     from ScenarioGUI.gui_classes.translation_class import Translations
 
     # init application

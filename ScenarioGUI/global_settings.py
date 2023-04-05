@@ -8,13 +8,13 @@ from configparser import ConfigParser
 from pathlib import Path
 from platform import system
 
-path = Path(".").absolute()
+path = Path(__file__).parent.absolute()
 config = ConfigParser()
 
 
 def get_path_for_file(start_path: Path, filename: str) -> Path:
     path_i = start_path
-    for i in range(4):
+    for i in range(6):
         items = [item.parent for item in path_i.glob(f"**/{filename}")]
         if items:
             return items[0]
