@@ -1,9 +1,8 @@
 import os
+from functools import partial
 
-import keyboard
 import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW
-
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
@@ -69,8 +68,12 @@ def test_close(qtbot):
     main_window.close()
 
     QtC.QTimer.singleShot(250, save)
-    QtC.QTimer.singleShot(300, lambda: keyboard.write(filename_1))
-    QtC.QTimer.singleShot(500, lambda: keyboard.press("enter"))
+    
+    def get_save_file_name(*args, **kwargs):
+        """getSaveFileName proxy"""
+        return kwargs["return_value"]
+    
+    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(f"{filename_1}", f"{main_window.filename_default[1]}"))
     main_window.close()
 
     QtC.QTimer.singleShot(250, exit_window)

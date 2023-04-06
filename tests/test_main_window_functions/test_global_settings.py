@@ -2,14 +2,13 @@ from pathlib import Path
 
 import PySide6.QtWidgets as QtW
 from pytest import raises
-
+from ScenarioGUI import global_settings as globs
 from ScenarioGUI.global_settings import load
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
 from ..gui_structure_for_tests import GUI
 from ..result_creating_class_for_tests import ResultsClass, data_2_results
 from ..test_translations.translation_class import Translations
-from ScenarioGUI import global_settings as globs
 
 
 def test_global_settings(qtbot):
@@ -41,10 +40,10 @@ def test_global_settings(qtbot):
     assert globs.FILE_EXTENSION == "scenario"
     assert globs.GUI_NAME == "Scenario GUI"
     assert globs.ICON_NAME == "icon.svg"
-
-    assert globs.path.joinpath(".").parent if "tests" in f"{Path('.').absolute()}" else globs.path.joinpath("./ScenarioGUI") == globs.FOLDER
+    print(globs.path.joinpath(".").parent if "tests" in f"{Path('.').absolute()}" else globs.path.joinpath("."), globs.FOLDER)
+    assert globs.path.joinpath(".").parent if "tests" in f"{Path('.').absolute()}" else globs.path.joinpath(".") == globs.FOLDER
     # test get_path_for_file function
-    assert globs.path.joinpath("." if "tests" in f"{Path('.').absolute()}" else "./examples") == globs.get_path_for_file(globs.path.joinpath(
+    assert globs.path.parent.joinpath("." if "tests" in f"{Path('.').absolute()}" else "./examples") == globs.get_path_for_file(globs.path.joinpath(
         "./ScenarioGUI/gui_classes/gui_structure_classes"), "gui_config.ini")
     # test file not found error
     with raises(FileNotFoundError):
