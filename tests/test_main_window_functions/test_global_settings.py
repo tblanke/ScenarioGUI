@@ -1,4 +1,5 @@
 from pathlib import Path
+from platform import system
 
 import PySide6.QtWidgets as QtW
 from pytest import raises
@@ -26,8 +27,8 @@ def test_global_settings(qtbot):
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     main_window.delete_backup()
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    assert main_window.dia.font().family() == globs.FONT == "Arial"
-    assert main_window.dia.font().pointSize() == 10 == globs.FONT_SIZE
+    assert main_window.dia.font().family() == globs.FONT == ("Arial" if system() == "Windows" else 'Helvetica')
+    assert main_window.dia.font().pointSize() == (10 if system() == "Windows" else 14) == globs.FONT_SIZE
 
     assert globs.WHITE == "rgb(255, 255, 255)"
     assert globs.LIGHT == "rgb(84, 188, 235)"
