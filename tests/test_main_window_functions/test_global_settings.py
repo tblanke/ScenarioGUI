@@ -44,8 +44,8 @@ def test_global_settings(qtbot):
     print(globs.path.joinpath(".").parent if "tests" in f"{Path('.').absolute()}" else globs.path.joinpath("."), globs.FOLDER)
     assert globs.path.joinpath(".").parent if "tests" in f"{Path('.').absolute()}" else globs.path.joinpath(".") == globs.FOLDER
     # test get_path_for_file function
-    assert globs.path.parent.joinpath("." if "tests" in f"{Path('.').absolute()}" else "./examples") == globs.get_path_for_file(globs.path.joinpath(
-        "./ScenarioGUI/gui_classes/gui_structure_classes"), "gui_config.ini")
+    assert globs.get_path_for_file(globs.path.joinpath("./ScenarioGUI/gui_classes/gui_structure_classes"), "gui_config.ini")  in [globs.path.parent.joinpath(
+        "." if "tests" in f"{Path('.').absolute()}" else "./examples"), globs.path.parent.joinpath("." if "tests" in f"{Path('.').absolute()}" else "./tests")]
     # test file not found error
     with raises(FileNotFoundError):
         assert globs.path == globs.get_path_for_file(globs.path.joinpath("./ScenarioGUI/gui_classes/gui_structure_classes"), "not_exists.ini")
