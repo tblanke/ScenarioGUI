@@ -40,4 +40,6 @@ def test_results_export(qtbot):
     main_window.gui_structure.export_results.set_text("Hello,Set")
     assert main_window.gui_structure.export_results.button.text() == "Hello"
     assert main_window.gui_structure.export_results.caption == "Set"
+
+    os.remove(main_window.default_path.joinpath(file))
     main_window.delete_backup()
