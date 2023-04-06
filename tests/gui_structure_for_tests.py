@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from ScenarioGUI.gui_classes.gui_structure import GuiStructure
+from ScenarioGUI import GuiStructure
 from ScenarioGUI.gui_classes.gui_structure_classes import (
     Aim,
     ButtonBox,
@@ -17,7 +17,8 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     IntBox,
     ListBox,
     Page,
-    ResultExport, ResultFigure,
+    ResultExport,
+    ResultFigure,
     ResultText,
     TextBox,
 )
@@ -56,7 +57,7 @@ class GUI(GuiStructure):
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
 
-        self.function_button = FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
+        self.function_button = FunctionButton(button_text=translations.function_button, icon="Add", category=self.category_inputs)
 
         self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 

@@ -66,6 +66,8 @@ class Translations:  # pragma: no cover
         "hint_saving",
         "aim_add",
         "aim_sub",
+        "float_b",
+        "function_button",
         "languages",
     )
 
@@ -149,3 +151,5 @@ class Translations:  # pragma: no cover
         ]
         self.aim_add: list[str] = ["Adding", "Addieren"]
         self.aim_sub: list[str] = ["Substract", "Subtrahieren"]
+        self.float_b: list[str] = ["nothing", "nothing"]
+        self.function_button: list[str] = ["call function", "Rufe Funktion"]

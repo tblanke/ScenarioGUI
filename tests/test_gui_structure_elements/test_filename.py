@@ -1,10 +1,7 @@
-import os
+from functools import partial
 from pathlib import Path
 
-import keyboard
-import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW
-
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
 from ..gui_structure_for_tests import GUI
@@ -31,13 +28,17 @@ def test_filename_read(qtbot) -> None:
     assert main_window.gui_structure.filename.get_value() == main_window.gui_structure.filename.default_value
     assert main_window.gui_structure.filename.default_value == file
     # check if no file is passed
-    QtC.QTimer.singleShot(1000, lambda: keyboard.press("Esc"))
+    def get_save_file_name(*args, **kwargs):
+        """getSaveFileName proxy"""
+        return kwargs["return_value"]
+
+    QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=("", ""))
     main_window.gui_structure.filename.button.click()
     assert main_window.status_bar.widget.currentMessage() == main_window.gui_structure.filename.error_text
     # check file import and calculation
-    QtC.QTimer.singleShot(1000, lambda: keyboard.write(file))
-    QtC.QTimer.singleShot(1500, lambda: keyboard.press("enter"))
+
+    QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=(f"{main_window.default_path.joinpath(file)}", "csv (*.csv"))
     main_window.gui_structure.filename.button.click()
-    assert main_window.gui_structure.filename.get_value() == file.replace("\\", "/")
-    assert main_window.gui_structure.filename.check_linked_value(file.replace("\\", "/"))
+    assert main_window.gui_structure.filename.get_value() == file
+    assert main_window.gui_structure.filename.check_linked_value(file)
     main_window.delete_backup()

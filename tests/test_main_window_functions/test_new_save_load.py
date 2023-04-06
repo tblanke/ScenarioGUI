@@ -1,11 +1,9 @@
 import os
+from functools import partial
 from pathlib import Path
 
-import keyboard
 import numpy as np
-import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW
-
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
@@ -49,12 +47,17 @@ def test_save_load_new(qtbot):
     if os.path.exists(main_window.default_path.joinpath(filename_3)):  # pragma: no cover
         os.remove(main_window.default_path.joinpath(filename_3))
     # trigger save action and add filename
-    QtC.QTimer.singleShot(100, lambda: keyboard.press("Esc"))
+    
+    def get_save_file_name(*args, **kwargs):
+        """getSaveFileName proxy"""
+        return kwargs["return_value"]
+    
+    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(f"{main_window.filename_default[0]}", f"{main_window.filename_default[1]}"))
     main_window.action_save.trigger()
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (Path(main_window.filename_default[0]), main_window.filename_default[1])
     # trigger save action and add filename
-    QtC.QTimer.singleShot(1000, lambda: keyboard.write(filename_1))
-    QtC.QTimer.singleShot(1200, lambda: keyboard.press("enter"))
+
+    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
     main_window.action_save.trigger()
     # check if filename is set correctly
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
@@ -72,8 +75,8 @@ def test_save_load_new(qtbot):
     # check that they differ
     assert list_old != main_window.list_ds
     # set a different filename and test save as action
-    QtC.QTimer.singleShot(1000, lambda: keyboard.write(filename_2))
-    QtC.QTimer.singleShot(1200, lambda: keyboard.press("enter"))
+    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
+    f"{main_window.default_path.joinpath(filename_2)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
     main_window.action_save_as.trigger()
     # check if filename is set correctly
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
@@ -81,8 +84,8 @@ def test_save_load_new(qtbot):
         f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
     )
     # trigger open function and set filename 1
-    QtC.QTimer.singleShot(1000, lambda: keyboard.write(filename_1))
-    QtC.QTimer.singleShot(1200, lambda: keyboard.press("enter"))
+    QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=(
+    f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
     main_window.action_open.trigger()
     # check if filename is imported correctly and the data storages as well
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
@@ -100,8 +103,8 @@ def test_save_load_new(qtbot):
                 continue
 
     # set a different filename and test new action
-    QtC.QTimer.singleShot(1000, lambda: keyboard.write(filename_3))
-    QtC.QTimer.singleShot(1200, lambda: keyboard.press("enter"))
+    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
+    f"{main_window.default_path.joinpath(filename_3)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
     main_window.action_new.trigger()
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
         main_window.default_path.joinpath(filename_3),

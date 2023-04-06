@@ -21,14 +21,6 @@ class StatusBar(Handler):
     Class to create a status bar logger. To display messages in the GUI Status Bar
     """
 
-    level_2_color: dict[str, str] = {
-        "DEBUG": f"{globs.WHITE}",
-        "INFO": f"{globs.WHITE}",
-        "ERROR": "rgb(255,0,0)",
-        "CRITICAL": "rgb(255,0,0)",
-        "WARNING": f"{globs.WARNING}",
-    }
-
     def __init__(self, parent: QWidget):
         """
         Init status bar.
@@ -40,6 +32,13 @@ class StatusBar(Handler):
         """
         super().__init__()
         self.widget: QStatusBar = QStatusBar(parent)
+        self.level_2_color: dict[str, str] = {
+            "DEBUG": f"{globs.WHITE}",
+            "INFO": f"{globs.WHITE}",
+            "ERROR": "rgb(255,0,0)",
+            "CRITICAL": "rgb(255,0,0)",
+            "WARNING": f"{globs.WARNING}",
+        }
 
     def emit(self, record: LogRecord) -> None:
         """
