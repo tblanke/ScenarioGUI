@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file including pl
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.0] - 2023-04-06
+
+### Added 
+- new way of accessing the classes and functions
+
+### Fixed
+- Page button text missing
+
 ## [0.1.3] - 2023-04-03
 
 ### Added gui_config.ini will be also searched in child folders
@@ -44,6 +52,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Hint
 - ListBox
 
-[0.1.1]: https://github.com/tblanke/ScenarioGUI/compare/v0.1.1...v0.1.2
+[0.2.0]: https://github.com/tblanke/ScenarioGUI/compare/v0.1.3...v0.2.0
+[0.1.3]: https://github.com/tblanke/ScenarioGUI/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/tblanke/ScenarioGUI/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/tblanke/ScenarioGUI/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/tblanke/ScenarioGUI/releases/tag/v0.1.0
