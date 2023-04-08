@@ -60,8 +60,12 @@ def load(gui_file: str | Path):
     global FILE_EXTENSION
     global GUI_NAME
     global ICON_NAME
+    global VERSION
 
-    FOLDER = get_path_for_file(get_path_for_file(path, config['DEFAULT']["PATH_2_ICONS"]).joinpath(config['DEFAULT']["PATH_2_ICONS"]), "icons")
+    FOLDER = get_path_for_file(get_path_for_file(Path(gui_file).parent.parent, config['DEFAULT']["PATH_2_ICONS"]).joinpath(config['DEFAULT']["PATH_2_ICONS"]), "icons")
+
+    config.read(config.read(get_path_for_file(Path(gui_file).parent.parent, "setup.cfg").joinpath("setup.cfg")))
+    VERSION = config.get("metadata", "version")
 
     WHITE = config['COLORS']["WHITE"]
     LIGHT = config['COLORS']["LIGHT"]
