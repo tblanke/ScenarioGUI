@@ -40,8 +40,11 @@ GUI_NAME: str = "None"
 ICON_NAME: str = "icon"
 
 # get current version
-config.read(config.read(get_path_for_file(path, "setup.cfg").joinpath("setup.cfg")))
-VERSION = config.get("metadata", "version")
+try:
+    config.read(config.read(get_path_for_file(path, "setup.cfg").joinpath("setup.cfg")))
+    VERSION = config.get("metadata", "version")
+except FileNotFoundError:
+    VERSION = "0.0.0"
 
 
 def load(gui_file: str | Path):
