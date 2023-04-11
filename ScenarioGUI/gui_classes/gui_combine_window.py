@@ -13,6 +13,8 @@ from typing import TYPE_CHECKING
 import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
+from matplotlib import rcParams
+
 import ScenarioGUI.global_settings as globs
 
 from .gui_base_class import BaseUI
@@ -20,6 +22,7 @@ from .gui_calculation_thread import CalcProblem
 from .gui_data_storage import DataStorage
 from .gui_structure_classes import FigureOption, Option, ResultExport
 from .gui_structure_classes.functions import check_aim_options, show_linked_options
+from ..utils import change_font_size, set_default_font
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -238,6 +241,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             option.change_event(ft_partial(self._change_settings_in_all_data_storages, name))
 
         self.gui_structure.option_language.change_event(self.change_language)
+        self.gui_structure.option_font_size.change_event(self.change_font_size)
         self.gui_structure.page_result.button.clicked.connect(self.display_results)
         self.action_add_scenario.triggered.connect(self.add_scenario)
         self.action_update_scenario.triggered.connect(self.save_scenario)
@@ -254,6 +258,28 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.list_widget_scenario.currentItemChanged.connect(self.scenario_is_changed)
         self.list_widget_scenario.itemSelectionChanged.connect(self._always_scenario_selected)
         self.dia.closeEvent = self.closeEvent
+
+    def change_font_size(self):
+        size = self.gui_structure.option_font_size.get_value()
+        globs.FONT_SIZE = size
+        rcParams.update({'font.size': size})
+        self.gui_structure.change_font_size_2(size)
+        change_font_size(self.push_button_save_scenario, size)
+        change_font_size(self.push_button_add_scenario, size)
+        change_font_size(self.push_button_delete_scenario, size)
+        change_font_size(self.button_rename_scenario, size)
+        change_font_size(self.push_button_cancel, size)
+        change_font_size(self.push_button_start_single, size)
+        change_font_size(self.push_button_start_multiple, size)
+        change_font_size(self.menu_scenario, size)
+        change_font_size(self.menu_calculation, size)
+        change_font_size(self.menu_file, size)
+        change_font_size(self.menu_settings, size)
+        change_font_size(self.menu_language, size)
+        change_font_size(self.menubar, size)
+        change_font_size(self.list_widget_scenario, size)
+        change_font_size(self.status_bar.widget, size)
+        self.remove_previous_calculated_results()
 
     def export_results(self, result_export: ResultExport):
         filename: tuple = QtW.QFileDialog.getSaveFileName(
@@ -467,6 +493,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if text[-1] == "*":
             # create message box
             self.dialog: QtW.QMessageBox = QtW.QMessageBox(self.dia)
+            set_default_font(self.dialog)
             # set Icon to question mark icon
             self.dialog.setIcon(QtW.QMessageBox.Question)
             # set label text to leave scenario text depending on language selected
@@ -487,6 +514,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.set_push_button_icon(button_s, "Save_Inv")
             self.set_push_button_icon(button_cl, "Exit")
             self.set_push_button_icon(button_ca, "Abort")
+            [set_default_font(button) for button in self.dialog.findChildren(QtW.QPushButton)]
             # execute message box and save response
             reply = self.dialog.exec()
             # check if closing should be canceled
@@ -583,6 +611,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         # create dialog box to ask for a new name
         self.dialog = QtW.QInputDialog(self.dia)
+        set_default_font(self.dialog)
         self.dialog.setWindowTitle(self.translations.label_new_scenario[self.gui_structure.option_language.get_value()[0]])
         self.dialog.setLabelText(f"{self.translations.new_name[self.gui_structure.option_language.get_value()[0]]}{item.text()}")
         self.dialog.setOkButtonText(self.translations.label_okay[self.gui_structure.option_language.get_value()[0]])  # +++
@@ -590,6 +619,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         li = self.dialog.findChildren(QtW.QPushButton)
         self.set_push_button_icon(li[0], "Okay")
         self.set_push_button_icon(li[1], "Abort")
+        [set_default_font(button) for button in li]
         # set new name if the dialog is not canceled and the text is not None
         if self.dialog.exec() == QtW.QDialog.Accepted:
             set_name(self.dialog.textValue())
@@ -1348,6 +1378,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             return
         # create message box
         self.dialog: QtW.QMessageBox = QtW.QMessageBox(self.dia)
+        set_default_font(self.dialog)
         # set Icon to question mark icon
         self.dialog.setIcon(QtW.QMessageBox.Question)
         # set label text to cancel text depending on language selected
@@ -1360,6 +1391,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         button_s = self.dialog.button(QtW.QMessageBox.Save)
         button_cl = self.dialog.button(QtW.QMessageBox.Close)
         button_ca = self.dialog.button(QtW.QMessageBox.Cancel)
+        [set_default_font(button) for button in self.dialog.findChildren(QtW.QPushButton)]
         # set save, close and cancel button text depending on language selected
         button_s.setText(f"{self.translations.label_Save[self.gui_structure.option_language.get_value()[0]]} ")
         button_cl.setText(f"{self.translations.label_close[self.gui_structure.option_language.get_value()[0]]} ")

@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+from ScenarioGUI.utils import change_font_size, set_default_font
 
 from .aim import Aim
 
@@ -231,6 +232,7 @@ class Option(metaclass=abc.ABCMeta):
         if self.label_text == [""]:
             self.frame.setParent(None)
             self.frame = frame
+            self.label = None
             return frame.layout()
         self.frame.setParent(frame)
         self.frame.setFrameShape(QtW.QFrame.StyledPanel)
@@ -241,6 +243,7 @@ class Option(metaclass=abc.ABCMeta):
         layout.setContentsMargins(0, 0, 0, 0)
         self.label.setParent(frame)
         self.label.setText(self.label_text[0])
+        set_default_font(self.label)
         layout.addWidget(self.label)
         if create_spacer:
             spacer = QtW.QSpacerItem(1, 1, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
@@ -320,6 +323,15 @@ class Option(metaclass=abc.ABCMeta):
         -------
         None
         """
+
+    def set_font_size(self, size: int) -> None:
+        if self.label is not None:
+            change_font_size(self.label, size, False)
+        if isinstance(self.widget, list):
+            for widget in self.widget:
+                change_font_size(widget, size, True)
+            return
+        change_font_size(self.widget, size, True)
 
     def translate(self, idx: int) -> None:
         """

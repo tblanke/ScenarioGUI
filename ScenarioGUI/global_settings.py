@@ -13,7 +13,7 @@ config = ConfigParser()
 
 
 def get_path_for_file(start_path: Path, filename: str) -> Path:
-    path_i = start_path
+    path_i = start_path.absolute()
     for i in range(6):
         items = [item.parent for item in path_i.glob(f"**/{filename}")]
         if items:
@@ -32,18 +32,18 @@ GREY: str = "rgb(0,0,0)"
 WARNING: str = "rgb(0,0,0)"
 BLACK: str = "rgb(0,0,0)"
 
-FONT = "None"
-FONT_SIZE = 6
+FONT = "Arial"
+FONT_SIZE = 10
 
-FILE_EXTENSION: str = "nothing"
-GUI_NAME: str = "None"
+FILE_EXTENSION: str = "yourGUI"
+GUI_NAME: str = "Your GUI Name"
 ICON_NAME: str = "icon"
 
 # get current version
 try:
     config.read(config.read(get_path_for_file(path, "setup.cfg").joinpath("setup.cfg")))
     VERSION = config.get("metadata", "version")
-except FileNotFoundError:
+except FileNotFoundError:  # pragma: no cover
     VERSION = "0.0.0"
 
 

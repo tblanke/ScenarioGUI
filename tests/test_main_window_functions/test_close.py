@@ -61,13 +61,13 @@ def test_close(qtbot):
         if isinstance(main_window.dialog, QtW.QMessageBox):
             main_window.dialog.buttons()[0].click()
 
-    QtC.QTimer.singleShot(250, close)
+    QtC.QTimer.singleShot(500, close)
     main_window.close()
 
-    QtC.QTimer.singleShot(250, cancel)
+    QtC.QTimer.singleShot(500, cancel)
     main_window.close()
 
-    QtC.QTimer.singleShot(250, save)
+    QtC.QTimer.singleShot(500, save)
     
     def get_save_file_name(*args, **kwargs):
         """getSaveFileName proxy"""
@@ -76,6 +76,6 @@ def test_close(qtbot):
     QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(f"{filename_1}", f"{main_window.filename_default[1]}"))
     main_window.close()
 
-    QtC.QTimer.singleShot(250, exit_window)
+    QtC.QTimer.singleShot(500, exit_window)
     main_window.close()
     main_window.delete_backup()

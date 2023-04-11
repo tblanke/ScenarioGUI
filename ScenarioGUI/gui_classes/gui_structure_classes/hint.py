@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+from ...utils import change_font_size, set_default_font
 
 if TYPE_CHECKING:  # pragma: no cover
     from .category import Category
@@ -80,6 +81,7 @@ class Hint:
         self.label.setText(self.hint[0])
         if self.warning:
             self.label.setStyleSheet(f"color: {globs.WARNING};")
+        set_default_font(self.label)
         self.label.setWordWrap(True)
         if row is not None and isinstance(layout_parent, QtW.QGridLayout):
             layout_parent.addWidget(self.label, column, row)
@@ -131,6 +133,21 @@ class Hint:
         None
         """
         self.label.setText(name)
+
+    def set_font_size(self, size: int) -> None:
+        """
+        set the text size of hint
+
+        Parameters
+        ----------
+        size: int
+            new font size as points
+        Returns
+        -------
+
+        """
+        if self.label is not None:
+            change_font_size(self.label, size, False)
 
     def translate(self, idx: int) -> None:
         """

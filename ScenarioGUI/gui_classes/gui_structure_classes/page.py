@@ -13,7 +13,8 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from .aim import Aim
-from .functions import _update_opponent_not_change, _update_opponent_toggle, check_aim_options
+from .functions import update_opponent_not_change, update_opponent_toggle, check_aim_options
+from ...utils import set_default_font, change_font_size
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -165,8 +166,8 @@ class Page:
         layout.setSpacing(0)
         self.label.setParent(central_widget)
         label: QtW.QLabel = self.label
-        label.setStyleSheet(f'font: {globs.FONT_SIZE+4}pt "{globs.FONT}";font-weight:700;')
         label.setText(self.name[0].split(",")[0])
+        set_default_font(label, bold=True, add_2_size=4)
         layout.addWidget(label)
         spacer_label = QtW.QLabel(self.page)
         spacer_label.setMinimumHeight(6)
@@ -207,6 +208,7 @@ class Page:
         self.button.setIcon(icon23)
         self.button.setIconSize(QtC.QSize(24, 24))
         self.button.setText(self.button_name)
+        set_default_font(self.button, bold=True)
         self.label_gap.setParent(central_widget)
         self.label_gap.setMinimumSize(QtC.QSize(0, 6))
         self.label_gap.setMaximumSize(QtC.QSize(16777215, 6))
@@ -216,6 +218,25 @@ class Page:
         self.button.clicked.connect(ft_partial(stacked_widget.setCurrentWidget, self.page))  # pylint: disable=E1101
         for function_2_be_called in self.functions_button_clicked:
             self.button.clicked.connect(function_2_be_called)  # pylint: disable=E1101
+
+    def set_font_size(self, size: int) -> None:
+        """
+        set the text size of hint
+
+        Parameters
+        ----------
+        size: int
+            new font size as points
+        Returns
+        -------
+
+        """
+        change_font_size(self.label, size + 4, False)
+        change_font_size(self.button, size, False)
+        if self.push_button_previous is not None:
+            change_font_size(self.push_button_previous, size, False)
+        if self.push_button_next is not None:
+            change_font_size(self.push_button_next, size, False)
 
     def create_upper_frame(self, scroll_area_content: QtW.QWidget, scroll_area_layout: QtW.QVBoxLayout):
         """
@@ -287,9 +308,9 @@ class Page:
         None
         """
         if self.TOGGLE:
-            _update_opponent_toggle(button, button_opponent, false_button_list)
+            update_opponent_toggle(button, button_opponent, false_button_list)
             return
-        _update_opponent_not_change(button, [*false_button_list, button_opponent])
+        update_opponent_not_change(button, [*false_button_list, button_opponent])
 
     def create_navigation_buttons(self, central_widget: QtW.QWidget, scroll_area_layout: QtW.QVBoxLayout) -> None:
         """
@@ -325,6 +346,7 @@ class Page:
             self.push_button_previous.setIcon(icon)
             self.push_button_previous.setIconSize(QtC.QSize(20, 20))
             self.push_button_previous.setText(f"  {self.previous_label}  ")
+            set_default_font(self.push_button_previous, bold=True)
 
             horizontal_layout.addWidget(self.push_button_previous)
             self.push_button_previous.clicked.connect(self.previous_page.button.click)  # pylint: disable=E1101
@@ -347,6 +369,7 @@ class Page:
             self.push_button_next.setIcon(icon)
             self.push_button_next.setIconSize(QtC.QSize(20, 20))
             self.push_button_next.setText(f"  {self.next_label}  ")
+            set_default_font(self.push_button_next, bold=True)
 
             horizontal_layout.addWidget(self.push_button_next)
             self.push_button_next.clicked.connect(self.next_page.button.click)  # pylint: disable=E1101

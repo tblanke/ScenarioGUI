@@ -10,7 +10,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 
-from .functions import _update_opponent_not_change, _update_opponent_toggle, check
+from .functions import update_opponent_not_change, update_opponent_toggle, check
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -245,6 +245,10 @@ class ButtonBox(Option):
             widget.setCheckable(True)
             widget.setChecked(idx == self.default_value)
             widget.setMinimumHeight(30)
+            font = widget.font()
+            font.setFamily(globs.FONT)
+            font.setPointSize(globs.FONT_SIZE)
+            widget.setFont(font)
             layout.addWidget(widget)
 
     def update_function(
@@ -271,6 +275,6 @@ class ButtonBox(Option):
         None
         """
         if self.TOGGLE:
-            _update_opponent_toggle(button, button_opponent, false_button_list)
+            update_opponent_toggle(button, button_opponent, false_button_list)
             return
-        _update_opponent_not_change(button, [*false_button_list, button_opponent])
+        update_opponent_not_change(button, [*false_button_list, button_opponent])
