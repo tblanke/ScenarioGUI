@@ -15,6 +15,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 from .category import Category
+from ...utils import change_font_size
 
 if TYPE_CHECKING:  # pragma: no cover
     from .page import Page
@@ -261,6 +262,20 @@ class ResultFigure(Category):
         if results:
             return
         self.to_show = True
+
+    def set_font_size(self, size: int) -> None:
+        """
+        set the new font size to button
+
+        Parameters
+        ----------
+        size: new font size in points
+
+        Returns
+        -------
+            None
+        """
+        change_font_size(self.label, size)
 
     def hide(self, results: bool = False) -> None:
         """

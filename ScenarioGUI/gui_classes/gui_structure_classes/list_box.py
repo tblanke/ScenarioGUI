@@ -12,6 +12,7 @@ import ScenarioGUI.global_settings as globs
 
 from .functions import check
 from .option import Option
+from ...utils import set_default_font
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -235,6 +236,7 @@ class ListBox(Option):
             self.widget.setMinimumWidth(100)
         self.widget.currentIndexChanged.connect(ft_partial(check, self.linked_options, self))  # pylint: disable=E1101
         self.widget.setMinimumHeight(28)
+        set_default_font(self.widget)
         if row is not None and isinstance(layout_parent, QtW.QGridLayout):
             layout_parent.addWidget(self.widget, column, row)
             return

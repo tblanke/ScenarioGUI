@@ -20,6 +20,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     ResultExport, ResultFigure,
     ResultText,
 )
+from ScenarioGUI import global_settings as globs
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
@@ -59,10 +60,12 @@ class GuiStructure:
         # self.option_toggle_buttons = None
         # self.option_auto_saving = None
         # self.hint_saving = None
+        self.option_font_size = None
 
         self.list_of_aims: list[tuple[Aim, str]] = []
         self.list_of_options: list[tuple[Option, str]] = []
         self.list_of_pages: list[Page] = []
+        self.list_of_rest: list[Hint | FunctionButton | Category] = []
 
         self.list_of_result_texts: list[tuple[ResultText, str]] = []
         self.list_of_result_figures: list[tuple[ResultFigure, str]] = []
@@ -109,6 +112,8 @@ class GuiStructure:
         )
         self.option_toggle_buttons.change_event(self.change_toggle_button)
         self.option_n_threads = IntBox(label=self.translations.option_n_threads, default_value=2, category=self.category_save_scenario, minimal_value=1)
+        self.option_font_size = IntBox(label="Font Size", default_value= globs.FONT_SIZE, category= self.category_save_scenario, minimal_value=8,
+                                       maximal_value=14)
         self.option_auto_saving = ButtonBox(
             label=self.translations.option_auto_saving,
             default_index=0,
@@ -124,9 +129,12 @@ class GuiStructure:
         """
         creates the lists with the different elements
         """
-        self.list_of_aims: list[tuple[Aim, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Aim)]
-        self.list_of_options: list[tuple[Option, str]] = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option)]
-        self.list_of_pages: list[Page] = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), Page)]
+        self.list_of_aims = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Aim)]
+        self.list_of_options = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option)]
+        self.list_of_pages = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), Page)]
+        self.list_of_rest = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), (Hint,
+                                                                                                                                             FunctionButton,
+                                                                                                                                            Category))]
 
         self.list_of_result_texts: list[tuple[ResultText, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultText)
@@ -140,6 +148,20 @@ class GuiStructure:
         self.list_of_options_with_dependent_results: list[tuple[Option, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option) if getattr(self, name).linked_options
         ]
+
+    def change_font_size_2(self, size: int) -> None:
+        """
+        changes the font size to the size value
+
+        Parameters
+        ----------
+        size: int
+            new font size
+        """
+        _ = [option.set_font_size(size) for option, _ in self.list_of_options]
+        _ = [aim.set_font_size(size) for aim, _ in self.list_of_aims]
+        _ = [item.set_font_size(size) for item in self.list_of_rest]
+        _ = [page.set_font_size(size) for page in self.list_of_pages]
 
 
     def change_toggle_button(self) -> None:

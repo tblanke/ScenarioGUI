@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from .option import Option
 
 
-def _update_opponent_not_change(button: QtW.QPushButton, false_button_list: list[QtW.QPushButton] = None):
+def update_opponent_not_change(button: QtW.QPushButton, false_button_list: list[QtW.QPushButton] = None):
     """
     This function controls the behaviour of the buttons.
     This function makes sure that whenever a button is active, all other buttons except the current one,
@@ -37,7 +37,7 @@ def _update_opponent_not_change(button: QtW.QPushButton, false_button_list: list
             but.setChecked(False)
 
 
-def _update_opponent_toggle(
+def update_opponent_toggle(
     button: QtW.QPushButton,
     button_opponent: QtW.QPushButton,
     false_button_list: list[QtW.QPushButton] = None,

@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file including pl
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.1] - 2023-04-11
+
+### Added
+- changeable font size (issue 25)
+
+### Changed
+- version number import is now relative to icons path
+
 ## [0.2.0] - 2023-04-06
 
 ### Added 
@@ -52,6 +60,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Hint
 - ListBox
 
+[0.2.1]: https://github.com/tblanke/ScenarioGUI/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/tblanke/ScenarioGUI/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/tblanke/ScenarioGUI/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/tblanke/ScenarioGUI/compare/v0.1.1...v0.1.2

@@ -10,6 +10,7 @@ import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+from ...utils import change_font_size, set_default_font
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -83,6 +84,20 @@ class Aim:
         """
         self.widget.setText(name)
 
+    def set_font_size(self, size: int) -> None:
+        """
+        set the new font size to button
+
+        Parameters
+        ----------
+        size: new font size in points
+
+        Returns
+        -------
+            None
+        """
+        change_font_size(self.widget, size)
+
     def change_event(self, function_to_be_called: Callable, *args) -> None:
         """
         This function calls the function_to_be_called whenever the Aim is changed.
@@ -148,13 +163,14 @@ class Aim:
         push_button.setMaximumSize(QtC.QSize(16777215, 60))
         push_button.setStyleSheet(
             f"QPushButton{'{'}border: 3px solid {globs.DARK};border-radius: 15px;color:{globs.WHITE};gridline-color: {globs.LIGHT};"
-            f"background-color: {globs.GREY};font-weight:700;{'}'}"
+            f"background-color: {globs.GREY};{'}'}"
             f"QPushButton:hover{'{'}border: 3px solid {globs.DARK};background-color:{globs.LIGHT};{'}'}"
             f"QPushButton:checked{'{'}border:3px solid {globs.LIGHT};background-color:{globs.LIGHT};{'}'}\n"
             f"QPushButton:disabled{'{'}border: 3px solid {globs.GREY};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.GREY};"
             f"background-color: {globs.GREY};{'}'}\n"
             f"QPushButton:disabled:hover{'{'}background-color: {globs.DARK};{'}'}"
         )
+        set_default_font(push_button, bold=True)
         push_button.setIconSize(QtC.QSize(30, 30))
         push_button.setCheckable(True)
         push_button.setText(self.label[0])

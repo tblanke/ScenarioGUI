@@ -10,6 +10,7 @@ import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+from ...utils import change_font_size, set_default_font
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -79,6 +80,7 @@ class FunctionButton:
         self.button.setIconSize(QtC.QSize(20, 20))
         self.button.setMinimumWidth(100)
         self.button.setMinimumHeight(35)
+        set_default_font(self.button)
         self.frame.setParent(frame)
         self.frame.setFrameShape(QtW.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtW.QFrame.Raised)
@@ -157,6 +159,21 @@ class FunctionButton:
         None
         """
         self.button.clicked.connect(lambda: function_to_be_called(*args))
+
+    def set_font_size(self, size: int) -> None:
+        """
+        set the text size of hint
+
+        Parameters
+        ----------
+        size: int
+            new font size as points
+        Returns
+        -------
+
+        """
+        if self.button is not None:
+            change_font_size(self.button, size, False)
 
     def translate(self, idx: int) -> None:
         """

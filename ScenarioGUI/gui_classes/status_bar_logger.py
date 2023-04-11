@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from PySide6.QtWidgets import QStatusBar
 
 import ScenarioGUI.global_settings as globs
+from ScenarioGUI.utils import set_default_font
 
 if TYPE_CHECKING:
     from logging import LogRecord
@@ -32,6 +33,7 @@ class StatusBar(Handler):
         """
         super().__init__()
         self.widget: QStatusBar = QStatusBar(parent)
+        set_default_font(self.widget)
         self.level_2_color: dict[str, str] = {
             "DEBUG": f"{globs.WHITE}",
             "INFO": f"{globs.WHITE}",

@@ -12,6 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from .option import Option
+from ...utils import set_default_font, change_font_size
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -84,6 +85,7 @@ class FlexibleAmount(Option):
         length = len(self.option_entries)
         label = QtW.QLabel(self.frame)
         label.setText(f"{self.entry_name} {length + 1}")
+        set_default_font(label)
         self.frame.layout().addWidget(label, length + 1, 0)
         options = []
         i = 2
@@ -91,11 +93,14 @@ class FlexibleAmount(Option):
             option_i = option(**kwargs, category=self, label="")
             option_i.change_event(self.func_on_change)
             option_i.create_widget(self.frame, self.frame.layout(), column=length + 1, row=i)
+            set_default_font(option_i.widget)
             options.append(option_i)
             i += 1
         self.option_entries.append(options)
         add_button: QtW.QPushButton = QtW.QPushButton(text=" + ", parent=self.frame, clicked=partial(self._add_entry_at_row, row=length))
         delete_button: QtW.QPushButton = QtW.QPushButton(text=" - ", parent=self.frame, clicked=partial(self._del_entry, row=length))
+        set_default_font(add_button, bold=True)
+        set_default_font(delete_button, bold=True)
         self.frame.layout().addWidget(add_button, length + 1, i)
         self.frame.layout().addWidget(delete_button, length + 1, i + 1)
 
@@ -320,6 +325,21 @@ class FlexibleAmount(Option):
         for option in self.list_of_options:
             option.change_event(function_to_be_called)
 
+    def set_font_size(self, size: int) -> None:
+        """
+        set the new font size to button
+
+        Parameters
+        ----------
+        size: new font size in points
+
+        Returns
+        -------
+            None
+        """
+        change_font_size(self.label, size)
+        [change_font_size(widget, size) for widget in self.frame.children() if isinstance(widget, QtW.QWidget)]
+
     def create_widget(
             self,
             frame: QtW.QFrame,
@@ -362,8 +382,9 @@ class FlexibleAmount(Option):
             f"QLabel {'{'}border: 1px solid  {globs.LIGHT};border-top-left-radius: 15px;border-top-right-radius: 15px;"
             f"border-bottom-left-radius: 0px;border-top-right-radius: 0px;"
             f"background-color:  {globs.LIGHT};padding: 5px 0px;\n"
-            f"	color:  {globs.WHITE};font-weight:700;{'}'}"
+            f"	color:  {globs.WHITE};{'}'}"
         )
+        set_default_font(self.label, bold=True)
         self.label.setAlignment(QtC.Qt.AlignCenter | QtC.Qt.AlignVCenter)
         layout_parent_i.addWidget(self.label)
         self.frame.setParent(frame_i)
@@ -386,6 +407,7 @@ class FlexibleAmount(Option):
         for _, _, name in self.option_classes:
             label = QtW.QLabel(frame)
             label.setText(name)
+            set_default_font(label)
             self.frame.layout().addWidget(label, 0, i)
             i += 1
 

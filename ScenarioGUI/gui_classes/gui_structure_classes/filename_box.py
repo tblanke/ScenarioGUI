@@ -14,6 +14,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from .option import Option
+from ...utils import set_default_font, change_font_size
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -192,18 +193,35 @@ class FileNameBox(Option):
         self.widget.setParent(self.frame)
         self.widget.setStyleSheet(
             f"QLineEdit{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.LIGHT};"
-            f"background-color: {globs.LIGHT};font-weight:500;\n"
+            f"background-color: {globs.LIGHT};\n"
             f"selection-background-color: {globs.LIGHT_SELECT};{'}'}\n"
             f"QLineEdit:hover{'{'}background-color: {globs.DARK};{'}'}"
         )
         self.widget.setText(self.default_value)
+        set_default_font(self.widget)
         layout.addWidget(self.widget)
         self.button.setParent(self.frame)
         self.button.setMinimumSize(QtC.QSize(30, 30))
         self.button.setMaximumSize(QtC.QSize(30, 30))
         self.button.setText("...")
+        set_default_font(self.button)
         self.button.clicked.connect(self.fun_choose_file)  # pylint: disable=E1101
         layout.addWidget(self.button)
+
+    def set_font_size(self, size: int) -> None:
+        """
+        set the new font size to label, text box and button
+
+        Parameters
+        ----------
+        size: new font size in points
+
+        Returns
+        -------
+            None
+        """
+        super().set_font_size(size)
+        change_font_size(self.button, size)
 
     def fun_choose_file(self) -> None:
         """

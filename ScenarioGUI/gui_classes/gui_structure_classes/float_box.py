@@ -12,6 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from .option import Option
+from ...utils import set_default_font
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -261,7 +262,7 @@ class FloatBox(Option):
         self.widget.setParent(self.frame)
         self.widget.setStyleSheet(
             f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};'
-            f'border: 1px solid {globs.WHITE};font: {globs.FONT_SIZE}pt "{globs.FONT}";{"}"}'
+            f'border: 1px solid {globs.WHITE};{"}"}'
         )
         self.widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
         self.widget.setProperty("showGroupSeparator", True)
@@ -274,6 +275,7 @@ class FloatBox(Option):
             self.widget.setMaximumWidth(100)
             self.widget.setMinimumWidth(100)
         self.widget.setMinimumHeight(28)
+        set_default_font(self.widget)
         if row is not None and isinstance(layout_parent, QtW.QGridLayout):
             layout_parent.addWidget(self.widget, column, row)
             return

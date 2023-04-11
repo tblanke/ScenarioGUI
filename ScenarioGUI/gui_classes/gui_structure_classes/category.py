@@ -12,6 +12,7 @@ import ScenarioGUI.global_settings as globs
 
 from .hint import Hint
 from .result_text import ResultText
+from ...utils import change_font_size, set_default_font
 
 if TYPE_CHECKING:  # pragma: no cover
     from .function_button import FunctionButton
@@ -157,6 +158,7 @@ class Category:
             f"	color:  {globs.WHITE};font-weight:700;{'}'}"
         )
         self.label.setAlignment(QtC.Qt.AlignCenter | QtC.Qt.AlignVCenter)
+        set_default_font(self.label, bold=True)
         layout.addWidget(self.label)
         self.frame.setParent(page)
         self.frame.setStyleSheet(
@@ -224,7 +226,6 @@ class Category:
             f"QFrame{'{'}border: 1px solid {globs.LIGHT};border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;{'}'}\n"
             f"QLabel{'{'}border: 0px solid {globs.WHITE};{'}'}"
         )
-
         layout.addWidget(graphic_view)
         return graphic_view
 
@@ -292,6 +293,20 @@ class Category:
         None
         """
         self.set_text(self.label_text[idx])
+
+    def set_font_size(self, size: int) -> None:
+        """
+        set the new font size to button
+
+        Parameters
+        ----------
+        size: new font size in points
+
+        Returns
+        -------
+            None
+        """
+        change_font_size(self.label, size)
 
     def __repr__(self):
         return f"{type(self).__name__}; Label: {self.label_text[0]}"

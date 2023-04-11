@@ -12,6 +12,7 @@ import PySide6.QtWidgets as QtW
 import ScenarioGUI.global_settings as globs
 
 from .status_bar_logger import StatusBar
+from ..utils import set_default_font
 
 
 class BaseUI:
@@ -80,21 +81,18 @@ class BaseUI:
         icon.addFile(f"{globs.FOLDER}/icons/{globs.ICON_NAME}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         ghe_tool.setWindowIcon(icon)
         ghe_tool.setStyleSheet(
-            f"*{'{'}color: {globs.WHITE}; font: {globs.FONT_SIZE}pt '{globs.FONT}';background-color: {globs.DARK};selection-background-color: {globs.LIGHT};"
+            f"*{'{'}color: {globs.WHITE};background-color: {globs.DARK};selection-background-color: {globs.LIGHT};"
             f"alternate-background-color: {globs.LIGHT};{'}'}\n"
             f"QPushButton{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color:{globs.WHITE};gridline-color:{globs.LIGHT};"
-            f"background-color:{globs.LIGHT};"
-            f"font: 700 {globs.FONT_SIZE}pt '{globs.FONT}';{'}'}"
+            f"background-color:{globs.LIGHT};font-weight:700;{'}'}"
             f"QPushButton:hover{'{'}background-color: {globs.DARK};{'}'}\n"
             f"QPushButton:disabled{'{'}border: 3px solid {globs.GREY};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.GREY};"
             f"background-color: {globs.GREY};{'}'}\n"
             f"QPushButton:disabled:hover{'{'}background-color: {globs.DARK};{'}'}\n"
             f"QComboBox{'{'}border: 1px solid {globs.WHITE};border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;{'}'}\n"
-            f"QSpinBox{'{'}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};border: 1px solid {globs.WHITE}; "
-            f"font: {globs.FONT_SIZE}pt '{globs.FONT}';{'}'}\n"
+            f"QSpinBox{'{'}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};border: 1px solid {globs.WHITE};{'}'}\n"
             f"QLineEdit{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.LIGHT};background-color: "
-            f"{globs.LIGHT};font-weight:700;\n"
-            f"selection-background-color: {globs.LIGHT_SELECT};{'}'}\n"
+            f"{globs.LIGHT};selection-background-color: {globs.LIGHT_SELECT};{'}'}\n"
             f"QLineEdit:hover{'{'}background-color: {globs.DARK};{'}'}"
             f"QToolTip{'{'}color: {globs.WHITE}; background-color: {globs.DARK}; border: 1px solid {globs.LIGHT};border-radius: 4px;{'}'}"
             f"QTabBar::tab{'{'}background-color: {globs.DARK};padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;color: {globs.WHITE};{'}'}"
@@ -404,6 +402,7 @@ class BaseUI:
         self.menu_file.setTearOffEnabled(False)
         self.menu_calculation = QtW.QMenu(self.menubar)
         self.menu_calculation.setObjectName("menuCalculation")
+        self.menu_calculation.setFont(font)
         self.menu_settings = QtW.QMenu(self.menubar)
         self.menu_settings.setObjectName("menuSettings")
         self.menu_language = QtW.QMenu(self.menu_settings)
@@ -439,13 +438,16 @@ class BaseUI:
         self.menu_file.addAction(self.action_save)
         self.menu_file.addAction(self.action_save_as)
         self.menu_file.addAction(self.action_open)
+        self.menu_file.setFont(font)
         self.menu_calculation.addAction(self.action_start_multiple)
         self.menu_calculation.addAction(self.action_start_single)
         self.menu_settings.addAction(self.menu_language.menuAction())
+        self.menu_settings.setFont(font)
         self.menu_scenario.addAction(self.action_update_scenario)
         self.menu_scenario.addAction(self.action_add_scenario)
         self.menu_scenario.addAction(self.action_delete_scenario)
         self.menu_scenario.addAction(self.action_rename_scenario)
+        self.menu_scenario.setFont(font)
         self.tool_bar.addAction(self.action_new)
         self.tool_bar.addAction(self.action_save)
         self.tool_bar.addAction(self.action_save_as)
@@ -465,6 +467,24 @@ class BaseUI:
         self.push_button_save_scenario.clicked.connect(self.action_update_scenario.trigger)
         self.list_widget_scenario.itemDoubleClicked.connect(self.action_rename_scenario.trigger)
         self.push_button_start_single.clicked.connect(self.action_start_single.trigger)
+
+        set_default_font(self.list_widget_scenario)
+
+        set_default_font(self.push_button_save_scenario, bold=True)
+        set_default_font(self.push_button_add_scenario, bold=True)
+        set_default_font(self.push_button_delete_scenario, bold=True)
+        set_default_font(self.button_rename_scenario, bold=True)
+        set_default_font(self.push_button_cancel, bold=True)
+        set_default_font(self.push_button_start_single, bold=True)
+        set_default_font(self.push_button_start_multiple, bold=True)
+        set_default_font(self.menu_scenario)
+        set_default_font(self.menu_calculation)
+        set_default_font(self.menu_file)
+        set_default_font(self.menu_settings)
+        set_default_font(self.menu_language)
+        set_default_font(self.menubar)
+        set_default_font(self.list_widget_scenario)
+        set_default_font(self.status_bar.widget)
 
         self.stacked_widget.setCurrentIndex(0)
         QtC.QMetaObject.connectSlotsByName(ghe_tool)
