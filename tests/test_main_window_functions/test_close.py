@@ -34,29 +34,21 @@ def test_close(qtbot):
         os.remove(main_window.default_path.joinpath(filename_1))
 
     def close():
-        while main_window.dialog is None:  # pragma: no cover
-            QtW.QApplication.processEvents()
         # handle dialog now
         if isinstance(main_window.dialog, QtW.QMessageBox):
             main_window.dialog.close()
 
     def cancel():
-        while main_window.dialog is None:  # pragma: no cover
-            QtW.QApplication.processEvents()
         # handle dialog now
         if isinstance(main_window.dialog, QtW.QMessageBox):
             main_window.dialog.buttons()[2].click()
 
     def exit_window():
-        while main_window.dialog is None:  # pragma: no cover
-            QtW.QApplication.processEvents()
         # handle dialog now
         if isinstance(main_window.dialog, QtW.QMessageBox):
             main_window.dialog.buttons()[1].click()
 
     def save():
-        while main_window.dialog is None:  # pragma: no cover
-            QtW.QApplication.processEvents()
         # handle dialog now
         if isinstance(main_window.dialog, QtW.QMessageBox):
             main_window.dialog.buttons()[0].click()
