@@ -287,6 +287,28 @@ class FlexibleAmount(Option):
             return option.show()
         option.hide()
 
+    def hide(self) -> None:
+        """
+        This function makes the current frame invisible.
+
+        Returns
+        -------
+        None
+        """
+        super().hide()
+        self.label.hide()
+
+    def show(self) -> None:
+        """
+        This function makes the current frame visible.
+
+        Returns
+        -------
+        None
+        """
+        super().show()
+        self.label.show()
+
     def check_linked_value(self, value: tuple[float | None, float | None]) -> bool:
         """
         This function checks if the linked "option" should be shown.
