@@ -42,6 +42,8 @@ def test_change_font_size(qtbot):
     check_font_size(main_window.menu_calculation, 8)
     check_font_size(main_window.menu_language, 8)
     check_font_size(main_window.menu_file, 8)
+    check_font_size(main_window.progress_bar, 8)
+    check_font_size(main_window.label_status, 8)
     # test page settings
     check_font_size(main_window.gui_structure.page_result.label, 8 + 4)
     check_font_size(main_window.gui_structure.page_result.button, 8)
@@ -64,7 +66,8 @@ def test_change_font_size(qtbot):
     check_font_size(main_window.gui_structure.category_inputs.label, 8)
     check_font_size(main_window.gui_structure.flex_option.label, 8)
     [check_font_size(widget, 8) for widget in main_window.gui_structure.flex_option.frame.children() if isinstance(widget, QtW.QWidget)]
-    
+
+
 def check_font_size(widget: QtW.QWidget | QtG.QAction, size: int):
     font = widget.font()
     assert font.pointSize() == size

@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file including pl
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.2] - expected: 2023-04-21
+
+### Fixed
+- Changeable font size option is now translateable (issue 28)
+- Progressbar has the correct font now
+- File extension of BackUp file is now correct (issue 33)
+
 ## [0.2.1] - 2023-04-11
 
 ### Added
