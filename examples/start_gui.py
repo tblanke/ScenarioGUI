@@ -102,7 +102,7 @@ class GUI(GuiStructure):
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
-                                    file_extension="txt")
+                                        file_extension=["txt", "csv"])
 
         self.button_box = els.ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 
