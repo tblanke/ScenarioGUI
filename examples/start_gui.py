@@ -119,6 +119,7 @@ class GUI(GuiStructure):
         self.flex_option.add_option(els.ListBox, name="amount", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
         self.hint_flex = els.Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
         self.flex_option.add_link_2_show(self.hint_flex, 2, 6)
+        self.aim_plot.add_link_2_show(self.flex_option)
 
         self.category_grid = els.Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
