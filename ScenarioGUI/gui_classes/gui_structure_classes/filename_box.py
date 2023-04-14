@@ -73,6 +73,7 @@ class FileNameBox(Option):
         self.error_text: str = error_text
         self.button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
         self.file_extension = [file_extension] if isinstance(file_extension, str) else file_extension
+        self.check_active: bool = False
 
     def get_value(self) -> str:
         """
@@ -121,7 +122,7 @@ class FileNameBox(Option):
         bool
             True if a value is given in the FileNameBox. False otherwise
         """
-        return exists(self.widget.text())
+        return exists(self.widget.text()) if self.check_active else True
 
     def check_linked_value(self, value: str) -> bool:
         """
