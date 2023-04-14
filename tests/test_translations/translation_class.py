@@ -68,6 +68,7 @@ class Translations:  # pragma: no cover
         "aim_sub",
         "float_b",
         "function_button",
+        "option_font_size",
         "languages",
     )
 
@@ -153,3 +154,4 @@ class Translations:  # pragma: no cover
         self.aim_sub: list[str] = ["Substract", "Subtrahieren"]
         self.float_b: list[str] = ["nothing", "nothing"]
         self.function_button: list[str] = ["call function", "Rufe Funktion"]
+        self.option_font_size: list[str] = ["Font Size", "Schriftgröße"]
