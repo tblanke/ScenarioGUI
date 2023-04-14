@@ -312,6 +312,7 @@ class BaseUI:
         self.horizontal_layout_progress_bar.setObjectName("horizontalLayout_progress_bar")
         self.label_status = QtW.QLabel(self.central_widget)
         self.label_status.setObjectName("label_Status")
+        self.label_status.setFont(font)
         self.horizontal_layout_progress_bar.addWidget(self.label_status)
 
         self.progress_bar = QtW.QProgressBar(self.central_widget)
@@ -321,6 +322,7 @@ class BaseUI:
             f"QProgressBar::chunk{'{'}background-color: {globs.LIGHT}; border-radius: 10px;{'}'}"
         )
         self.progress_bar.setValue(0)
+        self.progress_bar.setFont(font)
         self.horizontal_layout_progress_bar.addWidget(self.progress_bar)
 
         self.vertical_layout_main.addWidget(self.frame_progress_bar)

@@ -41,6 +41,7 @@ def test_global_settings(qtbot):
     assert globs.BLACK == "rgb(0, 0, 0)"
 
     assert globs.FILE_EXTENSION == "scenario"
+    assert main_window._backup_filename == "backup.scenarioBackUp"
     assert globs.GUI_NAME == "Scenario GUI"
     assert globs.ICON_NAME == "icon.svg"
     assert globs.path.joinpath(".").parent if "tests" in f"{Path('.').absolute()}" else globs.path.joinpath(".") == globs.FOLDER
@@ -48,7 +49,6 @@ def test_global_settings(qtbot):
     assert globs.get_path_for_file(globs.path.joinpath("./ScenarioGUI/gui_classes/gui_structure_classes"), "gui_config.ini")  in [globs.path.parent.joinpath(
         "." if "tests" in f"{Path('.').absolute()}" else "./examples"), globs.path.parent.joinpath("." if "tests" in f"{Path('.').absolute()}" else "./tests")]
     # test combine window settings
-
     check_font(main_window.push_button_cancel, globs.FONT_SIZE, globs.FONT, True)
     check_font(main_window.push_button_start_single, globs.FONT_SIZE, globs.FONT, True)
     check_font(main_window.push_button_start_multiple, globs.FONT_SIZE, globs.FONT, True)
@@ -63,6 +63,8 @@ def test_global_settings(qtbot):
     check_font(main_window.menu_calculation, globs.FONT_SIZE, globs.FONT, False)
     check_font(main_window.menu_language, globs.FONT_SIZE, globs.FONT, False)
     check_font(main_window.menu_file, globs.FONT_SIZE, globs.FONT, False)
+    check_font(main_window.progress_bar, globs.FONT_SIZE, globs.FONT, False)
+    check_font(main_window.label_status, globs.FONT_SIZE, globs.FONT, False)
     # test page settings
     check_font(main_window.gui_structure.page_result.label, globs.FONT_SIZE + 4, globs.FONT, True)
     check_font(main_window.gui_structure.page_result.button, globs.FONT_SIZE, globs.FONT, True)

@@ -56,7 +56,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
     """
 
     filename_default: tuple = ("", "")
-    BACKUP_FILENAME: str = f"backup.{globs.FILE_EXTENSION}BackUp"
 
     def __init__(
         self,
@@ -90,6 +89,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # parameter to show the end of the init function
         self.started = False
+        self._backup_filename: str = f"backup.{globs.FILE_EXTENSION}BackUp"
         # init windows of parent class
         super().__init__()
         super().setup_ui(dialog)
@@ -115,7 +115,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.checking: bool = False
         # create backup path in home documents directory
         self.default_path: Path = Path(Path.home(), f"Documents/{globs.GUI_NAME}")
-        self.backup_file: Path = Path(self.default_path, self.BACKUP_FILENAME)
+        self.backup_file: Path = Path(self.default_path, self._backup_filename)
         # check if backup folder exits and otherwise create it
         makedirs(dirname(self.backup_file), exist_ok=True)
         makedirs(dirname(self.default_path), exist_ok=True)
