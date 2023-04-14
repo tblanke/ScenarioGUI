@@ -112,8 +112,11 @@ class GuiStructure:
         )
         self.option_toggle_buttons.change_event(self.change_toggle_button)
         self.option_n_threads = IntBox(label=self.translations.option_n_threads, default_value=2, category=self.category_save_scenario, minimal_value=1)
-        self.option_font_size = IntBox(label="Font Size", default_value= globs.FONT_SIZE, category= self.category_save_scenario, minimal_value=8,
-                                       maximal_value=14)
+        self.option_font_size = IntBox(label=self.translations.option_font_size if hasattr(self.translations, "option_font_size") else "Font Size",
+                                       default_value=globs.FONT_SIZE,
+                                       category=self.category_save_scenario,
+                                       minimal_value=8,
+                                       maximal_value=20)
         self.option_auto_saving = ButtonBox(
             label=self.translations.option_auto_saving,
             default_index=0,
