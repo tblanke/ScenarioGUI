@@ -260,7 +260,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.list_widget_scenario.itemSelectionChanged.connect(self._always_scenario_selected)
         self.gui_structure.option_auto_saving.change_event(self.change_auto_saving)
         self.dia.closeEvent = self.closeEvent
-        
+
     def change_auto_saving(self):
         if self.gui_structure.option_auto_saving.get_value() == 1:
             self.push_button_save_scenario.hide()
@@ -1235,7 +1235,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # update progress bar
         self.update_bar(0)
         # start calculation if at least one scenario has to be calculated
-        if [thread for thread in self.threads if thread.isRunning()]:
+        if [thread for thread in self.threads if thread.isRunning()]:  # pragma: no cover
             return
         for thread in self.threads[:self.gui_structure.option_n_threads.get_value()]:
             thread.start()
