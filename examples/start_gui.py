@@ -34,7 +34,7 @@ class ResultsClass:
 
     def adding(self):
         from time import sleep
-        sleep(2)
+        sleep(5)
         self.result = self.a + self.b
 
     def subtract(self):
