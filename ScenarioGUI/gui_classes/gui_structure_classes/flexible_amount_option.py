@@ -75,7 +75,7 @@ class FlexibleAmount(Option):
         self.list_of_options: list[Option] = []
         self.option_entries: list[list[Option]] = []
         self.option_classes: list[tuple[type[Option], dict, str]] = []
-        self.func_on_change: Callable[[]] | None = None
+        self.func_on_change: list[Callable[[]]] = []
         self.len_limits: tuple[int | None, int | None] = (min_length, max_length)
         
     def add_option(self, option: type[Option], name: str, **kwargs):
@@ -91,7 +91,7 @@ class FlexibleAmount(Option):
         i = 2
         for option, kwargs, _ in self.option_classes:
             option_i = option(**kwargs, category=self, label="")
-            option_i.change_event(self.func_on_change)
+            _ = [option_i.change_event(func) for func in self.func_on_change]
             option_i.create_widget(self.frame, self.frame.layout(), column=length + 1, row=i)
             set_default_font(option_i.widget)
             options.append(option_i)
@@ -110,7 +110,7 @@ class FlexibleAmount(Option):
         self.set_value(values)
         for option, (min_length, max_length) in self.linked_options:
             self.show_option(option, min_length, max_length)
-        self.func_on_change()
+        _ = [func() for func in self.func_on_change]
 
     def _del_entry(self, *, row: int | None = None) -> None:
         """
@@ -134,7 +134,7 @@ class FlexibleAmount(Option):
         self.set_value(values)
         for option, (min_length, max_length) in self.linked_options:
             self.show_option(option, min_length, max_length)
-        self.func_on_change()
+        _ = [func() for func in self.func_on_change]
 
     def get_value(self) -> list[list[str | float | int | bool]]:
         """
@@ -195,7 +195,7 @@ class FlexibleAmount(Option):
             for _ in range(len_options, len(value)):
                 self._add_entry()
                 
-        self.func_on_change()
+        _ = [func() for func in self.func_on_change]
         self._init_links()
 
         for options, values in zip(self.option_entries, value):
@@ -343,7 +343,7 @@ class FlexibleAmount(Option):
         -------
         None
         """
-        self.func_on_change = function_to_be_called
+        self.func_on_change.append(function_to_be_called)
         for option in self.list_of_options:
             option.change_event(function_to_be_called)
 
