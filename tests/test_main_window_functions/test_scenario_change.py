@@ -109,7 +109,6 @@ def test_change_scenario(qtbot):
     assert main_window.list_widget_scenario.currentItem().text()[-1] != "*"
     file = main_window.gui_structure.filename.get_value()
     main_window.gui_structure.filename.set_value("abc")
-    main_window.save_scenario()
     assert main_window.list_widget_scenario.currentItem().text()[-1] == "*"
     main_window.gui_structure.filename.set_value(file)
     main_window.save_scenario()
