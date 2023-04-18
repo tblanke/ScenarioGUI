@@ -17,8 +17,7 @@ def test_results_text(qtbot):
     # calc sum from gui
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
-    with qtbot.waitSignal(main_window.threads[0].any_signal, raising=False):
-        QtW.QApplication.processEvents()
+    qtbot.wait(1500)
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     # check text output
     assert main_window.gui_structure.result_text_add.label.text() == f"Hello{sum_ab}kW"
