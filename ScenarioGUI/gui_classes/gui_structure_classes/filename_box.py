@@ -36,7 +36,7 @@ class FileNameBox(Option):
         *,
         dialog_text: str = "",
         error_text: str = "",
-        file_extension: str = "csv"
+        file_extension: str | list[str] = "csv"
     ):
         """
 
@@ -72,7 +72,8 @@ class FileNameBox(Option):
         self.dialog_text: str = dialog_text
         self.error_text: str = error_text
         self.button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
-        self.file_extension = file_extension
+        self.file_extension = [file_extension] if isinstance(file_extension, str) else file_extension
+        self.check_active: bool = False
 
     def get_value(self) -> str:
         """
@@ -121,7 +122,7 @@ class FileNameBox(Option):
         bool
             True if a value is given in the FileNameBox. False otherwise
         """
-        return exists(self.widget.text())
+        return exists(self.widget.text()) if self.check_active else True
 
     def check_linked_value(self, value: str) -> bool:
         """
@@ -233,8 +234,10 @@ class FileNameBox(Option):
         None
         """
         # try to ask for a file otherwise show message in status bar
+        file_extensions = [f".{extension} (*.{extension})" for extension in self.file_extension]
+        file_extensions = ";;".join(file_extensions)
         filename = QtW.QFileDialog.getOpenFileName(self.frame, caption=self.dialog_text,
-                                                   filter=f".{self.file_extension} (*.{self.file_extension})", dir=str(Path.home()))
+                                                   filter=file_extensions, dir=str(Path.home()))
         if not filename[0]:
             logging.error(self.error_text)
             return

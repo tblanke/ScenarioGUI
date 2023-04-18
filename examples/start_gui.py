@@ -34,7 +34,7 @@ class ResultsClass:
 
     def adding(self):
         from time import sleep
-        sleep(2)
+        sleep(5)
         self.result = self.a + self.b
 
     def subtract(self):
@@ -82,6 +82,8 @@ class GUI(GuiStructure):
         self.aim_add = els.Aim(label="Adding", icon="Add", page=self.page_inputs)
         self.aim_sub = els.Aim(label="Substract", icon="Delete", page=self.page_inputs)
         self.aim_plot = els.Aim(label="Plot", icon="Parameters", page=self.page_inputs)
+        # this three aims can appear in one row by setting:
+        self.page_inputs.aims_in_row = 3
         self.category_inputs = els.Category(page=self.page_inputs, label="Inputs")
         self.int_a = els.IntBox(
             label="a",
@@ -124,7 +126,7 @@ class GUI(GuiStructure):
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
-                                    file_extension="txt")
+                                        file_extension=["txt", "csv"])
 
         self.button_box = els.ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 

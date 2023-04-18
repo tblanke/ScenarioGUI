@@ -52,6 +52,7 @@ class CalcProblem(QtC.QThread):
         self.d_s = d_s
         self.idx = idx
         self.data_2_results_function = data_2_results_function
+        self.calculated = False
 
     def run(self) -> None:
         """
@@ -72,6 +73,7 @@ class CalcProblem(QtC.QThread):
             self.d_s.debug_message = err
             # save bore field in Datastorage
             self.d_s.results = None
+            self.calculated = True
             # return Datastorage as signal
             self.any_signal.emit((self.d_s, self.idx, self))
             return
@@ -81,6 +83,7 @@ class CalcProblem(QtC.QThread):
 
         # save borefield in Datastorage
         self.d_s.results = results
+        self.calculated = True
         # return Datastorage as signal
         self.any_signal.emit((self.d_s, self.idx, self))
         return

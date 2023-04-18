@@ -37,6 +37,8 @@ class GUI(GuiStructure):
         self.aim_add = Aim(label=self.translations.aim_add, icon="Add", page=self.page_inputs)
         self.aim_sub = Aim(label=self.translations.aim_sub, icon="Delete", page=self.page_inputs)
         self.aim_plot = Aim(label="Plot", icon="Parameters", page=self.page_inputs)
+        # set three aims per row
+        self.page_inputs.aims_in_row = 3
         self.category_inputs = Category(page=self.page_inputs, label="Inputs")
         self.int_a = IntBox(
             label="a",
@@ -76,6 +78,7 @@ class GUI(GuiStructure):
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
+        self.filename.check_active = True
 
         self.function_button = FunctionButton(button_text=translations.function_button, icon="Add", category=self.category_inputs)
 

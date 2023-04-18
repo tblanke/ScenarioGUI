@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from functools import partial as ft_partial
 from json import dump, load
 from math import isclose
@@ -257,7 +258,15 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.list_widget_scenario.model().rowsMoved.connect(self.fun_move_scenario)
         self.list_widget_scenario.currentItemChanged.connect(self.scenario_is_changed)
         self.list_widget_scenario.itemSelectionChanged.connect(self._always_scenario_selected)
+        self.gui_structure.option_auto_saving.change_event(self.change_auto_saving)
         self.dia.closeEvent = self.closeEvent
+
+    def change_auto_saving(self):
+        if self.gui_structure.option_auto_saving.get_value() == 1:
+            self.push_button_save_scenario.hide()
+            return
+        self.push_button_save_scenario.show()
+
 
     def change_font_size(self):
         size = self.gui_structure.option_font_size.get_value()
@@ -384,18 +393,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # return if not yet started or return if checking is not allowed
         if not self.started or not self.checking:
             return
-        if self.check_values():
-            self.push_button_start_multiple.setEnabled(True)
-            self.push_button_start_single.setEnabled(True)
-            self.push_button_add_scenario.setEnabled(True)
-            self.push_button_save_scenario.setEnabled(True)
-            self.list_widget_scenario.setEnabled(True)
-        else:
-            self.push_button_start_multiple.setEnabled(False)
-            self.push_button_start_single.setEnabled(False)
-            self.push_button_add_scenario.setEnabled(False)
-            self.push_button_save_scenario.setEnabled(False)
-            self.list_widget_scenario.setEnabled(False)
+        self.check_buttons()
         # if changed File is not already True set it to True and update window title
         if self.changedFile is False:
             self.changedFile: bool = True
@@ -428,6 +426,22 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # else add * to current item string
         self.list_widget_scenario.item(idx).setText(f"{text}*")
 
+    def check_buttons(self):
+        if self.check_values() and self.list_widget_scenario.currentRow() not in [thread.idx for thread in self.threads]:
+            self.push_button_start_multiple.setEnabled(True)
+            self.push_button_start_single.setEnabled(True)
+            self.push_button_save_scenario.setEnabled(True)
+        else:
+            self.push_button_start_multiple.setEnabled(False)
+            self.push_button_start_single.setEnabled(False)
+            self.push_button_save_scenario.setEnabled(False)
+        if self.check_values():
+            self.list_widget_scenario.setEnabled(True)
+            self.push_button_add_scenario.setEnabled(True)
+        else:
+            self.list_widget_scenario.setEnabled(False)
+            self.push_button_add_scenario.setEnabled(False)
+
     def scenario_is_changed(self, new_row_item: QtW.QListWidgetItem, old_row_item: QtW.QListWidgetItem) -> None:
         """
         This function handles the changing of scenarios.
@@ -448,6 +462,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # return if not checking
         if not self.checking:
             return
+        self.check_buttons()
         # if no old item is selected do nothing and return
         if old_row_item is None:
             # change entries to new scenario values
@@ -480,6 +495,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             if (
                 len(self.list_ds) - 1 >= self.list_widget_scenario.row(old_row_item)
                 and DataStorage(self.gui_structure) != self.list_ds[self.list_widget_scenario.row(old_row_item)]
+                and self.push_button_save_scenario.isEnabled()
             ):
                 self.list_ds[self.list_widget_scenario.row(old_row_item)].close_figures()
                 self.list_ds[self.list_widget_scenario.row(old_row_item)] = DataStorage(self.gui_structure)
@@ -1146,11 +1162,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # show label and progress bar if calculation started otherwise hide them
         self.status_bar_progress_bar.show()
         # calculate percentage of calculated scenario
-        val = val / len(self.threads)
+        val = val / max(len(self.threads), 1)
         # set percentage to progress bar
         self.progress_bar.setValue(round(val * 100))
         # hide labels and progressBar if all scenarios are calculated
-        if isclose(val, 1):
+        if all(thread.calculated for thread in self.threads):
+            self.threads = []
+            self.progress_bar.setValue(100)
             self.status_bar_progress_bar.hide()
             # show message that calculation is finished
             globs.LOGGER.info(self.translations.Calculation_Finished[self.gui_structure.option_language.get_value()[0]])
@@ -1179,7 +1197,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             return
 
         # count number of finished calculated scenarios
-        open_threads = [thread for thread in self.threads if not thread.isRunning() and not thread.isFinished()]
+        idx_list = [thread.idx for thread in self.threads]
+        open_threads = [thread for thread in self.threads if not thread.calculated]
         n_closed_threads = len(self.threads) - len(open_threads)
         # update progress bar
         self.update_bar(n_closed_threads)
@@ -1190,12 +1209,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             open_threads[0].any_signal.connect(self.thread_function)
             return
         # display results
-        self.push_button_start_multiple.setEnabled(True)
-        self.push_button_start_single.setEnabled(True)
-        self.push_button_save_scenario.setEnabled(True)
-        self.action_start_single.setEnabled(True)
-        self.action_start_multiple.setEnabled(True)
-        self.gui_structure.page_result.button.click()
+        self.check_buttons()
+        if self.list_widget_scenario.currentRow() in idx_list:
+            self.gui_structure.page_result.button.click()
 
     def start_multiple_scenarios_calculation(self) -> None:
         """
@@ -1211,19 +1227,18 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # add scenario if no list of scenarios exits else save current scenario
         self.add_scenario() if not self.list_ds else self.save_scenario()
         # create list of threads with scenarios that have not been calculated
-        self.threads = [CalcProblem(DS, idx, data_2_results_function=self.data_2_results_function) for idx, DS in enumerate(self.list_ds) if DS.results is None]
+        self.threads += [CalcProblem(DS, idx, data_2_results_function=self.data_2_results_function) for idx, DS in enumerate(self.list_ds) if DS.results is
+                         None]
         # set number of to calculate scenarios
         if len(self.threads) < 1:
             return
         # disable buttons and actions to avoid two calculation at once
-        self.push_button_start_multiple.setEnabled(False)
-        self.push_button_start_single.setEnabled(False)
-        self.push_button_save_scenario.setEnabled(False)
-        self.action_start_single.setEnabled(False)
-        self.action_start_multiple.setEnabled(False)
+        self.check_buttons()
         # update progress bar
         self.update_bar(0)
         # start calculation if at least one scenario has to be calculated
+        if [thread for thread in self.threads if thread.isRunning()]:  # pragma: no cover
+            return
         for thread in self.threads[:self.gui_structure.option_n_threads.get_value()]:
             thread.start()
             thread.any_signal.connect(self.thread_function)
@@ -1252,22 +1267,16 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         ds: DataStorage = self.list_ds[idx]
         # if calculation is already done just show results
         if ds.results is not None:
-            self.threads = []
             self.gui_structure.page_result.button.click()
             return
-        # return to thermal demands page if no file is selected
-        # disable buttons and actions to avoid two calculation at once
-        self.push_button_start_multiple.setEnabled(False)
-        self.push_button_start_single.setEnabled(False)
-        self.push_button_save_scenario.setEnabled(False)
-        self.action_start_single.setEnabled(False)
-        self.action_start_multiple.setEnabled(False)
         # create list of threads with calculation to be made
-        self.threads = [CalcProblem(ds, idx, data_2_results_function=self.data_2_results_function)]
+        self.threads += [CalcProblem(ds, idx, data_2_results_function=self.data_2_results_function)]
+        # disable buttons and actions to avoid two calculation at once
+        self.check_buttons()
         # update progress bar
         self.update_bar(0)
         # start calculation
-        if not no_run:
+        if not no_run and len(self.threads) == 1:
             self.threads[0].start()
             self.threads[0].any_signal.connect(self.thread_function)
 

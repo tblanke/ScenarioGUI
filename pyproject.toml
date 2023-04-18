@@ -10,6 +10,8 @@ collect_ignore = ["GHEtool/gui/start_gui.py"]
 collect_ignore_glob = ["*start_gui.py"]
 timeout = 20
 
+[tool.pytest.ini_options]
+qt_api="pyside6"
 
 [tool.black]
 line-length = 160

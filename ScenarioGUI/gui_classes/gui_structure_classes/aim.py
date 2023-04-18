@@ -138,7 +138,7 @@ class Aim:
         """
         self.list_options.append(option)
 
-    def create_widget(self, frame: QtW.QFrame, layout: QtW.QGridLayout, idx: int) -> None:
+    def create_widget(self, frame: QtW.QFrame, layout: QtW.QGridLayout, idx: tuple[int, int]) -> None:
         """
         This functions creates the Aim widget in the grid layout.
 
@@ -148,8 +148,8 @@ class Aim:
             The frame object in which is the parent of the current widget
         layout : QtW.QGridLayout
             The grid layout in which the widget should be created
-        idx : int
-            Index of the current Aim
+        idx : tuple[int, int]
+            position in grid layout of the current Aim
 
         Returns
         -------
@@ -175,7 +175,7 @@ class Aim:
         push_button.setIconSize(QtC.QSize(30, 30))
         push_button.setCheckable(True)
         push_button.setText(self.label[0])
-        layout.addWidget(push_button, int(idx / 2), 0 if divmod(idx, 2)[1] == 0 else 1, 1, 1)
+        layout.addWidget(push_button, idx[0], idx[1], 1, 1)
 
     def translate(self, idx: int) -> None:
         """

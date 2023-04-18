@@ -171,7 +171,7 @@ class FlexibleAmount(Option):
             self.frame.layout().itemAtPosition(0, idx + 2).widget().setText(name)
             self.option_classes[idx] = (self.option_classes[idx][0], self.option_classes[idx][1], name)
 
-    def set_value(self, value: list[list[str, float, int, bool]]) -> None:
+    def set_value(self, value: list[list[str | float | int | bool]] | list[tuple[str | float | int | bool]]) -> None:
         """
         This function sets the value of the Flexible Amount option.
 
