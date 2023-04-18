@@ -56,6 +56,7 @@ class GUI(GuiStructure):
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
+        self.filename.check_active = True
 
         self.function_button = FunctionButton(button_text=translations.function_button, icon="Add", category=self.category_inputs)
 
