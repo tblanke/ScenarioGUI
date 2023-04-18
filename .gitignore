@@ -134,3 +134,4 @@ GHEtool/change_pickle_data.py
 GHEtool/test/test.gvalues
 *.orig
 *.nothing
+*.scenario

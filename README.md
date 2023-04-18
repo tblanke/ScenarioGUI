@@ -101,6 +101,8 @@ class GUI(GuiStructure):
         self.aim_add = els.Aim(label="Adding", icon="Add", page=self.page_inputs)
         self.aim_sub = els.Aim(label="Substract", icon="Delete", page=self.page_inputs)
         self.aim_plot = els.Aim(label="Plot", icon="Parameters", page=self.page_inputs)
+        # this three aims can appear in one row by setting:
+        self.page_inputs.aims_in_row = 3
         # a category with the label "Inputs" can be added to the inputs page like:
         self.category_inputs = els.Category(label="Inputs", page=self.page_inputs)
         # an integer box can be added with different options like this (some of these options are optional):

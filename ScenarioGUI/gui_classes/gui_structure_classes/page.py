@@ -70,6 +70,7 @@ class Page:
         self.next_page: Page | None = None
         self.upper_frame: list[Aim] = []
         self.functions_button_clicked: list[Callable] = []
+        self.aims_in_row: int = 2
 
     def add_function_called_if_button_clicked(self, function_to_be_called: Callable) -> None:
         """
@@ -266,8 +267,9 @@ class Page:
         grid_layout.setVerticalSpacing(6)
         grid_layout.setHorizontalSpacing(6)
         scroll_area_layout.addWidget(upper_frame)
+        rows = list(range(self.aims_in_row)) * len(self.upper_frame)
         for idx, option in enumerate(self.upper_frame):
-            option.create_widget(upper_frame, grid_layout, idx)
+            option.create_widget(upper_frame, grid_layout, (int(idx / self.aims_in_row), rows[idx]))
 
         list_aims: list[Aim] = [aim for aim in self.upper_frame if isinstance(aim, Aim)]
         if list_aims:
