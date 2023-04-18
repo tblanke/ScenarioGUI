@@ -90,8 +90,28 @@ class GUI(GuiStructure):
             default_value=2,
             minimal_value=0,
             maximal_value=200,
-            category=self.category_inputs,
+            category=self.category_inputs
         )
+
+        self.int_units = els.IntBoxWithUnits(
+            label="IntBoxWithUnits",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=200,
+            category=self.category_inputs,
+            units=[("kW", 1), ("W", 0.001), ("MW", 1_000)]
+        )
+
+        self.float_units = els.FloatBoxWithUnits(
+            label="FloatBoxWithUnits",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=200,
+            decimal_number=2,
+            category=self.category_inputs,
+            units=[("kW", 1), ("W", 0.001), ("MW", 1_000)]
+        )
+        self.float_units.activate_scale_decimals()
 
         self.float_b = els.FloatBox(
             label="b",
@@ -101,6 +121,8 @@ class GUI(GuiStructure):
             decimal_number=2,
             category=self.category_inputs,
         )
+
+        self.list_box = els.ListBox(label="List box", default_index=0, category=self.category_inputs, entries=["1","2","3","4"])
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",

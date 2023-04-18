@@ -11,8 +11,8 @@ import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 
-from .option import Option
 from ...utils import set_default_font
+from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -161,7 +161,7 @@ class FloatBox(Option):
         >>> option_float.add_link_2_show(option=option_linked, below=0.1, above=0.9)
         """
         self.linked_options.append((option, (below, above)))
-        self.widget.valueChanged.connect(ft_partial(self.show_option, option, below, above))
+        self.change_event(ft_partial(self.show_option, option, below, above))
 
     def show_option(
         self,

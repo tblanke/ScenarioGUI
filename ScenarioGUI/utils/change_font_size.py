@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    import PySide6.QtWidgets as QtW
     import PySide6.QtGui as QtG
+    import PySide6.QtWidgets as QtW
 
 
 def change_font_size(widget: QtW.QWidget | QtG.QAction, size: int, scale_min_height: bool = False) -> None:

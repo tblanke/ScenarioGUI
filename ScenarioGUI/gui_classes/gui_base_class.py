@@ -11,8 +11,8 @@ import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as globs
 
-from .status_bar_logger import StatusBar
 from ..utils import set_default_font
+from .status_bar_logger import StatusBar
 
 
 class BaseUI:

@@ -11,8 +11,8 @@ import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 
-from .option import Option
 from ...utils import set_default_font
+from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -111,7 +111,7 @@ class IntBox(Option):
         None
         """
         current_value: int = self.get_value()
-        self.set_value(self.minimal_value if current_value == self.minimal_value else self.minimal_value)
+        self.set_value(self.maximal_value if current_value == self.minimal_value else self.minimal_value)
         self.set_value(current_value)
 
     def _check_value(self) -> bool:
@@ -177,7 +177,7 @@ class IntBox(Option):
 
         >>> option_int.add_link_2_show(option=option_linked, below=1, above=10)
         """
-        self.widget.valueChanged.connect(ft_partial(self.show_option, option, below, above))
+        self.change_event(ft_partial(self.show_option, option, below, above))
 
     def show_option(
         self,

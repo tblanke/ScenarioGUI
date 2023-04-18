@@ -325,6 +325,14 @@ class Option(metaclass=abc.ABCMeta):
         """
 
     def set_font_size(self, size: int) -> None:
+        """
+        scale the font size
+
+        Parameters
+        ----------
+        size: int
+            new font size
+        """
         if self.label is not None:
             change_font_size(self.label, size, False)
         if isinstance(self.widget, list):

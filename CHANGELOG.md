@@ -5,10 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.2.2] - expected: 2023-04-21
 
+### Added
+- The number of aims in a row can be set (issue 27)
+- FilenameBox is now considering multiple file extension (issue 32)
+- Float and int Box with units is implemented (issue 37)
+
 ### Fixed
 - Changeable font size option is now translateable (issue 28)
 - Progressbar has the correct font now
 - File extension of BackUp file is now correct (issue 33)
+
+### Fixed
+- ComboBox colors are set if item is highlighted
+- Scenarios which are not currently running are now editable (issue 31)
 
 ## [0.2.1] - 2023-04-11
 

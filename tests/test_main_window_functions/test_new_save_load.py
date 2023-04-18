@@ -4,6 +4,7 @@ from pathlib import Path
 
 import numpy as np
 import PySide6.QtWidgets as QtW
+
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 

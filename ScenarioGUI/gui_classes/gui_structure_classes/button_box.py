@@ -10,7 +10,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 
-from .functions import update_opponent_not_change, update_opponent_toggle, check
+from .functions import check, update_opponent_not_change, update_opponent_toggle
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover

@@ -10,6 +10,7 @@ import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+
 from ...utils import change_font_size, set_default_font
 
 if TYPE_CHECKING:  # pragma: no cover

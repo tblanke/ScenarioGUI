@@ -3,6 +3,7 @@ from functools import partial
 
 import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW
+
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 

@@ -7,6 +7,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
+from ScenarioGUI import global_settings as globs
 from ScenarioGUI.gui_classes.gui_structure_classes import (
     Aim,
     ButtonBox,
@@ -17,10 +18,10 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     ListBox,
     Option,
     Page,
-    ResultExport, ResultFigure,
+    ResultExport,
+    ResultFigure,
     ResultText,
 )
-from ScenarioGUI import global_settings as globs
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
@@ -205,4 +206,4 @@ class GuiStructure:
             try:
                 entry.translate(index)
             except IndexError:
-                logging.error(name)
+                logging.exception(name)

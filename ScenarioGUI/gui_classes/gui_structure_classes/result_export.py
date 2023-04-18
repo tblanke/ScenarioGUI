@@ -5,15 +5,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import PySide6.QtCore as QtC  # type: ignore
-import PySide6.QtGui as QtG  # type: ignore
-import PySide6.QtWidgets as QtW  # type: ignore
-
-import ScenarioGUI.global_settings as globs
 from . import FunctionButton
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
+
+    import PySide6.QtWidgets as QtW  # type: ignore
 
     from ..gui_structure_classes import Category
 

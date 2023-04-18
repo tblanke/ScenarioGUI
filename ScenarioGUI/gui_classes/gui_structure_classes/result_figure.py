@@ -10,12 +10,13 @@ import matplotlib.pyplot as plt
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
-import ScenarioGUI.global_settings as globs
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
-from .category import Category
+import ScenarioGUI.global_settings as globs
+
 from ...utils import change_font_size
+from .category import Category
 
 if TYPE_CHECKING:  # pragma: no cover
     from .page import Page
