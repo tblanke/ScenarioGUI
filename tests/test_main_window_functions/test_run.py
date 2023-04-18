@@ -25,6 +25,7 @@ def test_run(qtbot):
     main_window.add_scenario()
     file = main_window.gui_structure.filename.get_value()
     main_window.gui_structure.filename.set_value("abc")
+    main_window.save_scenario()
     assert main_window.list_widget_scenario.currentItem().text()[-1] == "*"
     main_window.start_current_scenario_calculation()
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is None
