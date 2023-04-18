@@ -1,8 +1,10 @@
 from __future__ import annotations
+
 from pathlib import Path
 
-import PySide6.QtWidgets as QtW
 import PySide6.QtGui as QtG
+import PySide6.QtWidgets as QtW
+
 from ScenarioGUI import load_config
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
@@ -58,6 +60,12 @@ def test_change_font_size(qtbot):
     check_font_size(main_window.gui_structure.filename.widget, 8)
     check_font_size(main_window.gui_structure.list_box.label, 8)
     check_font_size(main_window.gui_structure.list_box.widget, 8)
+    check_font_size(main_window.gui_structure.float_units.label, 8)
+    check_font_size(main_window.gui_structure.float_units.widget, 8)
+    check_font_size(main_window.gui_structure.float_units.unit_widget, 8)
+    check_font_size(main_window.gui_structure.int_units.label, 8)
+    check_font_size(main_window.gui_structure.int_units.widget, 8)
+    check_font_size(main_window.gui_structure.int_units.unit_widget, 8)
     check_font_size(main_window.gui_structure.function_button.button, 8)
     check_font_size(main_window.gui_structure.button_box.label, 8)
     [check_font_size(widget, 8) for widget in main_window.gui_structure.button_box.widget]

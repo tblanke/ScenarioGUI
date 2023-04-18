@@ -6,12 +6,20 @@
  "names": [
   "Scenario: 1"
  ],
- "version": "0.2.0",
+ "version": "0.2.2",
  "values": [
   {
    "option_font_size": 8,
    "int_a": 2,
    "float_b": 2.1,
+   "int_units": [
+    2,
+    0
+   ],
+   "float_units": [
+    2.0,
+    0
+   ],
    "filename": "D:\\Git\\ScenarioGUI\\tests\\example_data.csv",
    "button_box": 0,
    "list_box_text": "0",

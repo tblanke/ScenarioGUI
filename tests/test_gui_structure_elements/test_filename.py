@@ -2,6 +2,7 @@ from functools import partial
 from pathlib import Path
 
 import PySide6.QtWidgets as QtW
+
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
 from ..gui_structure_for_tests import GUI

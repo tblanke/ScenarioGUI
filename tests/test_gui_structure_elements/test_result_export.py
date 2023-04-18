@@ -3,8 +3,8 @@ from functools import partial
 from pathlib import Path
 
 import PySide6.QtWidgets as QtW
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
+from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 from tests.gui_structure_for_tests import GUI
 from tests.result_creating_class_for_tests import ResultsClass, data_2_results
 from tests.test_translations.translation_class import Translations

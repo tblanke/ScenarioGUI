@@ -12,9 +12,9 @@ import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 
+from ...utils import change_font_size, set_default_font
 from .aim import Aim
-from .functions import update_opponent_not_change, update_opponent_toggle, check_aim_options
-from ...utils import set_default_font, change_font_size
+from .functions import check_aim_options, update_opponent_not_change, update_opponent_toggle
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable

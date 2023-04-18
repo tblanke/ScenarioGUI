@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Progressbar has the correct font now
 - File extension of BackUp file is now correct (issue 33)
 
+### Fixed
+- ComboBox colors are set if item is highlighted
+
 ## [0.2.1] - 2023-04-11
 
 ### Added

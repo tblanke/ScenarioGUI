@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import ScenarioGUI.global_settings as globs
-
 from typing import TYPE_CHECKING
 
+import ScenarioGUI.global_settings as globs
+
 if TYPE_CHECKING:
-    import PySide6.QtWidgets as QtW
     import PySide6.QtGui as QtG
+    import PySide6.QtWidgets as QtW
 
 
 def set_default_font(widget: QtW.QWidget | QtG.QAction, *, bold: bool = False, add_2_size: int = 0) -> None:

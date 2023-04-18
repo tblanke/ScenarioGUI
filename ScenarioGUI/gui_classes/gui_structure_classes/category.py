@@ -10,9 +10,9 @@ import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 
+from ...utils import change_font_size, set_default_font
 from .hint import Hint
 from .result_text import ResultText
-from ...utils import change_font_size, set_default_font
 
 if TYPE_CHECKING:  # pragma: no cover
     from .function_button import FunctionButton

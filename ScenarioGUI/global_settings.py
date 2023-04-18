@@ -6,7 +6,6 @@ from __future__ import annotations
 import logging
 from configparser import ConfigParser
 from pathlib import Path
-from platform import system
 
 path = Path(__file__).parent.absolute()
 config = ConfigParser()
@@ -14,7 +13,7 @@ config = ConfigParser()
 
 def get_path_for_file(start_path: Path, filename: str) -> Path:
     path_i = start_path.absolute()
-    for i in range(6):
+    for _ in range(6):
         items = [item.parent for item in path_i.glob(f"**/{filename}")]
         if items:
             return items[0]
@@ -45,45 +44,6 @@ try:
     VERSION = config.get("metadata", "version")
 except FileNotFoundError:  # pragma: no cover
     VERSION = "0.0.0"
-
-
-def load(gui_file: str | Path):
-    config.read(gui_file)
-
-    global FOLDER
-    global WHITE
-    global LIGHT
-    global LIGHT_SELECT
-    global DARK
-    global GREY
-    global WARNING
-    global BLACK
-    global FONT
-    global FONT_SIZE
-    global FILE_EXTENSION
-    global GUI_NAME
-    global ICON_NAME
-    global VERSION
-
-    FOLDER = get_path_for_file(get_path_for_file(Path(gui_file).parent.parent, config['DEFAULT']["PATH_2_ICONS"]).joinpath(config['DEFAULT']["PATH_2_ICONS"]), "icons")
-
-    config.read(config.read(get_path_for_file(Path(gui_file).parent.parent, "setup.cfg").joinpath("setup.cfg")))
-    VERSION = config.get("metadata", "version")
-
-    WHITE = config['COLORS']["WHITE"]
-    LIGHT = config['COLORS']["LIGHT"]
-    LIGHT_SELECT = config['COLORS']["LIGHT_SELECT"]
-    DARK = config['COLORS']["DARK"]
-    GREY = config['COLORS']["GREY"]
-    WARNING = config['COLORS']["WARNING"]
-    BLACK = config['COLORS']["BLACK"]
-
-    FONT = config['DEFAULT']["FONT_WINDOWS"] if system() == "Windows" else config['DEFAULT']["FONT_MAC"]
-    FONT_SIZE = int(config['DEFAULT']["FONT_SIZE_WINDOWS"] if system() == "Windows" else config['DEFAULT']["FONT_SIZE_MAC"])
-
-    FILE_EXTENSION = config['DEFAULT']["FILE_EXTENSION"]
-    GUI_NAME = config['DEFAULT']["GUI_NAME"]
-    ICON_NAME = config['DEFAULT']["ICON_NAME"]
 
 
 LOGGER = logging.getLogger()

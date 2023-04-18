@@ -1,10 +1,12 @@
 from __future__ import annotations
+
 from pathlib import Path
 from platform import system
 
-import PySide6.QtWidgets as QtW
 import PySide6.QtGui as QtG
+import PySide6.QtWidgets as QtW
 from pytest import raises
+
 from ScenarioGUI import global_settings as globs
 from ScenarioGUI import load_config
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow

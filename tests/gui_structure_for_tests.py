@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ScenarioGUI import GuiStructure
+from ScenarioGUI import elements as els
 from ScenarioGUI.gui_classes.gui_structure_classes import (
     Aim,
     ButtonBox,
@@ -53,6 +54,25 @@ class GUI(GuiStructure):
             decimal_number=2,
             category=self.category_inputs,
         )
+        self.int_units = els.IntBoxWithUnits(
+            label="IntBoxWithUnits",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=2_000_000,
+            category=self.category_inputs,
+            units=[("kW", 1), ("W", 0.001), ("MW", 1_000)]
+        )
+
+        self.float_units = els.FloatBoxWithUnits(
+            label="FloatBoxWithUnits",
+            default_value=2,
+            minimal_value=0,
+            maximal_value=2_000_000,
+            decimal_number=2,
+            category=self.category_inputs,
+            units=[("kW", 1), ("W", 0.001), ("MW", 1_000)]
+        )
+        self.float_units.activate_scale_decimals()
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
