@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - changeable font size (issue 25)
+- The number of aims in a row can be set (issue 27)
 
 ### Changed
 - version number import is now relative to icons path
