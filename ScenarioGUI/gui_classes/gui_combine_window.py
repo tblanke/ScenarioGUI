@@ -630,6 +630,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # create dialog box to ask for a new name
         self.dialog = QtW.QInputDialog(self.dia)
         set_default_font(self.dialog)
+        self.dialog.setTextValue(item.text())
         self.dialog.setWindowTitle(self.translations.label_new_scenario[self.gui_structure.option_language.get_value()[0]])
         self.dialog.setLabelText(f"{self.translations.new_name[self.gui_structure.option_language.get_value()[0]]}{item.text()}")
         self.dialog.setOkButtonText(self.translations.label_okay[self.gui_structure.option_language.get_value()[0]])  # +++
