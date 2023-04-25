@@ -4,7 +4,7 @@ result figure class script
 from __future__ import annotations
 
 import copy
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import matplotlib.pyplot as plt
 import PySide6.QtCore as QtC  # type: ignore
@@ -85,7 +85,7 @@ class ResultFigure(Category):
         self.x_axes_text: str = "" if x_axes_text is None else x_axes_text
         self.y_axes_text: str = "" if y_axes_text is None else y_axes_text
         self.to_show: bool = True
-
+        self.scroll_area: Optional[QtW.QScrollArea] = None
     def replace_figure(self, fig: plt.Figure) -> None:
         """
         Replace figure in canvas and reset toolbar to new figure.
@@ -133,6 +133,7 @@ class ResultFigure(Category):
         self.layout_frame_canvas.replaceWidget(self.toolbar, toolbar)
 
         self.canvas = canvas
+        self.canvas.mpl_connect("scroll_event", self.scrolling)
         self.toolbar = toolbar
 
     def create_widget(self, page: QtW.QWidget, layout: QtW.QLayout):
@@ -168,6 +169,27 @@ class ResultFigure(Category):
         # add canvas and toolbar to local frame
         self.layout_frame_canvas.addWidget(self.canvas)
         self.layout_frame_canvas.addWidget(self.toolbar)
+        self.scroll_area = page
+        self.canvas.mpl_connect("scroll_event", self.scrolling)
+
+
+    def scrolling(self, event) -> None:
+        """
+        This function handels the scrolling behaviour.
+
+        Parameters
+        ----------
+        event : Event
+
+        Returns
+        -------
+        None
+        """
+        val = self.scroll_area.verticalScrollBar().value()
+        if event.button == "down":
+            self.scroll_area.verticalScrollBar().setValue(val + self.scroll_area.verticalScrollBar().singleStep())
+            return
+        self.scroll_area.verticalScrollBar().setValue(val - self.scroll_area.verticalScrollBar().singleStep())
 
     def set_text(self, name: str) -> None:
         """
