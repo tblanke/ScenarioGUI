@@ -136,7 +136,7 @@ class ResultFigure(Category):
         self.canvas.mpl_connect("scroll_event", self.scrolling)
         self.toolbar = toolbar
 
-    def create_widget(self, page: QtW.QWidget, layout: QtW.QLayout):
+    def create_widget(self, page: QtW.QScrollArea, layout: QtW.QLayout):
         """
         This function creates the frame for this Category on a given page.
         If the current label text is "", then the frame attribute is set to the given frame.
@@ -144,7 +144,7 @@ class ResultFigure(Category):
 
         Parameters
         ----------
-        page : QtW.QWidget
+        page : QtW.QScrollArea
             Widget (i.e. page) in which this option should be created
         layout : QtW.QLayout
             The layout parent of the current frame

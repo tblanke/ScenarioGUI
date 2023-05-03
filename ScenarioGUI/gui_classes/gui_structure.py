@@ -82,8 +82,8 @@ class GuiStructure:
             None
         """
         self.page_result = Page(self.translations.page_result, "Results", "Result.svg")
-        self.cat_no_result = Category(page=self.page_result, label=self.translations.cat_no_results)
-        self.text_no_result = Hint(self.translations.text_no_result, category=self.cat_no_result, warning=True)
+        self.cat_no_results = Category(page=self.page_result, label=self.translations.cat_no_results)
+        self.text_no_result = Hint(self.translations.text_no_result, category=self.cat_no_results, warning=True)
 
     def create_settings_page(self):
         """
@@ -113,7 +113,7 @@ class GuiStructure:
         )
         self.option_toggle_buttons.change_event(self.change_toggle_button)
         self.option_n_threads = IntBox(label=self.translations.option_n_threads, default_value=2, category=self.category_save_scenario, minimal_value=1)
-        self.option_font_size = IntBox(label=self.translations.option_font_size if hasattr(self.translations, "option_font_size") else "Font Size",
+        self.option_font_size = IntBox(label=self.translations.option_font_size if hasattr(self.translations, "option_font_size") else "Font size",
                                        default_value=globs.FONT_SIZE,
                                        category=self.category_save_scenario,
                                        minimal_value=8,
@@ -136,9 +136,7 @@ class GuiStructure:
         self.list_of_aims = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Aim)]
         self.list_of_options = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option)]
         self.list_of_pages = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), Page)]
-        self.list_of_rest = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), (Hint,
-                                                                                                                                             FunctionButton,
-                                                                                                                                            Category))]
+        self.list_of_rest = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), (Hint, FunctionButton, Category))]
 
         self.list_of_result_texts: list[tuple[ResultText, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultText)

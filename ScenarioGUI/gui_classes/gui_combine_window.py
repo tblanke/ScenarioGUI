@@ -1300,14 +1300,14 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             if hide or self.list_widget_scenario.currentItem().text()[-1] == "*":
                 for cat in self.gui_structure.page_result.list_categories:
                     cat.hide(results=True)
-                self.gui_structure.cat_no_result.show()
+                self.gui_structure.cat_no_results.show()
                 self.gui_structure.text_no_result.set_text(self.translations.not_calculated[self.gui_structure.option_language.get_value()[0]])
                 return
             update_results()
             for cat in self.gui_structure.page_result.list_categories:
                 cat.show(results=True)
             # make sure all the results are being shown
-            self.gui_structure.cat_no_result.hide()
+            self.gui_structure.cat_no_results.hide()
 
         if not self.list_ds:
             hide_no_result(True)

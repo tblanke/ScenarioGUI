@@ -195,7 +195,7 @@ class Page:
         scroll_area_layout.addWidget(label_gap)
 
         for category in self.list_categories:
-            category.create_widget(scroll_area_content, scroll_area_layout)
+            category.create_widget(scroll_area, scroll_area_layout)
 
         spacer = QtW.QSpacerItem(1, 1, QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Expanding)
         scroll_area_layout.addItem(spacer)
