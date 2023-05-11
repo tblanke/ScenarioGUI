@@ -856,6 +856,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             # init user window by reset scenario list widget and check for results
             self.list_widget_scenario.clear()
             self.list_widget_scenario.addItems(scenarios)
+            self.change_scenario(0)
             self.list_widget_scenario.setCurrentRow(0)
             self.list_ds[0].set_values(self.gui_structure)
             self.check_results()
