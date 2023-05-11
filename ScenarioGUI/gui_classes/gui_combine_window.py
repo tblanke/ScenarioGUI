@@ -267,7 +267,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             return
         self.push_button_save_scenario.show()
 
-
     def change_font_size(self):
         size = self.gui_structure.option_font_size.get_value()
         globs.FONT_SIZE = size
@@ -566,7 +565,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             None
         """
         start_item, start_index, start_index2, end_item, target_index = args
-        self.list_ds.insert(target_index, self.list_ds.pop(start_index))
+        target_index = target_index if target_index < start_index else (target_index -1)
+        self.list_ds[target_index], self.list_ds[start_index] = self.list_ds[start_index], self.list_ds[target_index]
+        logging.info((target_index, start_index))
+        # self.list_ds.insert(target_index, self.list_ds.pop(start_index))
         # project is changed
         self.changedFile = True
 
