@@ -4,7 +4,6 @@ It contains all the options, categories etc. that should appear on the GUI.
 """
 from __future__ import annotations
 
-import logging
 from typing import TYPE_CHECKING
 
 from ScenarioGUI import global_settings as globs
@@ -165,7 +164,6 @@ class GuiStructure:
         _ = [item.set_font_size(size) for item in self.list_of_rest]
         _ = [page.set_font_size(size) for page in self.list_of_pages]
 
-
     def change_toggle_button(self) -> None:
         """
         This function changes the behaviour of both the ButtonBox and aim selection
@@ -199,9 +197,13 @@ class GuiStructure:
         """
         Page.next_label = translation.label_next[index]
         Page.previous_label = translation.label_previous[index]
-        for name in [j for j in translation.__slots__ if hasattr(self, j)]:
-            entry: Option | Hint | FunctionButton | Page | Category = getattr(self, name)
-            try:
-                entry.translate(index)
-            except IndexError:
-                logging.exception(name)
+        _ = [option.translate(index) for option, _ in self.list_of_options if len(option.label_text) > index and len(option.label_text) > 1]
+        _ = [aim.translate(index) for aim, _ in self.list_of_aims if len(aim.label) > index and len(aim.label) > 1]
+        _ = [page.translate(index) for page in self.list_of_pages if len(page.name) > index and len(page.name) > 1]
+        for item in self.list_of_rest:
+            if isinstance(item, Hint) and len(item.hint) > index and len(item.hint) > 1:
+                item.translate(index)
+            if isinstance(item, FunctionButton) and len(item.button_text) > index and len(item.button_text) > 1:
+                item.translate(index)
+            if isinstance(item, Category) and len(item.label_text) > index and len(item.label_text) > 1:
+                item.translate(index)

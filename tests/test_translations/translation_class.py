@@ -69,6 +69,7 @@ class Translations:  # pragma: no cover
         "float_b",
         "function_button",
         "option_font_size",
+        "figure_results",
         "languages",
     )
 
@@ -155,3 +156,4 @@ class Translations:  # pragma: no cover
         self.float_b: list[str] = ["nothing", "nothing"]
         self.function_button: list[str] = ["call function", "Rufe Funktion"]
         self.option_font_size: list[str] = ["Font Size", "Schriftgröße"]
+        self.figure_results: list[str] = ["Plot,X-axis[-],Y-Axis[-]", "Diagram,X-Achse[-],Y-Achse[-]"]

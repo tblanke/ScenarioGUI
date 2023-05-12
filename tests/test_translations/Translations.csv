@@ -68,3 +68,4 @@ aim_sub;Substract;Subtrahieren
 float_b;nothing;nothing
 function_button;call function;Rufe Funktion
 option_font_size;Font Size;Schriftgröße
+figure_results;Plot,X-axis[-],Y-Axis[-];Diagram,X-Achse[-],Y-Achse[-]
