@@ -35,7 +35,7 @@ def test_backup(qtbot):
     with qtbot.waitSignal(main_window.threads[0].any_signal, raising=False):
         main_window.threads[0].run()
         main_window.threads[0].any_signal.connect(main_window.thread_function)
-
+    qtbot.wait(200)
     main_window.save_scenario()
     list_old = main_window.list_ds.copy()
     main_window.load_backup()

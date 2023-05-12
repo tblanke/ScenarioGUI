@@ -34,7 +34,7 @@ def test_save_load_new(qtbot):
     with qtbot.waitSignal(main_window.threads[0].any_signal, raising=False):
         main_window.threads[0].run()
         main_window.threads[0].any_signal.connect(main_window.thread_function)
-
+    qtbot.wait(200)
     main_window.save_scenario()
     # set filenames
     filename_1 = f"test_1.{global_vars.FILE_EXTENSION}"
