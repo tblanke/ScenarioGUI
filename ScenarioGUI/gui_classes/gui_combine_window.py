@@ -429,7 +429,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
     def check_buttons(self):
         try:
             not_running = self.list_widget_scenario.currentItem() not in [thread.item for thread in self.threads]
-        except RuntimeError:
+        except RuntimeError:  # pragma: no cover
             not_running = True
         if self.check_values() and not_running:
             self.push_button_start_multiple.setEnabled(True)
