@@ -85,8 +85,8 @@ class ResultFigure(Category):
         self.x_axes_text: str = "" if x_axes_text is None else x_axes_text
         self.y_axes_text: str = "" if y_axes_text is None else y_axes_text
         self.to_show: bool = True
-        self.scroll_area: Optional[QtW.QScrollArea] = None
         self.set_text(self.label_text[0])
+        self.scroll_area: QtW.QScrollArea | None = None
 
     def replace_figure(self, fig: plt.Figure) -> None:
         """

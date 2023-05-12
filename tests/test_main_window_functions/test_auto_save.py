@@ -24,7 +24,7 @@ def test_auto_save(qtbot):
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     # set auto save function and create new backup file
     main_window.gui_structure.option_auto_saving.set_value(1)
-    main_window.fun_save_auto()
+    main_window.auto_save()
     # add a new scenario and change conductivity
     main_window.add_scenario()
     main_window.gui_structure.float_b.set_value(2.1)
@@ -33,6 +33,7 @@ def test_auto_save(qtbot):
     main_window.gui_structure.float_b.set_value(1.1)
     # run calculations
     main_window.action_start_multiple.trigger()
+    qtbot.wait(100)
     # check if options has been stored correctly
     assert isclose(main_window.list_ds[1].float_b, 2.1)
     assert isclose(main_window.list_ds[2].float_b, 1.1)
