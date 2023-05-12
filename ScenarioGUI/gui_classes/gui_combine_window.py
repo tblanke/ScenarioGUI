@@ -427,7 +427,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         item.setText(f"{text}*") if self.started else None
 
     def check_buttons(self):
-        if self.check_values() and self.list_widget_scenario.currentItem() not in [thread.item for thread in self.threads]:
+        try:
+            not_running = self.list_widget_scenario.currentItem() not in [thread.item for thread in self.threads]
+        except RuntimeError:
+            not_running = True
+        if self.check_values() and not_running:
             self.push_button_start_multiple.setEnabled(True)
             self.push_button_start_single.setEnabled(True)
             self.push_button_save_scenario.setEnabled(True)
