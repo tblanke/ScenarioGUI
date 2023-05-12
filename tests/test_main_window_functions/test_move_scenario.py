@@ -99,4 +99,3 @@ def test_move_scenario_downwards(qtbot):
                 assert getattr(ds_old, option) == getattr(ds_new, option)
                 continue
     main_window.delete_backup()
-    

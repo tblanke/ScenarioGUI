@@ -3,7 +3,17 @@ All notable changes to this project will be documented in this file including pl
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.2.2] - expected: 2023-04-21
+## [0.3.0] - expected: may 2023
+
+### Fixed
+- Scenario buttons not resizing (issue 42)
+- Drag scenario 2 to the place of scenario 3 do work know (issue 50)
+- Scenario changing without change (issue 50)
+
+### Changed
+- list_ds in MainWindow removed and replaced by QListWidget data
+
+## [0.2.2] - 2023-04-21
 
 ### Added
 - The number of aims in a row can be set (issue 27)
@@ -15,7 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Progressbar has the correct font now
 - File extension of BackUp file is now correct (issue 33)
 
-### Fixed
+### Changed
 - ComboBox colors are set if item is highlighted
 - Scenarios which are not currently running are now editable (issue 31)
 
@@ -77,6 +87,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Hint
 - ListBox
 
+[0.3.0]: https://github.com/tblanke/ScenarioGUI/compare/v0.2.2...main
+[0.2.2]: https://github.com/tblanke/ScenarioGUI/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/tblanke/ScenarioGUI/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/tblanke/ScenarioGUI/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/tblanke/ScenarioGUI/compare/v0.1.2...v0.1.3
