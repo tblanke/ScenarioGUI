@@ -199,7 +199,7 @@ class GUI(GuiStructure):
         self.result_export = els.ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
                                           caption="Select file", file_extension="txt")
 
-        self.figure_results = els.ResultFigure(label="Plot", page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
+        self.figure_results = els.ResultFigure(label=self.translations.figure_results, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
         self.legend_figure_results = els.FigureOption(
             category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
         )
