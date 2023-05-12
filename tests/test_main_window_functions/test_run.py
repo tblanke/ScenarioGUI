@@ -1,4 +1,5 @@
 import PySide6.QtWidgets as QtW
+import numpy as np
 
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
@@ -33,12 +34,15 @@ def test_run(qtbot):
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is None
     main_window.gui_structure.filename.set_value(file)
 
-    main_window.gui_structure.aim_add.widget.click()
+    main_window.gui_structure.aim_add.widget.click() if not main_window.gui_structure.aim_add.widget.isChecked() else None
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     qtbot.wait(1500)
 
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
+    assert np.isclose(main_window.list_ds[main_window.list_widget_scenario.currentRow()].results.result, 102)
+    main_window.list_ds[main_window.list_widget_scenario.currentRow()].results.adding()
+    assert np.isclose(main_window.list_ds[main_window.list_widget_scenario.currentRow()].results.result, 102)
 
     main_window.remove_previous_calculated_results()
 

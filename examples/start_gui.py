@@ -5,6 +5,7 @@ script to start the GUI
 from __future__ import annotations
 
 import sys
+from functools import partial
 from pathlib import Path
 from platform import system
 from sys import argv
@@ -92,6 +93,7 @@ class GUI(GuiStructure):
             maximal_value=200,
             category=self.category_inputs
         )
+        self.int_a.change_event(self.disable_aim(self.aim_sub, self.page_inputs, partial(self.int_a.check_linked_value, (None, 5))))
 
         self.int_units = els.IntBoxWithUnits(
             label="IntBoxWithUnits",
@@ -128,7 +130,15 @@ class GUI(GuiStructure):
         self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
                                         file_extension=["txt", "csv"])
 
-        self.button_box = els.ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
+        self.button_box = els.ButtonBox(label="a or b or c?", default_index=0, entries=["a", "b", "c"], category=self.category_inputs)
+
+        self.aim_plot.widget.toggled.connect(self.disable_button_box(self.button_box, at_index=2, func_2_check=self.aim_plot.widget.isChecked))
+        self.float_b.change_event(self.disable_button_box(self.button_box, 1, partial(self.float_b.check_linked_value, (50, None))))
+        self.int_a.change_event(self.disable_button_box(self.button_box, 0, partial(self.int_a.check_linked_value, (None, 10))))
+
+        self.button_box_short = els.ButtonBox(label="b or c?", default_index=0, entries=["b", "c"], category=self.category_inputs)
+        self.float_b.change_event(self.disable_button_box(self.button_box_short, 1, partial(self.float_b.check_linked_value, (50, None))))
+        self.int_a.change_event(self.disable_button_box(self.button_box_short, 0, partial(self.int_a.check_linked_value, (None, 10))))
 
         self.function_button = els.FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
 

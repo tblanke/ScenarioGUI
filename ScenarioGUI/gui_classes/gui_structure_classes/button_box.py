@@ -202,6 +202,47 @@ class ButtonBox(Option):
         """
         return self.get_value() == value
 
+    def disable_entry(self, idx: int):
+        """
+        Disables the entry at index
+
+        Parameters
+        ----------
+        idx: int
+            index of entry which should be disabled
+        """
+        if self.widget[idx].isChecked():
+            self.widget[idx].setChecked(False)
+            self.widget[idx].setEnabled(False)
+            if self.widget[self.default_value].isEnabled():
+                self.widget[self.default_value].setChecked(True)
+            else:
+                widgets = [widget for widget in self.widget if widget.isEnabled()]
+                if widgets:
+                    widgets[0].setChecked(True)
+
+        self.widget[idx].setEnabled(False)
+        self.widget[idx].hide()
+        if not [widget for widget in self.widget if widget.isEnabled()]:
+            self.hide()
+        #if len([widget for widget in self.widget if widget.isEnabled()]) == 1:
+        #    [widget for widget in self.widget if widget.isEnabled()][0].setChecked(True)
+
+    def enable_entry(self, idx: int):
+        """
+        Enables the entry at index
+
+        Parameters
+        ----------
+        idx: int
+            index of entry which should be disabled
+        """
+        self.show()
+        self.widget[idx].setEnabled(True)
+        self.widget[idx].show()
+        if len([widget for widget in self.widget if widget.isEnabled()]) == 1:
+            self.widget[idx].setChecked(True)
+
     def create_widget(
         self,
         frame: QtW.QFrame,

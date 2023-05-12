@@ -5,6 +5,7 @@ It contains all the options, categories etc. that should appear on the GUI.
 from __future__ import annotations
 
 import logging
+from functools import partial
 from typing import TYPE_CHECKING
 
 from ScenarioGUI import global_settings as globs
@@ -27,6 +28,7 @@ if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
 
     from ScenarioGUI.gui_classes.translation_class import Translations
+    from collections.abc import Callable
 
 
 class GuiStructure:
@@ -165,7 +167,6 @@ class GuiStructure:
         _ = [item.set_font_size(size) for item in self.list_of_rest]
         _ = [page.set_font_size(size) for page in self.list_of_pages]
 
-
     def change_toggle_button(self) -> None:
         """
         This function changes the behaviour of both the ButtonBox and aim selection
@@ -181,6 +182,39 @@ class GuiStructure:
             return
         ButtonBox.TOGGLE = True
         Page.TOGGLE = True
+
+    def disable_button_box(self, button_box: ButtonBox, at_index: int, func_2_check: Callable[[], bool]) -> Callable[[]]:
+        return partial(self._disable_button_box, button_box, at_index, func_2_check)
+
+    @staticmethod
+    def _disable_button_box(button_box: ButtonBox, at_index: int, func_2_check: Callable[[], bool], args):
+        if func_2_check():
+            button_box.disable_entry(at_index)
+            return
+        button_box.enable_entry(at_index)
+
+    def disable_aim(self, aim: Aim, at_page: Page, func_2_check: Callable[[], bool]) -> Callable[[]]:
+        return partial(self._disable_aim, aim, at_page, func_2_check)
+
+    @staticmethod
+    def _disable_aim(aim: Aim, at_page: Page, func_2_check: Callable[[], bool], args):
+        if func_2_check():
+            aim.widget.setEnabled(False)
+            font = aim.widget.font()
+            font.setStrikeOut(True)
+            aim.widget.setFont(font)
+            if aim.widget.isChecked():
+                aim.widget.setChecked(False)
+                aims = [aim_i for aim_i in at_page.upper_frame if aim_i!=aim and aim_i.widget.isEnabled()]
+                if aims:
+                    aims[0].widget.setChecked(True)
+            return
+        aim.widget.setEnabled(True)
+        font = aim.widget.font()
+        font.setStrikeOut(False)
+        aim.widget.setFont(font)
+        if len([aim_i for aim_i in at_page.upper_frame if aim_i.widget.isEnabled()]) == 1:
+            aim.widget.setChecked(True)
 
     def translate(self, index: int, translation: Translations) -> None:
         """
