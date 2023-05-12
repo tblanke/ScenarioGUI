@@ -85,7 +85,8 @@ class ResultFigure(Category):
         self.x_axes_text: str = "" if x_axes_text is None else x_axes_text
         self.y_axes_text: str = "" if y_axes_text is None else y_axes_text
         self.to_show: bool = True
-        self.scroll_area: Optional[QtW.QScrollArea] = None
+        self.scroll_area: QtW.QScrollArea | None = None
+
     def replace_figure(self, fig: plt.Figure) -> None:
         """
         Replace figure in canvas and reset toolbar to new figure.
@@ -171,7 +172,6 @@ class ResultFigure(Category):
         self.layout_frame_canvas.addWidget(self.toolbar)
         self.scroll_area = page
         self.canvas.mpl_connect("scroll_event", self.scrolling)
-
 
     def scrolling(self, event) -> None:
         """

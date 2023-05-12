@@ -57,6 +57,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
     """
 
     filename_default: tuple = ("", "")
+    role: int = 99
 
     def __init__(
         self,
@@ -130,7 +131,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.changedFile: bool = False  # set change file variable to false
         self.ax: list = []  # axes of figure
         self.threads: list[CalcProblem] = []  # list of calculation threads
-        self.list_ds: list[DataStorage] = []  # list of data storages
+        CalcProblem.role = MainWindow.role
         self.size_b = QtC.QSize(48, 48)  # size of big logo on push button
         self.size_s = QtC.QSize(24, 24)  # size of small logo on push button
         self.size_push_b = QtC.QSize(150, 75)  # size of big push button
@@ -143,8 +144,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.load_backup()
         # add progress bar and label to statusbar
         self.status_bar.widget.messageChanged.connect(self.status_hide)
-        # change window title to saved filename
-        self.change_window_title()
         # reset push button size
         self.check_page_button_layout(False)
         # set start page to general page
@@ -166,6 +165,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # set started to True
         # this is so that no changes are made when the file is opening
         self.started: bool = True
+
+    @property
+    def list_ds(self) -> list[DataStorage]:
+        return [self.list_widget_scenario.item(idx).data(MainWindow.role) for idx in range(self.list_widget_scenario.count())]
 
     def _create_action_language(self, idx: int, name: str, icon_name: str, short_cut: str) -> None:
         """
@@ -255,7 +258,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.action_new.triggered.connect(self.fun_new)
         self.action_rename_scenario.triggered.connect(lambda: self.fun_rename_scenario())
         self.list_widget_scenario.setDragDropMode(QtW.QAbstractItemView.InternalMove)
-        self.list_widget_scenario.model().rowsMoved.connect(self.fun_move_scenario)
+        # self.list_widget_scenario.model().rowsMoved.connect(self.fun_move_scenario)
         self.list_widget_scenario.currentItemChanged.connect(self.scenario_is_changed)
         self.list_widget_scenario.itemSelectionChanged.connect(self._always_scenario_selected)
         self.gui_structure.option_auto_saving.change_event(self.change_auto_saving)
@@ -298,11 +301,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             filter=f".{result_export.file_extension} (*.{result_export.file_extension})",
             dir=str(self.default_path),
         )
-        d_s = self.list_ds[self.list_widget_scenario.currentRow()]
+        d_s = self.list_widget_scenario.currentItem().data(MainWindow.role)
         getattr(d_s.results, result_export.export_function)(filename[0])
 
     def change_figure_option(self):
-        d_s = self.list_ds[self.list_widget_scenario.currentRow()]
+        d_s = self.list_widget_scenario.currentItem().data(MainWindow.role)
         for option, name in [(opt, name) for opt, name in self.gui_structure.list_of_options if isinstance(opt, FigureOption)]:
             setattr(d_s, name, option.get_value())
         self.remove_previous_calculated_results()
@@ -316,9 +319,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        if not self.list_ds:
+        if self.list_widget_scenario.count() < 1:
             return
-        ds = self.list_ds[self.list_widget_scenario.currentRow()]
+        ds = self.list_widget_scenario.currentItem().data(MainWindow.role)
         if ds.results is None:
             return
         ds.close_figures()
@@ -398,35 +401,37 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.changedFile: bool = True
             self.change_window_title()
         # get current index of scenario
-        idx: int = self.list_widget_scenario.currentRow()
-        if self.list_ds:
-            # remove results object
-            self.list_ds[idx].close_figures()
-            self.list_ds[idx].results = None
+        item = self.list_widget_scenario.currentItem()
+        if item is None:
+            return
+        # remove results object
+        item.data(MainWindow.role).close_figures()
+        item.data(MainWindow.role).results = None
         # abort here if autosave scenarios is used
         if self.gui_structure.option_auto_saving.get_value() == 1:
-            return
-        # if list is empty return
-        if not self.list_ds:
             return
         # get text string of current scenario
         text: str = self.list_widget_scenario.currentItem().text()
         # create current data storage
         d_s: DataStorage = DataStorage(self.gui_structure)
         # check if current data storage is equal to the previous one then delete the *
-        if self.list_ds and d_s == self.list_ds[idx]:
+        if d_s == item.data(MainWindow.role):
             if text[-1] != "*":
                 return
-            self.list_widget_scenario.item(idx).setText(text[:-1])
+            item.setText(text[:-1])
             return
         # if scenario is already marked as changed return
         if text[-1] == "*":
             return
         # else add * to current item string
-        self.list_widget_scenario.item(idx).setText(f"{text}*")
+        item.setText(f"{text}*") if self.started else None
 
     def check_buttons(self):
-        if self.check_values() and self.list_widget_scenario.currentRow() not in [thread.idx for thread in self.threads]:
+        try:
+            not_running = self.list_widget_scenario.currentItem() not in [thread.item for thread in self.threads]
+        except RuntimeError:  # pragma: no cover
+            not_running = True
+        if self.check_values() and not_running:
             self.push_button_start_multiple.setEnabled(True)
             self.push_button_start_single.setEnabled(True)
             self.push_button_save_scenario.setEnabled(True)
@@ -459,8 +464,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # return if not checking
-        if not self.checking:
+        if new_row_item is None or not self.checking:
             return
+
         self.check_buttons()
         # if no old item is selected do nothing and return
         if old_row_item is None:
@@ -468,11 +474,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.change_scenario(self.list_widget_scenario.row(new_row_item))
             return
 
+        if new_row_item.text() == old_row_item.text():
+            return
+
         def return_2_old_item():
-            # change item to old item by thread, because I have not found a direct way which is not lost after
-            # return
+            # change item to old item by thread, because I have not found a direct way which is not lost after return
             d_s = DataStorage(self.gui_structure)
-            t = QtC.QTimer(self)
 
             def returning():
                 self.list_widget_scenario.blockSignals(True)
@@ -482,24 +489,22 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 d_s.set_values(self.gui_structure)
                 self.checking = True
                 self.list_widget_scenario.blockSignals(False)
-                t.stop()
 
-            t.timeout.connect(returning)
-            t.start(10)  # after 30 seconds, "returning, world" will be printed
+            QtC.QTimer.singleShot(10, returning)
 
         # check if the auto saving should be performed and then save the last selected scenario
         if self.gui_structure.option_auto_saving.get_value() == 1:
             self.check_values()
             # save old scenario
             if (
-                len(self.list_ds) - 1 >= self.list_widget_scenario.row(old_row_item)
-                and DataStorage(self.gui_structure) != self.list_ds[self.list_widget_scenario.row(old_row_item)]
+                self.list_widget_scenario.count() - 1 >= self.list_widget_scenario.row(old_row_item)
+                and DataStorage(self.gui_structure) != old_row_item.data(MainWindow.role)
                 and self.push_button_save_scenario.isEnabled()
             ):
-                self.list_ds[self.list_widget_scenario.row(old_row_item)].close_figures()
-                self.list_ds[self.list_widget_scenario.row(old_row_item)] = DataStorage(self.gui_structure)
+                old_row_item.data(MainWindow.role).close_figures()
+                old_row_item.setData(MainWindow.role, DataStorage(self.gui_structure))
             # update backup fileImport
-            self.fun_save_auto()
+            self.auto_save()
             # change values to new scenario values
             self.change_scenario(self.list_widget_scenario.row(new_row_item))
             # abort function
@@ -539,38 +544,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 return_2_old_item()
                 return
             # save scenario if wanted
-            if reply == QtW.QMessageBox.Save and not self.save_scenario(self.list_widget_scenario.row(old_row_item)):  # pragma: no cover
-                return_2_old_item()
+            if reply == QtW.QMessageBox.Save:  # pragma: no cover
+                old_row_item.setData(MainWindow.role, DataStorage(self.gui_structure))
             # remove * symbol
             old_row_item.setText(text[:-1])
         # change entries to new scenario values
         self.change_scenario(self.list_widget_scenario.row(new_row_item))
         return
-
-    def fun_move_scenario(self, *args) -> None:
-        """
-        change list of ds entry if scenario is moved (more inputs than needed, because the list widget returns that much\n
-
-        Parameters
-        ----------
-        args: tuple containing
-            :param start_item: start item of moving
-            :param start_index: start index of moving
-            :param start_index2: start index of moving
-            :param end_item: start end of moving
-            :param target_index: target index of moving
-
-        Returns
-        -------
-            None
-        """
-        start_item, start_index, start_index2, end_item, target_index = args
-        target_index = target_index if target_index < start_index else (target_index -1)
-        self.list_ds[target_index], self.list_ds[start_index] = self.list_ds[start_index], self.list_ds[target_index]
-        logging.info((target_index, start_index))
-        # self.list_ds.insert(target_index, self.list_ds.pop(start_index))
-        # project is changed
-        self.changedFile = True
 
     @staticmethod
     def set_push_button_icon(button: QtW.QPushButton, icon_name: str) -> None:
@@ -610,8 +590,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
+        # get current item
+        item = self.list_widget_scenario.currentItem()
         # return if no scenarios exits
-        if not self.list_ds:
+        if item is None:
             return
 
         def set_name(text):
@@ -621,8 +603,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 text += "(2)"
             item.setText(text) if text else None
 
-        # get current item
-        item = self.list_widget_scenario.currentItem()
         # get first item if no one is selected
         item = self.list_widget_scenario.item(0) if item is None else item
         if name:
@@ -658,7 +638,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # hide results buttons if no results where found
-        if any([(i.results is None) for i in self.list_ds]) or self.list_ds == []:
+        if any([(self.list_widget_scenario.item(i).data(MainWindow.role).results is None) for i in range(self.list_widget_scenario.count())]) or \
+                self.list_widget_scenario.count() < 1:
             # self.gui_structure.function_save_results.hide()
             self.gui_structure.list_of_pages[0].button.click()
             return
@@ -740,9 +721,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        for ds in self.list_ds:
+        for idx in range(self.list_widget_scenario.count()):
             setattr(
-                ds,
+                self.list_widget_scenario.item(idx).data(MainWindow.role),
                 name_of_option,
                 getattr(self.gui_structure, name_of_option).get_value() if len(args) < 1 else args[0],
             )
@@ -784,9 +765,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             for i in range(1, amount + 1)
         ]
         # clear list widget with scenario and write new ones
-        self.list_widget_scenario.clear()
-        if amount > 0:
-            self.list_widget_scenario.addItems(scenarios)
+        for idx, name in enumerate(scenarios):
+            self.list_widget_scenario.item(idx).setText(name)
         # select current scenario
         self.list_widget_scenario.setCurrentRow(scenario_index) if scenario_index >= 0 else None
         self.checking = True
@@ -824,7 +804,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # show message that no backup file is found
         globs.LOGGER.error(self.translations.no_backup_file[self.gui_structure.option_language.get_value()[0]])
 
-    def fun_save_auto(self) -> None:
+    def auto_save(self) -> None:
         """
         This function automatically saves data in the backup file.
 
@@ -833,7 +813,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # append scenario if no scenario is in list
-        if len(self.list_ds) < 1:
+        if self.list_widget_scenario.count() < 1:
             self.add_scenario()
 
         self._save_to_data(self.backup_file)
@@ -852,16 +832,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
 
-        def general_changes(scenarios):
-            # change window title to new loaded filename
-            self.change_window_title()
-            # init user window by reset scenario list widget and check for results
-            self.list_widget_scenario.clear()
-            self.list_widget_scenario.addItems(scenarios)
-            self.change_scenario(0)
-            self.list_widget_scenario.setCurrentRow(0)
-            self.list_ds[0].set_values(self.gui_structure)
-            self.check_results()
         try:
             # open file and get data
             with open(location) as file:
@@ -870,19 +840,25 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()[0]])
             return
 
+        # set and change the window title
+        self.filename = tuple(saving["filename"])
+        self.change_window_title()
+        self.list_widget_scenario.clear()
         # write data to variables
-        self.list_ds = []
-        for val, results in zip(saving["values"], saving["results"]):
+        for idx, (val, results, name) in enumerate(zip(saving["values"], saving["results"], saving["names"])):
             d_s = DataStorage(self.gui_structure)
             d_s.from_dict(val)
             if results is None:
                 d_s.results = None
             else:
                 d_s.results = self.result_creating_class.from_dict(results)
-            self.list_ds.append(d_s)
-        # set and change the window title
-        self.filename = saving["filename"]
-        general_changes(saving["names"])
+            item = QtW.QListWidgetItem(name)
+            item.setData(MainWindow.role, d_s)
+            self.list_widget_scenario.addItem(item)
+
+        self.list_widget_scenario.setCurrentRow(0)
+        self.list_widget_scenario.item(0).data(MainWindow.role).set_values(self.gui_structure)
+        self.check_results()
 
     def _save_to_data(self, location: str | PurePath) -> None:
         """
@@ -900,12 +876,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # create list of all scenario names
         scenario_names = [self.list_widget_scenario.item(idx).text() for idx in range(self.list_widget_scenario.count())]
         # create saving dict
+        list_ds = [self.list_widget_scenario.item(idx).data(MainWindow.role) for idx in range(self.list_widget_scenario.count())]
         saving = {
             "filename": self.filename,
             "names": scenario_names,
             "version": globs.VERSION,
-            "values": [ds.to_dict() for ds in self.list_ds],
-            "results": [ds.results.to_dict() if ds.results is not None else None for ds in self.list_ds],
+            "values": [d_s.to_dict() for d_s in list_ds],
+            "results": [d_s.results.to_dict() if d_s.results is not None else None for d_s in list_ds],
         }
         try:
             # write data to back up file
@@ -988,9 +965,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # save scenarios
         self.save_scenario()
         # update backup file
-        self.fun_save_auto()
-        # Create list if no scenario is stored
-        self.list_ds.append(DataStorage(self.gui_structure)) if len(self.list_ds) < 1 else None
+        self.auto_save()
         # try to store the data in the pickle file
         self._save_to_data(self.filename[0])
         # deactivate changed file * from window title
@@ -1009,7 +984,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         self.filename: tuple = MainWindow.filename_default  # reset filename
         if self.fun_save():  # get and save filename
-            self.list_ds: list = []  # reset list of data storages
             self.list_widget_scenario.clear()  # clear list widget with scenario list
             self.display_results()  # clear the results page
 
@@ -1041,12 +1015,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # if i no scenario is selected (idx < 0) or no scenario exists break function
-        if idx < 0 or idx >= len(self.list_ds):
-            return
+        item = self.list_widget_scenario.item(idx)
+        # get selected Datastorage from list
+        d_s: DataStorage = item.data(MainWindow.role)
         # deactivate checking for changes
         self.checking: bool = False
-        # get selected Datastorage from list
-        d_s: DataStorage = self.list_ds[idx]
         # set values of selected Datastorage
         d_s.set_values(self.gui_structure)
         # refresh results if results page is selected
@@ -1070,14 +1043,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                     return False
         return True
 
-    def save_scenario(self, idx: int = None) -> bool:
+    def save_scenario(self) -> bool:
         """
         This function saves the current scenario in the backup.
-
-        Parameters
-        ----------
-        idx : int
-            Index of the scenario. If None, the current index is taken.
 
         Returns
         -------
@@ -1086,20 +1054,21 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if not self.check_values():
             return False
         # get selected scenario index
-        idx: int = max(self.list_widget_scenario.currentRow(), 0) if idx is None or isinstance(idx, bool) else idx
+        item = self.list_widget_scenario.currentItem()
         # if no scenario exists create a new one else save DataStorage with new inputs in list of scenarios
-        if len(self.list_ds) == idx:
+        if item is None:
             self.add_scenario()
-        elif self.list_ds[idx].results is None:  # do not overwrite any results
-            self.list_ds[idx].close_figures()
-            self.list_ds[idx] = DataStorage(self.gui_structure)
-        # create auto backup
-        self.fun_save_auto()
+            item = self.list_widget_scenario.currentItem()
+        elif item.data(MainWindow.role).results is None:  # do not overwrite any results
+            item.data(MainWindow.role).close_figures()
+            item.setData(MainWindow.role, DataStorage(self.gui_structure))
         # remove * from scenario if not Auto save is checked and if the last char is a *
         if self.gui_structure.option_auto_saving.get_value() != 1:
-            text = self.list_widget_scenario.item(idx).text()
+            text = item.text()
             if text[-1] == "*":
-                self.list_widget_scenario.item(idx).setText(text[:-1])
+                item.setText(text[:-1])
+        # create auto backup
+        self.auto_save()
         return True
 
     def delete_scenario(self) -> None:
@@ -1110,18 +1079,18 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
+        if self.list_widget_scenario.count() < 2:
+            return
         # get current scenario index
-        idx = self.list_widget_scenario.currentRow()
+        item = self.list_widget_scenario.currentItem()
         # check if it is not scenarios exists and not the last one is selected (The last one can not be deleted)
-        if idx > 0 or (len(self.list_ds) > 1 and idx == 0):
-            self.list_ds[idx].close_figures()
-            # delete scenario from list
-            del self.list_ds[idx]
-            # delete scenario form list widget
-            self.list_widget_scenario.takeItem(idx)
-            # select previous scenario then the deleted one but at least the first one
-            self.list_widget_scenario.setCurrentRow(max(idx - 1, 0))
-            self.change_scenario(max(idx - 1, 0))
+        item.data(MainWindow.role).close_figures()
+        idx = self.list_widget_scenario.row(item)
+        # delete scenario form list widget
+        self.list_widget_scenario.takeItem(idx)
+        # select previous scenario then the deleted one but at least the first one
+        self.list_widget_scenario.setCurrentRow(max(idx - 1, 0))
+        self.change_scenario(max(idx - 1, 0))
 
     def add_scenario(self) -> None:
         """
@@ -1132,17 +1101,15 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # get current number of scenario but at least 0
-        number: int = len(self.list_ds)
-        # append new scenario to List of DataStorages
-        self.list_ds.append(DataStorage(self.gui_structure))
+        number: int = self.list_widget_scenario.count()
         # add new scenario name and item to list widget
         string = f"{self.translations.scenarioString[self.gui_structure.option_language.get_value()[0]]}: {number + 1}"
-        list_of_scenarios = [self.list_widget_scenario.item(x).text().split("*")[0] for x in range(self.list_widget_scenario.count())]
-        if string in list_of_scenarios:
+        if string in [self.list_widget_scenario.item(x).text().split("*")[0] for x in range(number)]:
             string += "(2)"
-        # set string in scenario widget
-        self.list_widget_scenario.addItem(string)
         # select new list item
+        item = QtW.QListWidgetItem(string)
+        item.setData(MainWindow.role, DataStorage(self.gui_structure))
+        self.list_widget_scenario.addItem(item)
         self.list_widget_scenario.setCurrentRow(number)
         # run change function to mark unsaved inputs
         self.change()
@@ -1177,7 +1144,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             # show message that calculation is finished
             globs.LOGGER.info(self.translations.Calculation_Finished[self.gui_structure.option_language.get_value()[0]])
 
-    def thread_function(self, results: tuple[DataStorage, int, CalcProblem]) -> None:
+    def thread_function(self, results: CalcProblem) -> None:
         """
         This function closes the thread of the old calculation and stores it results.
         It increments the number of calculated scenarios, and calls to update the progress bar.
@@ -1193,15 +1160,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # stop finished thread
-        results[2].terminate()
-
-        try:
-            self.list_ds[results[1]] = results[0]
-        except IndexError:
-            return
+        results.terminate()
 
         # count number of finished calculated scenarios
-        idx_list = [thread.idx for thread in self.threads]
+        item_list = [thread.item for thread in self.threads]
         open_threads = [thread for thread in self.threads if not thread.calculated]
         n_closed_threads = len(self.threads) - len(open_threads)
         # update progress bar
@@ -1214,7 +1176,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             return
         # display results
         self.check_buttons()
-        if self.list_widget_scenario.currentRow() in idx_list:
+        if self.list_widget_scenario.currentItem() in item_list:
             self.gui_structure.page_result.button.click()
 
     def start_multiple_scenarios_calculation(self) -> None:
@@ -1229,10 +1191,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if not self.check_values():
             return
         # add scenario if no list of scenarios exits else save current scenario
-        self.add_scenario() if not self.list_ds else self.save_scenario()
+        self.add_scenario() if self.list_widget_scenario.count() < 1 else self.save_scenario()
         # create list of threads with scenarios that have not been calculated
-        self.threads += [CalcProblem(DS, idx, data_2_results_function=self.data_2_results_function) for idx, DS in enumerate(self.list_ds) if DS.results is
-                         None]
+        self.threads += [CalcProblem(self.list_widget_scenario.item(idx).data(MainWindow.role), self.list_widget_scenario.item(idx),
+                         data_2_results_function=self.data_2_results_function) for idx in range(
+            self.list_widget_scenario.count()) if self.list_widget_scenario.item(idx).data(MainWindow.role).results is None]
         # set number of to calculate scenarios
         if len(self.threads) < 1:
             return
@@ -1263,18 +1226,16 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if not self.check_values():
             return
         # add scenario if no list of scenarios exits else save current scenario
-        self.add_scenario() if not self.list_ds else self.save_scenario() if self.list_widget_scenario.currentItem().text()[-1] == "*" else None
-
-        # get index of selected scenario
-        idx: int = self.list_widget_scenario.currentRow()
+        self.add_scenario() if self.list_widget_scenario.count() < 1 else self.save_scenario() if self.list_widget_scenario.currentItem().text()[-1] == "*" \
+            else None
         # get Datastorage of selected scenario
-        ds: DataStorage = self.list_ds[idx]
+        ds: DataStorage = self.list_widget_scenario.currentItem().data(MainWindow.role)
         # if calculation is already done just show results
         if ds.results is not None:
             self.gui_structure.page_result.button.click()
             return
         # create list of threads with calculation to be made
-        self.threads += [CalcProblem(ds, idx, data_2_results_function=self.data_2_results_function)]
+        self.threads += [CalcProblem(ds, self.list_widget_scenario.currentItem(), data_2_results_function=self.data_2_results_function)]
         # disable buttons and actions to avoid two calculation at once
         self.check_buttons()
         # update progress bar
@@ -1312,14 +1273,14 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             # make sure all the results are being shown
             self.gui_structure.cat_no_results.hide()
 
-        if not self.list_ds:
+        if self.list_widget_scenario.count() < 1:
             hide_no_result(True)
             return
 
         # get Datastorage of selected scenario
-        ds: DataStorage = self.list_ds[self.list_widget_scenario.currentRow()]
+        ds: DataStorage = self.list_widget_scenario.currentItem().data(MainWindow.role)
         # get results of selected scenario
-        results: ResultsClass = ds.results
+        results = ds.results
 
         # set debug message
         if ds.debug_message:
@@ -1327,7 +1288,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.gui_structure.text_no_result.set_text(str(ds.debug_message))
             return
 
-        # hide widgets if no results results exists and display not calculated text
+        # hide widgets if no results exists and display not calculated text
         if results is None:
             hide_no_result(True)
             return
@@ -1427,6 +1388,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # stop all calculation threads
         _ = [i.terminate() for i in self.threads]
         # close figures
-        _ = [d_s.close_figures() for d_s in self.list_ds]
+        _ = [self.list_widget_scenario.item(idx).data(MainWindow.role).close_figures() for idx in range(self.list_widget_scenario.count())]
         # close window if close variable is true else not
         event.accept() if close else event.ignore()

@@ -11,6 +11,7 @@ import PySide6.QtCore as QtC
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
     from functools import partial
+    import PySide6.QtWidgets as QtW
 
     from .gui_data_storage import DataStorage
 
@@ -21,11 +22,12 @@ class CalcProblem(QtC.QThread):
     """
 
     any_signal = QtC.Signal(tuple)
+    role: int = 1
 
     def __init__(
         self,
         d_s: DataStorage,
-        idx: int,
+        item: QtW.QListWidgetItem,
         parent=None,
         *,
         data_2_results_function: Callable[
@@ -50,7 +52,7 @@ class CalcProblem(QtC.QThread):
         super().__init__(parent)  # init parent class
         # set datastorage and index
         self.d_s = d_s
-        self.idx = idx
+        self.item = item
         self.data_2_results_function = data_2_results_function
         self.calculated = False
 
@@ -75,7 +77,8 @@ class CalcProblem(QtC.QThread):
             self.d_s.results = None
             self.calculated = True
             # return Datastorage as signal
-            self.any_signal.emit((self.d_s, self.idx, self))
+            self.item.setData(CalcProblem.role, self.d_s)
+            self.any_signal.emit(self)
             return
 
         # set debug message to ""
@@ -84,6 +87,7 @@ class CalcProblem(QtC.QThread):
         # save borefield in Datastorage
         self.d_s.results = results
         self.calculated = True
+        self.item.setData(CalcProblem.role, self.d_s)
         # return Datastorage as signal
-        self.any_signal.emit((self.d_s, self.idx, self))
+        self.any_signal.emit(self)
         return
