@@ -23,7 +23,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .hint import Hint
 
 
-class SpinBox(QtW.QSpinBox):
+class SpinBox(QtW.QSpinBox):  # pragma: no cover
     def wheelEvent(self, event: QtG.QWheelEvent):
         if self.hasFocus():
             super().wheelEvent(event)

@@ -24,7 +24,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .hint import Hint
 
 
-class ComboBox(QtW.QComboBox):
+class ComboBox(QtW.QComboBox):  # pragma: no cover
     def wheelEvent(self, event: QtG.QWheelEvent):
         if self.hasFocus():
             super().wheelEvent(event)
