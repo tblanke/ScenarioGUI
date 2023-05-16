@@ -1,5 +1,6 @@
 import numpy as np
 import PySide6.QtWidgets as QtW
+import PySide6.QtGui as QtG
 
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
@@ -22,6 +23,8 @@ def test_float_box(qtbot):
     main_window.delete_backup()
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     float_b = main_window.gui_structure.float_b
+    #qtbot.
+    #float_b.widget.wheelEvent(QtG.QWheelEvent())
     assert np.isclose(float_b.get_value(), float_b.default_value)
     float_b.set_value(float_b.default_value + 50)
     assert np.isclose(float_b.default_value + 50, float_b.get_value())
