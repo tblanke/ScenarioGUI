@@ -4,11 +4,13 @@ from math import log10
 from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW
+import PySide6.QtCore as QtC
 
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.utils import change_font_size, set_default_font
 
 from .float_box import FloatBox
+from .list_box import ComboBox
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -72,7 +74,7 @@ class FloatBoxWithUnits(FloatBox):
         super().__init__(label=label, default_value=default_value, category=category, maximal_value=maximal_value, minimal_value=minimal_value, step=step,
                          decimal_number=decimal_number)
         self.units: list[tuple[str, float]] = [] if units is None else units
-        self.unit_widget = QtW.QComboBox(self.default_parent)
+        self.unit_widget: ComboBox = ComboBox(self.default_parent)
 
     def activate_scale_decimals(self) -> None:
         """
@@ -260,6 +262,7 @@ class FloatBoxWithUnits(FloatBox):
             f"QComboBox QAbstractItemView::item:selected{'{'}color: {globs.WHITE};background-color: {globs.LIGHT_SELECT};{'}'}"
         )
         self.unit_widget.setMinimumHeight(self.widget.minimumHeight())
+        self.unit_widget.setFocusPolicy(QtC.Qt.FocusPolicy.StrongFocus)
         set_default_font(self.unit_widget)
 
 

@@ -16,10 +16,19 @@ from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
+    import PySide6.QtGui as QtG
 
     from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
+
+
+class SpinBox(QtW.QSpinBox):  # pragma: no cover
+    def wheelEvent(self, event: QtG.QWheelEvent):
+        if self.hasFocus():
+            super().wheelEvent(event)
+            return
+        self.parent().wheelEvent(event)
 
 
 class IntBox(Option):
@@ -74,7 +83,7 @@ class IntBox(Option):
         self.minimal_value: int = minimal_value
         self.maximal_value: int = maximal_value
         self.step: int = step
-        self.widget: QtW.QSpinBox = QtW.QSpinBox(self.default_parent)
+        self.widget: SpinBox = SpinBox(self.default_parent)
 
     def get_value(self) -> int:
         """
@@ -267,6 +276,7 @@ class IntBox(Option):
         self.widget.setMaximumWidth(100)
         self.widget.setMinimumWidth(100)
         self.widget.setMinimumHeight(28)
+        self.widget.setFocusPolicy(QtC.Qt.FocusPolicy.StrongFocus)
         set_default_font(self.widget)
         if row is not None and isinstance(layout_parent, QtW.QGridLayout):
             layout_parent.addWidget(self.widget, column, row)

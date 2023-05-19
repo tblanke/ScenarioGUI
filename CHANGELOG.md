@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Scenario buttons not resizing (issue 42)
 - Drag scenario 2 to the place of scenario 3 do work know (issue 50)
 - Scenario changing without change (issue 50)
+- The scrolling in IntBoxes, FloatBoxes and ComboBoxes is disables and just working if they are selected (issue 54)
 
 ### Changed
 - list_ds in MainWindow removed and replaced by QListWidget data
