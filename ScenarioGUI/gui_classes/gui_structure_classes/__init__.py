@@ -23,6 +23,7 @@ from .result_export import ResultExport
 from .result_figure import ResultFigure
 from .result_text import ResultText
 from .text_box import TextBox
+from .text_box_multi_line import TextBoxMultiLine
 
 __all__ = [
     "Aim",
@@ -44,4 +45,5 @@ __all__ = [
     "ResultExport",
     "TextBox",
     "FlexibleAmount",
+    "TextBoxMultiLine"
 ]
