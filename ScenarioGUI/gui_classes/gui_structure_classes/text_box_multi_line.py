@@ -41,20 +41,18 @@ class TextBoxMultiLine(Option):
             The default value of the TextBox
         category : Category
             Category in which the FloatBox should be placed
-        password : bool
-            True if the TextBox should be a passowrd field with no visible letters
         wrong_value : str
             Value on which the textBox is wrong
 
         Examples
         --------
-        >>> option_text = TextBox(label='Text label text',  # or self.translations.option_text if option_text is in Translation class
-        >>>                       default_text="example text",
+        >>> option_text = TextBoxMultiLine(label='Example Multiple Line',  # or self.translations.option_text if option_text is in Translation class
+        >>>                       default_text="Hello \nmulti line",
         >>>                       category=category_example)
 
         Gives:
 
-        .. figure:: _static/Example_Text_Box.PNG
+        .. figure:: _static/Example_mulitple_line_text.PNG
 
         """
         super().__init__(label, default_text, category)
