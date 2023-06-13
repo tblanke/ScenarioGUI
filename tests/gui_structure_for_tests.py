@@ -92,6 +92,7 @@ class GUI(GuiStructure):
         )
 
         self.text_box = TextBox(label="Login", default_text="Example text 15", category=self.category_inputs)
+        self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)
         
         self.flex_option = FlexibleAmount(label="layers", default_length=2, entry_mame="Layer", category=self.category_inputs)
         self.flex_option.add_option(TextBox, name="name", default_text="layer")
@@ -138,6 +139,8 @@ class GUI(GuiStructure):
             category=self.category_grid,
         )
         self.text_box_small = TextBox(label="", default_text="Example text 15", category=self.category_grid, password=True)
+
+        self.text_box_multi_line_small  = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_grid)
         self.category_grid.activate_graphic_left()
         self.category_grid.activate_graphic_right()
 
