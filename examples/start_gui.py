@@ -133,7 +133,7 @@ class GUI(GuiStructure):
         self.function_button = els.FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
 
         self.text_box = els.TextBox(label="Login", default_text="Hello", category=self.category_inputs)
-        self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello multi line", category=self.category_inputs)
+        self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)
         self.text_box.deactivate_size_limit()
         self.pass_word = els.TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
         

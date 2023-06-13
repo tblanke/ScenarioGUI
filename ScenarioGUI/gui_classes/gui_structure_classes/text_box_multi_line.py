@@ -29,7 +29,6 @@ class TextBoxMultiLine(Option):
         default_text: str,
         category: Category,
         *,
-        password: bool = False,
         wrong_value: str = ""
     ):
         """
@@ -59,7 +58,6 @@ class TextBoxMultiLine(Option):
 
         """
         super().__init__(label, default_text, category)
-        self.password: bool = password
         self.wrong_value: str = wrong_value
         self.widget: QtW.QTextEdit = QtW.QTextEdit(self.default_parent)
 
@@ -181,8 +179,6 @@ class TextBoxMultiLine(Option):
         self.widget.setAlignment(QtC.Qt.AlignmentFlag.AlignRight)
         self.widget.setProperty("showGroupSeparator", True)
         self.widget.setText(self.default_value)
-        if self.password:
-            self.widget.setEchoMode(QtW.QLineEdit.Password)
         if self.limit_size:
             self.widget.setMaximumWidth(500)
             self.widget.setMinimumWidth(150)
