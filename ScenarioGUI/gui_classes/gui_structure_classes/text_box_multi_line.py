@@ -47,7 +47,7 @@ class TextBoxMultiLine(Option):
         Examples
         --------
         >>> option_text = TextBoxMultiLine(label='Example Multiple Line',  # or self.translations.option_text if option_text is in Translation class
-        >>>                       default_text="Hello \nmulti line",
+        >>>                       default_text='Hello multi line',
         >>>                       category=category_example)
 
         Gives:
