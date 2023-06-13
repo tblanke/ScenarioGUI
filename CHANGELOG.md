@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.3.0] - expected: may 2023
 
+### Added
+- Multiline text box (issue 56)
+
 ### Fixed
 - Scenario buttons not resizing (issue 42)
 - Drag scenario 2 to the place of scenario 3 do work know (issue 50)
