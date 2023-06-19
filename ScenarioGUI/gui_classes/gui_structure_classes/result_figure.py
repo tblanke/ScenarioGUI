@@ -4,14 +4,17 @@ result figure class script
 from __future__ import annotations
 
 import copy
+import os
 from typing import TYPE_CHECKING, Optional
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends import qt_compat
 
 import ScenarioGUI.global_settings as globs
 
@@ -20,6 +23,45 @@ from .category import Category
 
 if TYPE_CHECKING:  # pragma: no cover
     from .page import Page
+
+
+# overwrite navigationToolbar
+class NavigationToolbarScenarioGUI(NavigationToolbar):
+
+    def save_figure(self, *args):
+        filetypes = self.canvas.get_supported_filetypes_grouped()
+        sorted_filetypes = sorted(filetypes.items())
+        default_filetype = self.canvas.get_default_filetype()
+
+        startpath = os.path.expanduser(mpl.rcParams['savefig.directory'])
+        start = os.path.join(startpath, self.canvas.get_default_filename())
+        filters = []
+        selectedFilter = None
+        for name, exts in sorted_filetypes:
+            exts_list = " ".join(['*.%s' % ext for ext in exts])
+            filter = '%s (%s)' % (name, exts_list)
+            if default_filetype in exts:
+                selectedFilter = filter
+            filters.append(filter)
+        filters = ';;'.join(filters)
+
+        fname, filter = qt_compat._getSaveFileName(
+            self.canvas.parent(), "Choose a filename to save to", start,
+            filters, selectedFilter)
+        if fname:
+            # Save dir for next time, unless empty str (i.e., use cwd).
+            if startpath != "":
+                mpl.rcParams['savefig.directory'] = os.path.dirname(fname)
+            try:
+                temp = copy.copy(self.canvas.figure)
+                globs.set_print_layout(self.canvas.a_x)
+                temp.set_facecolor('white')
+                temp.savefig(fname)
+            except Exception as e:
+                qt_compat.QtWidgets.QMessageBox.critical(
+                    self, "Error saving file", str(e),
+                    qt_compat._enum("QtWidgets.QMessageBox.StandardButton").Ok,
+                    qt_compat._enum("QtWidgets.QMessageBox.StandardButton").NoButton)
 
 
 class ResultFigure(Category):
@@ -59,8 +101,9 @@ class ResultFigure(Category):
         self.fig: plt.Figure = plt.figure()
         self.a_x: plt.Axes | None = self.fig.add_subplot(111)
         self.canvas: FigureCanvas = FigureCanvas(self.fig)
+        self.canvas.a_x = self.a_x
         # create navigation toolbar and replace icons with white ones
-        self.toolbar: NavigationToolbar = NavigationToolbar(self.canvas, None, True)
+        self.toolbar: NavigationToolbar = NavigationToolbarScenarioGUI(self.canvas, None, True)
         for name, icon_name in [
             ("save_figure", "Save_Inv"),
             ("home", "Home"),
@@ -111,7 +154,7 @@ class ResultFigure(Category):
         self.toolbar.hide()
         canvas = FigureCanvas(self.fig)
         # create navigation toolbar and replace icons with white ones
-        toolbar: NavigationToolbar = NavigationToolbar(canvas, self.frame_canvas, True)
+        toolbar: NavigationToolbar = NavigationToolbarScenarioGUI(canvas, self.frame_canvas, True)
         for name, icon_name in [
             ("save_figure", "Save_Inv"),
             ("home", "Home"),
@@ -135,6 +178,7 @@ class ResultFigure(Category):
         self.layout_frame_canvas.replaceWidget(self.toolbar, toolbar)
 
         self.canvas = canvas
+        self.canvas.a_x = self.a_x
         self.canvas.mpl_connect("scroll_event", self.scrolling)
         self.toolbar = toolbar
 
