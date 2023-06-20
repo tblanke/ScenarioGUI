@@ -31,7 +31,6 @@ class BaseUI:
     menu_file: QtW.QMenu
     push_button_start_multiple: QtW.QPushButton
     push_button_start_single: QtW.QPushButton
-    horizontal_spacer_start_buttons: QtW.QSpacerItem
     progress_bar: QtW.QProgressBar
     horizontal_layout_start_buttons: QtW.QHBoxLayout
     label_status: QtW.QLabel
@@ -331,14 +330,8 @@ class BaseUI:
         self.horizontal_layout_start_buttons.setObjectName("horizontalLayout_2")
 
         self.status_bar = StatusBar(ghe_tool)
-        self.status_bar.widget.setObjectName("status_bar")
-        self.status_bar.widget.setStyleSheet(f"QStatusBar::item{'{'}border:None;{'}'}QStatusBar{'{'}color:{globs.WHITE};background-color: {globs.DARK};{'}'}")
-        self.horizontal_layout_start_buttons.addWidget(self.status_bar.widget)
+        self.horizontal_layout_start_buttons.addWidget(self.status_bar.label)
         globs.LOGGER.addHandler(self.status_bar)
-
-        self.horizontal_spacer_start_buttons = QtW.QSpacerItem(40, 20, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
-
-        self.horizontal_layout_start_buttons.addItem(self.horizontal_spacer_start_buttons)
 
         self.push_button_start_single = QtW.QPushButton(self.central_widget)
         self.push_button_start_single.setObjectName("pushButton_start_single")
@@ -486,7 +479,7 @@ class BaseUI:
         set_default_font(self.menu_language)
         set_default_font(self.menubar)
         set_default_font(self.list_widget_scenario)
-        set_default_font(self.status_bar.widget)
+        set_default_font(self.status_bar.label)
 
         self.stacked_widget.setCurrentIndex(0)
         QtC.QMetaObject.connectSlotsByName(ghe_tool)
