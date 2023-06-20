@@ -74,7 +74,7 @@ def set_graph_layout() -> None:
 
     plt.rc("figure")
     plt.rc("axes", edgecolor=white_color)
-    plt.rcParams["figure.facecolor"] = background_color
+    plt.rcParams["figure.facecolor"] = "none"# None#background_color
 
 
 def set_print_layout(ax) -> None:

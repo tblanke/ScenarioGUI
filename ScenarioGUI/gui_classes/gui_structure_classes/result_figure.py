@@ -103,7 +103,7 @@ class ResultFigure(Category):
         self.canvas: FigureCanvas = FigureCanvas(self.fig)
         self.canvas.a_x = self.a_x
         # create navigation toolbar and replace icons with white ones
-        self.toolbar: NavigationToolbar = NavigationToolbarScenarioGUI(self.canvas, None, True)
+        self.toolbar: NavigationToolbar = NavigationToolbar(self.canvas, None, True)
         for name, icon_name in [
             ("save_figure", "Save_Inv"),
             ("home", "Home"),
@@ -154,7 +154,7 @@ class ResultFigure(Category):
         self.toolbar.hide()
         canvas = FigureCanvas(self.fig)
         # create navigation toolbar and replace icons with white ones
-        toolbar: NavigationToolbar = NavigationToolbarScenarioGUI(canvas, self.frame_canvas, True)
+        toolbar: NavigationToolbar = NavigationToolbar(canvas, self.frame_canvas, True)
         for name, icon_name in [
             ("save_figure", "Save_Inv"),
             ("home", "Home"),
