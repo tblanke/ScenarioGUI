@@ -287,7 +287,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         change_font_size(self.menu_language, size)
         change_font_size(self.menubar, size)
         change_font_size(self.list_widget_scenario, size)
-        change_font_size(self.status_bar.widget, size)
+        change_font_size(self.status_bar.label, size)
         change_font_size(self.progress_bar, size)
         change_font_size(self.label_status, size)
         self.remove_previous_calculated_results()

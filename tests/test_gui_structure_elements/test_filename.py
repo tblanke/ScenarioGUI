@@ -35,7 +35,7 @@ def test_filename_read(qtbot) -> None:
 
     QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=("", ""))
     main_window.gui_structure.filename.button.click()
-    assert main_window.status_bar.widget.currentMessage() == main_window.gui_structure.filename.error_text
+    assert main_window.status_bar.label.text() == main_window.gui_structure.filename.error_text
     # check file import and calculation
 
     QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=(f"{main_window.default_path.joinpath(file)}", "csv (*.csv"))

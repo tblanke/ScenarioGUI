@@ -113,5 +113,5 @@ def test_save_load_new(qtbot):
     assert len(main_window.list_ds) < 1
     main_window.filename = ("filename_1", filename_1)
     main_window.fun_load_known_filename()
-    assert main_window.status_bar.widget.currentMessage() == main_window.translations.no_file_selected[0]
+    assert main_window.status_bar.label.text() == main_window.translations.no_file_selected[0]
     main_window.delete_backup()

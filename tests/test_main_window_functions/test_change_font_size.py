@@ -37,7 +37,7 @@ def test_change_font_size(qtbot):
     check_font_size(main_window.push_button_delete_scenario, 8)
     check_font_size(main_window.push_button_save_scenario, 8)
     check_font_size(main_window.button_rename_scenario, 8)
-    check_font_size(main_window.status_bar.widget, 8)
+    check_font_size(main_window.status_bar.label, 8)
     check_font_size(main_window.menu_settings, 8)
     check_font_size(main_window.menubar, 8)
     check_font_size(main_window.menu_scenario, 8)
