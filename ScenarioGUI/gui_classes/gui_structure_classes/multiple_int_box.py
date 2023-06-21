@@ -15,10 +15,10 @@ from .int_box import SpinBox
 
 from ...utils import set_default_font
 from .option import Option
+from collections.abc import Iterable
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
-    from typing import Iterable
 
     from .category import Category
     from .function_button import FunctionButton
@@ -74,9 +74,9 @@ class MultipleIntBox(Option):
 
         """
         super().__init__(label, default_value, category)
-        self.minimal_value: list[int] = [minimal_value for _ in default_value] if not isinstance(minimal_value, list) else minimal_value
-        self.maximal_value: list[int] = [maximal_value for _ in default_value] if not isinstance(maximal_value, list) else maximal_value
-        self.step: list[int] = [step for _ in default_value] if not isinstance(step, list) else step
+        self.minimal_value: list[int] = [minimal_value for _ in default_value] if not isinstance(minimal_value, Iterable) else minimal_value
+        self.maximal_value: list[int] = [maximal_value for _ in default_value] if not isinstance(maximal_value, Iterable) else maximal_value
+        self.step: list[int] = [step for _ in default_value] if not isinstance(step, Iterable) else step
         self.widget: list[SpinBox] = [SpinBox(self.default_parent) for _ in default_value]
 
     def get_value(self) -> tuple[int]:
@@ -127,7 +127,7 @@ class MultipleIntBox(Option):
         bool
             True if the value is between the minimal and maximal value
         """
-        return np.any(np.less_equal(self.minimal_value, self.get_value())) and np.any(np.less(self.get_value(), self.maximal_value))
+        return np.any(np.less_equal(self.minimal_value, self.get_value())) and np.any(np.less_equal(self.get_value(), self.maximal_value))
 
     def check_linked_value(self, value: tuple[Iterable[int] | None, Iterable[int] | None]) -> bool:
         """

@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - Multiline text box (issue 56)
 - Multiple int entry box
+- Font list box
+- Possibility to change figure style (issue 58) 
 
 ### Fixed
 - Scenario buttons not resizing (issue 42)

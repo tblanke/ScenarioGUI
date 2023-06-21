@@ -74,26 +74,5 @@ def set_graph_layout() -> None:
 
     plt.rc("figure")
     plt.rc("axes", edgecolor=white_color)
-    plt.rcParams["figure.facecolor"] = "none"# None#background_color
-
-
-def set_print_layout(ax) -> None:
-    """
-    This function sets the graph layout to the correct format when it is saved.
-
-    Returns
-    -------
-    None
-    """
-
-    ax.spines['bottom'].set_color('black')
-    ax.spines['top'].set_color('black')
-    ax.spines['right'].set_color('black')
-    ax.spines['left'].set_color('black')
-
-    ax.tick_params(axis='x', colors='black')
-    ax.tick_params(axis='y', colors='black')
-
-    ax.xaxis.label.set_color('black')
-    ax.yaxis.label.set_color('black')
+    plt.rcParams["figure.facecolor"] = "none"
 

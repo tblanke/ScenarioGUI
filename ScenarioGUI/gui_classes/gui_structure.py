@@ -6,6 +6,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import numpy as np
+
 from ScenarioGUI import global_settings as globs
 from ScenarioGUI.gui_classes.gui_structure_classes import (
     Aim,
@@ -19,8 +21,10 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     Page,
     ResultExport,
     ResultFigure,
-    ResultText,
+    ResultText, MultipleIntBox,
 )
+from ScenarioGUI.gui_classes.gui_structure_classes.font_list_box import FontListBox
+from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import font_list
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
@@ -128,6 +132,45 @@ class GuiStructure:
             hint=self.translations.hint_saving,
         )
 
+        self.category_default_figure_settings = Category(label="Default figure settings", page=self.page_settings)
+
+        self.option_figure_background = MultipleIntBox(label="Figure background color in rgb code?", default_value=np.array(
+            globs.DARK.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self.category_default_figure_settings,
+                                                       minimal_value=0,
+                                                       maximal_value=255, step=1)
+        self.option_plot_background = MultipleIntBox(label="Plot background color in rgb code?", default_value=np.array(
+            globs.WHITE.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self.category_default_figure_settings,
+                                                     minimal_value=0,
+                                                     maximal_value=255, step=1)
+        self.option_axes_text = MultipleIntBox(label="Axes text color in rgb code?", default_value=np.array(
+            globs.WHITE.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self.category_default_figure_settings,
+                                               minimal_value=0,
+                                               maximal_value=255, step=1)
+        self.option_axes = MultipleIntBox(label="Axes color in rgb code?", default_value=np.array(
+            globs.WHITE.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self.category_default_figure_settings,
+                                          minimal_value=0,
+                                          maximal_value=255, step=1)
+        self.option_title = MultipleIntBox(label="Title color in rgb code?", default_value=np.array(
+            globs.WHITE.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self.category_default_figure_settings,
+                                           minimal_value=0,
+                                           maximal_value=255, step=1)
+        self.option_legend_text = MultipleIntBox(label="Legend text color in rgb code?", default_value=np.array(
+            globs.DARK.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self.category_default_figure_settings,
+                                                 minimal_value=0,
+                                                 maximal_value=255, step=1)
+        self.option_font_size_figure = IntBox(label="Font Size:", default_value=globs.FONT_SIZE, minimal_value=6, maximal_value=40,
+                                       category=self.category_default_figure_settings)
+        self.option_font = FontListBox(label="Font family: ", category=self.category_default_figure_settings, entries=[font.get_name() for font in font_list],
+                                       default_index=[font.get_name().upper() for font in font_list].index(globs.FONT.upper()))
+        self.option_figure_background.change_event(self.change_figure_background_color)
+        self.option_plot_background.change_event(self.change_plot_background_color)
+        self.option_axes_text.change_event(self.change_axes_text)
+        self.option_axes.change_event(self.change_axes)
+        self.option_font.change_event(self.change_font)
+        self.option_font_size_figure.change_event(self.change_font_size)
+        self.option_legend_text.change_event(self.change_legend_color)
+        self.option_title.change_event(self.change_title)
+
     def create_lists(self):
         """
         creates the lists with the different elements
@@ -143,6 +186,7 @@ class GuiStructure:
         self.list_of_result_figures: list[tuple[ResultFigure, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultFigure)
         ]
+        self.category_default_figure_settings.hide() if not self.list_of_result_figures else self.category_default_figure_settings.show()
         self.list_of_result_exports: list[tuple[ResultExport, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultExport)
         ]
@@ -163,6 +207,38 @@ class GuiStructure:
         _ = [aim.set_font_size(size) for aim, _ in self.list_of_aims]
         _ = [item.set_font_size(size) for item in self.list_of_rest]
         _ = [page.set_font_size(size) for page in self.list_of_pages]
+
+    def change_figure_background_color(self):
+        for fig, _ in self.list_of_result_figures:
+            fig.option_figure_background.set_value(self.option_figure_background.get_value())
+
+    def change_plot_background_color(self):
+        for fig, _ in self.list_of_result_figures:
+            fig.option_plot_background.set_value(self.option_plot_background.get_value())
+
+    def change_font_size(self):
+        for fig, _ in self.list_of_result_figures:
+            fig.option_font_size.set_value(self.option_font_size_figure.get_value())
+
+    def change_font(self):
+        for fig, _ in self.list_of_result_figures:
+            fig.option_font.set_value(self.option_font.get_value())
+
+    def change_legend_color(self):
+        for fig, _ in self.list_of_result_figures:
+            fig.option_legend_text.set_value(self.option_legend_text.get_value())
+
+    def change_axes(self):
+        for fig, _ in self.list_of_result_figures:
+            fig.option_axes.set_value(self.option_axes.get_value())
+
+    def change_axes_text(self):
+        for fig, _ in self.list_of_result_figures:
+            fig.option_axes_text.set_value(self.option_axes_text.get_value())
+
+    def change_title(self):
+        for fig, _ in self.list_of_result_figures:
+            fig.option_title.set_value(self.option_title.get_value())
 
     def change_toggle_button(self) -> None:
         """

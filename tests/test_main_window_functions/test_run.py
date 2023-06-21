@@ -76,6 +76,9 @@ def test_run(qtbot):
     main_window.list_widget_scenario.setCurrentItem(item)
     main_window.display_results()
     main_window.gui_structure.legend_figure_results.set_value(("", 1))
+    main_window.gui_structure.figure_results.change_font()
+    main_window.gui_structure.figure_results.a_x.set_title(None)
+    main_window.gui_structure.figure_results.change_title_color()
 
     main_window.remove_previous_calculated_results()
     # test value error results

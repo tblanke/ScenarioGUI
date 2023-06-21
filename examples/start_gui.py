@@ -199,6 +199,7 @@ class GUI(GuiStructure):
 
         self.result_export = els.ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
                                           caption="Select file", file_extension="txt")
+        self.multiple_int = els.MultipleIntBox(label="test multiple int", category=self.category_inputs, default_value=(1,2,3))
 
         self.figure_results = els.ResultFigure(label=self.translations.figure_results, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
         self.legend_figure_results = els.FigureOption(

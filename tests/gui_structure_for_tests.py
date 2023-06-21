@@ -93,7 +93,7 @@ class GUI(GuiStructure):
 
         self.text_box = TextBox(label="Login", default_text="Example text 15", category=self.category_inputs)
         self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)
-        
+
         self.flex_option = FlexibleAmount(label="layers", default_length=2, entry_mame="Layer", category=self.category_inputs)
         self.flex_option.add_option(TextBox, name="name", default_text="layer")
         self.flex_option.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5)
@@ -101,6 +101,9 @@ class GUI(GuiStructure):
         self.flex_option.add_option(ListBox, name="amount", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
         self.hint_flex = Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
         self.flex_option.add_link_2_show(self.hint_flex, 4, 12)
+
+        self.multiple_ints = els.MultipleIntBox(label="Multiple int box:", category=self.category_inputs, default_value=(1, 2, 3), minimal_value=(1, 1, 1),
+                                                maximal_value=(100, 110, 120))
 
         self.category_grid = Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
@@ -139,8 +142,12 @@ class GUI(GuiStructure):
             category=self.category_grid,
         )
         self.text_box_small = TextBox(label="", default_text="Example text 15", category=self.category_grid, password=True)
+        self.font_style = els.FontListBox(label="Font label", category=self.category_grid, entries=["Arial", "Verdana"], default_index=0)
+        self.multiple_ints_small = els.MultipleIntBox(label="Multiple int box:", category=self.category_grid, default_value=(1, 2, 3), minimal_value=(1, 1,
+                                                                                                                                                        1),
+                                                maximal_value=(100, 110, 120))
 
-        self.text_box_multi_line_small  = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_grid)
+        self.text_box_multi_line_small = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_grid)
         self.category_grid.activate_graphic_left()
         self.category_grid.activate_graphic_right()
 

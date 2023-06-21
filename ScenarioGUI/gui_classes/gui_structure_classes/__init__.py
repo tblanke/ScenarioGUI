@@ -24,6 +24,8 @@ from .result_figure import ResultFigure
 from .result_text import ResultText
 from .text_box import TextBox
 from .text_box_multi_line import TextBoxMultiLine
+from .multiple_int_box import MultipleIntBox
+from .font_list_box import FontListBox
 
 __all__ = [
     "Aim",
@@ -33,11 +35,13 @@ __all__ = [
     "FileNameBox",
     "FloatBox",
     "FloatBoxWithUnits",
+    "FontListBox",
     "FunctionButton",
     "Hint",
     "IntBox",
     "IntBoxWithUnits",
     "ListBox",
+    "MultipleIntBox",
     "Option",
     "Page",
     "ResultFigure",
