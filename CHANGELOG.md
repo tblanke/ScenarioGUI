@@ -7,12 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Multiline text box (issue 56)
+- Multiple int entry box
 
 ### Fixed
 - Scenario buttons not resizing (issue 42)
 - Drag scenario 2 to the place of scenario 3 do work know (issue 50)
 - Scenario changing without change (issue 50)
 - The scrolling in IntBoxes, FloatBoxes and ComboBoxes is disables and just working if they are selected (issue 54)
+- The error messages are now completely visible (issue 59)
 
 ### Changed
 - list_ds in MainWindow removed and replaced by QListWidget data

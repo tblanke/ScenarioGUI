@@ -8,30 +8,24 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
+import numpy as np
 
 import ScenarioGUI.global_settings as globs
+from .int_box import SpinBox
 
 from ...utils import set_default_font
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
-    import PySide6.QtGui as QtG
+    from typing import Iterable
 
     from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
 
 
-class SpinBox(QtW.QSpinBox):  # pragma: no cover
-    def wheelEvent(self, event: QtG.QWheelEvent):
-        if self.hasFocus():
-            super().wheelEvent(event)
-            return
-        self.parent().wheelEvent(event)
-
-
-class IntBox(Option):
+class MultipleIntBox(Option):
     """
     This class contains all the functionalities of the IntBox (integer box) option in the GUI.
     The IntBox can be used to input integer numbers.
@@ -40,12 +34,12 @@ class IntBox(Option):
     def __init__(
         self,
         label: str | list[str],
-        default_value: int,
+        default_value: Iterable[int],
         category: Category,
         *,
-        minimal_value: int = 0,
-        maximal_value: int = 100,
-        step: int = 1,
+        minimal_value: Iterable[int] | int = 0,
+        maximal_value: Iterable[int] | int = 100,
+        step: Iterable[int] | int = 1,
     ):
         """
 
@@ -53,26 +47,26 @@ class IntBox(Option):
         ----------
         label : str | List[str]
             The label of the IntBox
-        default_value : int
+        default_value : Iterable[int]
             The default value of the IntBox
         category : Category
             Category in which the IntBox should be placed
-        minimal_value : int
+        minimal_value : Iterable[int] | int
             Minimal value of the IntBox
-        maximal_value : int
+        maximal_value : Iterable[int] | int
             Maximal value of the IntBox
-        step : int
+        step : Iterable[int] | int
             The step by which the value of the IntBox should change when the
             increase or decrease buttons are pressed.
 
         Examples
         --------
-        >>> option_int = IntBox(label="Int label text",  # or self.translations.hint_example if hint_example is in Translation class
-        >>>                     default_value=2,
-        >>>                     category=category_example,
-        >>>                     minimal_value=0,
-        >>>                     maximal_value=12,
-        >>>                     step=2)
+        >>> option_int = MultipleIntBox(label="Int label text",  # or self.translations.option_int if option_int is in Translation class
+        >>>                             default_value=(1,2,3),
+        >>>                             category=category_example,
+        >>>                             minimal_value=0,
+        >>>                             maximal_value=(12,11,10),
+        >>>                             step=2)
 
         Gives:
 
@@ -80,36 +74,36 @@ class IntBox(Option):
 
         """
         super().__init__(label, default_value, category)
-        self.minimal_value: int = minimal_value
-        self.maximal_value: int = maximal_value
-        self.step: int = step
-        self.widget: SpinBox = SpinBox(self.default_parent)
+        self.minimal_value: list[int] = [minimal_value for _ in default_value] if not isinstance(minimal_value, list) else minimal_value
+        self.maximal_value: list[int] = [maximal_value for _ in default_value] if not isinstance(maximal_value, list) else maximal_value
+        self.step: list[int] = [step for _ in default_value] if not isinstance(step, list) else step
+        self.widget: list[SpinBox] = [SpinBox(self.default_parent) for _ in default_value]
 
-    def get_value(self) -> int:
+    def get_value(self) -> tuple[int]:
         """
         This function gets the value of the IntBox.
 
         Returns
         -------
-        int
+        tuple[int]
             Value of the IntBox
         """
-        return self.widget.value()
+        return tuple(widget.value() for widget in self.widget)
 
-    def set_value(self, value: int) -> None:
+    def set_value(self, value: list[int] | tuple[int]) -> None:
         """
         This function sets the value of the IntBox.
 
         Parameters
         ----------
-        value : int
+        value : list[int]
             Value to which the IntBox should be set.
 
         Returns
         -------
         None
         """
-        self.widget.setValue(value)
+        _ = [widget.setValue(val) for widget, val in zip(self.widget, value)]
 
     def _init_links(self) -> None:
         """
@@ -119,7 +113,7 @@ class IntBox(Option):
         -------
         None
         """
-        current_value: int = self.get_value()
+        current_value: tuple[int] = self.get_value()
         self.set_value(self.maximal_value if current_value == self.minimal_value else self.minimal_value)
         self.set_value(current_value)
 
@@ -133,9 +127,9 @@ class IntBox(Option):
         bool
             True if the value is between the minimal and maximal value
         """
-        return self.minimal_value <= self.get_value() <= self.maximal_value
+        return np.any(np.less_equal(self.minimal_value, self.get_value())) and np.any(np.less(self.get_value(), self.maximal_value))
 
-    def check_linked_value(self, value: tuple[int | None, int | None]) -> bool:
+    def check_linked_value(self, value: tuple[Iterable[int] | None, Iterable[int] | None]) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
@@ -150,9 +144,9 @@ class IntBox(Option):
             True if the linked "option" should be shown
         """
         below, above = value
-        if below is not None and self.get_value() < below:
+        if below is not None and np.any(np.less(self.get_value(), below)):
             return True
-        if above is not None and self.get_value() > above:
+        if above is not None and np.any(np.greater(self.get_value(), above)):
             return True
         return False
 
@@ -160,8 +154,8 @@ class IntBox(Option):
         self,
         option: Option | Category | FunctionButton | Hint,
         *,
-        below: int = None,
-        above: int = None,
+        below: Iterable[int] | None = None,
+        above: Iterable[int] | None = None,
     ):
         """
         This function couples the visibility of an option to the value of the IntBox object.
@@ -170,9 +164,9 @@ class IntBox(Option):
         ----------
         option : Option, Category, FunctionButton, Hint
             Option which visibility should be linked to the value of the IntBox.
-        below : int
+        below : Iterable[int]
             Lower threshold of the FloatBox value below which the linked option will be hidden
-        above : int
+        above : Iterable[int]
             Higher threshold of the FloatBox value above which the linked option will be hidden
 
         Returns
@@ -191,8 +185,8 @@ class IntBox(Option):
     def show_option(
         self,
         option: Option | Category | FunctionButton | Hint,
-        below: int | None,
-        above: int | None,
+        below: Iterable[int] | None,
+        above: Iterable[int] | None,
         args=None,
     ):
         """
@@ -204,18 +198,18 @@ class IntBox(Option):
         ----------
         option : Option, Category, FunctionButton, Hint
             Option to be shown or hidden
-        below : int (optional)
+        below : Iterable[int] (optional)
             Lower threshold of the IntBox value below which the linked option will be hidden
-        above : int (optional)
+        above : Iterable[int] (optional)
             Higher threshold of the IntBox value above which the linked option will be hidden
 
         Returns
         -------
         None
         """
-        if below is not None and self.get_value() < below:
+        if below is not None and np.any(np.less(self.get_value(), below)):
             return option.show()
-        if above is not None and self.get_value() > above:
+        if above is not None and np.any(np.greater(self.get_value(), above)):
             return option.show()
         option.hide()
 
@@ -232,15 +226,15 @@ class IntBox(Option):
         -------
         None
         """
-        self.widget.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        _ = [widget.valueChanged.connect(function_to_be_called) for widget in self.widget]  # pylint: disable=E1101
 
     def create_widget(
         self,
         frame: QtW.QFrame,
         layout_parent: QtW.QLayout,
         *,
-        row: int | None = None,
-        column: int | None = None,
+        row: int = None,
+        column: int = None,
     ) -> None:
         """
         This functions creates the IntBox widget in the frame.
@@ -263,22 +257,23 @@ class IntBox(Option):
         None
         """
         layout = self.create_frame(frame, layout_parent)
-        self.widget.setParent(self.frame)
-        self.widget.setStyleSheet(
-            f'QSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};'
-            f'border: 1px solid {globs.WHITE};{"}"}'
-        )
-        self.widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
-        self.widget.setMinimum(self.minimal_value)
-        self.widget.setMaximum(self.maximal_value)
-        self.widget.setValue(self.default_value)
-        self.widget.setSingleStep(self.step)
-        self.widget.setMaximumWidth(100)
-        self.widget.setMinimumWidth(100)
-        self.widget.setMinimumHeight(28)
-        self.widget.setFocusPolicy(QtC.Qt.FocusPolicy.StrongFocus)
-        set_default_font(self.widget)
-        if row is not None and isinstance(layout_parent, QtW.QGridLayout):
-            layout_parent.addWidget(self.widget, column, row)
-            return
-        layout.addWidget(self.widget)
+        for widget, max_val, min_val, step, def_val in zip(self.widget, self.maximal_value, self.minimal_value, self.step, self.default_value):
+            widget.setParent(self.frame)
+            widget.setStyleSheet(
+                f'QSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};'
+                f'border: 1px solid {globs.WHITE};{"}"}'
+            )
+            widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
+            widget.setMinimum(min_val)
+            widget.setMaximum(max_val)
+            widget.setValue(def_val)
+            widget.setSingleStep(step)
+            widget.setMaximumWidth(100)
+            widget.setMinimumWidth(100)
+            widget.setMinimumHeight(28)
+            widget.setFocusPolicy(QtC.Qt.FocusPolicy.StrongFocus)
+            set_default_font(widget)
+            if row is not None and isinstance(layout_parent, QtW.QGridLayout):
+                layout_parent.addWidget(widget, column, row)
+                return
+            layout.addWidget(widget)
