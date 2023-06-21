@@ -142,8 +142,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.set_event_filter()
         # load backup data
         self.load_backup()
-        # add progress bar and label to statusbar
-        self.status_bar.widget.messageChanged.connect(self.status_hide)
         # reset push button size
         self.check_page_button_layout(False)
         # set start page to general page
@@ -289,7 +287,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         change_font_size(self.menu_language, size)
         change_font_size(self.menubar, size)
         change_font_size(self.list_widget_scenario, size)
-        change_font_size(self.status_bar.widget, size)
+        change_font_size(self.status_bar.label, size)
         change_font_size(self.progress_bar, size)
         change_font_size(self.label_status, size)
         self.remove_previous_calculated_results()
@@ -662,24 +660,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         name: str = f"{globs.GUI_NAME} v{globs.VERSION} {title}*" if self.changedFile else f"{globs.GUI_NAME} v{globs.VERSION} {title}"
         # set new title name
         self.dia.setWindowTitle(name)
-
-    def status_hide(self, text: str) -> None:
-        """
-        This function sets the text in the status bar. If the text is empty, the status bar will be closed.
-
-        Parameters
-        ----------
-        text : str
-            Text to be shown in the status bar
-
-        Returns
-        -------
-        None
-        """
-        if not text:
-            self.status_bar.widget.hide()
-            return
-        self.status_bar.widget.show()
 
     def eventFilter(self, obj: QtW.QPushButton, event) -> bool:  # noqa: N802
         """
