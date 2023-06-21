@@ -4,6 +4,7 @@ result figure class script
 from __future__ import annotations
 
 import warnings
+from platform import system
 
 from matplotlib.colors import to_rgb
 import copy
@@ -17,6 +18,8 @@ import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.font_manager as fm
+import matplotlib
+matplotlib.use("module://mplcairo.macosx")  if system() == "Darwin" else None
 
 import ScenarioGUI.global_settings as globs
 from . import IntBox, FunctionButton

@@ -7,8 +7,6 @@ import logging
 from configparser import ConfigParser
 from pathlib import Path
 
-import matplotlib.pyplot as plt
-
 path = Path(__file__).parent.absolute()
 config = ConfigParser()
 
