@@ -4,6 +4,7 @@ It contains all the options, categories etc. that should appear on the GUI.
 """
 from __future__ import annotations
 
+from functools import partial
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -159,7 +160,7 @@ class GuiStructure:
                                                  minimal_value=0,
                                                  maximal_value=255, step=1)
         self.option_font_size_figure = IntBox(label="Font Size:", default_value=globs.FONT_SIZE, minimal_value=6, maximal_value=40,
-                                       category=self.category_default_figure_settings)
+                                              category=self.category_default_figure_settings)
         self.option_font = FontListBox(label="Font family: ", category=self.category_default_figure_settings, entries=[font.get_name() for font in font_list],
                                        default_index=[font.get_name().upper() for font in font_list].index(globs.FONT.upper()))
         self.option_figure_background.change_event(self.change_figure_background_color)
@@ -187,6 +188,10 @@ class GuiStructure:
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultFigure)
         ]
         self.category_default_figure_settings.hide() if not self.list_of_result_figures else self.category_default_figure_settings.show()
+        for fig, _ in self.list_of_result_figures:
+            fig.option_save_layout.change_event(partial(self.save_layout_from_figure, fig.option_figure_background, fig.option_plot_background,
+                                                        fig.option_axes_text, fig.option_axes, fig.option_font, fig.option_font_size, fig.option_legend_text,
+                                                        fig.option_title))
         self.list_of_result_exports: list[tuple[ResultExport, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultExport)
         ]
@@ -239,6 +244,18 @@ class GuiStructure:
     def change_title(self):
         for fig, _ in self.list_of_result_figures:
             fig.option_title.set_value(self.option_title.get_value())
+
+    def save_layout_from_figure(self, option_figure_background: MultipleIntBox, option_plot_background: MultipleIntBox,
+                                option_axes_text: MultipleIntBox, option_axes: MultipleIntBox, option_font: FontListBox,
+                                option_font_size_figure: IntBox, option_legend_text: MultipleIntBox, option_title: MultipleIntBox):
+        self.option_figure_background.set_value(option_figure_background.get_value())
+        self.option_plot_background.set_value(option_plot_background.get_value())
+        self.option_axes_text.set_value(option_axes_text.get_value())
+        self.option_axes.set_value(option_axes.get_value())
+        self.option_font.set_value(option_font.get_value())
+        self.option_font_size_figure.set_value(option_font_size_figure.get_value())
+        self.option_legend_text.set_value(option_legend_text.get_value())
+        self.option_title.set_value(option_title.get_value())
 
     def change_toggle_button(self) -> None:
         """

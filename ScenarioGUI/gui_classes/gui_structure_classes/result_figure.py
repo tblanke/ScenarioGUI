@@ -3,12 +3,9 @@ result figure class script
 """
 from __future__ import annotations
 
-import logging
 import warnings
-from pathlib import Path
 
 from matplotlib.colors import to_rgb
-from fontTools.ttLib import TTFont
 import copy
 from typing import TYPE_CHECKING
 
@@ -22,7 +19,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 import matplotlib.font_manager as fm
 
 import ScenarioGUI.global_settings as globs
-from . import IntBox
+from . import IntBox, FunctionButton
 from .button_box import ButtonBox
 from .font_list_box import FontListBox
 from .multiple_int_box import MultipleIntBox
@@ -33,11 +30,11 @@ from .category import Category
 if TYPE_CHECKING:  # pragma: no cover
     from .page import Page
 
-
 font_list: list[fm.FontProperties] = [fm.FontProperties(fname=font_path) for font_path in fm.findSystemFonts()]
-font_list = sorted(font_list, key=lambda x: x.get_name())
+font_list = sorted(font_list, key=lambda x: fm.get_font(x.get_file()).family_name.lower())
 font_name_set = set()
-font_list = [font for font in font_list if font.get_name() not in font_name_set and not font_name_set.add(font.get_name())]
+font_list = [font for font in font_list if fm.get_font(font.get_file()).family_name.lower() not in font_name_set and not font_name_set.add(fm.get_font(
+    font.get_file()).family_name.lower())]
 
 
 class ResultFigure(Category):
@@ -133,9 +130,9 @@ class ResultFigure(Category):
                                                  minimal_value=0,
                                                  maximal_value=255, step=1)
         self.option_font_size = IntBox(label="Font Size:", default_value=globs.FONT_SIZE, minimal_value=6, maximal_value=40, category=self)
-        self.option_font = FontListBox(label="Font family: ", category=self, entries=[font.get_name() for font in font_list],
-                                       default_index=[font.get_name().upper() for font in font_list].index(globs.FONT.upper()))
-        # self.option_font = ListBox(label="Font name:", default_index=0, category=self, entries=fm.findSystemFonts())
+        self.option_font = FontListBox(label="Font family: ", category=self, entries=[fm.get_font(font.get_file()).family_name for font in font_list],
+                                       default_index=[fm.get_font(font.get_file()).family_name.upper() for font in font_list].index(globs.FONT.upper()))
+        self.option_save_layout = FunctionButton(button_text="Save layout", category=self, icon="Save")
         self.default_figure_colors.add_link_2_show(self.option_figure_background, on_index=0)
         self.default_figure_colors.add_link_2_show(self.option_axes, on_index=0)
         self.default_figure_colors.add_link_2_show(self.option_legend_text, on_index=0)
@@ -144,6 +141,7 @@ class ResultFigure(Category):
         self.default_figure_colors.add_link_2_show(self.option_font_size, on_index=0)
         self.default_figure_colors.add_link_2_show(self.option_title, on_index=0)
         self.default_figure_colors.add_link_2_show(self.option_font, on_index=0)
+        self.default_figure_colors.add_link_2_show(self.option_save_layout, on_index=0)
         self.option_figure_background.change_event(self.change_figure_background_color)
         self.option_axes_text.change_event(self.change_axis_text_color)
         self.option_plot_background.change_event(self.change_plot_background_color)
@@ -245,9 +243,10 @@ class ResultFigure(Category):
         self.layout_frame_canvas.addWidget(self.canvas)
         self.layout_frame_canvas.addWidget(self.toolbar)
         for option in [self.default_figure_colors, self.option_figure_background, self.option_plot_background, self.option_axes, self.option_axes_text,
-                       self.option_legend_text, self.option_title, self.option_font_size, self.option_font]:
+                       self.option_legend_text, self.option_title, self.option_font_size, self.option_font, self.option_save_layout]:
             option.create_widget(self.frame_canvas, self.layout_frame_canvas)
-            option.init_links()
+            if hasattr(option, "init_links"):
+                option.init_links()
         self.scroll_area = page
         self.canvas.mpl_connect("scroll_event", self.scrolling)
 

@@ -1,4 +1,5 @@
 import PySide6.QtWidgets as QtW
+import numpy as np
 
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
