@@ -19,7 +19,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.font_manager as fm
 import matplotlib
-matplotlib.use("module://mplcairo.macosx")  if system() == "Darwin" else None
+matplotlib.use("module://mplcairo.macosx") if system() == "Darwin" else matplotlib.use("module://mplcairo.qt")
 
 import ScenarioGUI.global_settings as globs
 from . import IntBox, FunctionButton
