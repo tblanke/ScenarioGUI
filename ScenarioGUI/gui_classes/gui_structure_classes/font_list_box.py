@@ -12,7 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from . import ListBox
+from .list_box import ListBox
 from .functions import check
 from .option import Option
 

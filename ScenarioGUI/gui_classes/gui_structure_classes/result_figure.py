@@ -29,7 +29,19 @@ from .multiple_int_box import MultipleIntBox
 if TYPE_CHECKING:  # pragma: no cover
     from .page import Page
 
+
 def get_name(font: fm.FontProperties) -> str:
+    """
+    get the name of the font and catch the MacOS runtime error
+
+    Parameters
+    ----------
+    font: fm.FontProperties
+        font to get name for
+    Returns
+    -------
+        str
+    """
     try:
         return font.get_name()
     except RuntimeError:  # pragma: no cover
