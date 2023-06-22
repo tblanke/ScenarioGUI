@@ -22,15 +22,15 @@ if TYPE_CHECKING:  # pragma: no cover
     from .page import Page
 
 
-class Option(Protocol):
-    label_text: str
-    default_value: bool | int | float | str
-    widget: QtW.QWidget | None
-    frame: QtW.QFrame
-    label: QtW.QLabel
-    linked_options: list[(Option, int)]
-    limit_size: bool
-    list_2_check_before_value: list[tuple[Option, int], Aim]
+    class Option(Protocol):
+        label_text: str
+        default_value: bool | int | float | str
+        widget: QtW.QWidget | None
+        frame: QtW.QFrame
+        label: QtW.QLabel
+        linked_options: list[(Option, int)]
+        limit_size: bool
+        list_2_check_before_value: list[tuple[Option, int], Aim]
 
 
 class Aim:

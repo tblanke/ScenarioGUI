@@ -25,7 +25,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     ResultText, MultipleIntBox,
 )
 from ScenarioGUI.gui_classes.gui_structure_classes.font_list_box import FontListBox
-from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import font_list
+from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import font_list, get_name
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
@@ -161,8 +161,8 @@ class GuiStructure:
                                                  maximal_value=255, step=1)
         self.option_font_size_figure = IntBox(label="Font Size:", default_value=globs.FONT_SIZE, minimal_value=6, maximal_value=40,
                                               category=self.category_default_figure_settings)
-        self.option_font = FontListBox(label="Font family: ", category=self.category_default_figure_settings, entries=[font.get_name() for font in font_list],
-                                       default_index=[font.get_name().upper() for font in font_list].index(globs.FONT.upper()))
+        self.option_font = FontListBox(label="Font family: ", category=self.category_default_figure_settings, entries=[get_name(font) for font in font_list],
+                                       default_index=[get_name(font).upper() for font in font_list].index(globs.FONT.upper()))
         self.option_figure_background.change_event(self.change_figure_background_color)
         self.option_plot_background.change_event(self.change_plot_background_color)
         self.option_axes_text.change_event(self.change_axes_text)

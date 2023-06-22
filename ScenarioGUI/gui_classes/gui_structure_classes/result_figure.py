@@ -4,7 +4,6 @@ result figure class script
 from __future__ import annotations
 
 import warnings
-from platform import system
 
 from matplotlib.colors import to_rgb
 import copy
@@ -34,7 +33,7 @@ if TYPE_CHECKING:  # pragma: no cover
 def get_name(font: fm.FontProperties) -> str:
     try:
         return font.get_name()
-    except RuntimeError:
+    except RuntimeError:  # pragma: no cover
         return "ZZ"
 
 
