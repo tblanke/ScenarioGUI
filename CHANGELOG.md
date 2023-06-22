@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - list_ds in MainWindow removed and replaced by QListWidget data
+- FlexOption can new be provided with default values (issue 63)
 
 ## [0.2.2] - 2023-04-21
 
