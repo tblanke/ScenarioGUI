@@ -32,8 +32,8 @@ from .category import Category
 
 if TYPE_CHECKING:  # pragma: no cover
     from .page import Page
-
-font_list: list[fm.FontProperties] = [fm.FontProperties(fname=font_path) for font_path in fm.findSystemFonts()]
+    
+font_list: list[fm.FontProperties] = [fm.FontProperties(fname=font_path, size=12) for font_path in fm.findSystemFonts()]
 font_list = sorted(font_list, key=lambda x: fm.get_font(x.get_file()).family_name.lower())
 font_name_set = set()
 font_list = [font for font in font_list if fm.get_font(font.get_file()).family_name.lower() not in font_name_set and not font_name_set.add(fm.get_font(
