@@ -4,7 +4,6 @@ result figure class script
 from __future__ import annotations
 
 import copy
-import warnings
 from typing import TYPE_CHECKING
 
 import matplotlib.font_manager as fm
@@ -305,6 +304,7 @@ class ResultFigure(Category):
     def change_font(self):
         font: fm.FontProperties = font_list[self.option_font.get_value()[0]]
         font.set_size(self.option_font_size.get_value())
+
         self.a_x.set_xlabel(self.a_x.get_xlabel(), fontproperties=font)
         self.a_x.set_ylabel(self.a_x.get_ylabel(), fontproperties=font)
         _ = [label.set_fontproperties(font) for label in self.a_x.get_xticklabels()]
@@ -315,9 +315,8 @@ class ResultFigure(Category):
         if legend is not None:
             for text in legend.get_texts():
                 text.set_font_properties(font)
-        warnings.filterwarnings("ignore", category=UserWarning)
         self.canvas.draw()
-        warnings.resetwarnings()
+
 
     def scrolling(self, event) -> None:
         """
