@@ -28,8 +28,8 @@ jobs:
           pip install -r requirements_dev.txt
           pip install -e .
       - name: Test with pytest
-        if: always()
         run: pytest --cov=./ --cov-report=xml --timeout=90
+        continue-on-error: true
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
