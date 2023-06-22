@@ -3,19 +3,19 @@ int box class script
 """
 from __future__ import annotations
 
+from collections.abc import Iterable
 from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
+import numpy as np
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
-import numpy as np
 
 import ScenarioGUI.global_settings as globs
-from .int_box import SpinBox
 
 from ...utils import set_default_font
+from .int_box import SpinBox
 from .option import Option
-from collections.abc import Iterable
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable

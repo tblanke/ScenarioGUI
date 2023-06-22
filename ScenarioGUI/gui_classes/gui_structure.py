@@ -18,11 +18,12 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     Hint,
     IntBox,
     ListBox,
+    MultipleIntBox,
     Option,
     Page,
     ResultExport,
     ResultFigure,
-    ResultText, MultipleIntBox,
+    ResultText,
 )
 from ScenarioGUI.gui_classes.gui_structure_classes.font_list_box import FontListBox
 from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import font_list, get_name

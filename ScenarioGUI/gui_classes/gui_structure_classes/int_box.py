@@ -16,6 +16,7 @@ from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
+
     import PySide6.QtGui as QtG
 
     from .category import Category

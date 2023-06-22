@@ -3,29 +3,28 @@ result figure class script
 """
 from __future__ import annotations
 
-import warnings
-
-from matplotlib.colors import to_rgb
 import copy
+import warnings
 from typing import TYPE_CHECKING
 
+import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
+import numpy as np
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
-import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-import matplotlib.font_manager as fm
+from matplotlib.colors import to_rgb
 
 import ScenarioGUI.global_settings as globs
-from . import IntBox, FunctionButton
-from .button_box import ButtonBox
-from .font_list_box import FontListBox
-from .multiple_int_box import MultipleIntBox
 
 from ...utils import change_font_size
+from . import FunctionButton, IntBox
+from .button_box import ButtonBox
 from .category import Category
+from .font_list_box import FontListBox
+from .multiple_int_box import MultipleIntBox
 
 if TYPE_CHECKING:  # pragma: no cover
     from .page import Page

@@ -6,18 +6,17 @@ from __future__ import annotations
 from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
-import PySide6.QtWidgets as QtW  # type: ignore
 import PySide6.QtCore as QtC  # type: ignore
+import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from . import ListBox
 
 from ...utils import set_default_font
+from . import ListBox
 from .functions import check
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
-    from collections.abc import Callable
     import PySide6.QtGui as QtG
 
     from .category import Category
@@ -63,8 +62,8 @@ class FontListBox(ListBox):
         .. figure:: _static/Example_List_Box.PNG
 
         """
-        super().__init__(label=label, default_index=default_index, category=category, entries=entries)
-        self.widget.setParent(None)
+        Option.__init__(self, label, default_index, category)
+        self.entries: list[str] = entries
         self.widget: FontComboBox = FontComboBox(self.default_parent)
         self.widget.clear()
         self.widget.addItems(self.entries)
