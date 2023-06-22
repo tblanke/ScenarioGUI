@@ -18,8 +18,6 @@ import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.font_manager as fm
-import matplotlib
-matplotlib.use("module://mplcairo.macosx")# if system() == "Darwin" else matplotlib.use("module://mplcairo.qt")
 
 import ScenarioGUI.global_settings as globs
 from . import IntBox, FunctionButton
@@ -32,12 +30,18 @@ from .category import Category
 
 if TYPE_CHECKING:  # pragma: no cover
     from .page import Page
-    
+
+def get_name(font: fm.FontProperties) -> str:
+    try:
+        return font.get_name()
+    except RuntimeError:
+        return "ZZ"
+
+
 font_list: list[fm.FontProperties] = [fm.FontProperties(fname=font_path, size=12) for font_path in fm.findSystemFonts()]
-font_list = sorted(font_list, key=lambda x: fm.get_font(x.get_file()).family_name.lower())
+font_list = sorted(font_list, key=lambda x: get_name(x))
 font_name_set = set()
-font_list = [font for font in font_list if fm.get_font(font.get_file()).family_name.lower() not in font_name_set and not font_name_set.add(fm.get_font(
-    font.get_file()).family_name.lower())]
+font_list = [font for font in font_list if get_name(font) not in font_name_set and not font_name_set.add(get_name(font))]
 
 
 class ResultFigure(Category):
@@ -133,8 +137,8 @@ class ResultFigure(Category):
                                                  minimal_value=0,
                                                  maximal_value=255, step=1)
         self.option_font_size = IntBox(label="Font Size:", default_value=globs.FONT_SIZE, minimal_value=6, maximal_value=40, category=self)
-        self.option_font = FontListBox(label="Font family: ", category=self, entries=[fm.get_font(font.get_file()).family_name for font in font_list],
-                                       default_index=[fm.get_font(font.get_file()).family_name.upper() for font in font_list].index(globs.FONT.upper()))
+        self.option_font = FontListBox(label="Font family: ", category=self, entries=[get_name(font) for font in font_list],
+                                       default_index=[get_name(font).upper() for font in font_list].index(globs.FONT.upper()))
         self.option_save_layout = FunctionButton(button_text="Save layout", category=self, icon="Save")
         self.default_figure_colors.add_link_2_show(self.option_figure_background, on_index=0)
         self.default_figure_colors.add_link_2_show(self.option_axes, on_index=0)
