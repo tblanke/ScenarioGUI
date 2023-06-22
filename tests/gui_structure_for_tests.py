@@ -48,14 +48,17 @@ class GUI(GuiStructure):
             category=self.category_inputs,
         )
 
-        self.float_b = FloatBox(
+        self.sub_category = els.Subcategory("Subcategory", self.category_inputs)
+
+        self.float_b = els.FloatBox(
             label="b",
             default_value=100,
             minimal_value=0,
             maximal_value=1000,
             decimal_number=2,
-            category=self.category_inputs,
+            category=self.sub_category,
         )
+
         self.int_units = els.IntBoxWithUnits(
             label="IntBoxWithUnits",
             default_value=2,
