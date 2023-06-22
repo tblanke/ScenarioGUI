@@ -27,6 +27,15 @@ def test_flex_amount_option(qtbot):
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     flex_option = main_window.gui_structure.flex_option
     assert len(flex_option.get_value()) == flex_option.default_value
+    for li_org, li_val in zip(flex_option.get_value(), flex_option.default_values):
+        for org, val in zip(li_org, li_val):
+            if isinstance(org, float):
+                assert np.isclose(org, val)
+                continue
+            if isinstance(org, tuple):
+                assert org[0] == val
+                continue
+            assert org == val
     flex_option._add_entry()
     assert len(flex_option.get_value()) == flex_option.default_value + 1
     flex_option._del_entry()

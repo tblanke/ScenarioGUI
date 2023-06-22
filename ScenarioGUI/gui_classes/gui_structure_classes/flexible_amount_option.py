@@ -4,7 +4,7 @@ float box option class
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Collection
 
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
@@ -32,19 +32,20 @@ class FlexibleAmount(Option):
 
     def __init__(
             self,
-            label: str | list[str],
+            label: str | Collection[str],
             default_length: int,
             entry_mame: str,
             category: Category,
             *, 
             min_length: int | None = None,
             max_length: int | None = None,
+            default_values: Collection[Collection[int | float | str | bool]] | None = None
     ):
         """
 
         Parameters
         ----------
-        label : str | list[str]
+        label : str | Iterable[str]
             The label of the Option
         default_length : int
             how many entries should exists per default?
@@ -56,6 +57,8 @@ class FlexibleAmount(Option):
             minimal option length
         max_length: int | None
             maximal option length
+        default_values: Iterable[Iterable[int | float | bool | str]]
+            default values
 
         Examples
         --------
@@ -70,9 +73,10 @@ class FlexibleAmount(Option):
 
         """
         super().__init__(label, default_length, category)
+        self.default_values: Collection[Collection[int | float | str | bool]] = default_values
         self.category = category
         self.entry_name: str = entry_mame
-        self.list_of_options: list[Option] = []
+        self.list_of_options: Collection[Option] = []
         self.option_entries: list[list[Option]] = []
         self.option_classes: list[tuple[type[Option], dict, str]] = []
         self.func_on_change: list[Callable[[]]] = []
@@ -171,7 +175,7 @@ class FlexibleAmount(Option):
             self.frame.layout().itemAtPosition(0, idx + 2).widget().setText(name)
             self.option_classes[idx] = (self.option_classes[idx][0], self.option_classes[idx][1], name)
 
-    def set_value(self, value: list[list[str | float | int | bool]] | list[tuple[str | float | int | bool]]) -> None:
+    def set_value(self, value: Collection[Collection[str | float | int | bool]]) -> None:
         """
         This function sets the value of the Flexible Amount option.
 
@@ -417,10 +421,6 @@ class FlexibleAmount(Option):
         self.frame.setFrameShape(QtW.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtW.QFrame.Raised)
         layout_parent_i.addWidget(self.frame)
-        # spacer_label = QtW.QLabel(frame_i)
-        # spacer_label.setMinimumHeight(6)
-        # spacer_label.setMaximumHeight(6)
-        # layout_parent_i.addWidget(spacer_label)
         QtW.QGridLayout(self.frame)
 
         spacer = QtW.QSpacerItem(1, 1, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
@@ -435,3 +435,5 @@ class FlexibleAmount(Option):
 
         _ = [self._add_entry() for _ in range(self.default_value)]
         layout_parent_i.addWidget(self.frame)
+        if self.default_values is not None:
+            self.set_value(self.default_values)
