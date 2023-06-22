@@ -121,33 +121,61 @@ class ResultFigure(Category):
         self.scroll_area: QtW.QScrollArea | None = None
 
         self.default_figure_colors = ButtonBox(label="Should the default colors be used?", default_index=1, entries=["No", "Yes"], category=self)
-        self.option_figure_background = MultipleIntBox(label="Figure background color in rgb code?", default_value=np.array(
-            globs.DARK.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self,
-                                                       minimal_value=0,
-                                                       maximal_value=255, step=1)
-        self.option_plot_background = MultipleIntBox(label="Plot background color in rgb code?", default_value=np.array(
-            globs.WHITE.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self,
-                                                     minimal_value=0,
-                                                     maximal_value=255, step=1)
-        self.option_axes_text = MultipleIntBox(label="Axes text color in rgb code?", default_value=np.array(
-            globs.WHITE.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self,
-                                               minimal_value=0,
-                                               maximal_value=255, step=1)
-        self.option_axes = MultipleIntBox(label="Axes color in rgb code?", default_value=np.array(
-            globs.WHITE.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self,
-                                          minimal_value=0,
-                                          maximal_value=255, step=1)
-        self.option_title = MultipleIntBox(label="Title color in rgb code?", default_value=np.array(
-            globs.WHITE.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self,
-                                           minimal_value=0,
-                                           maximal_value=255, step=1)
-        self.option_legend_text = MultipleIntBox(label="Legend text color in rgb code?", default_value=np.array(
-            globs.DARK.replace("rgb(", "").replace(")", "").split(","""), dtype=np.float64), category=self,
-                                                 minimal_value=0,
-                                                 maximal_value=255, step=1)
+        self.option_figure_background = MultipleIntBox(
+            label="Figure background color in rgb code?",
+            default_value=np.array(globs.DARK.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+            category=self,
+            minimal_value=0,
+            maximal_value=255,
+            step=1,
+        )
+        self.option_plot_background = MultipleIntBox(
+            label="Plot background color in rgb code?",
+            default_value=np.array(globs.WHITE.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+            category=self,
+            minimal_value=0,
+            maximal_value=255,
+            step=1,
+        )
+        self.option_axes_text = MultipleIntBox(
+            label="Axes text color in rgb code?",
+            default_value=np.array(globs.WHITE.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+            category=self,
+            minimal_value=0,
+            maximal_value=255,
+            step=1,
+        )
+        self.option_axes = MultipleIntBox(
+            label="Axes color in rgb code?",
+            default_value=np.array(globs.WHITE.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+            category=self,
+            minimal_value=0,
+            maximal_value=255,
+            step=1,
+        )
+        self.option_title = MultipleIntBox(
+            label="Title color in rgb code?",
+            default_value=np.array(globs.WHITE.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+            category=self,
+            minimal_value=0,
+            maximal_value=255,
+            step=1,
+        )
+        self.option_legend_text = MultipleIntBox(
+            label="Legend text color in rgb code?",
+            default_value=np.array(globs.DARK.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+            category=self,
+            minimal_value=0,
+            maximal_value=255,
+            step=1,
+        )
         self.option_font_size = IntBox(label="Font Size:", default_value=globs.FONT_SIZE, minimal_value=6, maximal_value=40, category=self)
-        self.option_font = FontListBox(label="Font family: ", category=self, entries=[get_name(font) for font in font_list],
-                                       default_index=[get_name(font).upper() for font in font_list].index(globs.FONT.upper()))
+        self.option_font = FontListBox(
+            label="Font family: ",
+            category=self,
+            entries=[get_name(font) for font in font_list],
+            default_index=[get_name(font).upper() for font in font_list].index(globs.FONT.upper()),
+        )
         self.option_save_layout = FunctionButton(button_text="Save layout", category=self, icon="Save")
         self.default_figure_colors.add_link_2_show(self.option_figure_background, on_index=0)
         self.default_figure_colors.add_link_2_show(self.option_axes, on_index=0)
@@ -258,8 +286,18 @@ class ResultFigure(Category):
         # add canvas and toolbar to local frame
         self.layout_frame_canvas.addWidget(self.canvas)
         self.layout_frame_canvas.addWidget(self.toolbar)
-        for option in [self.default_figure_colors, self.option_figure_background, self.option_plot_background, self.option_axes, self.option_axes_text,
-                       self.option_legend_text, self.option_title, self.option_font_size, self.option_font, self.option_save_layout]:
+        for option in [
+            self.default_figure_colors,
+            self.option_figure_background,
+            self.option_plot_background,
+            self.option_axes,
+            self.option_axes_text,
+            self.option_legend_text,
+            self.option_title,
+            self.option_font_size,
+            self.option_font,
+            self.option_save_layout,
+        ]:
             option.create_widget(self.frame_canvas, self.layout_frame_canvas)
             if hasattr(option, "init_links"):
                 option.init_links()
@@ -317,7 +355,6 @@ class ResultFigure(Category):
                 text.set_font_properties(font)
         self.canvas.draw()
 
-
     def scrolling(self, event) -> None:
         """
         This function handels the scrolling behaviour.
@@ -358,10 +395,10 @@ class ResultFigure(Category):
         self.a_x.set_ylabel(self.y_axes_text)
 
     def fig_to_be_shown(
-            self,
-            class_name: str,
-            function_name: str,
-            **kwargs,
+        self,
+        class_name: str,
+        function_name: str,
+        **kwargs,
     ) -> None:
         """
         This function sets the result that should be shown. It refers to a certain function (function_name) inside the class class_name.
@@ -444,6 +481,16 @@ class ResultFigure(Category):
             None
         """
         change_font_size(self.label, size)
+        self.option_font_size.set_font_size(size)
+        self.option_font.set_font_size(size)
+        self.option_title.set_font_size(size)
+        self.option_axes.set_font_size(size)
+        self.option_figure_background.set_font_size(size)
+        self.option_save_layout.set_font_size(size)
+        self.option_plot_background.set_font_size(size)
+        self.option_legend_text.set_font_size(size)
+        self.default_figure_colors.set_font_size(size)
+        self.option_axes_text.set_font_size(size)
 
     def hide(self, results: bool = False) -> None:
         """

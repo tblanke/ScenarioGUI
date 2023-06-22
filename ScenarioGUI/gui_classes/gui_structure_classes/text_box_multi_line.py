@@ -11,6 +11,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from .option import Option
+from ...utils import set_default_font
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -181,6 +182,7 @@ class TextBoxMultiLine(Option):
             self.widget.setMaximumWidth(500)
             self.widget.setMinimumWidth(150)
         self.widget.setMinimumHeight(60)
+        set_default_font(self.widget)
         # self.widget.setMaximumSize(QtC.QSize(500, 90))
         if row is not None and isinstance(layout_parent, QtW.QGridLayout):
             layout_parent.addWidget(self.widget, column, row)
