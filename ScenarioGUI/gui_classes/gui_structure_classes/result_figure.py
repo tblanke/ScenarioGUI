@@ -179,6 +179,8 @@ class ResultFigure(Category):
         self.set_text(self.label_text[0])
         self.scroll_area: QtW.QScrollArea | None = None
         self.customizable_figure: int = customizable_figure
+        # Connect the resizeEvent to the update_figure_layout function
+        self.frame_canvas.resizeEvent = self.update_figure_layout
 
         if customizable_figure == 2:
             self.default_figure_colors = ButtonBox(label="Should the default colors be used?", default_index=1, entries=["No", "Yes"], category=self)
@@ -256,6 +258,12 @@ class ResultFigure(Category):
             self.option_title.change_event(self.change_title_color)
             self.option_font.change_event(self.change_font)
             self.list_of_options = []
+
+
+
+    def update_figure_layout(self, event):
+        self.canvas.draw()  # Redraw the canvas
+        self.fig.tight_layout()  # Adjust the layout of the figure
 
     def replace_figure(self, fig: plt.Figure) -> None:
         """
@@ -369,10 +377,12 @@ class ResultFigure(Category):
 
     def change_figure_background_color(self):
         self.fig.set_facecolor(to_rgb(np.array(self.option_figure_background.get_value()) / 255))
+        self.fig.tight_layout()
         self.canvas.draw()
 
     def change_plot_background_color(self):
         self.a_x.set_facecolor(to_rgb(np.array(self.option_plot_background.get_value()) / 255))
+        self.fig.tight_layout()
         self.canvas.draw()
 
     def change_axes_color(self):
@@ -382,16 +392,19 @@ class ResultFigure(Category):
         self.a_x.spines["bottom"].set_color(to_rgb(np.array(self.option_axes.get_value()) / 255))
         self.a_x.spines["left"].set_color(to_rgb(np.array(self.option_axes.get_value()) / 255))
         self.a_x.spines["right"].set_color(to_rgb(np.array(self.option_axes.get_value()) / 255))
+        self.fig.tight_layout()
         self.canvas.draw()
 
     def change_title_color(self):
         title = self.a_x.get_title()
         self.a_x.set_title(title, color=to_rgb(np.array(self.option_title.get_value()) / 255))
+        self.fig.tight_layout()
         self.canvas.draw()
 
     def change_axis_text_color(self):
         self.a_x.xaxis.label.set_color(to_rgb(np.array(self.option_axes_text.get_value()) / 255))
         self.a_x.yaxis.label.set_color(to_rgb(np.array(self.option_axes_text.get_value()) / 255))
+        self.fig.tight_layout()
         self.canvas.draw()
 
     def change_legend_text_color(self):
@@ -400,6 +413,7 @@ class ResultFigure(Category):
             return
         for text in legend.get_texts():
             text.set_color(to_rgb(np.array(self.option_legend_text.get_value()) / 255))
+        self.fig.tight_layout()
         self.canvas.draw()
 
     def change_font(self):
@@ -416,6 +430,7 @@ class ResultFigure(Category):
         if legend is not None:
             for text in legend.get_texts():
                 text.set_font_properties(font)
+        self.fig.tight_layout()
         self.canvas.draw()
 
     def scrolling(self, event) -> None:
