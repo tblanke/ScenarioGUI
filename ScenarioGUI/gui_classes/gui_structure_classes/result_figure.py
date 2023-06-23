@@ -361,7 +361,7 @@ class ResultFigure(Category):
                 self.option_font,
                 self.option_save_layout,
             ]:
-                option.create_widget(self.frame_canvas, self.layout_frame_canvas)
+                option.create_widget(self.frame, self.layout_frame)
                 if hasattr(option, "init_links"):
                     option.init_links()
         self.scroll_area = page
