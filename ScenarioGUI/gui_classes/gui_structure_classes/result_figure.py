@@ -291,6 +291,7 @@ class ResultFigure(Category):
         self.change_axes_color()
         self.change_legend_text_color()
         self.change_title_color()
+        self.change_font()
 
     def update_figure_layout(self, event):
         self.canvas.draw()  # Redraw the canvas
@@ -347,12 +348,9 @@ class ResultFigure(Category):
         self.canvas.mpl_connect("scroll_event", self.scrolling)
         self.toolbar = toolbar
         if self.customizable_figure == 2:
-            self.change_figure_background_color()
-            self.change_plot_background_color()
-            self.change_axis_text_color()
-            self.change_axes_color()
-            self.change_legend_text_color()
-            self.change_title_color()
+            self.change_2_default_settings()
+        else:
+            self._change_font([get_name(font).upper() for font in font_list].index(globs.FONT.upper()), globs.FONT_SIZE)
 
     def create_widget(self, page: QtW.QScrollArea, layout: QtW.QLayout):
         """
@@ -460,6 +458,8 @@ class ResultFigure(Category):
     def _change_font(self, font_index: int, font_size: int):
         font: fm.FontProperties = font_list[font_index]
         font.set_size(font_size)
+        font.set_style("normal")
+        font.set_weight("normal")
 
         self.a_x.set_xlabel(self.a_x.get_xlabel(), fontproperties=font)
         self.a_x.set_ylabel(self.a_x.get_ylabel(), fontproperties=font)
@@ -598,6 +598,8 @@ class ResultFigure(Category):
             None
         """
         change_font_size(self.label, size)
+        if self.customizable_figure != 2:
+            return
         self.option_font_size.set_font_size(size)
         self.option_font.set_font_size(size)
         self.option_title.set_font_size(size)
