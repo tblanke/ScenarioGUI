@@ -91,8 +91,8 @@ class NavigationToolbarScenarioGUI(NavigationToolbar):
             if startpath != "":
                 mpl.rcParams['savefig.directory'] = os.path.dirname(fname)
             try:
-                temp = copy.copy(self.canvas.figure)
-                globs.set_print_layout(self.canvas.a_x)
+                temp = copy.deepcopy(self.canvas.figure)
+                globs.set_print_layout(temp.get_axes()[0])
                 temp.set_facecolor('white')
                 temp.savefig(fname)
             except Exception as e:
@@ -343,7 +343,7 @@ class ResultFigure(Category):
         self.layout_frame_canvas.replaceWidget(self.toolbar, toolbar)
 
         self.canvas = canvas
-        self.canvas.a_x = self.a_x
+        self.canvas.a_x = copy.deepcopy(self.a_x)
         self.canvas.mpl_connect("scroll_event", self.scrolling)
         self.toolbar = toolbar
         if self.customizable_figure == 2:
