@@ -4,8 +4,11 @@ result figure class script
 from __future__ import annotations
 
 import copy
+import logging
+import os
 from typing import TYPE_CHECKING
 
+import matplotlib as mpl
 import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,6 +17,7 @@ import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends import qt_compat
 from matplotlib.colors import to_rgb
 
 import ScenarioGUI.global_settings as globs
@@ -51,6 +55,51 @@ font_list: list[fm.FontProperties] = [fm.FontProperties(fname=font_path, size=12
 font_list = sorted(font_list, key=lambda x: get_name(x))
 font_name_set = set()
 font_list = [font for font in font_list if get_name(font) not in font_name_set and not font_name_set.add(get_name(font))]
+
+
+# overwrite navigationToolbar
+class NavigationToolbarScenarioGUI(NavigationToolbar):
+
+    def __init__(self, overwrite: bool, canvas, parent, coordinate):
+        self.overwrite = overwrite
+        super().__init__(canvas, parent, coordinate)
+
+    def save_figure(self, *args):
+        if not self.overwrite:
+            return super().save_figure(args)
+        filetypes = self.canvas.get_supported_filetypes_grouped()
+        sorted_filetypes = sorted(filetypes.items())
+        default_filetype = self.canvas.get_default_filetype()
+
+        startpath = os.path.expanduser(mpl.rcParams['savefig.directory'])
+        start = os.path.join(startpath, self.canvas.get_default_filename())
+        filters = []
+        selectedFilter = None
+        for name, exts in sorted_filetypes:
+            exts_list = " ".join(['*.%s' % ext for ext in exts])
+            filter = '%s (%s)' % (name, exts_list)
+            if default_filetype in exts:
+                selectedFilter = filter
+            filters.append(filter)
+        filters = ';;'.join(filters)
+
+        fname, filter = qt_compat._getSaveFileName(
+            self.canvas.parent(), "Choose a filename to save to", start,
+            filters, selectedFilter)
+        if fname:
+            # Save dir for next time, unless empty str (i.e., use cwd).
+            if startpath != "":
+                mpl.rcParams['savefig.directory'] = os.path.dirname(fname)
+            try:
+                temp = copy.copy(self.canvas.figure)
+                globs.set_print_layout(self.canvas.a_x)
+                temp.set_facecolor('white')
+                temp.savefig(fname)
+            except Exception as e:
+                qt_compat.QtWidgets.QMessageBox.critical(
+                    self, "Error saving file", str(e),
+                    qt_compat._enum("QtWidgets.QMessageBox.StandardButton").Ok,
+                    qt_compat._enum("QtWidgets.QMessageBox.StandardButton").NoButton)
 
 
 class ResultFigure(Category):
@@ -102,7 +151,7 @@ class ResultFigure(Category):
         self.canvas: FigureCanvas = FigureCanvas(self.fig)
         self.canvas.a_x = self.a_x
         # create navigation toolbar and replace icons with white ones
-        self.toolbar: NavigationToolbar = NavigationToolbar(self.canvas, None, True)
+        self.toolbar: NavigationToolbarScenarioGUI = NavigationToolbarScenarioGUI(overwrite=customizable_figure==1, canvas=self.canvas, parent=None, coordinate=True)
         for name, icon_name in [
             ("save_figure", "Save_Inv"),
             ("home", "Home"),
@@ -231,7 +280,7 @@ class ResultFigure(Category):
         self.toolbar.hide()
         canvas = FigureCanvas(self.fig)
         # create navigation toolbar and replace icons with white ones
-        toolbar: NavigationToolbar = NavigationToolbar(canvas, self.frame_canvas, True)
+        toolbar: NavigationToolbarScenarioGUI = NavigationToolbarScenarioGUI(overwrite=self.customizable_figure==1, canvas=self.canvas, parent=self.frame_canvas, coordinate=True)
         for name, icon_name in [
             ("save_figure", "Save_Inv"),
             ("home", "Home"),
