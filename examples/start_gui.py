@@ -208,6 +208,13 @@ class GUI(GuiStructure):
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
+        self.figure_results_with_customizable_layout = els.ResultFigure(label=self.translations.figure_results_with_customizable_layout, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes", customizable_figure=2)
+        self.legend_figure_results_with_customizable_layout = els.FigureOption(
+            category=self.figure_results_with_customizable_layout, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
+        )
+
+        self.figure_results_with_customizable_layout.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_add.add_link_2_show(self.result_export)
         self.aim_sub.add_link_2_show(self.result_text_sub)

@@ -67,6 +67,7 @@ class Translations:  # pragma: no cover
         "option_auto_saving",
         "hint_saving",
         "figure_results",
+        "figure_results_with_customizable_layout",
         "option_font",
         "option_legend_text",
         "option_title",
@@ -161,6 +162,7 @@ class Translations:  # pragma: no cover
             "Wenn Automatisch speichern ausgewählt ist, wird das Szenario automatisch gespeichert, wenn ein Szenario geändert wird. Andernfalls muss das Szenario mit der Schaltfläche Szenario aktualisieren in der oberen linken Ecke gespeichert werden, wenn die Änderungen nicht verloren gehen sollen.",
         ]
         self.figure_results: list[str] = ["Plot,Y-Axis[-],X-axis[-]", "Diagram,Y-Achse[-],X-Achse[-]"]
+        self.figure_results_with_customizable_layout: list[str] = ["Plot,Y-Axis[-],X-axis[-]", "Diagram,Y-Achse[-],X-Achse[-]"]
         self.option_font: list[str] = ["Font family: ", "Schriftart: "]
         self.option_legend_text: list[str] = ["Legend text color in rgb code?", "Legendentextfarbe in rgb code?"]
         self.option_title: list[str] = ["Title color in rgb code?", "Titelfarbe in rgb code?"]

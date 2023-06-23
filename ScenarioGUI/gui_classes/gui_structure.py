@@ -243,6 +243,8 @@ class GuiStructure:
 
     def set_figure_translations(self):
         for fig, _ in self.list_of_result_figures:
+            if not fig.customizable_figure == 2:
+                continue
             for option, name in zip(
                 [
                     fig.option_axes,
@@ -289,6 +291,8 @@ class GuiStructure:
         ]
         self.category_default_figure_settings.hide() if not self.list_of_result_figures else self.category_default_figure_settings.show()
         for fig, _ in self.list_of_result_figures:
+            if not fig.customizable_figure == 2:
+                continue
             fig.option_save_layout.change_event(
                 partial(
                     self.save_layout_from_figure,
@@ -326,34 +330,50 @@ class GuiStructure:
 
     def change_figure_background_color(self):
         for fig, _ in self.list_of_result_figures:
+            if not fig.customizable_figure == 2:
+                continue
             fig.option_figure_background.set_value(self.option_figure_background.get_value())
 
     def change_plot_background_color(self):
         for fig, _ in self.list_of_result_figures:
+            if not fig.customizable_figure == 2:
+                continue
             fig.option_plot_background.set_value(self.option_plot_background.get_value())
 
     def change_font_size(self):
         for fig, _ in self.list_of_result_figures:
+            if not fig.customizable_figure == 2:
+                continue
             fig.option_font_size.set_value(self.option_font_size_figure.get_value())
 
     def change_font(self):
         for fig, _ in self.list_of_result_figures:
+            if not fig.customizable_figure == 2:
+                continue
             fig.option_font.set_value(self.option_font.get_value())
 
     def change_legend_color(self):
         for fig, _ in self.list_of_result_figures:
+            if not fig.customizable_figure == 2:
+                continue
             fig.option_legend_text.set_value(self.option_legend_text.get_value())
 
     def change_axes(self):
         for fig, _ in self.list_of_result_figures:
+            if not fig.customizable_figure == 2:
+                continue
             fig.option_axes.set_value(self.option_axes.get_value())
 
     def change_axes_text(self):
         for fig, _ in self.list_of_result_figures:
+            if not fig.customizable_figure == 2:
+                continue
             fig.option_axes_text.set_value(self.option_axes_text.get_value())
 
     def change_title(self):
         for fig, _ in self.list_of_result_figures:
+            if not fig.customizable_figure == 2:
+                continue
             fig.option_title.set_value(self.option_title.get_value())
 
     def save_layout_from_figure(
@@ -413,6 +433,8 @@ class GuiStructure:
         _ = [aim.translate(index) for aim, _ in self.list_of_aims if len(aim.label) > index and len(aim.label) > 1]
         _ = [page.translate(index) for page in self.list_of_pages if len(page.name) > index and len(page.name) > 1]
         for fig, _ in self.list_of_result_figures:
+            if not fig.customizable_figure == 2:
+                continue
             for option in [
                 fig.option_axes,
                 fig.option_font,
