@@ -333,48 +333,56 @@ class GuiStructure:
             if not fig.customizable_figure == 2:
                 continue
             fig.option_figure_background.set_value(self.option_figure_background.get_value())
+            fig.update_default_settings()
 
     def change_plot_background_color(self):
         for fig, _ in self.list_of_result_figures:
             if not fig.customizable_figure == 2:
                 continue
             fig.option_plot_background.set_value(self.option_plot_background.get_value())
+            fig.update_default_settings()
 
     def change_font_size(self):
         for fig, _ in self.list_of_result_figures:
             if not fig.customizable_figure == 2:
                 continue
             fig.option_font_size.set_value(self.option_font_size_figure.get_value())
+            fig.update_default_settings()
 
     def change_font(self):
         for fig, _ in self.list_of_result_figures:
             if not fig.customizable_figure == 2:
                 continue
             fig.option_font.set_value(self.option_font.get_value())
+            fig.update_default_settings()
 
     def change_legend_color(self):
         for fig, _ in self.list_of_result_figures:
             if not fig.customizable_figure == 2:
                 continue
             fig.option_legend_text.set_value(self.option_legend_text.get_value())
+            fig.update_default_settings()
 
     def change_axes(self):
         for fig, _ in self.list_of_result_figures:
             if not fig.customizable_figure == 2:
                 continue
             fig.option_axes.set_value(self.option_axes.get_value())
+            fig.update_default_settings()
 
     def change_axes_text(self):
         for fig, _ in self.list_of_result_figures:
             if not fig.customizable_figure == 2:
                 continue
             fig.option_axes_text.set_value(self.option_axes_text.get_value())
+            fig.update_default_settings()
 
     def change_title(self):
         for fig, _ in self.list_of_result_figures:
             if not fig.customizable_figure == 2:
                 continue
             fig.option_title.set_value(self.option_title.get_value())
+            fig.update_default_settings()
 
     def save_layout_from_figure(
         self,

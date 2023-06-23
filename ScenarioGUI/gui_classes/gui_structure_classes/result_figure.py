@@ -182,8 +182,11 @@ class ResultFigure(Category):
         # Connect the resizeEvent to the update_figure_layout function
         self.frame_canvas.resizeEvent = self.update_figure_layout
 
+        self.default_settings = {}
+
         if customizable_figure == 2:
             self.default_figure_colors = ButtonBox(label="Should the default colors be used?", default_index=1, entries=["No", "Yes"], category=self)
+            self.default_figure_colors.change_event(self.change_2_default_settings)
             self.option_figure_background = MultipleIntBox(
                 label="Figure background color in rgb code?",
                 default_value=np.array(globs.DARK.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
@@ -258,8 +261,36 @@ class ResultFigure(Category):
             self.option_title.change_event(self.change_title_color)
             self.option_font.change_event(self.change_font)
             self.list_of_options = []
+            self.update_default_settings()
 
+    def update_default_settings(self):
+        self.default_settings = {"figure_background": self.option_figure_background.get_value(),
+                                 "plot_background": self.option_plot_background.get_value(),
+                                 "axes_text": self.option_axes_text.get_value(),
+                                 "axes": self.option_axes.get_value(),
+                                 "title": self.option_title.get_value(),
+                                 "legend_text": self.option_legend_text.get_value(),
+                                 "font_size": self.option_font_size.get_value(),
+                                 "font": self.option_font.get_value()}
 
+    def change_2_default_settings(self):
+        if self.default_figure_colors.get_value() == 1:
+            self.fig.set_facecolor(to_rgb(np.array(self.default_settings["figure_background"]) / 255))
+            self.a_x.set_facecolor(to_rgb(np.array(self.default_settings["plot_background"]) / 255))
+            self.a_x.tick_params(axis="x", colors=to_rgb(np.array(self.default_settings["axes"]) / 255))
+            self.a_x.tick_params(axis="y", colors=to_rgb(np.array(self.default_settings["axes"]) / 255))
+            self._change_axes_color(self.default_settings["axes_text"])
+            self._change_legend_text_color(self.default_settings["legend_text"])
+            self._change_font(self.default_settings["font"][0], self.default_settings["font_size"])
+            self.fig.tight_layout()
+            self.canvas.draw()
+            return
+        self.change_figure_background_color()
+        self.change_plot_background_color()
+        self.change_axis_text_color()
+        self.change_axes_color()
+        self.change_legend_text_color()
+        self.change_title_color()
 
     def update_figure_layout(self, event):
         self.canvas.draw()  # Redraw the canvas
@@ -386,18 +417,20 @@ class ResultFigure(Category):
         self.canvas.draw()
 
     def change_axes_color(self):
-        self.a_x.tick_params(axis="x", colors=to_rgb(np.array(self.option_axes.get_value()) / 255))
-        self.a_x.tick_params(axis="y", colors=to_rgb(np.array(self.option_axes.get_value()) / 255))
-        self.a_x.spines["top"].set_color(to_rgb(np.array(self.option_axes.get_value()) / 255))
-        self.a_x.spines["bottom"].set_color(to_rgb(np.array(self.option_axes.get_value()) / 255))
-        self.a_x.spines["left"].set_color(to_rgb(np.array(self.option_axes.get_value()) / 255))
-        self.a_x.spines["right"].set_color(to_rgb(np.array(self.option_axes.get_value()) / 255))
+        self._change_axes_color(self.option_axes.get_value())
         self.fig.tight_layout()
         self.canvas.draw()
 
+    def _change_axes_color(self, color: tuple[int, int, int]):
+        self.a_x.tick_params(axis="x", colors=to_rgb(np.array(color) / 255))
+        self.a_x.tick_params(axis="y", colors=to_rgb(np.array(color) / 255))
+        self.a_x.spines["top"].set_color(to_rgb(np.array(color) / 255))
+        self.a_x.spines["bottom"].set_color(to_rgb(np.array(color) / 255))
+        self.a_x.spines["left"].set_color(to_rgb(np.array(color) / 255))
+        self.a_x.spines["right"].set_color(to_rgb(np.array(color) / 255))
+
     def change_title_color(self):
-        title = self.a_x.get_title()
-        self.a_x.set_title(title, color=to_rgb(np.array(self.option_title.get_value()) / 255))
+        self.a_x.set_title(self.a_x.get_title(), color=to_rgb(np.array(self.option_title.get_value()) / 255))
         self.fig.tight_layout()
         self.canvas.draw()
 
@@ -408,17 +441,25 @@ class ResultFigure(Category):
         self.canvas.draw()
 
     def change_legend_text_color(self):
+        self._change_legend_text_color(self.option_legend_text.get_value())
+        self.fig.tight_layout()
+        self.canvas.draw()
+
+    def _change_legend_text_color(self, colors: tuple[int, int, int]):
         legend = self.a_x.get_legend()
         if legend is None:
             return
         for text in legend.get_texts():
-            text.set_color(to_rgb(np.array(self.option_legend_text.get_value()) / 255))
+            text.set_color(to_rgb(np.array(colors) / 255))
+
+    def change_font(self):
+        self._change_font(self.option_font.get_value()[0], self.option_font_size.get_value())
         self.fig.tight_layout()
         self.canvas.draw()
 
-    def change_font(self):
-        font: fm.FontProperties = font_list[self.option_font.get_value()[0]]
-        font.set_size(self.option_font_size.get_value())
+    def _change_font(self, font_index: int, font_size: int):
+        font: fm.FontProperties = font_list[font_index]
+        font.set_size(font_size)
 
         self.a_x.set_xlabel(self.a_x.get_xlabel(), fontproperties=font)
         self.a_x.set_ylabel(self.a_x.get_ylabel(), fontproperties=font)
@@ -430,8 +471,6 @@ class ResultFigure(Category):
         if legend is not None:
             for text in legend.get_texts():
                 text.set_font_properties(font)
-        self.fig.tight_layout()
-        self.canvas.draw()
 
     def scrolling(self, event) -> None:
         """
