@@ -67,39 +67,13 @@ class NavigationToolbarScenarioGUI(NavigationToolbar):
     def save_figure(self, *args):
         if not self.overwrite:
             return super().save_figure(args)
-        filetypes = self.canvas.get_supported_filetypes_grouped()
-        sorted_filetypes = sorted(filetypes.items())
-        default_filetype = self.canvas.get_default_filetype()
-
-        startpath = os.path.expanduser(mpl.rcParams['savefig.directory'])
-        start = os.path.join(startpath, self.canvas.get_default_filename())
-        filters = []
-        selectedFilter = None
-        for name, exts in sorted_filetypes:
-            exts_list = " ".join(['*.%s' % ext for ext in exts])
-            filter = '%s (%s)' % (name, exts_list)
-            if default_filetype in exts:
-                selectedFilter = filter
-            filters.append(filter)
-        filters = ';;'.join(filters)
-
-        fname, filter = qt_compat._getSaveFileName(
-            self.canvas.parent(), "Choose a filename to save to", start,
-            filters, selectedFilter)
-        if fname:
-            # Save dir for next time, unless empty str (i.e., use cwd).
-            if startpath != "":
-                mpl.rcParams['savefig.directory'] = os.path.dirname(fname)
-            try:
-                temp = copy.deepcopy(self.canvas.figure)
-                globs.set_print_layout(temp.get_axes()[0])
-                temp.set_facecolor('white')
-                temp.savefig(fname)
-            except Exception as e:
-                qt_compat.QtWidgets.QMessageBox.critical(
-                    self, "Error saving file", str(e),
-                    qt_compat._enum("QtWidgets.QMessageBox.StandardButton").Ok,
-                    qt_compat._enum("QtWidgets.QMessageBox.StandardButton").NoButton)
+        old_figure = self.canvas.figure
+        self.canvas.figure = copy.deepcopy(self.canvas.figure)
+        globs.set_print_layout(self.canvas.figure.get_axes()[0])
+        self.canvas.figure.set_facecolor('white')
+        res = super().save_figure(args)
+        self.canvas.figure = old_figure
+        return res
 
 
 class ResultFigure(Category):
@@ -296,6 +270,7 @@ class ResultFigure(Category):
     def update_figure_layout(self, event):
         self.canvas.draw()  # Redraw the canvas
         self.fig.tight_layout()  # Adjust the layout of the figure
+        QtW.QFrame.resizeEvent(self.frame_canvas, event)
 
     def replace_figure(self, fig: plt.Figure) -> None:
         """
@@ -312,6 +287,7 @@ class ResultFigure(Category):
         """
         plt.close(self.fig)
         self.fig = copy.copy(fig)
+        plt.close(fig)
         self.a_x = fig.get_axes()[0]
         self.a_x.set_xlabel(self.x_axes_text)
         self.a_x.set_ylabel(self.y_axes_text)
