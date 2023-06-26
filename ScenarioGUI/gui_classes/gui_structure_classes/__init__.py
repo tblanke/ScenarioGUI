@@ -12,11 +12,13 @@ from .filename_box import FileNameBox
 from .flexible_amount_option import FlexibleAmount
 from .float_box import FloatBox
 from .float_box_with_units import FloatBoxWithUnits
+from .font_list_box import FontListBox
 from .function_button import FunctionButton
 from .hint import Hint
 from .int_box import IntBox
 from .int_box_with_units import IntBoxWithUnits
 from .list_box import ListBox
+from .multiple_int_box import MultipleIntBox
 from .option import Option
 from .page import Page
 from .result_export import ResultExport
@@ -34,11 +36,13 @@ __all__ = [
     "FileNameBox",
     "FloatBox",
     "FloatBoxWithUnits",
+    "FontListBox",
     "FunctionButton",
     "Hint",
     "IntBox",
     "IntBoxWithUnits",
     "ListBox",
+    "MultipleIntBox",
     "Option",
     "Page",
     "ResultFigure",

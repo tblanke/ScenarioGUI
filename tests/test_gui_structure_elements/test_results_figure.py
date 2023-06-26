@@ -1,4 +1,5 @@
 import PySide6.QtWidgets as QtW
+import numpy as np
 
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 from tests.gui_structure_for_tests import GUI
@@ -59,4 +60,38 @@ def test_results_figure(qtbot):
     main_window.gui_structure.figure_results.scrolling(Event("up"))
     val_after = main_window.gui_structure.figure_results.scroll_area.verticalScrollBar().value()
     assert val_after == val_before
+
+    main_window.display_results()
+
+    main_window.gui_structure.legend_figure_results.set_value(("", 1))
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.change_font()
+
+    main_window.display_results()
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.change_font()
+
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.option_figure_background.set_value((100, 110, 111))
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.option_plot_background.set_value((101, 111, 112))
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.option_axes_text.set_value((99, 113, 115))
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.option_axes.set_value((89, 90, 91))
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.option_font.set_value(3)
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.option_font_size.set_value(15)
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.option_legend_text.set_value((120, 121, 122))
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.option_title.set_value((130, 131, 132))
+    assert not np.allclose(main_window.gui_structure.option_figure_background.get_value(), (100, 110, 111))
+    assert not np.allclose(main_window.gui_structure.option_plot_background.get_value(), (100, 110, 111))
+    assert not np.allclose(main_window.gui_structure.option_axes_text.get_value(), (100, 110, 111))
+    assert not np.allclose(main_window.gui_structure.option_axes.get_value(), (100, 110, 111))
+    assert not np.isclose(main_window.gui_structure.option_font.get_value()[0], 3)
+    assert not np.isclose(main_window.gui_structure.option_font_size_figure.get_value(), 15)
+    assert not np.allclose(main_window.gui_structure.option_legend_text.get_value(), (120, 121, 122))
+    assert not np.allclose(main_window.gui_structure.option_title.get_value(), (130, 131, 132))
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.option_save_layout.button.click()
+    assert np.allclose(main_window.gui_structure.option_figure_background.get_value(), (100, 110, 111))
+    assert np.allclose(main_window.gui_structure.option_plot_background.get_value(), (101, 111, 112))
+    assert np.allclose(main_window.gui_structure.option_axes_text.get_value(), (99, 113, 115))
+    assert np.allclose(main_window.gui_structure.option_axes.get_value(), (89, 90, 91))
+    assert np.allclose(main_window.gui_structure.option_font.get_value()[0], 3)
+    assert np.isclose(main_window.gui_structure.option_font_size_figure.get_value(), 15)
+    assert np.allclose(main_window.gui_structure.option_legend_text.get_value(), (120, 121, 122))
+    assert np.allclose(main_window.gui_structure.option_title.get_value(), (130, 131, 132))
     main_window.delete_backup()

@@ -70,6 +70,15 @@ class Translations:  # pragma: no cover
         "function_button",
         "option_font_size",
         "figure_results",
+        "option_font",
+        "option_legend_text",
+        "option_title",
+        "option_axes",
+        "option_axes_text",
+        "option_plot_background",
+        "option_figure_background",
+        "category_default_figure_settings",
+        "default_figure_colors",
         "languages",
     )
 
@@ -157,3 +166,15 @@ class Translations:  # pragma: no cover
         self.function_button: list[str] = ["call function", "Rufe Funktion"]
         self.option_font_size: list[str] = ["Font Size", "Schriftgröße"]
         self.figure_results: list[str] = ["Plot,X-axis[-],Y-Axis[-]", "Diagram,X-Achse[-],Y-Achse[-]"]
+        self.option_font: list[str] = ["Font family: ", "Schriftart:"]
+        self.option_legend_text: list[str] = ["Legend text color in rgb code?", "Legendentextfarbe in rgb code?"]
+        self.option_title: list[str] = ["Title color in rgb code?", "Titelfarbe in rgb code?"]
+        self.option_axes: list[str] = ["Axes color in rgb code?", "Achsenfarbe in rgb code?"]
+        self.option_axes_text: list[str] = ["Axes text color in rgb code?", "Achsentextfarbe in rgb code?"]
+        self.option_plot_background: list[str] = ["Plot background color in rgb code?", "Diagrammbereichsfarbe in rgb code?"]
+        self.option_figure_background: list[str] = ["Figure background color in rgb code?", "Hintergrundfarbe in rgb code?"]
+        self.category_default_figure_settings: list[str] = ["Default figure settings", "Standarddiagrammeinstellungen"]
+        self.default_figure_colors: list[str] = [
+            "Should the default colors be used?, No , Yes ",
+            "Sollen die Standardeinstellungen für die Farben verwendet werden?, Nein , Ja",
+        ]

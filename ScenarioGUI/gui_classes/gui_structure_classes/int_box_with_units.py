@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import PySide6.QtWidgets as QtW
 import PySide6.QtCore as QtC
+import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.utils import change_font_size, set_default_font

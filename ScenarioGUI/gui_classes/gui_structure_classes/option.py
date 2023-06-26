@@ -33,7 +33,7 @@ class Option(metaclass=abc.ABCMeta):
     def __init__(
         self,
         label: str | list[str],
-        default_value: bool | int | float | str,
+        default_value: bool | int | float | str | list[int] | list[float],
         category: CategoryOrFlexibleOption,
     ):
         """

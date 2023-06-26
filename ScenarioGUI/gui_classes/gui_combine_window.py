@@ -1290,6 +1290,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 fig_obj.show()
                 fig_obj.canvas.show()
                 # draw new plot
+                fig.tight_layout()
                 fig_obj.canvas.draw()
                 # set figure to datastorage
                 setattr(ds, fig_name, fig)
@@ -1301,6 +1302,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             fig_obj.show()
             fig_obj.canvas.show()
             # draw new plot
+            fig.tight_layout()
             fig_obj.canvas.draw()
 
         # update result for every ResultText object

@@ -3,10 +3,13 @@ All notable changes to this project will be documented in this file including pl
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.3.0] - expected: may 2023
+## [0.3.0] - expected: june 2023
 
 ### Added
 - Multiline text box (issue 56)
+- Multiple int entry box
+- Font list box
+- Possibility to change figure style (issue 58) 
 - Subcategory (issue 61)
 
 ### Fixed
@@ -14,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Drag scenario 2 to the place of scenario 3 do work know (issue 50)
 - Scenario changing without change (issue 50)
 - The scrolling in IntBoxes, FloatBoxes and ComboBoxes is disables and just working if they are selected (issue 54)
+- The error messages are now completely visible (issue 59)
 
 ### Changed
 - list_ds in MainWindow removed and replaced by QListWidget data

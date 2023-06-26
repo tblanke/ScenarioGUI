@@ -202,13 +202,29 @@ class GUI(GuiStructure):
 
         self.result_export = els.ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
                                           caption="Select file", file_extension="txt")
+        self.multiple_int = els.MultipleIntBox(label="test multiple int", category=self.category_inputs, default_value=(1,2,3))
 
-        self.figure_results = els.ResultFigure(label=self.translations.figure_results, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
+        self.figure_results = els.ResultFigure(label=self.translations.figure_results, page=self.page_result,
+                                               x_axes_text="X-Axes", y_axes_text="Y-Axes", customizable_figure=0)
         self.legend_figure_results = els.FigureOption(
-            category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
+            category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
+            entries_values=[False, True]
         )
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+        self.figure_results_with_different_other_saved_figure = els.ResultFigure(label=self.translations.figure_results_with_different_other_saved_figure, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes", customizable_figure=1)
+        self.legend_figure_results_with_other_saved_figure = els.FigureOption(
+            category=self.figure_results_with_different_other_saved_figure, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
+        )
+
+        self.figure_results_with_different_other_saved_figure.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+
+        self.figure_results_with_customizable_layout = els.ResultFigure(label=self.translations.figure_results_with_customizable_layout, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes", customizable_figure=2)
+        self.legend_figure_results_with_customizable_layout = els.FigureOption(
+            category=self.figure_results_with_customizable_layout, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
+        )
+
+        self.figure_results_with_customizable_layout.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_add.add_link_2_show(self.result_export)
@@ -247,9 +263,9 @@ def run(path_list=None):  # pragma: no cover
 
     # show window
     window.showMaximized()
+
     # close app
     sys_exit(app.exec())
-
 
 if __name__ == "__main__":  # pragma: no cover
     # pass system args like a file to read
