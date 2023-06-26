@@ -113,13 +113,15 @@ class GUI(GuiStructure):
         )
         self.float_units.activate_scale_decimals()
 
+        self.sub_category = els.Subcategory("Subcategory", self.category_inputs)
+
         self.float_b = els.FloatBox(
             label="b",
             default_value=100,
             minimal_value=0,
             maximal_value=1000,
             decimal_number=2,
-            category=self.category_inputs,
+            category=self.sub_category,
         )
 
         self.list_box = els.ListBox(label="List box", default_index=0, category=self.category_inputs, entries=["1","2","3","4"])
@@ -137,11 +139,12 @@ class GUI(GuiStructure):
         self.text_box.deactivate_size_limit()
         self.pass_word = els.TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
         
-        self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs, min_length=2)
+        self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs,
+                                              min_length=2,default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
         self.flex_option.add_option(els.TextBox, name="name", default_text="layer")
-        self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5)
+        self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number = 2)
         self.flex_option.add_option(els.IntBox, name="amount", default_value=4, minimal_value=2)
-        self.flex_option.add_option(els.ListBox, name="amount", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
+        self.flex_option.add_option(els.ListBox, name="entry", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
         self.hint_flex = els.Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
         self.flex_option.add_link_2_show(self.hint_flex, 2, 6)
         self.aim_plot.add_link_2_show(self.flex_option)

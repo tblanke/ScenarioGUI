@@ -48,14 +48,17 @@ class GUI(GuiStructure):
             category=self.category_inputs,
         )
 
-        self.float_b = FloatBox(
+        self.sub_category = els.Subcategory("Subcategory", self.category_inputs)
+
+        self.float_b = els.FloatBox(
             label="b",
             default_value=100,
             minimal_value=0,
             maximal_value=1000,
             decimal_number=2,
-            category=self.category_inputs,
+            category=self.sub_category,
         )
+
         self.int_units = els.IntBoxWithUnits(
             label="IntBoxWithUnits",
             default_value=2,
@@ -93,12 +96,13 @@ class GUI(GuiStructure):
 
         self.text_box = TextBox(label="Login", default_text="Example text 15", category=self.category_inputs)
         self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)
-
-        self.flex_option = FlexibleAmount(label="layers", default_length=2, entry_mame="Layer", category=self.category_inputs)
+        
+        self.flex_option = FlexibleAmount(label="layers", default_length=2, entry_mame="Layer", category=self.category_inputs,
+                                          default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
         self.flex_option.add_option(TextBox, name="name", default_text="layer")
-        self.flex_option.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5)
+        self.flex_option.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number=2)
         self.flex_option.add_option(IntBox, name="amount", default_value=4, minimal_value=2)
-        self.flex_option.add_option(ListBox, name="amount", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
+        self.flex_option.add_option(ListBox, name="entry", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
         self.hint_flex = Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
         self.flex_option.add_link_2_show(self.hint_flex, 4, 12)
 

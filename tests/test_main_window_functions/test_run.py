@@ -22,7 +22,6 @@ def test_run(qtbot):
     main_window.delete_backup()
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     main_window.remove_previous_calculated_results()
-    main_window.status_hide("")
     main_window.add_scenario()
     file = main_window.gui_structure.filename.get_value()
     main_window.gui_structure.filename.set_value("abc")
