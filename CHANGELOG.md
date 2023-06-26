@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file including pl
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.3.0] - expected: may 2023
+## [0.3.0] - expected: June 2023
 
 ### Added
 - Multiline text box (issue 56)
@@ -18,6 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - list_ds in MainWindow removed and replaced by QListWidget data
 - FlexOption can new be provided with default values (issue 63)
+- ResultsFigure has now translatable legend texts by adding them with a commma to the current translation (example: "Label text,Y-axis,X-Axis,Line 1,Line 2") 
+  (issue 65)
 
 ## [0.2.2] - 2023-04-21
 
