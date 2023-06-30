@@ -60,6 +60,19 @@ class ResultsClass:
             ax.legend()
         return fig, ax
 
+    def create_plot_multiple_lines(self, legend: bool = False) -> tuple[plt.Figure, plt.Axes]:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        # set axes labels
+        ax.set_xlabel(r"Time (year)")
+        ax.set_ylabel(r"Temperature ($^\circ C$)")
+        ax.hlines(self.a, 0, self.b, colors="r", linestyles="dashed", label="line", lw=1)
+        ax.hlines(self.a * 2, 0, self.b, colors="b", linestyles="dashed", label="line", lw=1)
+
+        if legend:
+            ax.legend()
+        return fig, ax
+
     def to_dict(self) -> dict:
         return {"a": self.a, "b": self.b, "result": self.result}
 
@@ -209,6 +222,14 @@ class GUI(GuiStructure):
         )
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+
+        self.figure_results_multiple_lines = els.ResultFigure(label=self.translations.figure_results_multiple_lines, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
+        self.legend_figure_results_multiple_lines = els.FigureOption(
+            category=self.figure_results_multiple_lines, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
+            entries_values=[False, True]
+        )
+        self.figure_results_multiple_lines.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot_multiple_lines")
+
 
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_add.add_link_2_show(self.result_export)

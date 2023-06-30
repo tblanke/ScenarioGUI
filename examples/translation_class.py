@@ -67,6 +67,7 @@ class Translations:  # pragma: no cover
         "option_auto_saving",
         "hint_saving",
         "figure_results",
+        "figure_results_multiple_lines",
         "languages",
     )
 
@@ -151,3 +152,4 @@ class Translations:  # pragma: no cover
             "Wenn Automatisch speichern ausgewählt ist, wird das Szenario automatisch gespeichert, wenn ein Szenario geändert wird. Andernfalls muss das Szenario mit der Schaltfläche Szenario aktualisieren in der oberen linken Ecke gespeichert werden, wenn die Änderungen nicht verloren gehen sollen.",
         ]
         self.figure_results: list[str] = ["Plot,X-axis[-],Y-Axis[-],line", "Diagram,X-Achse[-],Y-Achse[-],Linie"]
+        self.figure_results_multiple_lines: list[str] = ["Plot,X-axis[-],Y-Axis[-],line,Line two", "Diagram,X-Achse[-],Y-Achse[-],Linie,Linie Zwei"]
