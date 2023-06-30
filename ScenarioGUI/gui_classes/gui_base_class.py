@@ -60,10 +60,10 @@ class BaseUI:
     frame_progress_bar: QtW.QFrame
     status_bar_progress_bar: QtW.QStatusBar
 
-    def setup_ui(self, ghe_tool):
+    def setup_ui(self, ghe_tool, screen_size: QtC.QSize):
         if not ghe_tool.objectName():
             ghe_tool.setObjectName("GHEtool")
-        ghe_tool.resize(1920, 1080)
+        ghe_tool.resize(screen_size)
         size_policy = QtW.QSizePolicy(QtW.QSizePolicy.Preferred, QtW.QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
