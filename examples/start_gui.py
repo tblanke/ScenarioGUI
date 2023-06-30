@@ -273,6 +273,7 @@ def run(path_list=None):  # pragma: no cover
     # close app
     sys_exit(app.exec())
 
+
 if __name__ == "__main__":  # pragma: no cover
     # pass system args like a file to read
     run(argv if len(argv) > 1 else None)
