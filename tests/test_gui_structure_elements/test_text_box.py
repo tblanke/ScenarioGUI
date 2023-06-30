@@ -32,6 +32,9 @@ def test_text_box(qtbot):
     # test set text
     main_window.gui_structure.text_box.set_text("Hello")
     assert main_window.gui_structure.text_box.label.text() == "Hello"
+
+    main_window.save_scenario()
+    assert "text_box" in main_window.list_ds[0].to_dict()
     main_window.delete_backup()
 
 

@@ -54,4 +54,6 @@ def test_float_box_with_units(qtbot):
     # test set text
     main_window.gui_structure.float_units.set_text("Hello")
     assert main_window.gui_structure.float_units.label.text() == "Hello"
+    main_window.save_scenario()
+    assert "float_units" in main_window.list_ds[0].to_dict()
     main_window.delete_backup()
