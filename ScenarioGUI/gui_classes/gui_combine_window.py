@@ -94,7 +94,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self._backup_filename: str = f"backup.{globs.FILE_EXTENSION}BackUp"
         # init windows of parent class
         super().__init__()
-        super().setup_ui(dialog)
+        # get the current screen to determine its size
+        current_screen = QtG.QGuiApplication.primaryScreen() if QtG.QGuiApplication.primaryScreen() is not None else QtG.QGuiApplication.screens()[0]
+        super().setup_ui(dialog, current_screen.size())
         # pyside6-rcc icons.qrc -o icons_rc.py
         self.translations: Translations = translations()  # init translation class
 
@@ -163,6 +165,29 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # set started to True
         # this is so that no changes are made when the file is opening
         self.started: bool = True
+
+    def resizeEvent(self, event: QtG.QResizeEvent) -> None:
+        """
+        update push buttons sizes
+
+        Parameters
+        ----------
+        event: QtG.QResizeEvent
+
+        Returns
+        -------
+            None
+        """
+        height = self.dia.size().height()
+        if len(self.gui_structure.list_of_pages) * 80 > height * 0.7:
+            self.size_push_b = QtC.QSize(150, int(height * 0.7 / len(self.gui_structure.list_of_pages)))  # size of big push button
+            self.size_push_s = QtC.QSize(75, int(height * 0.7 / len(self.gui_structure.list_of_pages)))  # size of small push button
+            self.check_page_button_layout(False)
+        else:
+            self.size_push_b = QtC.QSize(150, 75)  # size of big push button
+            self.size_push_s = QtC.QSize(75, 75)  # size of small push button
+            self.check_page_button_layout(False)
+        QtW.QWidget.resizeEvent(self.dia, event)
 
     @property
     def list_ds(self) -> list[DataStorage]:
@@ -261,6 +286,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.list_widget_scenario.itemSelectionChanged.connect(self._always_scenario_selected)
         self.gui_structure.option_auto_saving.change_event(self.change_auto_saving)
         self.dia.closeEvent = self.closeEvent
+        self.dia.resizeEvent = self.resizeEvent
 
     def change_auto_saving(self):
         if self.gui_structure.option_auto_saving.get_value() == 1:
