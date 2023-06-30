@@ -95,9 +95,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # init windows of parent class
         super().__init__()
         # get the current screen to determine its size
-        current_screen = QtG.QGuiApplication.primaryScreen()
-        if current_screen is None:
-            current_screen = QtG.QGuiApplication.screens()[0]
+        current_screen = QtG.QGuiApplication.primaryScreen() if QtG.QGuiApplication.primaryScreen() is not None else QtG.QGuiApplication.screens()[0]
         super().setup_ui(dialog, current_screen.size())
         # pyside6-rcc icons.qrc -o icons_rc.py
         self.translations: Translations = translations()  # init translation class
