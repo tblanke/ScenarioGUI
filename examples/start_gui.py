@@ -130,14 +130,17 @@ class GUI(GuiStructure):
             category=self.sub_category,
         )
 
-        self.list_box = els.ListBox(label="List box", default_index=0, category=self.category_inputs, entries=["1","2","3","4"])
+        self.list_box = els.ListBox(label="List box", default_index=0, category=self.category_inputs,
+                                    entries=["1", "2", "3", "4"])
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
-        self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
+        self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs,
+                                        dialog_text="Hello", error_text="no file found",
                                         file_extension=["txt", "csv"])
 
-        self.button_box = els.ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
-
+        self.button_box = els.ButtonBox(label="a or b?", default_index=0, entries=["a", "b"],
+                                        category=self.category_inputs)
+        self.aim_plot.add_link_2_show(self.button_box)
         self.function_button = els.FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
 
         self.text_box = els.TextBox(label="Login", default_text="Hello", category=self.category_inputs)
