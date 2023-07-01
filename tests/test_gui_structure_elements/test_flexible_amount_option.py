@@ -92,6 +92,9 @@ def test_flex_amount_option(qtbot):
     assert flex_option.frame.layout().itemAtPosition(0, 4).widget().text() == "int"
     assert flex_option.frame.layout().itemAtPosition(0, 5).widget().text() == "list"
 
+    main_window.save_scenario()
+    assert "flex_option" in main_window.list_ds[0].to_dict()
+
     flex_option.hide()
     assert flex_option.frame.isHidden()
     assert flex_option.label.isHidden()

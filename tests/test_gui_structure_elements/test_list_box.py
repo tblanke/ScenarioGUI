@@ -32,5 +32,6 @@ def test_list_box(qtbot):
     assert main_window.gui_structure.list_small_2.get_value() == (3, "3")
     main_window.gui_structure.list_small_2._init_links()
     assert main_window.gui_structure.list_small_2.get_value() == (3, "3")
-
+    main_window.save_scenario()
+    assert "list_box" in main_window.list_ds[0].to_dict()
     main_window.delete_backup()

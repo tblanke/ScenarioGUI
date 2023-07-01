@@ -45,4 +45,6 @@ def test_int_box(qtbot):
     assert not main_window.gui_structure.float_b.is_hidden()
     int_a.set_value(22)
     assert not main_window.gui_structure.float_b.is_hidden()
+    main_window.save_scenario()
+    assert "int_a" in main_window.list_ds[0].to_dict()
     main_window.delete_backup()

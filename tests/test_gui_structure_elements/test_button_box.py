@@ -34,4 +34,6 @@ def test_button_box(qtbot):
     assert main_window.gui_structure.int_a.is_hidden()
     button_box.set_value(button_box.default_value)
     assert not main_window.gui_structure.int_a.is_hidden()
+    main_window.save_scenario()
+    assert "button_box" in main_window.list_ds[0].to_dict()
     main_window.delete_backup()

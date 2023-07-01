@@ -109,7 +109,7 @@ class FlexibleAmount(Option):
         self.frame.layout().addWidget(delete_button, length + 1, i + 1)
 
     def _add_entry_at_row(self, row: int):
-        values = self.get_value()
+        values = list(self.get_value())
         values.insert(row + 1, values[row]) if row + 1 < len(values) else values.append(values[row])
         self.set_value(values)
         for option, (min_length, max_length) in self.linked_options:
@@ -133,14 +133,14 @@ class FlexibleAmount(Option):
         row = (length - 1) if row is None else row
         if row == length - 1 == 0:
             return
-        values = self.get_value()
+        values = list(self.get_value())
         del values[row]
         self.set_value(values)
         for option, (min_length, max_length) in self.linked_options:
             self.show_option(option, min_length, max_length)
         _ = [func() for func in self.func_on_change]
 
-    def get_value(self) -> list[list[str | float | int | bool]]:
+    def get_value(self) -> tuple[tuple[str | float | int | bool]]:
         """
         This function gets the value of the FloatBox.
 
@@ -149,7 +149,7 @@ class FlexibleAmount(Option):
         list of values
             Values of the FlexibleAmount
         """
-        return [[option.get_value() for option in option_tuple] for option_tuple in self.option_entries]
+        return tuple(tuple(option.get_value() for option in option_tuple) for option_tuple in self.option_entries)
     
     def set_text(self, name: str) -> None:
         """
