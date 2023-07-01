@@ -18,8 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Scenario changing without change (issue 50)
 - The scrolling in IntBoxes, FloatBoxes and ComboBoxes is disables and just working if they are selected (issue 54)
 - The error messages are now completely visible (issue 59)
-- Exits full screen when hovering over page buttons (issue 67)
 - Flexible amount does not save (issue 69)
+- Exits full screen when hovering over page buttons (issue 67)
 
 ### Changed
 - list_ds in MainWindow removed and replaced by QListWidget data
