@@ -263,7 +263,7 @@ class Option(metaclass=abc.ABCMeta):
         # if self.is_hidden():
         #     return
         self.frame.hide()
-        self.frame.setEnabled(False) if not Option.hidden_option_editable else None
+        self.frame.setEnabled(False) if not self.hidden_option_editable else None
         [option.hide() for option, value in self.linked_options]
 
     def is_hidden(self) -> bool:

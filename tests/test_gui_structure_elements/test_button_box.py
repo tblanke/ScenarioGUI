@@ -56,6 +56,16 @@ def test_button_box(qtbot):
     Option.hidden_option_editable = False
     main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(1))
     assert np.isclose(button_box.default_value, button_box.get_value())
+    main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(2))
     Option.hidden_option_editable = True
+    main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(1))
+    assert np.isclose(button_box.default_value + 1, button_box.get_value())
+    main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(2))
+    button_box.hidden_option_editable = False
+    assert np.isclose(button_box.default_value, button_box.get_value())
+    main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(2))
+    Option.hidden_option_editable = True
+    assert not button_box.hidden_option_editable
+    button_box.hidden_option_editable = True
     main_window.delete_backup()
 
