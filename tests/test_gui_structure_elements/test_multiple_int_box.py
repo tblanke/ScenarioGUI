@@ -45,4 +45,6 @@ def test_multiple_int_box(qtbot):
     assert not main_window.gui_structure.float_b.is_hidden()
     multiple_ints.set_value((6,22,7))
     assert not main_window.gui_structure.float_b.is_hidden()
+    main_window.save_scenario()
+    assert "multiple_ints" in main_window.list_ds[0].to_dict()
     main_window.delete_backup()

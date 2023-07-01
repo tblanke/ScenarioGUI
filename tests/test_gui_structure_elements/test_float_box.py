@@ -48,4 +48,6 @@ def test_float_box(qtbot):
     # test set text
     main_window.gui_structure.float_b.set_text("Hello")
     assert main_window.gui_structure.float_b.label.text() == "Hello"
+    main_window.save_scenario()
+    assert "float_b" in main_window.list_ds[0].to_dict()
     main_window.delete_backup()
