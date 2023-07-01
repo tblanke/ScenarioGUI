@@ -32,6 +32,8 @@ def test_multiline_text_box(qtbot):
     # test set text
     main_window.gui_structure.text_box_multi_line.set_text("Hello")
     assert main_window.gui_structure.text_box_multi_line.label.text() == "Hello"
+    main_window.save_scenario()
+    assert "text_box_multi_line" in main_window.list_ds[0].to_dict()
     main_window.delete_backup()
 
 

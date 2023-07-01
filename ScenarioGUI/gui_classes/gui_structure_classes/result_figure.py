@@ -4,22 +4,76 @@ result figure class script
 from __future__ import annotations
 
 import copy
-from typing import TYPE_CHECKING, Optional
+import logging
+import os
+from typing import TYPE_CHECKING
 
+import matplotlib as mpl
+import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
+import numpy as np
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends import qt_compat
+from matplotlib.colors import to_rgb
 
 import ScenarioGUI.global_settings as globs
 
 from ...utils import change_font_size
+from . import FunctionButton, IntBox
+from .button_box import ButtonBox
 from .category import Category
+from .font_list_box import FontListBox
+from .multiple_int_box import MultipleIntBox
 
 if TYPE_CHECKING:  # pragma: no cover
     from .page import Page
+
+
+def get_name(font: fm.FontProperties) -> str:
+    """
+    get the name of the font and catch the MacOS runtime error
+
+    Parameters
+    ----------
+    font: fm.FontProperties
+        font to get name for
+    Returns
+    -------
+        str
+    """
+    try:
+        return font.get_name()
+    except RuntimeError:  # pragma: no cover
+        return "ZZ"
+
+
+font_list: list[fm.FontProperties] = [fm.FontProperties(fname=font_path, size=12) for font_path in fm.findSystemFonts()]
+font_list = sorted(font_list, key=lambda x: get_name(x))
+font_name_set = set()
+font_list = [font for font in font_list if get_name(font) not in font_name_set and not font_name_set.add(get_name(font))]
+
+
+# overwrite navigationToolbar
+class NavigationToolbarScenarioGUI(NavigationToolbar):
+
+    def __init__(self, overwrite: bool, canvas, parent, coordinate):
+        self.overwrite = overwrite
+        super().__init__(canvas, parent, coordinate)
+
+    def save_figure(self, *args):
+        if not self.overwrite:
+            return super().save_figure(args)
+        old_figure = self.canvas.figure
+        self.canvas.figure = copy.deepcopy(self.canvas.figure)
+        globs.set_print_layout(self.canvas.figure.get_axes()[0])
+        self.canvas.figure.set_facecolor('white')
+        res = super().save_figure(args)
+        self.canvas.figure = old_figure
+        return res
 
 
 class ResultFigure(Category):
@@ -29,7 +83,8 @@ class ResultFigure(Category):
     It is a category showing a figure and optionally a couple of FigureOptions to alter this figure.
     """
 
-    def __init__(self, label: str | list[str], page: Page, x_axes_text: str | None = None, y_axes_text: str| None = None, legend_text: str | None = None):
+    def __init__(self, label: str | list[str], page: Page, x_axes_text: str | None = None,
+                 y_axes_text: str | None = None, customizable_figure: int = 0):
         """
 
         Parameters
@@ -38,6 +93,14 @@ class ResultFigure(Category):
             Label text of the ResultFigure
         page : Page
             Page where the ResultFigure should be placed (the result page)
+        x_axes_text : str
+            Text of the x-axes-label
+        y_axes_text : str
+            Text of the y-axes-label
+        customizable_figure : int
+            0 if the figure should not be customizable,
+            1 if the figure should be automatically saved without a background and with black axes
+            2 if the figure should be fully customizable in the gui itself by the user
 
         Examples
         --------
@@ -60,8 +123,9 @@ class ResultFigure(Category):
         self.fig: plt.Figure = plt.figure()
         self.a_x: plt.Axes | None = self.fig.add_subplot(111)
         self.canvas: FigureCanvas = FigureCanvas(self.fig)
+        self.canvas.a_x = self.a_x
         # create navigation toolbar and replace icons with white ones
-        self.toolbar: NavigationToolbar = NavigationToolbar(self.canvas, None, True)
+        self.toolbar: NavigationToolbarScenarioGUI = NavigationToolbarScenarioGUI(overwrite=customizable_figure==1, canvas=self.canvas, parent=None, coordinate=True)
         for name, icon_name in [
             ("save_figure", "Save_Inv"),
             ("home", "Home"),
@@ -88,6 +152,125 @@ class ResultFigure(Category):
         self.to_show: bool = True
         self.set_text(self.label_text[0])
         self.scroll_area: QtW.QScrollArea | None = None
+        self.customizable_figure: int = customizable_figure
+        # Connect the resizeEvent to the update_figure_layout function
+        self.frame_canvas.resizeEvent = self.update_figure_layout
+
+        self.default_settings = {}
+
+        if customizable_figure == 2:
+            self.default_figure_colors = ButtonBox(label="Should the default colors be used?", default_index=1, entries=["No", "Yes"], category=self)
+            self.default_figure_colors.change_event(self.change_2_default_settings)
+            self.option_figure_background = MultipleIntBox(
+                label="Figure background color in rgb code?",
+                default_value=np.array(globs.DARK.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+                category=self,
+                minimal_value=0,
+                maximal_value=255,
+                step=1,
+            )
+            self.option_plot_background = MultipleIntBox(
+                label="Plot background color in rgb code?",
+                default_value=np.array(globs.WHITE.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+                category=self,
+                minimal_value=0,
+                maximal_value=255,
+                step=1,
+            )
+            self.option_axes_text = MultipleIntBox(
+                label="Axes text color in rgb code?",
+                default_value=np.array(globs.WHITE.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+                category=self,
+                minimal_value=0,
+                maximal_value=255,
+                step=1,
+            )
+            self.option_axes = MultipleIntBox(
+                label="Axes color in rgb code?",
+                default_value=np.array(globs.WHITE.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+                category=self,
+                minimal_value=0,
+                maximal_value=255,
+                step=1,
+            )
+            self.option_title = MultipleIntBox(
+                label="Title color in rgb code?",
+                default_value=np.array(globs.WHITE.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+                category=self,
+                minimal_value=0,
+                maximal_value=255,
+                step=1,
+            )
+            self.option_legend_text = MultipleIntBox(
+                label="Legend text color in rgb code?",
+                default_value=np.array(globs.DARK.replace("rgb(", "").replace(")", "").split("," ""), dtype=np.float64),
+                category=self,
+                minimal_value=0,
+                maximal_value=255,
+                step=1,
+            )
+            self.option_font_size = IntBox(label="Font Size:", default_value=globs.FONT_SIZE, minimal_value=6, maximal_value=40, category=self)
+            self.option_font = FontListBox(
+                label="Font family: ",
+                category=self,
+                entries=[get_name(font) for font in font_list],
+                default_index=[get_name(font).upper() for font in font_list].index(globs.FONT.upper()),
+            )
+            self.option_save_layout = FunctionButton(button_text="Save layout", category=self, icon="Save")
+            self.default_figure_colors.add_link_2_show(self.option_figure_background, on_index=0)
+            self.default_figure_colors.add_link_2_show(self.option_axes, on_index=0)
+            self.default_figure_colors.add_link_2_show(self.option_legend_text, on_index=0)
+            self.default_figure_colors.add_link_2_show(self.option_axes_text, on_index=0)
+            self.default_figure_colors.add_link_2_show(self.option_plot_background, on_index=0)
+            self.default_figure_colors.add_link_2_show(self.option_font_size, on_index=0)
+            self.default_figure_colors.add_link_2_show(self.option_title, on_index=0)
+            self.default_figure_colors.add_link_2_show(self.option_font, on_index=0)
+            self.default_figure_colors.add_link_2_show(self.option_save_layout, on_index=0)
+            self.option_figure_background.change_event(self.change_figure_background_color)
+            self.option_axes_text.change_event(self.change_axis_text_color)
+            self.option_plot_background.change_event(self.change_plot_background_color)
+            self.option_axes.change_event(self.change_axes_color)
+            self.option_legend_text.change_event(self.change_legend_text_color)
+            self.option_font_size.change_event(self.change_font)
+            self.option_title.change_event(self.change_title_color)
+            self.option_font.change_event(self.change_font)
+            self.list_of_options = []
+            self.update_default_settings()
+
+    def update_default_settings(self):
+        self.default_settings = {"figure_background": self.option_figure_background.get_value(),
+                                 "plot_background": self.option_plot_background.get_value(),
+                                 "axes_text": self.option_axes_text.get_value(),
+                                 "axes": self.option_axes.get_value(),
+                                 "title": self.option_title.get_value(),
+                                 "legend_text": self.option_legend_text.get_value(),
+                                 "font_size": self.option_font_size.get_value(),
+                                 "font": self.option_font.get_value()}
+
+    def change_2_default_settings(self):
+        if self.default_figure_colors.get_value() == 1:
+            self.fig.set_facecolor(to_rgb(np.array(self.default_settings["figure_background"]) / 255))
+            self.a_x.set_facecolor(to_rgb(np.array(self.default_settings["plot_background"]) / 255))
+            self.a_x.tick_params(axis="x", colors=to_rgb(np.array(self.default_settings["axes"]) / 255))
+            self.a_x.tick_params(axis="y", colors=to_rgb(np.array(self.default_settings["axes"]) / 255))
+            self._change_axes_color(self.default_settings["axes_text"])
+            self._change_legend_text_color(self.default_settings["legend_text"])
+            self._change_font(self.default_settings["font"][0], self.default_settings["font_size"])
+            self.fig.tight_layout()
+            self.canvas.draw()
+            return
+        self.change_figure_background_color()
+        self.change_plot_background_color()
+        self.change_axis_text_color()
+        self.change_axes_color()
+        self.change_legend_text_color()
+        self.change_title_color()
+        self.change_font()
+
+    def update_figure_layout(self, event):
+        self.canvas.draw()  # Redraw the canvas
+        self.fig.tight_layout()  # Adjust the layout of the figure
+        QtW.QFrame.resizeEvent(self.frame_canvas, event)
 
     def replace_figure(self, fig: plt.Figure) -> None:
         """
@@ -104,6 +287,7 @@ class ResultFigure(Category):
         """
         plt.close(self.fig)
         self.fig = copy.copy(fig)
+        plt.close(fig)
         self.a_x = fig.get_axes()[0]
         self.a_x.set_xlabel(self.x_axes_text)
         self.a_x.set_ylabel(self.y_axes_text)
@@ -116,7 +300,7 @@ class ResultFigure(Category):
         self.toolbar.hide()
         canvas = FigureCanvas(self.fig)
         # create navigation toolbar and replace icons with white ones
-        toolbar: NavigationToolbar = NavigationToolbar(canvas, self.frame_canvas, True)
+        toolbar: NavigationToolbarScenarioGUI = NavigationToolbarScenarioGUI(overwrite=self.customizable_figure==1, canvas=canvas, parent=self.frame_canvas, coordinate=True)
         for name, icon_name in [
             ("save_figure", "Save_Inv"),
             ("home", "Home"),
@@ -140,8 +324,13 @@ class ResultFigure(Category):
         self.layout_frame_canvas.replaceWidget(self.toolbar, toolbar)
 
         self.canvas = canvas
+        self.canvas.a_x = copy.deepcopy(self.a_x)
         self.canvas.mpl_connect("scroll_event", self.scrolling)
         self.toolbar = toolbar
+        if self.customizable_figure == 2:
+            self.change_2_default_settings()
+        else:
+            self._change_font([get_name(font).upper() for font in font_list].index(globs.FONT.upper()), globs.FONT_SIZE)
 
     def create_widget(self, page: QtW.QScrollArea, layout: QtW.QLayout):
         """
@@ -176,8 +365,92 @@ class ResultFigure(Category):
         # add canvas and toolbar to local frame
         self.layout_frame_canvas.addWidget(self.canvas)
         self.layout_frame_canvas.addWidget(self.toolbar)
+        if self.customizable_figure == 2:
+            for option in [
+                self.default_figure_colors,
+                self.option_figure_background,
+                self.option_plot_background,
+                self.option_axes,
+                self.option_axes_text,
+                self.option_legend_text,
+                self.option_title,
+                self.option_font_size,
+                self.option_font,
+                self.option_save_layout,
+            ]:
+                option.create_widget(self.frame, self.layout_frame)
+                if hasattr(option, "init_links"):
+                    option.init_links()
         self.scroll_area = page
         self.canvas.mpl_connect("scroll_event", self.scrolling)
+
+    def change_figure_background_color(self):
+        self.fig.set_facecolor(to_rgb(np.array(self.option_figure_background.get_value()) / 255))
+        self.fig.tight_layout()
+        self.canvas.draw()
+
+    def change_plot_background_color(self):
+        self.a_x.set_facecolor(to_rgb(np.array(self.option_plot_background.get_value()) / 255))
+        self.fig.tight_layout()
+        self.canvas.draw()
+
+    def change_axes_color(self):
+        self._change_axes_color(self.option_axes.get_value())
+        self.fig.tight_layout()
+        self.canvas.draw()
+
+    def _change_axes_color(self, color: tuple[int, int, int]):
+        self.a_x.tick_params(axis="x", colors=to_rgb(np.array(color) / 255))
+        self.a_x.tick_params(axis="y", colors=to_rgb(np.array(color) / 255))
+        self.a_x.spines["top"].set_color(to_rgb(np.array(color) / 255))
+        self.a_x.spines["bottom"].set_color(to_rgb(np.array(color) / 255))
+        self.a_x.spines["left"].set_color(to_rgb(np.array(color) / 255))
+        self.a_x.spines["right"].set_color(to_rgb(np.array(color) / 255))
+
+    def change_title_color(self):
+        self.a_x.set_title(self.a_x.get_title(), color=to_rgb(np.array(self.option_title.get_value()) / 255))
+        self.fig.tight_layout()
+        self.canvas.draw()
+
+    def change_axis_text_color(self):
+        self.a_x.xaxis.label.set_color(to_rgb(np.array(self.option_axes_text.get_value()) / 255))
+        self.a_x.yaxis.label.set_color(to_rgb(np.array(self.option_axes_text.get_value()) / 255))
+        self.fig.tight_layout()
+        self.canvas.draw()
+
+    def change_legend_text_color(self):
+        self._change_legend_text_color(self.option_legend_text.get_value())
+        self.fig.tight_layout()
+        self.canvas.draw()
+
+    def _change_legend_text_color(self, colors: tuple[int, int, int]):
+        legend = self.a_x.get_legend()
+        if legend is None:
+            return
+        for text in legend.get_texts():
+            text.set_color(to_rgb(np.array(colors) / 255))
+
+    def change_font(self):
+        self._change_font(self.option_font.get_value()[0], self.option_font_size.get_value())
+        self.fig.tight_layout()
+        self.canvas.draw()
+
+    def _change_font(self, font_index: int, font_size: int):
+        font: fm.FontProperties = font_list[font_index]
+        font.set_size(font_size)
+        font.set_style("normal")
+        font.set_weight("normal")
+
+        self.a_x.set_xlabel(self.a_x.get_xlabel(), fontproperties=font)
+        self.a_x.set_ylabel(self.a_x.get_ylabel(), fontproperties=font)
+        _ = [label.set_fontproperties(font) for label in self.a_x.get_xticklabels()]
+        _ = [label.set_fontproperties(font) for label in self.a_x.get_yticklabels()]
+        if self.a_x.get_title() is not None:
+            self.a_x.set_title(self.a_x.get_title(), fontproperties=font)
+        legend = self.a_x.get_legend()
+        if legend is not None:
+            for text in legend.get_texts():
+                text.set_font_properties(font)
 
     def scrolling(self, event) -> None:
         """
@@ -310,6 +583,18 @@ class ResultFigure(Category):
             None
         """
         change_font_size(self.label, size)
+        if self.customizable_figure != 2:
+            return
+        self.option_font_size.set_font_size(size)
+        self.option_font.set_font_size(size)
+        self.option_title.set_font_size(size)
+        self.option_axes.set_font_size(size)
+        self.option_figure_background.set_font_size(size)
+        self.option_save_layout.set_font_size(size)
+        self.option_plot_background.set_font_size(size)
+        self.option_legend_text.set_font_size(size)
+        self.default_figure_colors.set_font_size(size)
+        self.option_axes_text.set_font_size(size)
 
     def hide(self, results: bool = False) -> None:
         """

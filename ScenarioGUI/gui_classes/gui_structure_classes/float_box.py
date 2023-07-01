@@ -16,6 +16,7 @@ from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
+
     import PySide6.QtGui as QtG
 
     from .category import Category
@@ -244,8 +245,8 @@ class FloatBox(Option):
         frame: QtW.QFrame,
         layout_parent: QtW.QLayout,
         *,
-        row: int = None,
-        column: int = None,
+        row: int | None = None,
+        column: int | None = None,
     ) -> None:
         """
         This functions creates the FloatBox widget in the frame.

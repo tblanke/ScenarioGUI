@@ -106,6 +106,9 @@ class GUI(GuiStructure):
         self.hint_flex = Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
         self.flex_option.add_link_2_show(self.hint_flex, 4, 12)
 
+        self.multiple_ints = els.MultipleIntBox(label="Multiple int box:", category=self.category_inputs, default_value=(1, 2, 3), minimal_value=(1, 1, 1),
+                                                maximal_value=(100, 110, 120))
+
         self.category_grid = Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
         self.hint_1 = Hint(category=self.category_grid, hint="Grid example")
@@ -143,8 +146,12 @@ class GUI(GuiStructure):
             category=self.category_grid,
         )
         self.text_box_small = TextBox(label="", default_text="Example text 15", category=self.category_grid, password=True)
+        self.font_style = els.FontListBox(label="Font label", category=self.category_grid, entries=["Arial", "Verdana"], default_index=0)
+        self.multiple_ints_small = els.MultipleIntBox(label="Multiple int box:", category=self.category_grid, default_value=(1, 2, 3), minimal_value=(1, 1,
+                                                                                                                                                        1),
+                                                maximal_value=(100, 110, 120))
 
-        self.text_box_multi_line_small  = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_grid)
+        self.text_box_multi_line_small = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_grid)
         self.category_grid.activate_graphic_left()
         self.category_grid.activate_graphic_right()
 
@@ -175,10 +182,38 @@ class GUI(GuiStructure):
         )
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+        self.figure_results_with_different_other_saved_figure = els.ResultFigure(label=self.translations.figure_results,
+                                                                                 page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes",
+                                                                                 customizable_figure=1)
+        self.legend_figure_results_with_other_saved_figure = els.FigureOption(
+            category=self.figure_results_with_different_other_saved_figure, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
+            entries_values=[False, True]
+        )
+
+        self.figure_results_with_different_other_saved_figure.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+
+        self.figure_results_with_customizable_layout = els.ResultFigure(label=self.translations.figure_results, page=self.page_result,
+                                                                        x_axes_text="X-Axes", y_axes_text="Y-Axes", customizable_figure=2)
+        self.legend_figure_results_with_customizable_layout = els.FigureOption(
+            category=self.figure_results_with_customizable_layout, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
+            entries_values=[False, True]
+        )
+
+        self.figure_results_with_customizable_layout.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+
+        self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_sub.add_link_2_show(self.result_text_sub)
         self.aim_plot.add_link_2_show(self.figure_results)
+
+        self.aim_add.add_link_2_show(self.figure_results_with_different_other_saved_figure)
+        self.aim_sub.add_link_2_show(self.figure_results_with_different_other_saved_figure)
+        self.aim_plot.add_link_2_show(self.figure_results_with_different_other_saved_figure)
+
+        self.aim_add.add_link_2_show(self.figure_results_with_customizable_layout)
+        self.aim_sub.add_link_2_show(self.figure_results_with_customizable_layout)
+        self.aim_plot.add_link_2_show(self.figure_results_with_customizable_layout)
 
         self.create_settings_page()
         self.create_lists()

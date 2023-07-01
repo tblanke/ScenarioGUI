@@ -1,4 +1,5 @@
 import PySide6.QtWidgets as QtW
+import numpy as np
 
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
@@ -74,7 +75,10 @@ def test_run(qtbot):
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     main_window.list_widget_scenario.setCurrentItem(item)
     main_window.display_results()
-    main_window.gui_structure.legend_figure_results.set_value(("", 1))
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.set_value(("", 1))
+    main_window.gui_structure.figure_results_with_customizable_layout.change_font()
+    main_window.gui_structure.figure_results_with_customizable_layout.a_x.set_title(None)
+    main_window.gui_structure.figure_results_with_customizable_layout.change_title_color()
 
     main_window.remove_previous_calculated_results()
     # test value error results
