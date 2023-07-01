@@ -60,6 +60,19 @@ class ResultsClass:
             ax.legend()
         return fig, ax
 
+    def create_plot_multiple_lines(self, legend: bool = False) -> tuple[plt.Figure, plt.Axes]:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        # set axes labels
+        ax.set_xlabel(r"Time (year)")
+        ax.set_ylabel(r"Temperature ($^\circ C$)")
+        ax.hlines(self.a, 0, self.b, colors="r", linestyles="dashed", label="line", lw=1)
+        ax.hlines(self.a * 2, 0, self.b, colors="b", linestyles="dashed", label="line", lw=1)
+
+        if legend:
+            ax.legend()
+        return fig, ax
+
     def to_dict(self) -> dict:
         return {"a": self.a, "b": self.b, "result": self.result}
 
@@ -79,12 +92,6 @@ class GUI(GuiStructure):
     def __init__(self, default_parent: QtW.QWidget, translations: Translations):
         super().__init__(default_parent, translations)
         self.page_inputs = els.Page(name=self.translations.page_inputs, button_name="Inputs", icon="Add.svg")
-        self.page_inputsa = els.Page(name=self.translations.page_inputs, button_name="Inputs", icon="Add.svg")
-        self.page_inputsb = els.Page(name=self.translations.page_inputs, button_name="Inputs", icon="Add.svg")
-        self.page_inputsc = els.Page(name=self.translations.page_inputs, button_name="Inputs", icon="Add.svg")
-        self.page_inputsd = els.Page(name=self.translations.page_inputs, button_name="Inputs", icon="Add.svg")
-        self.page_inputse = els.Page(name=self.translations.page_inputs, button_name="Inputs", icon="Add.svg")
-
         self.aim_add = els.Aim(label="Adding", icon="Add", page=self.page_inputs)
         self.aim_sub = els.Aim(label="Substract", icon="Delete", page=self.page_inputs)
         self.aim_plot = els.Aim(label="Plot", icon="Parameters", page=self.page_inputs)
@@ -208,29 +215,21 @@ class GUI(GuiStructure):
 
         self.result_export = els.ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
                                           caption="Select file", file_extension="txt")
-        self.multiple_int = els.MultipleIntBox(label="test multiple int", category=self.category_inputs, default_value=(1,2,3))
 
-        self.figure_results = els.ResultFigure(label=self.translations.figure_results, page=self.page_result,
-                                               x_axes_text="X-Axes", y_axes_text="Y-Axes", customizable_figure=0)
+        self.figure_results = els.ResultFigure(label=self.translations.figure_results, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
         self.legend_figure_results = els.FigureOption(
-            category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
-            entries_values=[False, True]
+            category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
         )
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
-        self.figure_results_with_different_other_saved_figure = els.ResultFigure(label=self.translations.figure_results_with_different_other_saved_figure, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes", customizable_figure=1)
-        self.legend_figure_results_with_other_saved_figure = els.FigureOption(
-            category=self.figure_results_with_different_other_saved_figure, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
+
+        self.figure_results_multiple_lines = els.ResultFigure(label=self.translations.figure_results_multiple_lines, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
+        self.legend_figure_results_multiple_lines = els.FigureOption(
+            category=self.figure_results_multiple_lines, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
+            entries_values=[False, True]
         )
+        self.figure_results_multiple_lines.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot_multiple_lines")
 
-        self.figure_results_with_different_other_saved_figure.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
-
-        self.figure_results_with_customizable_layout = els.ResultFigure(label=self.translations.figure_results_with_customizable_layout, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes", customizable_figure=2)
-        self.legend_figure_results_with_customizable_layout = els.FigureOption(
-            category=self.figure_results_with_customizable_layout, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
-        )
-
-        self.figure_results_with_customizable_layout.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_add.add_link_2_show(self.result_export)
@@ -269,7 +268,6 @@ def run(path_list=None):  # pragma: no cover
 
     # show window
     window.showMaximized()
-
     # close app
     sys_exit(app.exec())
 

@@ -65,7 +65,8 @@ text_no_result;No results are yet calculated;Es wurden noch keine Ergebnisse ber
 category_save_scenario;Scenario settings;Szenarioeinstellungen
 option_auto_saving;Use automatic saving?, no , yes ;Automatisches speichern nutzen?, Nein, Ja
 hint_saving;If Auto saving is selected the scenario will automatically saved if a scenario is changed. Otherwise the scenario has to be saved with the Update scenario button in the upper left corner if the changes should not be lost.;Wenn Automatisch speichern ausgewählt ist, wird das Szenario automatisch gespeichert, wenn ein Szenario geändert wird. Andernfalls muss das Szenario mit der Schaltfläche Szenario aktualisieren in der oberen linken Ecke gespeichert werden, wenn die Änderungen nicht verloren gehen sollen.
-figure_results;Plot,Y-Axis[-],X-axis[-];Diagram,Y-Achse[-],X-Achse[-]
+figure_results;Plot,X-axis[-],Y-Axis[-],line;Diagram,X-Achse[-],Y-Achse[-],Linie
+figure_results_multiple_lines;Plot,X-axis[-],Y-Axis[-],Line one,Line two;Diagram,X-Achse[-],Y-Achse[-],Linie Eins,Linie Zwei
 figure_results_with_customizable_layout;Plot with customizable layout,Y-Axis[-],X-axis[-];Plot mit anpassbarem Layout,Y-Achse[-],X-Achse[-]
 figure_results_with_different_other_saved_figure;Plot with changed default figure saving,Y-Axis[-],X-axis[-];Plot mit geänderter Standardabbildung speichern,Y-Achse[-],X-Achse[-]
 option_font;Font family: ;Schriftart: 
@@ -78,3 +79,4 @@ option_figure_background;Figure background color in rgb code?;Hintergrundfarbe i
 category_default_figure_settings;Default figure settings;Standarddiagrammeinstellungen
 option_font_size;Font Size:;Schriftgröße:
 default_figure_colors;Should the default colors be used?, No , Yes ;Sollen die Standardeinstellungen für die Farben verwendet werden?, Nein , Ja 
+
