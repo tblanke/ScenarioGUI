@@ -170,7 +170,8 @@ class GUI(GuiStructure):
         self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs,
                                               min_length=2,default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
         self.flex_option.add_option(els.TextBox, name="name", default_text="layer")
-        self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5, maximal_value=1_000_000, decimal_number = 2)
+
+        self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number = 2)
         self.flex_option.add_option(els.IntBox, name="amount", default_value=4, minimal_value=2)
         self.flex_option.add_option(els.ListBox, name="entry", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
         self.hint_flex = els.Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)

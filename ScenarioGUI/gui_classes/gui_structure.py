@@ -4,6 +4,7 @@ It contains all the options, categories etc. that should appear on the GUI.
 """
 from __future__ import annotations
 
+import logging
 from functools import partial
 from typing import TYPE_CHECKING
 
@@ -35,6 +36,7 @@ if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
 
     from ScenarioGUI.gui_classes.translation_class import Translations
+    from collections.abc import Callable
 
 
 class GuiStructure:
