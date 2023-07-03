@@ -114,7 +114,9 @@ class Aim:
         -------
         None
         """
-        self.widget.clicked.connect(lambda: function_to_be_called(*args))  # pylint: disable=E1101
+        def new_function_to_be_called():
+            QtC.QTimer.singleShot(10, lambda: function_to_be_called(*args))
+        self.widget.clicked.connect(new_function_to_be_called)  # pylint: disable=E1101
 
     def add_link_2_show(self, option: Option | Category | FunctionButton | Hint):
         """

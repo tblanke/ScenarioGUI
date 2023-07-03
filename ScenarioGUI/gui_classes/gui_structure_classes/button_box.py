@@ -7,6 +7,7 @@ from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
+import PySide6.QtCore as QtC  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 
@@ -164,8 +165,10 @@ class ButtonBox(Option):
         -------
         None
         """
+        def new_function_to_be_called():
+            QtC.QTimer.singleShot(10, function_to_be_called)
         for button in self.widget:
-            button.clicked.connect(function_to_be_called)  # pylint: disable=E1101
+            button.clicked.connect(new_function_to_be_called)  # pylint: disable=E1101
 
     def set_text(self, name: str) -> None:
         """
