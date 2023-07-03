@@ -56,6 +56,9 @@ class GuiStructure:
         FunctionButton.default_parent = default_parent
         self.translations = translations
 
+        # flag for loading the gui
+        self.started: bool = False
+
         # create page
         # self.page_result = None
 

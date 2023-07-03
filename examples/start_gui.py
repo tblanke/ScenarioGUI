@@ -4,6 +4,7 @@ script to start the GUI
 # pragma: no cover
 from __future__ import annotations
 
+import logging
 import sys
 from pathlib import Path
 from platform import system
@@ -142,7 +143,7 @@ class GUI(GuiStructure):
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
                                         file_extension=["txt", "csv"])
-
+        self.filename.change_event(self.check)
         self.button_box = els.ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 
         self.function_button = els.FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
@@ -243,6 +244,9 @@ class GUI(GuiStructure):
         self.page_result.set_next_page(self.page_settings)
         self.page_settings.set_previous_page(self.page_result)
 
+    def check(self) -> bool:
+        if self.started:
+            logging.info('This should not be shown whilst loading')
 
 def run(path_list=None):  # pragma: no cover
     import PySide6.QtWidgets as QtW
