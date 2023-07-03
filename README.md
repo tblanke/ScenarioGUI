@@ -48,8 +48,7 @@ pip install ScenarioGUI
 Developers can clone this repository.
 
 It is a good practise to use virtual environments (venv) when working on a (new) Python project so different Python and package versions don't conflict with 
-eachother. For ScenarioGUI, Python 3.10 or higher is recommended. General information about Python virtual environments can be found [here](https://docs.
-Python.org/3.9/library/venv.html) and in [this article](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/).
+eachother. For ScenarioGUI, Python 3.10 or higher is recommended. General information about Python virtual environments can be found [here](https://docs.python.org/3.9/library/venv.html) and in [this article](https://www.freecodecamp.org/news/how-to-setup-virtual-environments-in-python/).
 
 
 ### Get started with ScenarioGUI
