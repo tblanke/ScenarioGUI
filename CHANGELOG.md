@@ -13,6 +13,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Subcategory (issue 61)
 - Flag in gui_structure to disable functions while loading the gui (issue 79)
 
+### Added
+- Ability to deactivate button box entries (issue 46)
+- Ability to deactivate aims
+
 ### Fixed
 - Scenario buttons not resizing (issue 42)
 - Drag scenario 2 to the place of scenario 3 do work know (issue 50)
@@ -29,7 +33,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - ResultsFigure has now translatable legend texts by adding them with a commma to the current translation (example: "Label text,Y-axis,X-Axis,Line 1,Line 2") 
   (issue 65)
 - Remove references to GHEtool (issue 76)
-
+- translation now works without the same names as the option etc.
 
 ## [0.2.2] - 2023-04-21
 

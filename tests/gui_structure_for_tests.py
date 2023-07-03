@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -37,14 +38,15 @@ class GUI(GuiStructure):
         self.aim_add = Aim(label=self.translations.aim_add, icon="Add", page=self.page_inputs)
         self.aim_sub = Aim(label=self.translations.aim_sub, icon="Delete", page=self.page_inputs)
         self.aim_plot = Aim(label="Plot", icon="Parameters", page=self.page_inputs)
+        self.aim_last = Aim(label="Last", icon="Parameters", page=self.page_inputs)
         # set three aims per row
-        self.page_inputs.aims_in_row = 3
+        self.page_inputs.aims_in_row = 4
         self.category_inputs = Category(page=self.page_inputs, label="Inputs")
         self.int_a = IntBox(
             label="a",
             default_value=2,
             minimal_value=0,
-            maximal_value=200,
+            maximal_value=300,
             category=self.category_inputs,
         )
 
@@ -68,6 +70,10 @@ class GUI(GuiStructure):
             units=[("kW", 1), ("W", 0.001), ("MW", 1_000)]
         )
 
+        self.int_a.change_event(self.disable_aim(self.aim_sub, self.page_inputs, partial(self.int_a.check_linked_value, (None, 200))))
+        self.float_b.change_event(self.disable_aim(self.aim_add, self.page_inputs, partial(self.float_b.check_linked_value, (30, None))))
+        self.int_units.change_event(self.disable_aim(self.aim_plot, self.page_inputs, partial(self.int_units.check_linked_value, (None, 20))))
+
         self.float_units = els.FloatBoxWithUnits(
             label="FloatBoxWithUnits",
             default_value=2,
@@ -85,7 +91,16 @@ class GUI(GuiStructure):
 
         self.function_button = FunctionButton(button_text=translations.function_button, icon="Add", category=self.category_inputs)
 
-        self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
+        self.button_box = els.ButtonBox(label="a or b or c?", default_index=0, entries=["a", "b", "c"], category=self.category_inputs)
+        self.button_box.add_link_2_show(self.filename, on_index=1)
+
+        self.aim_plot.widget.toggled.connect(self.disable_button_box(self.button_box, at_index=2, func_2_check=self.aim_plot.widget.isChecked))
+        self.float_b.change_event(self.disable_button_box(self.button_box, 1, partial(self.float_b.check_linked_value, (50, None))))
+        self.int_a.change_event(self.disable_button_box(self.button_box, 0, partial(self.int_a.check_linked_value, (None, 10))))
+
+        self.button_box_short = els.ButtonBox(label="b or c?", default_index=0, entries=["b", "c"], category=self.category_inputs)
+        self.float_b.change_event(self.disable_button_box(self.button_box_short, 1, partial(self.float_b.check_linked_value, (50, None))))
+        self.int_a.change_event(self.disable_button_box(self.button_box_short, 0, partial(self.int_a.check_linked_value, (None, 10))))
 
         self.aim_plot.add_link_2_show(self.button_box)
 
@@ -95,6 +110,9 @@ class GUI(GuiStructure):
             entries=["0", "1", "2", "3"],
             category=self.category_inputs,
         )
+        self.text_box_only_on_add = els.TextBox(label="Only visible on add", default_text="Hello", category=self.category_inputs)
+
+        self.aim_add.add_link_2_show(self.text_box_only_on_add)
 
         self.text_box = TextBox(label="Login", default_text="Example text 15", category=self.category_inputs)
         self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)

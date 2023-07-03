@@ -4,8 +4,8 @@ script to start the GUI
 # pragma: no cover
 from __future__ import annotations
 
-import logging
 import sys
+from functools import partial
 from pathlib import Path
 from platform import system
 from sys import argv
@@ -106,6 +106,7 @@ class GUI(GuiStructure):
             maximal_value=200,
             category=self.category_inputs
         )
+        self.int_a.change_event(self.disable_aim(self.aim_sub, self.page_inputs, partial(self.int_a.check_linked_value, (None, 5))))
 
         self.int_units = els.IntBoxWithUnits(
             label="IntBoxWithUnits",
@@ -143,8 +144,20 @@ class GUI(GuiStructure):
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
                                         file_extension=["txt", "csv"])
-        self.filename.change_event(self.check)
-        self.button_box = els.ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
+
+        self.text_box_only_on_add = els.TextBox(label="Only visible on add", default_text="Hello", category=self.category_inputs)
+
+        self.aim_add.add_link_2_show(self.text_box_only_on_add)
+        self.aim_add.add_link_2_show(self.filename)
+        self.button_box = els.ButtonBox(label="a or b or c?", default_index=0, entries=["a", "b", "c"], category=self.category_inputs)
+
+        self.aim_plot.widget.toggled.connect(self.disable_button_box(self.button_box, at_index=2, func_2_check=self.aim_plot.widget.isChecked))
+        self.float_b.change_event(self.disable_button_box(self.button_box, 1, partial(self.float_b.check_linked_value, (50, None))))
+        self.int_a.change_event(self.disable_button_box(self.button_box, 0, partial(self.int_a.check_linked_value, (None, 10))))
+
+        self.button_box_short = els.ButtonBox(label="b or c?", default_index=0, entries=["b", "c"], category=self.category_inputs)
+        self.float_b.change_event(self.disable_button_box(self.button_box_short, 1, partial(self.float_b.check_linked_value, (50, None))))
+        self.int_a.change_event(self.disable_button_box(self.button_box_short, 0, partial(self.int_a.check_linked_value, (None, 10))))
 
         self.function_button = els.FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
 
@@ -162,6 +175,7 @@ class GUI(GuiStructure):
         self.hint_flex = els.Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
         self.flex_option.add_link_2_show(self.hint_flex, 2, 6)
         self.aim_plot.add_link_2_show(self.flex_option)
+        self.button_box.add_link_2_show(self.filename, on_index=1)
 
         self.category_grid = els.Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
@@ -244,9 +258,6 @@ class GUI(GuiStructure):
         self.page_result.set_next_page(self.page_settings)
         self.page_settings.set_previous_page(self.page_result)
 
-    def check(self) -> bool:
-        if self.started:
-            logging.info('This should not be shown whilst loading')
 
 def run(path_list=None):  # pragma: no cover
     import PySide6.QtWidgets as QtW
