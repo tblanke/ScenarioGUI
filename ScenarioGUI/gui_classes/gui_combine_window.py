@@ -90,7 +90,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         MainWindow
         """
         # parameter to show the end of the init function
-        self.started = False
         self._backup_filename: str = f"backup.{globs.FILE_EXTENSION}BackUp"
         # init windows of parent class
         super().__init__()
@@ -164,7 +163,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         # set started to True
         # this is so that no changes are made when the file is opening
-        self.started: bool = True
+        self.gui_structure.started = True
+        self.gui_structure.loaded = True
 
     def resizeEvent(self, event: QtG.QResizeEvent) -> None:
         """
@@ -417,7 +417,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # return if not yet started or return if checking is not allowed
-        if not self.started or not self.checking:
+        if not self.gui_structure.started or not self.checking:
             return
         self.check_buttons()
         # if changed File is not already True set it to True and update window title
@@ -448,7 +448,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if text[-1] == "*":
             return
         # else add * to current item string
-        item.setText(f"{text}*") if self.started else None
+        item.setText(f"{text}*") if self.gui_structure.started else None
 
     def check_buttons(self):
         try:
@@ -930,10 +930,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # deactivate checking
         self.checking: bool = False
+        self.gui_structure.loaded = False
         # open file and set data
         self._load_from_data(self.filename[0])
         # activate checking
         self.checking: bool = True
+        self.gui_structure.loaded = True
 
     def fun_save_as(self) -> None:
         """

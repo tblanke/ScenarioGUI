@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Font list box
 - Possibility to change figure style (issue 58) 
 - Subcategory (issue 61)
+- Flag in gui_structure to disable functions while loading the gui (issue 79)
 
 ### Added
 - Ability to deactivate button box entries (issue 46)
