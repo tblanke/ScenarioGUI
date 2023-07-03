@@ -17,7 +17,8 @@ def test_results_export(qtbot):
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
-    while main_window.threads[0].isRunning():
+    thread = main_window.threads[0]
+    while thread.isRunning():
         qtbot.wait(100)
     qtbot.wait(100)
     folder = Path(__file__).parent.parent

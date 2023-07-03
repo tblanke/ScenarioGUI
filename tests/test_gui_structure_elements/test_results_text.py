@@ -17,10 +17,12 @@ def test_results_text(qtbot):
     # calc sum from gui
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
-    while main_window.threads[0].isRunning():
+    thread = main_window.threads[0]
+    while thread.isRunning():
         qtbot.wait(100)
     qtbot.wait(100)
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
+    main_window.display_results()
     # check text output
     assert main_window.gui_structure.result_text_add.label.text() == f"Hello{sum_ab}kW"
     main_window.delete_backup()

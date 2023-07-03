@@ -36,7 +36,10 @@ def test_run(qtbot):
     main_window.gui_structure.aim_add.widget.click()
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
-    qtbot.wait(1500)
+    thread = main_window.threads[-1]
+    while thread.isRunning():
+        qtbot.wait(100)
+    qtbot.wait(100)
 
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
 
@@ -45,7 +48,10 @@ def test_run(qtbot):
     main_window.gui_structure.aim_sub.widget.click()
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
-    qtbot.wait(1500)
+    thread = main_window.threads[-1]
+    while thread.isRunning():
+        qtbot.wait(100)
+    qtbot.wait(100)
 
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     main_window.start_current_scenario_calculation(False)
@@ -59,7 +65,10 @@ def test_run(qtbot):
     assert main_window.gui_structure.aim_plot.widget.isChecked()
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
-    qtbot.wait(1500)
+    thread = main_window.threads[-1]
+    while thread.isRunning():
+        qtbot.wait(100)
+    qtbot.wait(100)
 
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     item = main_window.list_widget_scenario.currentItem()
@@ -69,7 +78,10 @@ def test_run(qtbot):
     main_window.start_current_scenario_calculation(True)
     main_window.threads[-1].run()
     main_window.threads[-1].any_signal.connect(main_window.thread_function)
-    qtbot.wait(1500)
+    thread = main_window.threads[-1]
+    while thread.isRunning():
+        qtbot.wait(100)
+    qtbot.wait(100)
     main_window.display_results()
 
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
