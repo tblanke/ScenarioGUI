@@ -87,6 +87,8 @@ class GUI(GuiStructure):
 
         self.button_box = ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
 
+        self.aim_plot.add_link_2_show(self.button_box)
+
         self.list_box = ListBox(
             label="List box",
             default_index=0,
