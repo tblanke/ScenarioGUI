@@ -33,8 +33,10 @@ class ResultsClass:
         self.result = None
 
     def adding(self):
-        from time import sleep
-        sleep(5)
+        # loop over 1_000_000 to take some time
+        self.result = 0
+        for i in range(50_000_000):
+            self.result += i
         self.result = self.a + self.b
 
     def subtract(self):
