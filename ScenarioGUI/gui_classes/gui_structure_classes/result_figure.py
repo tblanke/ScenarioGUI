@@ -84,7 +84,8 @@ class ResultFigure(Category):
     """
 
     def __init__(self, label: str | list[str], page: Page, x_axes_text: str | None = None,
-                 y_axes_text: str | None = None, customizable_figure: int = 0):
+                 y_axes_text: str | None = None, customizable_figure: int = 0,
+                 legend_text: str | None = None):
         """
 
         Parameters
