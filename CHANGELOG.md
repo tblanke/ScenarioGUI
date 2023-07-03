@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - ResultsFigure has now translatable legend texts by adding them with a commma to the current translation (example: "Label text,Y-axis,X-Axis,Line 1,Line 2") 
   (issue 65)
 - Remove references to GHEtool (issue 76)
+- Multiprocessing approach implemented (issue 68)
 
 
 ## [0.2.2] - 2023-04-21

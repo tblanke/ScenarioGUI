@@ -37,7 +37,7 @@ def test_run(qtbot):
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     thread = main_window.threads[-1]
-    while thread.isRunning():
+    while thread.isRunning():  # pragma: no cover
         qtbot.wait(100)
     qtbot.wait(100)
 
@@ -49,7 +49,7 @@ def test_run(qtbot):
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     thread = main_window.threads[-1]
-    while thread.isRunning():
+    while thread.isRunning():  # pragma: no cover
         qtbot.wait(100)
     qtbot.wait(100)
 
@@ -66,7 +66,7 @@ def test_run(qtbot):
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     thread = main_window.threads[-1]
-    while thread.isRunning():
+    while thread.isRunning():  # pragma: no cover
         qtbot.wait(100)
     qtbot.wait(100)
 
@@ -79,7 +79,7 @@ def test_run(qtbot):
     main_window.threads[-1].run()
     main_window.threads[-1].any_signal.connect(main_window.thread_function)
     thread = main_window.threads[-1]
-    while thread.isRunning():
+    while thread.isRunning():  # pragma: no cover
         qtbot.wait(100)
     qtbot.wait(100)
     main_window.display_results()

@@ -53,7 +53,7 @@ def test_results_figure(qtbot):
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     thread = main_window.threads[0]
-    while thread.isRunning():
+    while thread.isRunning():  # pragma: no cover
         qtbot.wait(100)
     qtbot.wait(100)
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
