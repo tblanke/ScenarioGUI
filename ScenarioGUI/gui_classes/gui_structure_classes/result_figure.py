@@ -84,8 +84,8 @@ class ResultFigure(Category):
     """
 
     def __init__(self, label: str | list[str], page: Page, x_axes_text: str | None = None,
-                 y_axes_text: str | None = None, customizable_figure: int = 0):
-
+                 y_axes_text: str | None = None, customizable_figure: int = 0,
+                 legend_text: str | None = None):
         """
 
         Parameters
@@ -110,7 +110,8 @@ class ResultFigure(Category):
         >>> self.results_fig = ResultFigure(label="Temperature evolution",  # or self.translations.results_fig if results_fig is in Translation class
         >>>                                 page=self.page_result,
         >>>                                 x_axes_text="x_axes-label",
-        >>>                                 y_axes_text="y_axes-label")
+        >>>                                 y_axes_text="y_axes-label",
+        >>>                                 legend_text="line 1")
 
         Gives (note that the FigureOption for the legend is also included):
 
@@ -147,8 +148,8 @@ class ResultFigure(Category):
         self._kwargs: dict = {}
         self.function_name: str = ""
         self.class_name: str = ""
-        self.x_axes_text: str = "" if x_axes_text is None else x_axes_text
-        self.y_axes_text: str = "" if y_axes_text is None else y_axes_text
+        self.axes_text: tuple[str, str] = ("" if x_axes_text is None else x_axes_text, "" if y_axes_text is None else y_axes_text)
+        self.legend_text: str = "" if legend_text is None else legend_text
         self.to_show: bool = True
         self.set_text(self.label_text[0])
         self.scroll_area: QtW.QScrollArea | None = None
@@ -291,6 +292,10 @@ class ResultFigure(Category):
         self.a_x = fig.get_axes()[0]
         self.a_x.set_xlabel(self.x_axes_text)
         self.a_x.set_ylabel(self.y_axes_text)
+        legend = self.a_x.get_legend()
+        if legend is not None:
+            for text, label in zip(legend.get_texts(), self.legend_text):
+                text.set_text(label)
         self.toolbar.home()
         self.canvas.hide()
         self.toolbar.hide()
@@ -483,9 +488,14 @@ class ResultFigure(Category):
         entry_name: list[str, str] = name.split(",")
         self.label.setText(entry_name[0])
         self.y_axes_text: str = entry_name[1]
+        self.a_x.set_ylabel(self.y_axes_text)
         self.x_axes_text: str = entry_name[2]
         self.a_x.set_xlabel(self.x_axes_text)
-        self.a_x.set_ylabel(self.y_axes_text)
+        self.legend_text = entry_name[3:]
+        legend = self.a_x.get_legend()
+        if legend is not None:
+            for text, label in zip(legend.get_texts(), self.legend_text):
+                text.set_text(label)
 
     def fig_to_be_shown(
         self,

@@ -67,6 +67,7 @@ class Translations:  # pragma: no cover
         "option_auto_saving",
         "hint_saving",
         "figure_results",
+        "figure_results_multiple_lines",
         "figure_results_with_customizable_layout",
         "figure_results_with_different_other_saved_figure",
         "option_font",
@@ -162,7 +163,8 @@ class Translations:  # pragma: no cover
             "If Auto saving is selected the scenario will automatically saved if a scenario is changed. Otherwise the scenario has to be saved with the Update scenario button in the upper left corner if the changes should not be lost.",
             "Wenn Automatisch speichern ausgewählt ist, wird das Szenario automatisch gespeichert, wenn ein Szenario geändert wird. Andernfalls muss das Szenario mit der Schaltfläche Szenario aktualisieren in der oberen linken Ecke gespeichert werden, wenn die Änderungen nicht verloren gehen sollen.",
         ]
-        self.figure_results: list[str] = ["Plot,Y-Axis[-],X-axis[-]", "Diagram,Y-Achse[-],X-Achse[-]"]
+        self.figure_results: list[str] = ["Plot,X-axis[-],Y-Axis[-],line", "Diagram,X-Achse[-],Y-Achse[-],Linie"]
+        self.figure_results_multiple_lines: list[str] = ["Plot,X-axis[-],Y-Axis[-],line,Line two", "Diagram,X-Achse[-],Y-Achse[-],Linie,Linie Zwei"]
         self.figure_results_with_customizable_layout: list[str] = [
             "Plot with customizable layout,Y-Axis[-],X-axis[-]",
             "Plot mit anpassbarem Layout,Y-Achse[-],X-Achse[-]",
