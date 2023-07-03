@@ -212,6 +212,7 @@ class ButtonBox(Option):
             index of entry which should be disabled
         """
         if self.widget[idx].isChecked():
+            self.widget[idx].click()
             self.widget[idx].setChecked(False)
             self.widget[idx].setEnabled(False)
             if self.widget[self.default_value].isEnabled():

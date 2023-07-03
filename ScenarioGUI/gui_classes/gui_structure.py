@@ -438,6 +438,7 @@ class GuiStructure:
     @staticmethod
     def _disable_aim(aim: Aim, at_page: Page, func_2_check: Callable[[], bool], args):
         if func_2_check():
+            aim.widget.click()
             aim.widget.setEnabled(False)
             font = aim.widget.font()
             font.setStrikeOut(True)

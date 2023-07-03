@@ -92,6 +92,7 @@ class GUI(GuiStructure):
         self.function_button = FunctionButton(button_text=translations.function_button, icon="Add", category=self.category_inputs)
 
         self.button_box = els.ButtonBox(label="a or b or c?", default_index=0, entries=["a", "b", "c"], category=self.category_inputs)
+        self.button_box.add_link_2_show(self.filename, on_index=1)
 
         self.aim_plot.widget.toggled.connect(self.disable_button_box(self.button_box, at_index=2, func_2_check=self.aim_plot.widget.isChecked))
         self.float_b.change_event(self.disable_button_box(self.button_box, 1, partial(self.float_b.check_linked_value, (50, None))))
@@ -101,7 +102,6 @@ class GUI(GuiStructure):
         self.float_b.change_event(self.disable_button_box(self.button_box_short, 1, partial(self.float_b.check_linked_value, (50, None))))
         self.int_a.change_event(self.disable_button_box(self.button_box_short, 0, partial(self.int_a.check_linked_value, (None, 10))))
 
-
         self.aim_plot.add_link_2_show(self.button_box)
 
         self.list_box = ListBox(
@@ -110,6 +110,9 @@ class GUI(GuiStructure):
             entries=["0", "1", "2", "3"],
             category=self.category_inputs,
         )
+        self.text_box_only_on_add = els.TextBox(label="Only visible on add", default_text="Hello", category=self.category_inputs)
+
+        self.aim_add.add_link_2_show(self.text_box_only_on_add)
 
         self.text_box = TextBox(label="Login", default_text="Example text 15", category=self.category_inputs)
         self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)
