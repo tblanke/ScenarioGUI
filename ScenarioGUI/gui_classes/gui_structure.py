@@ -207,6 +207,8 @@ class GuiStructure:
                 aim.widget.setChecked(False)
                 aims = [aim_i for aim_i in at_page.upper_frame if aim_i!=aim and aim_i.widget.isEnabled()]
                 if aims:
+                    # if not aims[0].widget.isChecked():
+                    #     aims[0].widget.click()
                     aims[0].widget.setChecked(True)
             return
         aim.widget.setEnabled(True)
