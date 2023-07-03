@@ -207,7 +207,7 @@ class GuiStructure:
                 aim.widget.setChecked(False)
                 aims = [aim_i for aim_i in at_page.upper_frame if aim_i!=aim and aim_i.widget.isEnabled()]
                 if aims:
-                    aims[0].widget.setChecked(True)
+                    aims[0].widget.click()
             return
         aim.widget.setEnabled(True)
         font = aim.widget.font()

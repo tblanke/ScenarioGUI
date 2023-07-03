@@ -129,7 +129,7 @@ class GUI(GuiStructure):
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
                                         file_extension=["txt", "csv"])
-
+        self.aim_add.add_link_2_show(self.filename)
         self.button_box = els.ButtonBox(label="a or b or c?", default_index=0, entries=["a", "b", "c"], category=self.category_inputs)
 
         self.aim_plot.widget.toggled.connect(self.disable_button_box(self.button_box, at_index=2, func_2_check=self.aim_plot.widget.isChecked))
