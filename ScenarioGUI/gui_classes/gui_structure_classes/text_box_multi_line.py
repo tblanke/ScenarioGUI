@@ -1,5 +1,5 @@
 """
-text box option class
+text box multi line option class
 """
 from __future__ import annotations
 
@@ -19,10 +19,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from .category import Category
 
 
-class TextBox(Option):
+class TextBoxMultiLine(Option):
     """
-    This class contains all the functionalities of the TextBox option in the GUI.
-    The TextBox can be used to input text.
+    This class contains all the functionalities of the TextBoxMultiLine option in the GUI.
+    The TextBoxMultiMine can be used to input text across multiple lines.
     """
     def __init__(
         self,
@@ -30,7 +30,6 @@ class TextBox(Option):
         default_text: str,
         category: Category,
         *,
-        password: bool = False,
         wrong_value: str = ""
     ):
         """
@@ -43,26 +42,23 @@ class TextBox(Option):
             The default value of the TextBox
         category : Category
             Category in which the FloatBox should be placed
-        password : bool
-            True if the TextBox should be a passowrd field with no visible letters
         wrong_value : str
             Value on which the textBox is wrong
 
         Examples
         --------
-        >>> option_text = TextBox(label='Text label text',  # or self.translations.option_text if option_text is in Translation class
-        >>>                       default_text="example text",
+        >>> option_text = TextBoxMultiLine(label='Example Multiple Line',  # or self.translations.option_text if option_text is in Translation class
+        >>>                       default_text='Hello multi line',
         >>>                       category=category_example)
 
         Gives:
 
-        .. figure:: _static/Example_Text_Box.PNG
+        .. figure:: _static/Example_mulitple_line_text.PNG
 
         """
         super().__init__(label, default_text, category)
-        self.password: bool = password
         self.wrong_value: str = wrong_value
-        self.widget: QtW.QLineEdit = QtW.QLineEdit(self.default_parent)
+        self.widget: QtW.QTextEdit = QtW.QTextEdit(self.default_parent)
 
     def get_value(self) -> str:
         """
@@ -73,7 +69,7 @@ class TextBox(Option):
         str
             Value of the TextBox
         """
-        return self.widget.text()
+        return self.widget.toPlainText()
 
     def set_value(self, value: str) -> None:
         """
@@ -175,19 +171,19 @@ class TextBox(Option):
         layout = self.create_frame(frame, layout_parent)
         self.widget.setParent(self.frame)
         self.widget.setStyleSheet(
-            f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};'
-            f'border: 1px solid {globs.WHITE};font: {globs.FONT_SIZE}pt "{globs.FONT}";{"}"}'
+            f"QTextEdit{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.LIGHT};background-color: {globs.LIGHT};font-weight:500;\n"
+            f"selection-background-color: {globs.LIGHT_SELECT};{'}'}\n"
+            f"QTextEdit:hover{'{'}background-color: {globs.DARK};{'}'}"
         )
-        self.widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
+        self.widget.setAlignment(QtC.Qt.AlignmentFlag.AlignRight)
         self.widget.setProperty("showGroupSeparator", True)
         self.widget.setText(self.default_value)
-        if self.password:
-            self.widget.setEchoMode(QtW.QLineEdit.Password)
         if self.limit_size:
-            self.widget.setMaximumWidth(150)
+            self.widget.setMaximumWidth(500)
             self.widget.setMinimumWidth(150)
-        self.widget.setMinimumHeight(28)
+        self.widget.setMinimumHeight(60)
         set_default_font(self.widget)
+        # self.widget.setMaximumSize(QtC.QSize(500, 90))
         if row is not None and isinstance(layout_parent, QtW.QGridLayout):
             layout_parent.addWidget(self.widget, column, row)
             return

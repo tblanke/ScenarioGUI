@@ -23,8 +23,8 @@ def test_no_load_save_file(qtbot):
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     # check if an import error has been raises with a wrong load file
     main_window._load_from_data("not_there.GHEtool")
-    assert main_window.status_bar.widget.currentMessage() == main_window.translations.no_file_selected[0]
+    assert main_window.status_bar.label.text() == main_window.translations.no_file_selected[0]
     # check if the current error message is shown with a wrong save file/folder
     main_window._save_to_data("hello/not_there.GHEtool")
-    assert main_window.status_bar.widget.currentMessage() == main_window.translations.no_file_selected[main_window.gui_structure.option_language.get_value()[0]]
+    assert main_window.status_bar.label.text() == main_window.translations.no_file_selected[main_window.gui_structure.option_language.get_value()[0]]
     main_window.delete_backup()

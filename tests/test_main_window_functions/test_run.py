@@ -22,7 +22,6 @@ def test_run(qtbot):
     main_window.delete_backup()
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     main_window.remove_previous_calculated_results()
-    main_window.status_hide("")
     main_window.add_scenario()
     file = main_window.gui_structure.filename.get_value()
     main_window.gui_structure.filename.set_value("abc")
@@ -79,7 +78,10 @@ def test_run(qtbot):
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     main_window.list_widget_scenario.setCurrentItem(item)
     main_window.display_results()
-    main_window.gui_structure.legend_figure_results.set_value(("", 1))
+    main_window.gui_structure.legend_figure_results_with_customizable_layout.set_value(("", 1))
+    main_window.gui_structure.figure_results_with_customizable_layout.change_font()
+    main_window.gui_structure.figure_results_with_customizable_layout.a_x.set_title(None)
+    main_window.gui_structure.figure_results_with_customizable_layout.change_title_color()
 
     main_window.remove_previous_calculated_results()
     # test value error results

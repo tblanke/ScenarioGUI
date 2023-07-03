@@ -31,7 +31,6 @@ class BaseUI:
     menu_file: QtW.QMenu
     push_button_start_multiple: QtW.QPushButton
     push_button_start_single: QtW.QPushButton
-    horizontal_spacer_start_buttons: QtW.QSpacerItem
     progress_bar: QtW.QProgressBar
     horizontal_layout_start_buttons: QtW.QHBoxLayout
     label_status: QtW.QLabel
@@ -61,26 +60,26 @@ class BaseUI:
     frame_progress_bar: QtW.QFrame
     status_bar_progress_bar: QtW.QStatusBar
 
-    def setup_ui(self, ghe_tool):
-        if not ghe_tool.objectName():
-            ghe_tool.setObjectName("GHEtool")
-        ghe_tool.resize(1920, 1080)
+    def setup_ui(self, ScenarioGUI, screen_size: QtC.QSize, gui_name: str="ScenarioGUI"):
+        if not ScenarioGUI.objectName():
+            ScenarioGUI.setObjectName(gui_name)
+        ScenarioGUI.resize(screen_size)
         size_policy = QtW.QSizePolicy(QtW.QSizePolicy.Preferred, QtW.QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(ghe_tool.sizePolicy().hasHeightForWidth())
-        ghe_tool.setSizePolicy(size_policy)
-        ghe_tool.setMaximumSize(QtC.QSize(16777215, 16777215))
+        size_policy.setHeightForWidth(ScenarioGUI.sizePolicy().hasHeightForWidth())
+        ScenarioGUI.setSizePolicy(size_policy)
+        ScenarioGUI.setMaximumSize(QtC.QSize(16777215, 16777215))
         font = QtG.QFont()
         font.setFamily(globs.FONT)
         font.setPointSize(globs.FONT_SIZE)
         font.setBold(False)
         font.setItalic(False)
-        ghe_tool.setFont(font)
+        ScenarioGUI.setFont(font)
         icon = QtG.QIcon()
         icon.addFile(f"{globs.FOLDER}/icons/{globs.ICON_NAME}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        ghe_tool.setWindowIcon(icon)
-        ghe_tool.setStyleSheet(
+        ScenarioGUI.setWindowIcon(icon)
+        ScenarioGUI.setStyleSheet(
             f"*{'{'}color: {globs.WHITE};background-color: {globs.DARK};selection-background-color: {globs.LIGHT};"
             f"alternate-background-color: {globs.LIGHT};{'}'}\n"
             f"QPushButton{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color:{globs.WHITE};gridline-color:{globs.LIGHT};"
@@ -102,7 +101,7 @@ class BaseUI:
             f"QTabWidget::pane{'{'}border: 1px solid {globs.WHITE};{'}'}"
             f"QTabWidget::tab-bar{'{'}left: 5px;{'}'}"
         )
-        self.action_new = QtG.QAction(ghe_tool)
+        self.action_new = QtG.QAction(ScenarioGUI)
         self.action_new.setObjectName("actionNew")
         self.action_new.setCheckable(False)
         self.action_new.setChecked(False)
@@ -111,21 +110,21 @@ class BaseUI:
         icon1.addFile(f"{globs.FOLDER}/icons/New.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon1.addFile(f"{globs.FOLDER}/icons/New_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_new.setIcon(icon1)
-        self.action_save = QtG.QAction(ghe_tool)
+        self.action_save = QtG.QAction(ScenarioGUI)
         self.action_save.setObjectName("actionSave")
         self.action_save.setEnabled(True)
         icon2 = QtG.QIcon()
         icon2.addFile(f"{globs.FOLDER}/icons/Save.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon2.addFile(f"{globs.FOLDER}/icons/Save_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_save.setIcon(icon2)
-        self.action_open = QtG.QAction(ghe_tool)
+        self.action_open = QtG.QAction(ScenarioGUI)
         self.action_open.setObjectName("actionOpen")
         self.action_open.setEnabled(True)
         icon3 = QtG.QIcon()
         icon3.addFile(f"{globs.FOLDER}/icons/Open.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon3.addFile(f"{globs.FOLDER}/icons/Open_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_open.setIcon(icon3)
-        self.action_start_multiple = QtG.QAction(ghe_tool)
+        self.action_start_multiple = QtG.QAction(ScenarioGUI)
         self.action_start_multiple.setObjectName("action_start_multiple")
         self.action_start_multiple.setEnabled(True)
         icon4 = QtG.QIcon()
@@ -142,7 +141,7 @@ class BaseUI:
             QtG.QIcon.Off,
         )
         self.action_start_multiple.setIcon(icon4)
-        self.action_update_scenario = QtG.QAction(ghe_tool)
+        self.action_update_scenario = QtG.QAction(ScenarioGUI)
         self.action_update_scenario.setObjectName("actionUpdate_Scenario")
         icon7 = QtG.QIcon()
         icon7.addFile(
@@ -153,13 +152,13 @@ class BaseUI:
         )
         icon7.addFile(f"{globs.FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_update_scenario.setIcon(icon7)
-        self.action_add_scenario = QtG.QAction(ghe_tool)
+        self.action_add_scenario = QtG.QAction(ScenarioGUI)
         self.action_add_scenario.setObjectName("actionAdd_Scenario")
         icon8 = QtG.QIcon()
         icon8.addFile(f"{globs.FOLDER}/icons/Add_Inv.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon8.addFile(f"{globs.FOLDER}/icons/Add.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_add_scenario.setIcon(icon8)
-        self.action_delete_scenario = QtG.QAction(ghe_tool)
+        self.action_delete_scenario = QtG.QAction(ScenarioGUI)
         self.action_delete_scenario.setObjectName("actionDelete_scenario")
         icon9 = QtG.QIcon()
         icon9.addFile(
@@ -170,7 +169,7 @@ class BaseUI:
         )
         icon9.addFile(f"{globs.FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_delete_scenario.setIcon(icon9)
-        self.action_save_as = QtG.QAction(ghe_tool)
+        self.action_save_as = QtG.QAction(ScenarioGUI)
         self.action_save_as.setObjectName("actionSave_As")
         icon10 = QtG.QIcon()
         icon10.addFile(f"{globs.FOLDER}/icons/SaveAs.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
@@ -181,7 +180,7 @@ class BaseUI:
             QtG.QIcon.Off,
         )
         self.action_save_as.setIcon(icon10)
-        self.action_rename_scenario = QtG.QAction(ghe_tool)
+        self.action_rename_scenario = QtG.QAction(ScenarioGUI)
         self.action_rename_scenario.setObjectName("actionRename_scenario")
         icon14 = QtG.QIcon()
         icon14.addFile(
@@ -192,7 +191,7 @@ class BaseUI:
         )
         icon14.addFile(f"{globs.FOLDER}/icons/Rename.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_rename_scenario.setIcon(icon14)
-        self.action_start_single = QtG.QAction(ghe_tool)
+        self.action_start_single = QtG.QAction(ScenarioGUI)
         self.action_start_single.setObjectName("action_start_single")
         icon15 = QtG.QIcon()
         icon15.addFile(
@@ -203,7 +202,7 @@ class BaseUI:
         )
         icon15.addFile(f"{globs.FOLDER}/icons/Start.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_start_single.setIcon(icon15)
-        self.central_widget = QtW.QWidget(ghe_tool)
+        self.central_widget = QtW.QWidget(ScenarioGUI)
         self.central_widget.setObjectName("central_widget")
         self.horizontal_layout_main = QtW.QHBoxLayout(self.central_widget)
         self.horizontal_layout_main.setObjectName("horizontalLayout_23")
@@ -304,8 +303,8 @@ class BaseUI:
 
         self.vertical_layout_main.addWidget(self.stacked_widget)
 
-        self.status_bar_progress_bar = QtW.QStatusBar(ghe_tool)
-        ghe_tool.setStatusBar(self.status_bar_progress_bar)
+        self.status_bar_progress_bar = QtW.QStatusBar(ScenarioGUI)
+        ScenarioGUI.setStatusBar(self.status_bar_progress_bar)
 
         self.frame_progress_bar = QtW.QFrame(self.central_widget)
         self.horizontal_layout_progress_bar = QtW.QHBoxLayout(self.frame_progress_bar)
@@ -330,15 +329,9 @@ class BaseUI:
         self.horizontal_layout_start_buttons = QtW.QHBoxLayout()
         self.horizontal_layout_start_buttons.setObjectName("horizontalLayout_2")
 
-        self.status_bar = StatusBar(ghe_tool)
-        self.status_bar.widget.setObjectName("status_bar")
-        self.status_bar.widget.setStyleSheet(f"QStatusBar::item{'{'}border:None;{'}'}QStatusBar{'{'}color:{globs.WHITE};background-color: {globs.DARK};{'}'}")
-        self.horizontal_layout_start_buttons.addWidget(self.status_bar.widget)
+        self.status_bar = StatusBar(ScenarioGUI)
+        self.horizontal_layout_start_buttons.addWidget(self.status_bar.label)
         globs.LOGGER.addHandler(self.status_bar)
-
-        self.horizontal_spacer_start_buttons = QtW.QSpacerItem(40, 20, QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
-
-        self.horizontal_layout_start_buttons.addItem(self.horizontal_spacer_start_buttons)
 
         self.push_button_start_single = QtW.QPushButton(self.central_widget)
         self.push_button_start_single.setObjectName("pushButton_start_single")
@@ -382,8 +375,8 @@ class BaseUI:
 
         self.horizontal_layout_main.addLayout(self.vertical_layout_main)
 
-        ghe_tool.setCentralWidget(self.central_widget)
-        self.menubar = QtW.QMenuBar(ghe_tool)
+        ScenarioGUI.setCentralWidget(self.central_widget)
+        self.menubar = QtW.QMenuBar(ScenarioGUI)
         self.menubar.setObjectName("menubar")
         self.menubar.setEnabled(True)
         self.menubar.setGeometry(QtC.QRect(0, 0, 1226, 30))
@@ -421,8 +414,8 @@ class BaseUI:
         self.menu_language.setIcon(icon35)
         self.menu_scenario = QtW.QMenu(self.menubar)
         self.menu_scenario.setObjectName("menuScenario")
-        ghe_tool.setMenuBar(self.menubar)
-        self.tool_bar = QtW.QToolBar(ghe_tool)
+        ScenarioGUI.setMenuBar(self.menubar)
+        self.tool_bar = QtW.QToolBar(ScenarioGUI)
         self.tool_bar.setObjectName("toolBar")
         self.tool_bar.setStyleSheet(
             f"QAction::icon {'{'} background-color:{globs.LIGHT};selection-background-color: {globs.LIGHT};{'}'}\n"
@@ -430,7 +423,7 @@ class BaseUI:
             f"*:hover{'{'}background-color: {globs.LIGHT};{'}'}"
         )
         self.tool_bar.setMovable(False)
-        ghe_tool.addToolBar(QtC.Qt.TopToolBarArea, self.tool_bar)
+        ScenarioGUI.addToolBar(QtC.Qt.TopToolBarArea, self.tool_bar)
 
         self.menubar.addAction(self.menu_file.menuAction())
         self.menubar.addAction(self.menu_calculation.menuAction())
@@ -462,7 +455,7 @@ class BaseUI:
         self.tool_bar.addAction(self.action_rename_scenario)
 
         self.button_rename_scenario.clicked.connect(self.action_rename_scenario.trigger)
-        self.push_button_cancel.clicked.connect(ghe_tool.close)
+        self.push_button_cancel.clicked.connect(ScenarioGUI.close)
         self.push_button_start_multiple.clicked.connect(self.action_start_multiple.trigger)
         self.push_button_add_scenario.clicked.connect(self.action_add_scenario.trigger)
         self.push_button_delete_scenario.clicked.connect(self.action_delete_scenario.trigger)
@@ -486,12 +479,12 @@ class BaseUI:
         set_default_font(self.menu_language)
         set_default_font(self.menubar)
         set_default_font(self.list_widget_scenario)
-        set_default_font(self.status_bar.widget)
+        set_default_font(self.status_bar.label)
 
         self.stacked_widget.setCurrentIndex(0)
-        QtC.QMetaObject.connectSlotsByName(ghe_tool)
+        QtC.QMetaObject.connectSlotsByName(ScenarioGUI)
 
-        ghe_tool.setWindowTitle("GHEtool")
+        ScenarioGUI.setWindowTitle(gui_name)
         self.action_new.setText("New")
         # if QT_CONFIG(tooltip)
         self.action_new.setToolTip("Create new project file")

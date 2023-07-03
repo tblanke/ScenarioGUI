@@ -30,3 +30,4 @@ def test_function_button(qtbot):
     assert not main_window.gui_structure.function_button.is_hidden()
     main_window.gui_structure.function_button.hide()
     assert main_window.gui_structure.function_button.is_hidden()
+    main_window.delete_backup()

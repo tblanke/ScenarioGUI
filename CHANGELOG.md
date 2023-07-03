@@ -3,7 +3,14 @@ All notable changes to this project will be documented in this file including pl
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.3.0] - expected: may 2023
+## [0.3.0] - expected: July 2023
+
+### Added
+- Multiline text box (issue 56)
+- Multiple int entry box
+- Font list box
+- Possibility to change figure style (issue 58) 
+- Subcategory (issue 61)
 
 ### Added
 - Ability to deactivate button box entries (issue 46)
@@ -13,9 +20,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Scenario buttons not resizing (issue 42)
 - Drag scenario 2 to the place of scenario 3 do work know (issue 50)
 - Scenario changing without change (issue 50)
+- The scrolling in IntBoxes, FloatBoxes and ComboBoxes is disables and just working if they are selected (issue 54)
+- The error messages are now completely visible (issue 59)
+- Exits full screen when hovering over page buttons (issue 67)
+- Flexible amount does not save (issue 69)
+- Setable variable to activate the ability to set invisible elements values (issue 72)
 
 ### Changed
 - list_ds in MainWindow removed and replaced by QListWidget data
+- FlexOption can new be provided with default values (issue 63)
+- ResultsFigure has now translatable legend texts by adding them with a commma to the current translation (example: "Label text,Y-axis,X-Axis,Line 1,Line 2") 
+  (issue 65)
+- Remove references to GHEtool (issue 76)
 - translation now works without the same names as the option etc.
 
 ## [0.2.2] - 2023-04-21

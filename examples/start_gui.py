@@ -61,6 +61,19 @@ class ResultsClass:
             ax.legend()
         return fig, ax
 
+    def create_plot_multiple_lines(self, legend: bool = False) -> tuple[plt.Figure, plt.Axes]:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        # set axes labels
+        ax.set_xlabel(r"Time (year)")
+        ax.set_ylabel(r"Temperature ($^\circ C$)")
+        ax.hlines(self.a, 0, self.b, colors="r", linestyles="dashed", label="line", lw=1)
+        ax.hlines(self.a * 2, 0, self.b, colors="b", linestyles="dashed", label="line", lw=1)
+
+        if legend:
+            ax.legend()
+        return fig, ax
+
     def to_dict(self) -> dict:
         return {"a": self.a, "b": self.b, "result": self.result}
 
@@ -115,13 +128,15 @@ class GUI(GuiStructure):
         )
         self.float_units.activate_scale_decimals()
 
+        self.sub_category = els.Subcategory("Subcategory", self.category_inputs)
+
         self.float_b = els.FloatBox(
             label="b",
             default_value=100,
             minimal_value=0,
             maximal_value=1000,
             decimal_number=2,
-            category=self.category_inputs,
+            category=self.sub_category,
         )
 
         self.list_box = els.ListBox(label="List box", default_index=0, category=self.category_inputs, entries=["1","2","3","4"])
@@ -143,14 +158,16 @@ class GUI(GuiStructure):
         self.function_button = els.FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
 
         self.text_box = els.TextBox(label="Login", default_text="Hello", category=self.category_inputs)
+        self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)
         self.text_box.deactivate_size_limit()
         self.pass_word = els.TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
         
-        self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs, min_length=2)
+        self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs,
+                                              min_length=2,default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
         self.flex_option.add_option(els.TextBox, name="name", default_text="layer")
-        self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5)
+        self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number = 2)
         self.flex_option.add_option(els.IntBox, name="amount", default_value=4, minimal_value=2)
-        self.flex_option.add_option(els.ListBox, name="amount", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
+        self.flex_option.add_option(els.ListBox, name="entry", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
         self.hint_flex = els.Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
         self.flex_option.add_link_2_show(self.hint_flex, 2, 6)
         self.aim_plot.add_link_2_show(self.flex_option)
@@ -210,12 +227,20 @@ class GUI(GuiStructure):
         self.result_export = els.ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
                                           caption="Select file", file_extension="txt")
 
-        self.figure_results = els.ResultFigure(label="Plot", page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
+        self.figure_results = els.ResultFigure(label=self.translations.figure_results, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
         self.legend_figure_results = els.FigureOption(
             category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
         )
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+
+        self.figure_results_multiple_lines = els.ResultFigure(label=self.translations.figure_results_multiple_lines, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
+        self.legend_figure_results_multiple_lines = els.FigureOption(
+            category=self.figure_results_multiple_lines, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
+            entries_values=[False, True]
+        )
+        self.figure_results_multiple_lines.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot_multiple_lines")
+
 
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_add.add_link_2_show(self.result_export)

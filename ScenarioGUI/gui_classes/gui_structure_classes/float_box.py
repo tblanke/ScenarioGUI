@@ -17,9 +17,19 @@ from .option import Option
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
+    import PySide6.QtGui as QtG
+
     from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
+
+
+class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
+    def wheelEvent(self, event: QtG.QWheelEvent):
+        if self.hasFocus():
+            super().wheelEvent(event)
+            return
+        self.parent().wheelEvent(event)
 
 
 class FloatBox(Option):
@@ -79,7 +89,7 @@ class FloatBox(Option):
         self.minimal_value: float = minimal_value
         self.maximal_value: float = maximal_value
         self.step: float = step
-        self.widget: QtW.QDoubleSpinBox = QtW.QDoubleSpinBox(self.default_parent)
+        self.widget: DoubleSpinBox = DoubleSpinBox(self.default_parent)
 
     def get_value(self) -> float:
         """
@@ -235,8 +245,8 @@ class FloatBox(Option):
         frame: QtW.QFrame,
         layout_parent: QtW.QLayout,
         *,
-        row: int = None,
-        column: int = None,
+        row: int | None = None,
+        column: int | None = None,
     ) -> None:
         """
         This functions creates the FloatBox widget in the frame.
@@ -271,6 +281,7 @@ class FloatBox(Option):
         self.widget.setDecimals(self.decimal_number)
         self.widget.setValue(self.default_value)
         self.widget.setSingleStep(self.step)
+        self.widget.setFocusPolicy(QtC.Qt.FocusPolicy.StrongFocus)
         if self.limit_size:
             self.widget.setMaximumWidth(100)
             self.widget.setMinimumWidth(100)

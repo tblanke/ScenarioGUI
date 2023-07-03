@@ -48,7 +48,7 @@ class DataStorage:
         for aim, name in gui_structure.list_of_aims:
             setattr(self, name, aim.widget.isChecked())
 
-        self.list_options_aims = [name for option, name in gui_structure.list_of_options] + [name for option, name in gui_structure.list_of_aims]
+        self.list_options_aims = [name for _, name in gui_structure.list_of_options] + [name for _, name in gui_structure.list_of_aims]
         self.list_of_figures = [i[1] for i in gui_structure.list_of_result_figures]
 
         for figure_name in self.list_of_figures:

@@ -8,7 +8,7 @@ from ..result_creating_class_for_tests import ResultsClass, data_2_results
 from ..test_translations.translation_class import Translations
 
 
-def test_int_box(qtbot):
+def test_multiple_int_box(qtbot):
     """
     test float box functions
 
@@ -21,30 +21,30 @@ def test_int_box(qtbot):
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     main_window.delete_backup()
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    int_a = main_window.gui_structure.int_a
-    assert np.isclose(int_a.get_value(), int_a.default_value)
-    int_a.set_value(int_a.default_value + 5)
-    assert np.isclose(int_a.default_value + 5, int_a.get_value())
-    int_a._init_links()
-    assert int_a.check_linked_value((20, None))
-    assert int_a.check_linked_value((None, 2))
-    assert not int_a.check_linked_value((5, 20))
-    int_a.show_option(main_window.gui_structure.float_b, 5, 20)
+    multiple_ints = main_window.gui_structure.multiple_ints
+    assert np.allclose(multiple_ints.get_value(), multiple_ints.default_value)
+    multiple_ints.set_value((multiple_ints.default_value[0] + 5, multiple_ints.default_value[1] + 5, multiple_ints.default_value[2] + 5))
+    assert np.allclose((multiple_ints.default_value[0] + 5, multiple_ints.default_value[1] + 5, multiple_ints.default_value[2] + 5), multiple_ints.get_value())
+    multiple_ints._init_links()
+    assert multiple_ints.check_linked_value((20, None))
+    assert multiple_ints.check_linked_value((None, 2))
+    assert not multiple_ints.check_linked_value((5, 20))
+    multiple_ints.show_option(main_window.gui_structure.float_b, 5, 20)
     main_window.gui_structure.page_inputs.button.click()
     assert main_window.gui_structure.float_b.is_hidden()
-    int_a.set_value(4)
-    int_a.show_option(main_window.gui_structure.float_b, 5, 20)
+    multiple_ints.set_value((4, 6, 7))
+    multiple_ints.show_option(main_window.gui_structure.float_b, 5, 20)
     assert not main_window.gui_structure.float_b.is_hidden()
-    int_a.set_value(22)
-    int_a.show_option(main_window.gui_structure.float_b, 5, 20)
+    multiple_ints.set_value((6,7,22))
+    multiple_ints.show_option(main_window.gui_structure.float_b, 5, 20)
     assert not main_window.gui_structure.float_b.is_hidden()
-    int_a.add_link_2_show(main_window.gui_structure.float_b, below=5, above=20)
-    int_a.set_value(10)
+    multiple_ints.add_link_2_show(main_window.gui_structure.float_b, below=5, above=20)
+    multiple_ints.set_value((10, 11 ,12))
     assert main_window.gui_structure.float_b.is_hidden()
-    int_a.set_value(4)
+    multiple_ints.set_value((4,6,7))
     assert not main_window.gui_structure.float_b.is_hidden()
-    int_a.set_value(22)
+    multiple_ints.set_value((6,22,7))
     assert not main_window.gui_structure.float_b.is_hidden()
     main_window.save_scenario()
-    assert "int_a" in main_window.list_ds[0].to_dict()
+    assert "multiple_ints" in main_window.list_ds[0].to_dict()
     main_window.delete_backup()

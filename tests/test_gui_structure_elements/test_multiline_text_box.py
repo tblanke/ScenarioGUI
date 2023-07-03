@@ -7,7 +7,7 @@ from ..result_creating_class_for_tests import ResultsClass, data_2_results
 from ..test_translations.translation_class import Translations
 
 
-def test_text_box(qtbot):
+def test_multiline_text_box(qtbot):
     """
     test text box functions
 
@@ -21,20 +21,19 @@ def test_text_box(qtbot):
     main_window.delete_backup()
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
 
-    main_window.gui_structure.text_box._init_links()
+    main_window.gui_structure.text_box_multi_line._init_links()
 
-    assert main_window.gui_structure.text_box.get_value() == main_window.gui_structure.text_box.default_value
-    main_window.gui_structure.text_box.set_value("Hello")
-    assert main_window.gui_structure.text_box.get_value() == "Hello"
+    assert main_window.gui_structure.text_box_multi_line.get_value() == main_window.gui_structure.text_box_multi_line.default_value
+    main_window.gui_structure.text_box_multi_line.set_value("Hello\nWorld")
+    assert main_window.gui_structure.text_box_multi_line.get_value() == "Hello\nWorld"
 
-    assert main_window.gui_structure.text_box.check_linked_value("Hello")
+    assert main_window.gui_structure.text_box_multi_line.check_linked_value("Hello\nWorld")
 
     # test set text
-    main_window.gui_structure.text_box.set_text("Hello")
-    assert main_window.gui_structure.text_box.label.text() == "Hello"
-
+    main_window.gui_structure.text_box_multi_line.set_text("Hello")
+    assert main_window.gui_structure.text_box_multi_line.label.text() == "Hello"
     main_window.save_scenario()
-    assert "text_box" in main_window.list_ds[0].to_dict()
+    assert "text_box_multi_line" in main_window.list_ds[0].to_dict()
     main_window.delete_backup()
 
 

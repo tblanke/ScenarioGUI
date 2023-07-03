@@ -58,7 +58,7 @@ def test_global_settings(qtbot):
     check_font(main_window.push_button_delete_scenario, globs.FONT_SIZE, globs.FONT, True)
     check_font(main_window.push_button_save_scenario, globs.FONT_SIZE, globs.FONT, True)
     check_font(main_window.button_rename_scenario, globs.FONT_SIZE, globs.FONT, True)
-    check_font(main_window.status_bar.widget, globs.FONT_SIZE, globs.FONT, False)
+    check_font(main_window.status_bar.label, globs.FONT_SIZE, globs.FONT, False)
     check_font(main_window.menu_settings, globs.FONT_SIZE, globs.FONT, False)
     check_font(main_window.menubar, globs.FONT_SIZE, globs.FONT, False)
     check_font(main_window.menu_scenario, globs.FONT_SIZE, globs.FONT, False)

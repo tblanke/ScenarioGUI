@@ -3,13 +3,14 @@ script for a status bar logger class
 """
 from __future__ import annotations
 
+import PySide6.QtWidgets as QtW
+import PySide6.QtCore as QtC
+
+from functools import partial
 from logging import Handler
 from typing import TYPE_CHECKING
 
-from PySide6.QtWidgets import QStatusBar
-
 import ScenarioGUI.global_settings as globs
-from ScenarioGUI.utils import set_default_font
 
 if TYPE_CHECKING:
     from logging import LogRecord
@@ -32,8 +33,9 @@ class StatusBar(Handler):
             parent to create QStatusBar in
         """
         super().__init__()
-        self.widget: QStatusBar = QStatusBar(parent)
-        set_default_font(self.widget)
+        self.label: QtW.QLabel = QtW.QLabel(parent)
+        self.label.setWordWrap(True)
+        self.label.setSizePolicy(QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Minimum)
         self.level_2_color: dict[str, str] = {
             "DEBUG": f"{globs.WHITE}",
             "INFO": f"{globs.WHITE}",
@@ -41,6 +43,10 @@ class StatusBar(Handler):
             "CRITICAL": "rgb(255,0,0)",
             "WARNING": f"{globs.WARNING}",
         }
+
+    def hide_text(self, text: str):
+        if self.label.text() == text:
+            self.label.setText("")
 
     def emit(self, record: LogRecord) -> None:
         """
@@ -57,5 +63,7 @@ class StatusBar(Handler):
 
         """
         message = self.format(record)
-        self.widget.setStyleSheet(f"color: {self.level_2_color[record.levelname]};")
-        self.widget.showMessage(message, 10_000)
+        timer = QtC.QTimer()
+        timer.singleShot(10_000, partial(self.hide_text, message))
+        self.label.setStyleSheet(f"color: {self.level_2_color[record.levelname]};")
+        self.label.setText(message)

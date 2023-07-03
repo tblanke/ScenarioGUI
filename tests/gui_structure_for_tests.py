@@ -50,14 +50,17 @@ class GUI(GuiStructure):
             category=self.category_inputs,
         )
 
-        self.float_b = FloatBox(
+        self.sub_category = els.Subcategory("Subcategory", self.category_inputs)
+
+        self.float_b = els.FloatBox(
             label="b",
             default_value=100,
             minimal_value=0,
             maximal_value=1000,
             decimal_number=2,
-            category=self.category_inputs,
+            category=self.sub_category,
         )
+
         self.int_units = els.IntBoxWithUnits(
             label="IntBoxWithUnits",
             default_value=2,
@@ -99,6 +102,8 @@ class GUI(GuiStructure):
         self.int_a.change_event(self.disable_button_box(self.button_box_short, 0, partial(self.int_a.check_linked_value, (None, 10))))
 
 
+        self.aim_plot.add_link_2_show(self.button_box)
+
         self.list_box = ListBox(
             label="List box",
             default_index=0,
@@ -107,14 +112,19 @@ class GUI(GuiStructure):
         )
 
         self.text_box = TextBox(label="Login", default_text="Example text 15", category=self.category_inputs)
+        self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)
         
-        self.flex_option = FlexibleAmount(label="layers", default_length=2, entry_mame="Layer", category=self.category_inputs)
+        self.flex_option = FlexibleAmount(label="layers", default_length=2, entry_mame="Layer", category=self.category_inputs,
+                                          default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
         self.flex_option.add_option(TextBox, name="name", default_text="layer")
-        self.flex_option.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5)
+        self.flex_option.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number=2)
         self.flex_option.add_option(IntBox, name="amount", default_value=4, minimal_value=2)
-        self.flex_option.add_option(ListBox, name="amount", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
+        self.flex_option.add_option(ListBox, name="entry", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
         self.hint_flex = Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
         self.flex_option.add_link_2_show(self.hint_flex, 4, 12)
+
+        self.multiple_ints = els.MultipleIntBox(label="Multiple int box:", category=self.category_inputs, default_value=(1, 2, 3), minimal_value=(1, 1, 1),
+                                                maximal_value=(100, 110, 120))
 
         self.category_grid = Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
@@ -153,6 +163,12 @@ class GUI(GuiStructure):
             category=self.category_grid,
         )
         self.text_box_small = TextBox(label="", default_text="Example text 15", category=self.category_grid, password=True)
+        self.font_style = els.FontListBox(label="Font label", category=self.category_grid, entries=["Arial", "Verdana"], default_index=0)
+        self.multiple_ints_small = els.MultipleIntBox(label="Multiple int box:", category=self.category_grid, default_value=(1, 2, 3), minimal_value=(1, 1,
+                                                                                                                                                        1),
+                                                maximal_value=(100, 110, 120))
+
+        self.text_box_multi_line_small = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_grid)
         self.category_grid.activate_graphic_left()
         self.category_grid.activate_graphic_right()
 
@@ -177,16 +193,44 @@ class GUI(GuiStructure):
             "Export", icon="Download", category=self.numerical_results, export_function="export", caption="Please select file", file_extension="txt"
         )
 
-        self.figure_results = ResultFigure(label=["Plot"], page=self.page_result)
+        self.figure_results = ResultFigure(label=self.translations.figure_results, page=self.page_result)
         self.legend_figure_results = FigureOption(
             category=self.figure_results, label=["Legend on"], param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
         )
+
+        self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+        self.figure_results_with_different_other_saved_figure = els.ResultFigure(label=self.translations.figure_results,
+                                                                                 page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes",
+                                                                                 customizable_figure=1)
+        self.legend_figure_results_with_other_saved_figure = els.FigureOption(
+            category=self.figure_results_with_different_other_saved_figure, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
+            entries_values=[False, True]
+        )
+
+        self.figure_results_with_different_other_saved_figure.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+
+        self.figure_results_with_customizable_layout = els.ResultFigure(label=self.translations.figure_results, page=self.page_result,
+                                                                        x_axes_text="X-Axes", y_axes_text="Y-Axes", customizable_figure=2)
+        self.legend_figure_results_with_customizable_layout = els.FigureOption(
+            category=self.figure_results_with_customizable_layout, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
+            entries_values=[False, True]
+        )
+
+        self.figure_results_with_customizable_layout.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_sub.add_link_2_show(self.result_text_sub)
         self.aim_plot.add_link_2_show(self.figure_results)
+
+        self.aim_add.add_link_2_show(self.figure_results_with_different_other_saved_figure)
+        self.aim_sub.add_link_2_show(self.figure_results_with_different_other_saved_figure)
+        self.aim_plot.add_link_2_show(self.figure_results_with_different_other_saved_figure)
+
+        self.aim_add.add_link_2_show(self.figure_results_with_customizable_layout)
+        self.aim_sub.add_link_2_show(self.figure_results_with_customizable_layout)
+        self.aim_plot.add_link_2_show(self.figure_results_with_customizable_layout)
 
         self.create_settings_page()
         self.create_lists()

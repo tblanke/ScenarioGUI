@@ -6,6 +6,7 @@ from __future__ import annotations
 from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
+import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
@@ -17,9 +18,19 @@ from .option import Option
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
+    import PySide6.QtGui as QtG
+
     from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
+
+
+class ComboBox(QtW.QComboBox):  # pragma: no cover
+    def wheelEvent(self, event: QtG.QWheelEvent):
+        if self.hasFocus():
+            super().wheelEvent(event)
+            return
+        self.parent().wheelEvent(event)
 
 
 class ListBox(Option):
@@ -56,7 +67,7 @@ class ListBox(Option):
         """
         super().__init__(label, default_index, category)
         self.entries: list[str] = entries
-        self.widget: QtW.QComboBox = QtW.QComboBox(self.default_parent)
+        self.widget: ComboBox = ComboBox(self.default_parent)
 
     def get_text(self) -> str:
         """
@@ -238,6 +249,7 @@ class ListBox(Option):
             self.widget.setMinimumWidth(100)
         self.widget.currentIndexChanged.connect(ft_partial(check, self.linked_options, self))  # pylint: disable=E1101
         self.widget.setMinimumHeight(28)
+        self.widget.setFocusPolicy(QtC.Qt.FocusPolicy.StrongFocus)
         set_default_font(self.widget)
         if row is not None and isinstance(layout_parent, QtW.QGridLayout):
             layout_parent.addWidget(self.widget, column, row)
