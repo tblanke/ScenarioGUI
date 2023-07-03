@@ -48,8 +48,7 @@ except FileNotFoundError:  # pragma: no cover
 
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
-console_handler = logging.StreamHandler()
-LOGGER.addHandler(console_handler)
+
 
 def set_graph_layout() -> None:
     """

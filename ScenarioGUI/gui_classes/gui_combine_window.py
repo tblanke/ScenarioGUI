@@ -164,6 +164,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # set started to True
         # this is so that no changes are made when the file is opening
         self.gui_structure.started = True
+        self.gui_structure.loaded = True
 
     def resizeEvent(self, event: QtG.QResizeEvent) -> None:
         """
@@ -929,10 +930,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # deactivate checking
         self.checking: bool = False
+        self.gui_structure.loaded = False
         # open file and set data
         self._load_from_data(self.filename[0])
         # activate checking
         self.checking: bool = True
+        self.gui_structure.loaded = True
 
     def fun_save_as(self) -> None:
         """

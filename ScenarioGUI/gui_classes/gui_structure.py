@@ -58,6 +58,8 @@ class GuiStructure:
 
         # flag for loading the gui
         self.started: bool = False
+        # flag for loading a file
+        self.loaded: bool = False
 
         # create page
         # self.page_result = None
