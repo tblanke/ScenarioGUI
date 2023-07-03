@@ -147,7 +147,7 @@ class GUI(GuiStructure):
 
         self.text_box_only_on_add = els.TextBox(label="Only visible on add", default_text="Hello", category=self.category_inputs)
 
-        self.aim_add.add_link_2_show(self.text_box_only_on_ad)
+        self.aim_add.add_link_2_show(self.text_box_only_on_add)
         self.aim_add.add_link_2_show(self.filename)
         self.button_box = els.ButtonBox(label="a or b or c?", default_index=0, entries=["a", "b", "c"], category=self.category_inputs)
 
