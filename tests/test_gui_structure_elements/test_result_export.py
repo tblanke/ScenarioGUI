@@ -15,6 +15,7 @@ def test_results_export(qtbot):
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
     main_window.delete_backup()
     main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    qtbot.wait(100)
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     qtbot.wait(1500)

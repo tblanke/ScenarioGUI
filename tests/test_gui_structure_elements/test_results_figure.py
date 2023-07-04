@@ -50,6 +50,7 @@ def test_results_figure(qtbot):
     # get sum
     main_window.gui_structure.figure_results.set_text("Hello,Y-Values,X-Values,Line 1")
     # calc sum from gui
+    qtbot.wait(100)
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     qtbot.wait(1500)

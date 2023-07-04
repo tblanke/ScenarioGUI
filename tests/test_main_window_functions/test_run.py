@@ -34,6 +34,7 @@ def test_run(qtbot):
     main_window.gui_structure.filename.set_value(file)
 
     main_window.gui_structure.aim_add.widget.click() if not main_window.gui_structure.aim_add.widget.isChecked() else None
+    qtbot.wait(100)
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     qtbot.wait(1500)
@@ -46,6 +47,7 @@ def test_run(qtbot):
     main_window.remove_previous_calculated_results()
 
     main_window.gui_structure.aim_sub.widget.click()
+    qtbot.wait(100)
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     qtbot.wait(1500)
@@ -60,6 +62,7 @@ def test_run(qtbot):
 
     main_window.gui_structure.aim_plot.widget.click()
     assert main_window.gui_structure.aim_plot.widget.isChecked()
+    qtbot.wait(100)
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     qtbot.wait(1500)
@@ -68,6 +71,7 @@ def test_run(qtbot):
     item = main_window.list_widget_scenario.currentItem()
     main_window.add_scenario()
     main_window.gui_structure.int_a.set_value(main_window.gui_structure.int_a.get_value() + 5)
+    qtbot.wait(100)
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(True)
     main_window.threads[-1].run()
@@ -86,6 +90,7 @@ def test_run(qtbot):
     main_window.remove_previous_calculated_results()
     # test value error results
     main_window.gui_structure.aim_sub.widget.click()
+    qtbot.wait(100)
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(True)
     main_window.threads[-1].run()

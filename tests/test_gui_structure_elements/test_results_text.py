@@ -15,6 +15,7 @@ def test_results_text(qtbot):
     sum_ab = main_window.gui_structure.int_a.get_value() + main_window.gui_structure.float_b.get_value()
     main_window.gui_structure.result_text_add.set_text("Hello,kW")
     # calc sum from gui
+    qtbot.wait(100)
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     qtbot.wait(1500)

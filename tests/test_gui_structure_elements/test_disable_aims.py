@@ -71,4 +71,5 @@ def test_disable_aims(qtbot):
         main_window.gui_structure.int_a.set_value(210)
         qtbot.wait(100)
         assert not main_window.gui_structure.text_box_only_on_add.is_hidden()
+        main_window.gui_structure.option_toggle_buttons.set_value(main_window.gui_structure.option_toggle_buttons.default_value)
         main_window.delete_backup()

@@ -61,4 +61,5 @@ def test_disable_button_box(qtbot):
         assert not g_s.filename.is_hidden()
         g_s.float_b.set_value(40)
         assert g_s.filename.is_hidden()
+        main_window.gui_structure.option_toggle_buttons.set_value(main_window.gui_structure.option_toggle_buttons.default_value)
         main_window.delete_backup()
