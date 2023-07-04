@@ -275,7 +275,7 @@ class Page:
         if list_aims:
             for idx, aim in enumerate(list_aims):
                 default_value = 1 if idx == 0 else 0
-                aim.widget.clicked.connect(
+                aim.change_event(
                     ft_partial(
                         self.update_function,
                         aim.widget,
@@ -283,7 +283,7 @@ class Page:
                         [aim.widget for i, aim in enumerate(list_aims) if i not in [idx, default_value]],
                     )
                 )  # pylint: disable=E1101
-                aim.widget.clicked.connect(ft_partial(check_aim_options, list_aims))  # pylint: disable=E1101
+                aim.change_event(ft_partial(check_aim_options, list_aims))  # pylint: disable=E1101
             list_aims[0].widget.click()
 
     def update_function(
