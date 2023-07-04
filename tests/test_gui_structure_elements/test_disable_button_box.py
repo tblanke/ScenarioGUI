@@ -53,10 +53,12 @@ def test_disable_button_box(qtbot):
     assert g_s.button_box.get_value() == 0
     assert g_s.button_box_short.get_value() == 0
     main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    g_s = main_window.gui_structure
-    g_s.button_box.set_value(1)
-    assert not g_s.filename.is_hidden()
-    g_s.float_b.set_value(40)
-    assert g_s.filename.is_hidden()
-    main_window.delete_backup()
+    for toggled in [0 , 1]:
+        main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+        main_window.gui_structure.option_toggle_buttons.set_value(toggled)
+        g_s = main_window.gui_structure
+        g_s.button_box.set_value(1)
+        assert not g_s.filename.is_hidden()
+        g_s.float_b.set_value(40)
+        assert g_s.filename.is_hidden()
+        main_window.delete_backup()

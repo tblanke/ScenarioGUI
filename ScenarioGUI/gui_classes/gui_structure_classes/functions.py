@@ -75,6 +75,7 @@ def update_opponent_toggle(
     if not button.isChecked():
         button.setChecked(True)
 
+
 def check(
     linked_options: list[(Option | list[Option], int)],
     option_input: Option,
@@ -110,7 +111,7 @@ def check(
         option.show()
 
 
-def check_aim_options(list_aim: list[Aim]) -> None:
+def check_aim_options(list_aim: list[Aim], *args) -> None:
     """
     This function makes sure that all the options, that are linked to the Aim, are made invisible
     when the aim is not selected and that the options, linked to the Aim, will be shown whenever this Aim
