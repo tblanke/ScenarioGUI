@@ -80,6 +80,7 @@ def check(
     linked_options: list[(Option | list[Option], int)],
     option_input: Option,
     index: int,
+    *args,
 ):
     """
     This function makes sure that the linked_options will be hidden when the index of the option_input

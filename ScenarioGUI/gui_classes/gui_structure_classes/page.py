@@ -283,17 +283,8 @@ class Page:
                                                           [aim.widget for i, aim in enumerate(list_aims) if i not in [idx, default_value]],
                                                       )
                                            )  # pylint: disable=E1101
-                """
-                aim.widget.clicked.connect(ft_partial(QtC.QTimer.singleShot, 10,
-                                                                 ft_partial(
-                                                                     self.update_function,
-                                                                     aim.widget,
-                                                                     list_aims[default_value].widget,
-                                                                     [aim.widget for i, aim in enumerate(list_aims) if i not in [idx, default_value]],
-                                                                 ))
-                                           )  # pylint: disable=E1101"""
-                #aim.widget.toggled.connect(ft_partial(QtC.QTimer.singleShot, 15, ft_partial(check_aim_options, list_aims)))  # pylint: disable=E1101
                 aim.widget.toggled.connect(ft_partial(check_aim_options, list_aims))  # pylint: disable=E1101
+                _ = [aim.widget.toggled.connect(func) for func in aim.functions]
             list_aims[0].widget.click()
 
     def update_function(
