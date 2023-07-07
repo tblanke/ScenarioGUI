@@ -290,9 +290,12 @@ class GuiStructure:
         self.list_of_pages = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), Page)]
         self.list_of_rest = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), (Hint, FunctionButton, Category))]
 
-        self.list_of_result_texts: list[tuple[ResultText, str]] = [
-            (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultText)
-        ]
+        self.list_of_result_texts = []
+        for cat in self.page_result.list_categories:
+            for option in cat.list_of_options:
+                if isinstance(option, ResultText):
+                    self.list_of_result_texts.append((option, ''))
+                    
         self.list_of_result_figures: list[tuple[ResultFigure, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultFigure)
         ]
