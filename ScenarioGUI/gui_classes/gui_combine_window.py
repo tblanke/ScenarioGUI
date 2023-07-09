@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import logging
+import datetime
 from functools import partial as ft_partial
 from json import dump, load
-from math import isclose
 from os import makedirs, remove
 from os.path import dirname, exists, realpath
 from os.path import split as os_split
@@ -17,6 +16,7 @@ import PySide6.QtWidgets as QtW
 from matplotlib import rcParams
 
 import ScenarioGUI.global_settings as globs
+from .gui_saving_thread import SavingThread
 
 from ..utils import change_font_size, set_default_font
 from .gui_base_class import BaseUI
@@ -132,6 +132,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.changedFile: bool = False  # set change file variable to false
         self.ax: list = []  # axes of figure
         self.threads: list[CalcProblem] = []  # list of calculation threads
+        self.saving_threads: list[SavingThread] = []
         CalcProblem.role = MainWindow.role
         self.size_b = QtC.QSize(48, 48)  # size of big logo on push button
         self.size_s = QtC.QSize(24, 24)  # size of small logo on push button
@@ -822,7 +823,20 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if self.list_widget_scenario.count() < 1:
             self.add_scenario()
 
-        self._save_to_data(self.backup_file)
+        func = ft_partial(self._save_to_data, self.backup_file)
+        self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
+        self._saving_threads_update()
+
+    def _saving_threads_update(self):
+        thread = self.saving_threads[0]
+        if thread.calculated:
+            self.saving_threads.remove(thread)
+            self._saving_threads_update()
+            return
+        if thread.isRunning():
+            return
+        thread.any_signal.connect(self._saving_threads_update)
+        thread.start()
 
     def _load_from_data(self, location: str | Path) -> None:
         """
@@ -975,7 +989,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # update backup file
         self.auto_save()
         # try to store the data in the pickle file
-        self._save_to_data(self.filename[0])
+        func = ft_partial(self._save_to_data, self.filename[0])
+        self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
+        self._saving_threads_update()
         # deactivate changed file * from window title
         self.changedFile: bool = False
         self.change_window_title()
