@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Font list box
 - Possibility to change figure style (issue 58) 
 - Subcategory (issue 61)
+- Flag in gui_structure to disable functions while loading the gui (issue 79)
+- Ability to deactivate button box entries (issue 46)
+- Ability to deactivate aims
 
 ### Fixed
 - Scenario buttons not resizing (issue 42)
@@ -29,7 +32,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   (issue 65)
 - Remove references to GHEtool (issue 76)
 - Multiprocessing approach implemented (issue 68)
-
+- Translation now works without the same names as the option etc.
+- Redefine list_of_result_texts (issue 86)
 
 ## [0.2.2] - 2023-04-21
 

@@ -40,7 +40,7 @@ def update_opponent_not_change(button: QtW.QPushButton, false_button_list: list[
 def update_opponent_toggle(
     button: QtW.QPushButton,
     button_opponent: QtW.QPushButton,
-    false_button_list: list[QtW.QPushButton] = None,
+    false_button_list: list[QtW.QPushButton],
 ):
     """
     This function controls the behaviour of the buttons, specifically the toggle behaviour.
@@ -61,16 +61,26 @@ def update_opponent_toggle(
     -------
     None
     """
-    button_opponent.setChecked(not button.isChecked())
-    if false_button_list is not None:
+    if button_opponent.isEnabled():
+        button_opponent.setChecked(not button.isChecked())
         for false_button in false_button_list:
             false_button.setChecked(False)
+        return
+    buttons = [button for button in false_button_list if button.isEnabled()]
+    if buttons:
+        buttons[0].setChecked(not button.isChecked())
+        for false_button in buttons[1:]:
+            false_button.setChecked(False)
+        return
+    if not button.isChecked():
+        button.setChecked(True)
 
 
 def check(
     linked_options: list[(Option | list[Option], int)],
     option_input: Option,
     index: int,
+    *args,
 ):
     """
     This function makes sure that the linked_options will be hidden when the index of the option_input
@@ -102,7 +112,7 @@ def check(
         option.show()
 
 
-def check_aim_options(list_aim: list[Aim]) -> None:
+def check_aim_options(list_aim: list[Aim], *args) -> None:
     """
     This function makes sure that all the options, that are linked to the Aim, are made invisible
     when the aim is not selected and that the options, linked to the Aim, will be shown whenever this Aim

@@ -115,6 +115,10 @@ class FloatBox(Option):
         -------
         None
         """
+        if self.maximal_value >= value >= self.widget.maximum():
+            self.widget.setMaximum(value)
+        if self.minimal_value <= value <= self.widget.minimum():
+            self.widget.setMinimum(value)
         self.widget.setValue(value)
 
     def _init_links(self) -> None:

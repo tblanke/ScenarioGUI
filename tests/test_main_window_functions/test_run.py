@@ -33,7 +33,7 @@ def test_run(qtbot):
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is None
     main_window.gui_structure.filename.set_value(file)
 
-    main_window.gui_structure.aim_add.widget.click()
+    main_window.gui_structure.aim_add.widget.click() if not main_window.gui_structure.aim_add.widget.isChecked() else None
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     thread = main_window.threads[-1]
@@ -42,6 +42,9 @@ def test_run(qtbot):
     qtbot.wait(100)
 
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
+    assert np.isclose(main_window.list_ds[main_window.list_widget_scenario.currentRow()].results.result, 102)
+    main_window.list_ds[main_window.list_widget_scenario.currentRow()].results.adding()
+    assert np.isclose(main_window.list_ds[main_window.list_widget_scenario.currentRow()].results.result, 102)
 
     main_window.remove_previous_calculated_results()
 
@@ -97,8 +100,9 @@ def test_run(qtbot):
     main_window.gui_structure.aim_sub.widget.click()
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(True)
-    main_window.threads[-1].run()
-    main_window.threads[-1].any_signal.connect(main_window.thread_function)
+    thread = main_window.threads[-1]
+    thread.run()
+    thread.any_signal.connect(main_window.thread_function)
     qtbot.wait(1500)
     main_window.display_results()
 
@@ -107,8 +111,9 @@ def test_run(qtbot):
     main_window.gui_structure.int_a.set_value(192)
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(True)
-    main_window.threads[-1].run()
-    main_window.threads[-1].any_signal.connect(main_window.thread_function)
+    thread = main_window.threads[-1]
+    thread.run()
+    thread.any_signal.connect(main_window.thread_function)
     qtbot.wait(1500)
     main_window.display_results()
 
