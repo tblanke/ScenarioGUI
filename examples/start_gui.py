@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import logging
 import sys
+from functools import partial
 from pathlib import Path
 from platform import system
 from sys import argv
@@ -106,6 +107,7 @@ class GUI(GuiStructure):
             maximal_value=200,
             category=self.category_inputs
         )
+        self.int_a.change_event(self.disable_aim(self.aim_sub, self.page_inputs, partial(self.int_a.check_linked_value, (None, 5))))
 
         self.int_units = els.IntBoxWithUnits(
             label="IntBoxWithUnits",
@@ -138,13 +140,25 @@ class GUI(GuiStructure):
             category=self.sub_category,
         )
 
-        self.list_box = els.ListBox(label="List box", default_index=0, category=self.category_inputs, entries=["1","2","3","4"])
+        self.list_box = els.ListBox(label="List box", default_index=0, category=self.category_inputs, entries=["1", "2", "3", "4"])
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
                                         file_extension=["txt", "csv"])
-        self.filename.change_event(self.check)
-        self.button_box = els.ButtonBox(label="a or b?", default_index=0, entries=["a", "b"], category=self.category_inputs)
+
+        self.text_box_only_on_add = els.TextBox(label="Only visible on add", default_text="Hello", category=self.category_inputs)
+
+        self.aim_add.add_link_2_show(self.text_box_only_on_add)
+        # self.aim_add.add_link_2_show(self.filename)
+        self.button_box = els.ButtonBox(label="a or b or c?", default_index=0, entries=["a", "b", "c"], category=self.category_inputs)
+
+        self.aim_plot.widget.toggled.connect(self.disable_button_box(self.button_box, at_index=2, func_2_check=self.aim_plot.widget.isChecked))
+        self.float_b.change_event(self.disable_button_box(self.button_box, 1, partial(self.float_b.check_linked_value, (50, None))))
+        self.int_a.change_event(self.disable_button_box(self.button_box, 0, partial(self.int_a.check_linked_value, (None, 10))))
+
+        self.button_box_short = els.ButtonBox(label="b or c?", default_index=0, entries=["b", "c"], category=self.category_inputs)
+        self.float_b.change_event(self.disable_button_box(self.button_box_short, 1, partial(self.float_b.check_linked_value, (50, None))))
+        self.int_a.change_event(self.disable_button_box(self.button_box_short, 0, partial(self.int_a.check_linked_value, (None, 10))))
 
         self.function_button = els.FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
 
@@ -156,12 +170,16 @@ class GUI(GuiStructure):
         self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs,
                                               min_length=2,default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
         self.flex_option.add_option(els.TextBox, name="name", default_text="layer")
+
         self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number = 2)
         self.flex_option.add_option(els.IntBox, name="amount", default_value=4, minimal_value=2)
         self.flex_option.add_option(els.ListBox, name="entry", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
         self.hint_flex = els.Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
         self.flex_option.add_link_2_show(self.hint_flex, 2, 6)
         self.aim_plot.add_link_2_show(self.flex_option)
+        # self.button_box.add_link_2_show(self.filename, on_index=1)
+        self.show_option_under_multiple_conditions(self.filename, [self.button_box, self.aim_add], [partial(self.button_box.check_linked_value, 1),
+                                                                                                    self.aim_add.widget.isChecked])
 
         self.category_grid = els.Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
@@ -247,6 +265,7 @@ class GUI(GuiStructure):
     def check(self) -> bool:
         if self.started:
             logging.info('This should not be shown whilst loading')
+
 
 def run(path_list=None):  # pragma: no cover
     import PySide6.QtWidgets as QtW
