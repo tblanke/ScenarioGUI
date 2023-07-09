@@ -252,28 +252,28 @@ class GuiStructure:
             if not fig.customizable_figure == 2:
                 continue
             for option, name in zip(
-                [
-                    fig.option_axes,
-                    fig.option_font,
-                    fig.option_font_size,
-                    fig.option_title,
-                    fig.option_title,
-                    fig.option_legend_text,
-                    fig.option_plot_background,
-                    fig.option_figure_background,
-                    fig.default_figure_colors,
-                ],
-                [
-                    "option_axes",
-                    "option_font",
-                    "option_font_size",
-                    "option_title",
-                    "option_title",
-                    "option_legend_text",
-                    "option_plot_background",
-                    "option_figure_background",
-                    "default_figure_colors",
-                ],
+                    [
+                        fig.option_axes,
+                        fig.option_font,
+                        fig.option_font_size,
+                        fig.option_title,
+                        fig.option_title,
+                        fig.option_legend_text,
+                        fig.option_plot_background,
+                        fig.option_figure_background,
+                        fig.default_figure_colors
+                    ],
+                    [
+                        "option_axes",
+                        "option_font",
+                        "option_font_size",
+                        "option_title",
+                        "option_title",
+                        "option_legend_text",
+                        "option_plot_background",
+                        "option_figure_background",
+                        "default_figure_colors",
+                    ],
             ):
                 option.label_text = getattr(self.translations, name) if hasattr(self.translations, name) else option.label_text
             fig.option_save_layout.button_text = (
@@ -390,15 +390,15 @@ class GuiStructure:
             fig.update_default_settings()
 
     def save_layout_from_figure(
-        self,
-        option_figure_background: MultipleIntBox,
-        option_plot_background: MultipleIntBox,
-        option_axes_text: MultipleIntBox,
-        option_axes: MultipleIntBox,
-        option_font: FontListBox,
-        option_font_size_figure: IntBox,
-        option_legend_text: MultipleIntBox,
-        option_title: MultipleIntBox,
+            self,
+            option_figure_background: MultipleIntBox,
+            option_plot_background: MultipleIntBox,
+            option_axes_text: MultipleIntBox,
+            option_axes: MultipleIntBox,
+            option_font: FontListBox,
+            option_font_size_figure: IntBox,
+            option_legend_text: MultipleIntBox,
+            option_title: MultipleIntBox,
     ):
         self.option_figure_background.set_value(option_figure_background.get_value())
         self.option_plot_background.set_value(option_plot_background.get_value())
@@ -441,7 +441,8 @@ class GuiStructure:
     @staticmethod
     def _disable_aim(aim: Aim, at_page: Page, func_2_check: Callable[[], bool], args):
         if func_2_check():
-            aim.widget.click()
+            if aim.widget.isChecked():
+                aim.widget.click()
             aim.widget.setEnabled(False)
             font = aim.widget.font()
             font.setStrikeOut(True)
@@ -450,8 +451,6 @@ class GuiStructure:
                 aim.widget.setChecked(False)
                 aims = [aim_i for aim_i in at_page.upper_frame if aim_i != aim and aim_i.widget.isEnabled()]
                 if aims:
-                    # if not aims[0].widget.isChecked():
-                    #     aims[0].widget.click()
                     aims[0].widget.setChecked(True)
             return
         aim.widget.setEnabled(True)
@@ -460,6 +459,48 @@ class GuiStructure:
         aim.widget.setFont(font)
         if len([aim_i for aim_i in at_page.upper_frame if aim_i.widget.isEnabled()]) == 1:
             aim.widget.setChecked(True)
+
+    @staticmethod
+    def show_option_under_multiple_conditions(option_to_be_shown: Option, options_2_be_checked: list[Option, Aim], function_2_be_checked: list[Callable[[],
+    bool]]) -> None:
+        """
+        show the option_to_be_shown if all functions_of_options of the options_2_be_checked are returning true
+
+        Parameters
+        ----------
+        option_to_be_shown: Option
+            The option which should be shown if all conditions are met
+        options_2_be_checked: list[Option]
+            list of options and function of the options that should be checked
+        function_2_be_checked: list[Callable[[], bool]]
+            list of options and function of the options that should be checked
+
+        Returns
+        -------
+            None
+        """
+
+        def check():
+            if all([func() for func in function_2_be_checked]):
+                option_to_be_shown.show()
+                return
+            option_to_be_shown.hide()
+        for option in options_2_be_checked:
+            option.change_event(check)
+
+    def show_option_on_1_of_multiple_conditions(option_to_be_shown: Option, options_2_be_checked: list[Option, Aim], function_2_be_checked: list[Callable[[],
+    bool]]) -> None:
+        """
+
+        Parameters
+        ----------
+        options_2_be_checked
+        function_2_be_checked
+
+        Returns
+        -------
+
+        """
 
     def translate(self, index: int, translation: Translations) -> None:
         """
