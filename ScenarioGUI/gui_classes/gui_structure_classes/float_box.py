@@ -10,6 +10,7 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+from .functions import check_and_set_max_min_values
 
 from ...utils import set_default_font
 from .option import Option
@@ -115,10 +116,7 @@ class FloatBox(Option):
         -------
         None
         """
-        if self.maximal_value >= value >= self.widget.maximum():
-            self.widget.setMaximum(value)
-        if self.minimal_value <= value <= self.widget.minimum():
-            self.widget.setMinimum(value)
+        check_and_set_max_min_values(self.widget, value, self.maximal_value, self.minimal_value)
         self.widget.setValue(value)
 
     def _init_links(self) -> None:
