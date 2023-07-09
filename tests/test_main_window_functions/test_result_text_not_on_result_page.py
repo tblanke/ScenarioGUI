@@ -20,4 +20,5 @@ def test_result_text_on_on_result_page(qtbot):
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     qtbot.wait(1500)
-    assert gs.result_text_add.label.text() == "Result: m"
+    assert gs.result_text_add.label.text() == "Result: 102.0m"
+    main_window.delete_backup()
