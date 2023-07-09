@@ -4,7 +4,6 @@ It contains all the options, categories etc. that should appear on the GUI.
 """
 from __future__ import annotations
 
-import logging
 from functools import partial
 from typing import TYPE_CHECKING
 
@@ -262,7 +261,7 @@ class GuiStructure:
                     fig.option_legend_text,
                     fig.option_plot_background,
                     fig.option_figure_background,
-                    fig.default_figure_colors
+                    fig.default_figure_colors,
                 ],
                 [
                     "option_axes",
@@ -291,15 +290,14 @@ class GuiStructure:
         self.list_of_rest = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), (Hint, FunctionButton, Category))]
 
         self.list_of_result_texts: list[tuple[ResultText, str]] = [
-            (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultText)
+            (option, "") for cat in self.page_result.list_categories for option in cat.list_of_options if isinstance(option, ResultText)
         ]
+
         self.list_of_result_figures: list[tuple[ResultFigure, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultFigure)
         ]
         self.category_default_figure_settings.hide() if not self.list_of_result_figures else self.category_default_figure_settings.show()
-        for fig, _ in self.list_of_result_figures:
-            if not fig.customizable_figure == 2:
-                continue
+        for fig in [fig for fig, _ in self.list_of_result_figures if fig.customizable_figure == 2]:  # noqa: PLR2004
             fig.option_save_layout.change_event(
                 partial(
                     self.save_layout_from_figure,
@@ -310,7 +308,7 @@ class GuiStructure:
                     fig.option_font,
                     fig.option_font_size,
                     fig.option_legend_text,
-                    fig.option_title
+                    fig.option_title,
                 )
             )
         self.list_of_result_exports: list[tuple[ResultExport, str]] = [
@@ -450,7 +448,7 @@ class GuiStructure:
             aim.widget.setFont(font)
             if aim.widget.isChecked():
                 aim.widget.setChecked(False)
-                aims = [aim_i for aim_i in at_page.upper_frame if aim_i!=aim and aim_i.widget.isEnabled()]
+                aims = [aim_i for aim_i in at_page.upper_frame if aim_i != aim and aim_i.widget.isEnabled()]
                 if aims:
                     # if not aims[0].widget.isChecked():
                     #     aims[0].widget.click()
@@ -495,7 +493,7 @@ class GuiStructure:
                 fig.option_legend_text,
                 fig.option_plot_background,
                 fig.option_figure_background,
-                fig.default_figure_colors
+                fig.default_figure_colors,
             ]:
                 option.translate(index) if len(option.label_text) > index and len(option.label_text) > 1 else None
             fig.option_save_layout.translate(index) if len(fig.option_save_layout.button_text) > index and len(fig.option_save_layout.button_text) > 1 else None
