@@ -12,6 +12,31 @@ if TYPE_CHECKING:
     from .option import Option
 
 
+def check_and_set_max_min_values(widget: QtW.QSpinBox | QtW.QDoubleSpinBox, value: int | float, default_max: int | float, default_min: int | float) -> None:
+    """
+    checks if the value is above the current widget limits but within the default limits:
+
+    Parameters
+    ----------
+    widget: QtW.QSpinBox | QtW.QDoubleSpinBox
+        widget to be checked
+    value: int | float
+        value to be checked
+    default_max: int | float
+        default maximal value
+    default_min: int | float
+        default minimal value
+
+    Returns
+    -------
+        None
+    """
+    if default_max > value > widget.maximum():
+        widget.setMaximum(default_max)
+    if widget.minimum() > value > default_min:
+        widget.setMinimum(default_min)
+
+
 def update_opponent_not_change(button: QtW.QPushButton, false_button_list: list[QtW.QPushButton] = None):
     """
     This function controls the behaviour of the buttons.

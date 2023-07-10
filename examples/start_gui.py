@@ -7,6 +7,7 @@ from __future__ import annotations
 import logging
 import sys
 from functools import partial
+from json import dump, load
 from pathlib import Path
 from platform import system
 from sys import argv
@@ -16,6 +17,7 @@ from typing import TYPE_CHECKING
 from matplotlib import pyplot as plt
 from ScenarioGUI import GuiStructure
 from ScenarioGUI import elements as els
+from ScenarioGUI.gui_classes.gui_combine_window import JsonDict
 
 from examples.translation_class import Translations
 
@@ -168,12 +170,12 @@ class GUI(GuiStructure):
         self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)
         self.text_box.deactivate_size_limit()
         self.pass_word = els.TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
-
+        
         self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs,
-                                              min_length=2, default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
+                                              min_length=2,default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
         self.flex_option.add_option(els.TextBox, name="name", default_text="layer")
 
-        self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number=2)
+        self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number = 2)
         self.flex_option.add_option(els.IntBox, name="amount", default_value=4, minimal_value=2)
         self.flex_option.add_option(els.ListBox, name="entry", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
         self.hint_flex = els.Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
@@ -235,7 +237,7 @@ class GUI(GuiStructure):
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
 
         self.result_export = els.ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
-                                              caption="Select file", file_extension="txt")
+                                          caption="Select file", file_extension="txt")
 
         self.figure_results = els.ResultFigure(label=self.translations.figure_results, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
         self.legend_figure_results = els.FigureOption(
@@ -244,13 +246,13 @@ class GUI(GuiStructure):
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
-        self.figure_results_multiple_lines = els.ResultFigure(label=self.translations.figure_results_multiple_lines, page=self.page_result,
-                                                              x_axes_text="X-Axes", y_axes_text="Y-Axes")
+        self.figure_results_multiple_lines = els.ResultFigure(label=self.translations.figure_results_multiple_lines, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
         self.legend_figure_results_multiple_lines = els.FigureOption(
             category=self.figure_results_multiple_lines, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
             entries_values=[False, True]
         )
         self.figure_results_multiple_lines.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot_multiple_lines")
+
 
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_add.add_link_2_show(self.result_export)
@@ -290,6 +292,27 @@ def run(path_list=None):  # pragma: no cover
             0,
         )
         main_window.fun_load_known_filename()
+
+    def export_txt(file_path: Path, data: JsonDict) -> None:
+        # write data to back up file
+        with open(file_path, "w") as file:
+            dump(data, file, indent=1)
+
+    def import_txt(file_path: Path) -> JsonDict:
+        # write data to back up file
+        with open(file_path) as file:
+            data = load(file, indent=1)
+        return data
+
+    def other_version_import(data: JsonDict) -> JsonDict:
+        for dic in data["values"]:
+            dic["float_b"] = dic["float_b"] + 10
+        return data
+
+    main_window.add_other_export_function("txt", export_txt)
+    main_window.add_other_import_function("txt", import_txt)
+
+    main_window.add_other_version_import_function("v0.0.1", other_version_import)
 
     # show window
     window.showMaximized()

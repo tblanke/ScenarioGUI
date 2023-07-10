@@ -3,13 +3,12 @@ from __future__ import annotations
 import logging
 from functools import partial as ft_partial
 from json import dump, load
-from math import isclose
 from os import makedirs, remove
-from os.path import dirname, exists, realpath
+from os.path import dirname, exists, realpath, splitext
 from os.path import split as os_split
-from pathlib import Path, PurePath
+from pathlib import Path
 from sys import path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
@@ -47,6 +46,53 @@ if TYPE_CHECKING:
 currentdir = dirname(realpath(__file__))
 parentdir = dirname(currentdir)
 path.append(parentdir)
+
+
+class JsonDict(TypedDict, total=True):
+    filename: tuple[str, str]
+    names: list[str]
+    version: str
+    values: list[dict]
+    results: list[dict]
+
+
+def normal_export(file_path: Path, data: dict):
+    """
+    normal export function
+
+    Parameters
+    ----------
+    file_path: Path
+        path to file including the file and type
+    data: dict
+        json dict of data
+
+    Returns
+    -------
+        None
+    """
+    # write data to back up file
+    with open(file_path, "w") as file:
+        dump(data, file, indent=1)
+
+
+def normal_import(location: Path) -> JsonDict:
+    """
+    normal import function from json
+
+    Parameters
+    ----------
+    location: Path
+        path to file including the file and type
+    Returns
+    -------
+        JsonDict
+    """
+    # open file and get data
+    with open(location) as file:
+        saving = load(file)
+
+    return saving
 
 
 # main GUI class
@@ -108,7 +154,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.verticalSpacer = QtW.QSpacerItem(20, 40, QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Expanding)
         self.vertical_layout_menu.addItem(self.verticalSpacer)
 
-        # self.add_aims(list_button)
+        self.import_functions: dict[str, Callable[[str | Path], JsonDict]] = {globs.FILE_EXTENSION: normal_import, f"{globs.FILE_EXTENSION}BackUp": normal_import}
+        self.export_functions: dict[str, Callable[[str | Path, JsonDict], None]] = {globs.FILE_EXTENSION: normal_export, f"{globs.FILE_EXTENSION}BackUp": normal_export}
+        self.version_import_functions: dict[str, Callable[[JsonDict], JsonDict]] = {}
+
         # set app and dialog
         self.dia, self.app = dialog, app
         # init pop up dialog
@@ -188,6 +237,54 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.size_push_s = QtC.QSize(75, 75)  # size of small push button
             self.check_page_button_layout(False)
         QtW.QWidget.resizeEvent(self.dia, event)
+
+    def add_other_import_function(self, file_extension: str, func: Callable[[str | Path], JsonDict]):
+        """
+        adds an import behaviour for a different file type.
+        Parameters
+        ----------
+        file_extension: str
+            file type like (*.csv)
+        func: Callable[[str | Path], JsonDict]
+            function which get the path to the file as input and creates a dict of results like the json format does.
+
+        Returns
+        -------
+            None
+        """
+        self.import_functions[file_extension.replace(".", "")] = func
+
+    def add_other_version_import_function(self, version: str, func: Callable[[JsonDict], JsonDict]):
+        """
+        adds an import behaviour for a previous version of the gui.
+        Parameters
+        ----------
+        version: str
+            version for which the behaviour is added
+        func: Callable[[str | Path], JsonDict]
+            function which get the path to the file as input and creates a dict of results like the json format does.
+
+        Returns
+        -------
+            None
+        """
+        self.version_import_functions[version.replace("v", "").replace("V", "")] = func
+
+    def add_other_export_function(self, file_extension: str, func: Callable[[str | Path, JsonDict], None]):
+        """
+        adds an export behaviour for a different file type.
+        Parameters
+        ----------
+        file_extension: str
+            file type like (*.csv)
+        func: Callable[[str | Path, JsonDict], None]
+            function which get the path to the file and the json dict as input and creates and saves the new file.
+
+        Returns
+        -------
+            None
+        """
+        self.export_functions[file_extension] = func
 
     @property
     def list_ds(self) -> list[DataStorage]:
@@ -525,6 +622,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 and DataStorage(self.gui_structure) != old_row_item.data(MainWindow.role)
                 and self.push_button_save_scenario.isEnabled()
             ):
+                logging.info(f"old: {old_row_item.data(0)}; new: {new_row_item.data(0)}, {DataStorage(self.gui_structure) != old_row_item.data(MainWindow.role)}")
                 old_row_item.data(MainWindow.role).close_figures()
                 old_row_item.setData(MainWindow.role, DataStorage(self.gui_structure))
             # update backup fileImport
@@ -662,8 +760,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # hide results buttons if no results where found
-        if any([(self.list_widget_scenario.item(i).data(MainWindow.role).results is None) for i in range(self.list_widget_scenario.count())]) or \
-                self.list_widget_scenario.count() < 1:
+        if (
+            any((self.list_widget_scenario.item(i).data(MainWindow.role).results is None) for i in range(self.list_widget_scenario.count()))
+            or self.list_widget_scenario.count() < 1
+        ):
             # self.gui_structure.function_save_results.hide()
             self.gui_structure.list_of_pages[0].button.click()
             return
@@ -728,11 +828,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         for idx in range(self.list_widget_scenario.count()):
+            data = self.list_widget_scenario.item(idx).data(MainWindow.role)
             setattr(
-                self.list_widget_scenario.item(idx).data(MainWindow.role),
+                data,
                 name_of_option,
-                getattr(self.gui_structure, name_of_option).get_value() if len(args) < 1 else args[0],
+                getattr(self.gui_structure, name_of_option).get_value(),
             )
+            self.list_widget_scenario.item(idx).setData(MainWindow.role, data)
 
     def change_language(self) -> None:
         """
@@ -837,21 +939,21 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-
+        file_extension = splitext(location)[1].replace(".", "")
+        func = self.import_functions[file_extension]
         try:
-            # open file and get data
-            with open(location) as file:
-                saving = load(file)
+            saving = func(location)
         except FileNotFoundError:
             globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()[0]])
             return
-
+        if saving["version"] in self.version_import_functions:
+            saving = self.version_import_functions[saving["version"]](saving)
         # set and change the window title
         self.filename = tuple(saving["filename"])
         self.change_window_title()
         self.list_widget_scenario.clear()
         # write data to variables
-        for idx, (val, results, name) in enumerate(zip(saving["values"], saving["results"], saving["names"])):
+        for _idx, (val, results, name) in enumerate(zip(saving["values"], saving["results"], saving["names"])):
             d_s = DataStorage(self.gui_structure)
             d_s.from_dict(val)
             if results is None:
@@ -866,7 +968,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.list_widget_scenario.item(0).data(MainWindow.role).set_values(self.gui_structure)
         self.check_results()
 
-    def _save_to_data(self, location: str | PurePath) -> None:
+    def _save_to_data(self, location: str | Path) -> None:
         """
         This function saves the gui data to a json formatted file.
 
@@ -883,17 +985,17 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         scenario_names = [self.list_widget_scenario.item(idx).text() for idx in range(self.list_widget_scenario.count())]
         # create saving dict
         list_ds = [self.list_widget_scenario.item(idx).data(MainWindow.role) for idx in range(self.list_widget_scenario.count())]
-        saving = {
+        saving: JsonDict = {
             "filename": self.filename,
             "names": scenario_names,
             "version": globs.VERSION,
             "values": [d_s.to_dict() for d_s in list_ds],
             "results": [d_s.results.to_dict() if d_s.results is not None else None for d_s in list_ds],
         }
+
+        file_extension = splitext(location)[1].replace(".", "")
         try:
-            # write data to back up file
-            with open(location, "w") as file:
-                dump(saving, file, indent=1)
+            self.export_functions[file_extension](location, saving)
         except FileNotFoundError:
             globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()[0]])
         except PermissionError:  # pragma: no cover
@@ -909,12 +1011,20 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # open interface and get file name
-        self.filename = QtW.QFileDialog.getOpenFileName(
+        filename = QtW.QFileDialog.getOpenFileName(
             self.central_widget,
             caption=self.translations.choose_load[self.gui_structure.option_language.get_value()[0]],
-            filter=f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})",
+            filter=";;".join(
+                    extension
+                    for extension in [f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})"]
+                    + [f"{extension} (*.{extension})" for extension in list(self.import_functions.keys())[2:]]
+                ),
             dir=str(self.default_path),
         )
+        # break function if no file is selected
+        if filename == MainWindow.filename_default or not filename[0]:
+            return
+        self.filename = filename
         # load selected data
         self.fun_load_known_filename()
 
@@ -946,10 +1056,23 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # reset filename because then the funSave function ask for a new filename
-        self.filename = MainWindow.filename_default
-        self.fun_save()  # save data under a new filename
+        filename: tuple = QtW.QFileDialog.getSaveFileName(
+            self.central_widget,
+            caption=self.translations.Save[self.gui_structure.option_language.get_value()[0]],
+            filter=";;".join(
+                extension
+                for extension in [f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})"]
+                + [f"{extension} (*.{extension})" for extension in list(self.export_functions.keys())[2:]]
+            ),
+            dir=str(self.default_path),
+        )
+        # break function if no file is selected
+        if filename == MainWindow.filename_default or not filename[0]:
+            return
+        self.filename = filename if splitext(filename[0])[1].replace(".", "") == globs.FILE_EXTENSION else self.filename
+        self.fun_save(filename)  # save data under a new filename
 
-    def fun_save(self) -> bool:
+    def fun_save(self, filename: tuple[str, str] = None) -> bool:
         """
         This function saves all the scenarios in a JSON formatted *.{FILE_EXTENSION} file.
 
@@ -960,22 +1083,19 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             True if the saving was successful.
         """
         # ask for pickle file if the filename is still the default
-        if self.filename == MainWindow.filename_default:
-            self.filename: tuple = QtW.QFileDialog.getSaveFileName(
-                self.central_widget,
-                caption=self.translations.Save[self.gui_structure.option_language.get_value()[0]],
-                filter=f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})",
-                dir=str(self.default_path),
-            )
-            # break function if no file is selected
+        logging.info(f"{filename}, {MainWindow.filename_default}: {self.filename}")
+        if not isinstance(filename, tuple):
             if self.filename == MainWindow.filename_default:
-                return False
+                self.fun_save_as()
+                return True
+            else:
+                filename = self.filename
         # save scenarios
         self.save_scenario()
         # update backup file
         self.auto_save()
         # try to store the data in the pickle file
-        self._save_to_data(self.filename[0])
+        self._save_to_data(filename[0])
         # deactivate changed file * from window title
         self.changedFile: bool = False
         self.change_window_title()
@@ -1087,7 +1207,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        if self.list_widget_scenario.count() < 2:
+        if self.list_widget_scenario.count() < 2:  # noqa: PLR2004
             return
         # get current scenario index
         item = self.list_widget_scenario.currentItem()
@@ -1176,7 +1296,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.update_bar(n_closed_threads)
         # if number of finished is the number that has to be calculated enable buttons and actions and change page to
         # results page
-        if open_threads:        # start new thread
+        if open_threads:  # start new thread
             open_threads[0].start()
             open_threads[0].any_signal.connect(self.thread_function)
             return
@@ -1199,9 +1319,15 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # add scenario if no list of scenarios exits else save current scenario
         self.add_scenario() if self.list_widget_scenario.count() < 1 else self.save_scenario()
         # create list of threads with scenarios that have not been calculated
-        self.threads += [CalcProblem(self.list_widget_scenario.item(idx).data(MainWindow.role), self.list_widget_scenario.item(idx),
-                         data_2_results_function=self.data_2_results_function) for idx in range(
-            self.list_widget_scenario.count()) if self.list_widget_scenario.item(idx).data(MainWindow.role).results is None]
+        self.threads += [
+            CalcProblem(
+                self.list_widget_scenario.item(idx).data(MainWindow.role),
+                self.list_widget_scenario.item(idx),
+                data_2_results_function=self.data_2_results_function,
+            )
+            for idx in range(self.list_widget_scenario.count())
+            if self.list_widget_scenario.item(idx).data(MainWindow.role).results is None
+        ]
         # set number of to calculate scenarios
         if len(self.threads) < 1:
             return
@@ -1212,7 +1338,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # start calculation if at least one scenario has to be calculated
         if [thread for thread in self.threads if thread.isRunning()]:  # pragma: no cover
             return
-        for thread in self.threads[:self.gui_structure.option_n_threads.get_value()]:
+        for thread in self.threads[: self.gui_structure.option_n_threads.get_value()]:
             thread.start()
             thread.any_signal.connect(self.thread_function)
 
@@ -1232,8 +1358,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if not self.check_values():
             return
         # add scenario if no list of scenarios exits else save current scenario
-        self.add_scenario() if self.list_widget_scenario.count() < 1 else self.save_scenario() if self.list_widget_scenario.currentItem().text()[-1] == "*" \
-            else None
+        self.add_scenario() if self.list_widget_scenario.count() < 1 else self.save_scenario() if self.list_widget_scenario.currentItem().text()[
+            -1
+        ] == "*" else None
         # get Datastorage of selected scenario
         ds: DataStorage = self.list_widget_scenario.currentItem().data(MainWindow.role)
         # if calculation is already done just show results
