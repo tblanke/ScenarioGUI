@@ -135,3 +135,5 @@ GHEtool/test/test.gvalues
 *.orig
 *.nothing
 *.scenario
+*.yourGUI
+*.txt
