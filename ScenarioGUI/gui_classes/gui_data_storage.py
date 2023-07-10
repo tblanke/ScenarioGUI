@@ -139,6 +139,14 @@ class DataStorage:
             if not hasattr(self, i) or not hasattr(other, i):
                 return False
             if getattr(self, i) != getattr(other, i):
+                if hasattr(getattr(self, i), "__len__"):
+                    for new, old in zip(getattr(self, i), getattr(other, i)):
+                        if new != old:
+                            return False
+                    continue
                 return False
         # if all match return true
         return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
