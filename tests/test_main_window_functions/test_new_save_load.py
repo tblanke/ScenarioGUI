@@ -53,9 +53,9 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     qtbot.wait(200)
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (Path(main_window.filename_default[0]), main_window.filename_default[1])
     # trigger save action and add filename
-
-    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
-        f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
+    QFileDialog.getSaveFileName = partial(
+        get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    )
     main_window.action_save.trigger()
     qtbot.wait(200)
     # check if filename is set correctly
@@ -109,13 +109,29 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     # set a different filename and test new action
     QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
         f"{main_window.default_path.joinpath(filename_3)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
+
+    # trigger open function and set filename 1
+    QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=("", ""))
+    main_window.action_open.trigger()
+    for ds_old, ds_new in zip(list_old, main_window.list_ds):
+        for option in ds_new.list_options_aims:
+            if isinstance(getattr(ds_old, option), (int, float)):
+                assert np.isclose(getattr(ds_old, option), getattr(ds_new, option))
+                continue
+            if isinstance(getattr(ds_old, option), (str, bool)):
+                assert getattr(ds_old, option) == getattr(ds_new, option)
+                continue
+    # set a different filename and test new action
+    QtW.QFileDialog.getSaveFileName = partial(
+        get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_3)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    )
     main_window.action_new.trigger()
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
         main_window.default_path.joinpath(filename_3),
         f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
     )
     assert len(main_window.list_ds) < 1
-    main_window.filename = ("filename_1", filename_1)
+    main_window.filename = (f"filename_1.{global_vars.FILE_EXTENSION}", filename_1)
     main_window.fun_load_known_filename()
     assert main_window.status_bar.label.text() == main_window.translations.no_file_selected[0]
     close_tests(main_window, qtbot)

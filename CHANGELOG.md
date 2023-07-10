@@ -12,6 +12,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Possibility to change figure style (issue 58) 
 - Subcategory (issue 61)
 - Flag in gui_structure to disable functions while loading the gui (issue 79)
+- Different file extension can be saved and loaded using add_other_export_function or add_other_import_function from MainWindow class (issue 89)
+- A conversation function to convert old json version styles of the gui to new ones can be added using add_other_version_import_function from MainWindow class
+
+### Added
+- Ability to deactivate button box entries (issue 46)
+- Ability to deactivate aims
 
 ### Fixed
 - Scenario buttons not resizing (issue 42)
@@ -29,7 +35,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - ResultsFigure has now translatable legend texts by adding them with a commma to the current translation (example: "Label text,Y-axis,X-Axis,Line 1,Line 2") 
   (issue 65)
 - Remove references to GHEtool (issue 76)
-
+- If a value in the int Box of float box is set it is checked if the value is between the default limits and the current widget limits. If so the limits 
+  are reset to the default ones and the value is set. (issue 83)
+- Translation now works without the same names as the option etc.
+- Redefine list_of_result_texts (issue 86)
 
 ## [0.2.2] - 2023-04-21
 

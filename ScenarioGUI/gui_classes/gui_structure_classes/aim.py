@@ -68,6 +68,7 @@ class Aim:
         self.icon: str = icon
         self.widget: QtW.QPushButton = QtW.QPushButton(self.default_parent)
         self.list_options: list[Option | Category | FunctionButton] = []
+        self.functions: list[Callable] = []
         page.upper_frame.append(self)
 
     def set_text(self, name: str) -> None:
@@ -114,7 +115,7 @@ class Aim:
         -------
         None
         """
-        self.widget.clicked.connect(lambda: function_to_be_called(*args))  # pylint: disable=E1101
+        self.functions.append(lambda: function_to_be_called(*args))  # pylint: disable=E1101
 
     def add_link_2_show(self, option: Option | Category | FunctionButton | Hint):
         """

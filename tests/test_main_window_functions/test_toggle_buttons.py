@@ -41,7 +41,7 @@ def test_toggle_buttons(qtbot):
     main_window.gui_structure.aim_add.widget.click()
     assert main_window.gui_structure.aim_add.widget.isChecked()
     assert not main_window.gui_structure.aim_sub.widget.isChecked()
-
+    qtbot.wait(100)
     val_before = main_window.gui_structure.button_box.get_value()
     main_window.gui_structure.button_box.widget[val_before].click()
     val_after = main_window.gui_structure.button_box.get_value()
