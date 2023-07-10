@@ -4,7 +4,6 @@ It contains all the options, categories etc. that should appear on the GUI.
 """
 from __future__ import annotations
 
-import logging
 from functools import partial
 from typing import TYPE_CHECKING
 
@@ -253,28 +252,28 @@ class GuiStructure:
             if not fig.customizable_figure == 2:
                 continue
             for option, name in zip(
-                [
-                    fig.option_axes,
-                    fig.option_font,
-                    fig.option_font_size,
-                    fig.option_title,
-                    fig.option_title,
-                    fig.option_legend_text,
-                    fig.option_plot_background,
-                    fig.option_figure_background,
-                    fig.default_figure_colors
-                ],
-                [
-                    "option_axes",
-                    "option_font",
-                    "option_font_size",
-                    "option_title",
-                    "option_title",
-                    "option_legend_text",
-                    "option_plot_background",
-                    "option_figure_background",
-                    "default_figure_colors",
-                ],
+                    [
+                        fig.option_axes,
+                        fig.option_font,
+                        fig.option_font_size,
+                        fig.option_title,
+                        fig.option_title,
+                        fig.option_legend_text,
+                        fig.option_plot_background,
+                        fig.option_figure_background,
+                        fig.default_figure_colors
+                    ],
+                    [
+                        "option_axes",
+                        "option_font",
+                        "option_font_size",
+                        "option_title",
+                        "option_title",
+                        "option_legend_text",
+                        "option_plot_background",
+                        "option_figure_background",
+                        "default_figure_colors",
+                    ],
             ):
                 option.label_text = getattr(self.translations, name) if hasattr(self.translations, name) else option.label_text
             fig.option_save_layout.button_text = (
@@ -291,15 +290,14 @@ class GuiStructure:
         self.list_of_rest = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), (Hint, FunctionButton, Category))]
 
         self.list_of_result_texts: list[tuple[ResultText, str]] = [
-            (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultText)
+            (option, "") for cat in self.page_result.list_categories for option in cat.list_of_options if isinstance(option, ResultText)
         ]
+
         self.list_of_result_figures: list[tuple[ResultFigure, str]] = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultFigure)
         ]
         self.category_default_figure_settings.hide() if not self.list_of_result_figures else self.category_default_figure_settings.show()
-        for fig, _ in self.list_of_result_figures:
-            if not fig.customizable_figure == 2:
-                continue
+        for fig in [fig for fig, _ in self.list_of_result_figures if fig.customizable_figure == 2]:  # noqa: PLR2004
             fig.option_save_layout.change_event(
                 partial(
                     self.save_layout_from_figure,
@@ -310,7 +308,7 @@ class GuiStructure:
                     fig.option_font,
                     fig.option_font_size,
                     fig.option_legend_text,
-                    fig.option_title
+                    fig.option_title,
                 )
             )
         self.list_of_result_exports: list[tuple[ResultExport, str]] = [
@@ -392,15 +390,15 @@ class GuiStructure:
             fig.update_default_settings()
 
     def save_layout_from_figure(
-        self,
-        option_figure_background: MultipleIntBox,
-        option_plot_background: MultipleIntBox,
-        option_axes_text: MultipleIntBox,
-        option_axes: MultipleIntBox,
-        option_font: FontListBox,
-        option_font_size_figure: IntBox,
-        option_legend_text: MultipleIntBox,
-        option_title: MultipleIntBox,
+            self,
+            option_figure_background: MultipleIntBox,
+            option_plot_background: MultipleIntBox,
+            option_axes_text: MultipleIntBox,
+            option_axes: MultipleIntBox,
+            option_font: FontListBox,
+            option_font_size_figure: IntBox,
+            option_legend_text: MultipleIntBox,
+            option_title: MultipleIntBox,
     ):
         self.option_figure_background.set_value(option_figure_background.get_value())
         self.option_plot_background.set_value(option_plot_background.get_value())
@@ -443,17 +441,16 @@ class GuiStructure:
     @staticmethod
     def _disable_aim(aim: Aim, at_page: Page, func_2_check: Callable[[], bool], args):
         if func_2_check():
-            aim.widget.click()
+            if aim.widget.isChecked():
+                aim.widget.click()
             aim.widget.setEnabled(False)
             font = aim.widget.font()
             font.setStrikeOut(True)
             aim.widget.setFont(font)
             if aim.widget.isChecked():
                 aim.widget.setChecked(False)
-                aims = [aim_i for aim_i in at_page.upper_frame if aim_i!=aim and aim_i.widget.isEnabled()]
+                aims = [aim_i for aim_i in at_page.upper_frame if aim_i != aim and aim_i.widget.isEnabled()]
                 if aims:
-                    # if not aims[0].widget.isChecked():
-                    #     aims[0].widget.click()
                     aims[0].widget.setChecked(True)
             return
         aim.widget.setEnabled(True)
@@ -462,6 +459,48 @@ class GuiStructure:
         aim.widget.setFont(font)
         if len([aim_i for aim_i in at_page.upper_frame if aim_i.widget.isEnabled()]) == 1:
             aim.widget.setChecked(True)
+
+    @staticmethod
+    def show_option_under_multiple_conditions(option_to_be_shown: Option, options_2_be_checked: list[Option, Aim], function_2_be_checked: list[Callable[[],
+    bool]]) -> None:
+        """
+        show the option_to_be_shown if all functions_of_options of the options_2_be_checked are returning true
+
+        Parameters
+        ----------
+        option_to_be_shown: Option
+            The option which should be shown if all conditions are met
+        options_2_be_checked: list[Option]
+            list of options and function of the options that should be checked
+        function_2_be_checked: list[Callable[[], bool]]
+            list of options and function of the options that should be checked
+
+        Returns
+        -------
+            None
+        """
+
+        def check():
+            if all([func() for func in function_2_be_checked]):
+                option_to_be_shown.show()
+                return
+            option_to_be_shown.hide()
+        for option in options_2_be_checked:
+            option.change_event(check)
+
+    def show_option_on_1_of_multiple_conditions(option_to_be_shown: Option, options_2_be_checked: list[Option, Aim], function_2_be_checked: list[Callable[[],
+    bool]]) -> None:
+        """
+
+        Parameters
+        ----------
+        options_2_be_checked
+        function_2_be_checked
+
+        Returns
+        -------
+
+        """
 
     def translate(self, index: int, translation: Translations) -> None:
         """
@@ -495,7 +534,7 @@ class GuiStructure:
                 fig.option_legend_text,
                 fig.option_plot_background,
                 fig.option_figure_background,
-                fig.default_figure_colors
+                fig.default_figure_colors,
             ]:
                 option.translate(index) if len(option.label_text) > index and len(option.label_text) > 1 else None
             fig.option_save_layout.translate(index) if len(fig.option_save_layout.button_text) > index and len(fig.option_save_layout.button_text) > 1 else None

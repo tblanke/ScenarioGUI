@@ -1383,6 +1383,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
+        #if not exitst(reuts):
+        #    self.gui_structure.page_result.page_0.show()
+        #    _ = [res_fig.fig.close() for res_fig, _ in self.gui_structure.list_of_result_figures]
+        #    return
+        #self.gui_structure.page_result.page_1.show()
 
         def update_results():
             # update so all the relevant options are shown

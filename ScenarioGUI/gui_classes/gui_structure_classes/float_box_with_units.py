@@ -10,6 +10,7 @@ import ScenarioGUI.global_settings as globs
 from ScenarioGUI.utils import change_font_size, set_default_font
 
 from .float_box import FloatBox
+from .functions import check_and_set_max_min_values
 from .list_box import ComboBox
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -115,7 +116,9 @@ class FloatBoxWithUnits(FloatBox):
         None
         """
         self.unit_widget.setCurrentIndex(value[1])
-        self.widget.setValue(value[0] / self.units[value[1]][1])
+        value = value[0] / self.units[value[1]][1]
+        check_and_set_max_min_values(self.widget, value, self.maximal_value, self.minimal_value)
+        self.widget.setValue(value)
 
     def _init_links(self) -> None:
         """

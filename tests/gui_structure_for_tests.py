@@ -74,6 +74,9 @@ class GUI(GuiStructure):
         self.float_b.change_event(self.disable_aim(self.aim_add, self.page_inputs, partial(self.float_b.check_linked_value, (30, None))))
         self.int_units.change_event(self.disable_aim(self.aim_plot, self.page_inputs, partial(self.int_units.check_linked_value, (None, 20))))
 
+        self.result_text_not_on_result_page = els.ResultText("Result not on result page", self.category_inputs,
+                                                             prefix="OK", suffix="Suf")
+
         self.float_units = els.FloatBoxWithUnits(
             label="FloatBoxWithUnits",
             default_value=2,
