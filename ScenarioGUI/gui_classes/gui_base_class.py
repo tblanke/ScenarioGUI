@@ -55,6 +55,7 @@ class BaseUI:
     push_button_add_scenario: QtW.QPushButton
     action_start_multiple: QtG.QAction
     action_open: QtG.QAction
+    action_open_add: QtG.QAction
     action_save: QtG.QAction
     action_new: QtG.QAction
     frame_progress_bar: QtW.QFrame
@@ -124,6 +125,13 @@ class BaseUI:
         icon3.addFile(f"{globs.FOLDER}/icons/Open.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         icon3.addFile(f"{globs.FOLDER}/icons/Open_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
         self.action_open.setIcon(icon3)
+        self.action_open_add = QtG.QAction(ScenarioGUI)
+        self.action_open_add.setObjectName("action_open_add")
+        self.action_open_add.setEnabled(True)
+        icon_open_add = QtG.QIcon()
+        icon_open_add.addFile(f"{globs.FOLDER}/icons/Open_Add.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon_open_add.addFile(f"{globs.FOLDER}/icons/Open_Add_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        self.action_open_add.setIcon(icon_open_add)
         self.action_start_multiple = QtG.QAction(ScenarioGUI)
         self.action_start_multiple.setObjectName("action_start_multiple")
         self.action_start_multiple.setEnabled(True)
@@ -499,6 +507,10 @@ class BaseUI:
         self.action_open.setText("Open")
         # if QT_CONFIG(shortcut)
         self.action_open.setShortcut("Ctrl+O")
+        # endif // QT_CONFIG(shortcut)
+        self.action_open_add.setText("Open as appending")
+        # if QT_CONFIG(shortcut)
+        self.action_open_add.setShortcut("Ctrl+A")
         # endif // QT_CONFIG(shortcut)
         self.action_start_multiple.setText("Calculate all scenarios")
         # if QT_CONFIG(shortcut)

@@ -4,6 +4,7 @@ class Translations:  # pragma: no cover
         "action_delete_scenario",
         "action_new",
         "action_open",
+        "action_open_add",
         "action_rename_scenario",
         "action_save",
         "action_save_as",
@@ -88,6 +89,7 @@ class Translations:  # pragma: no cover
         self.action_delete_scenario: list[str] = ["Delete scenario", "Szenario löschen"]
         self.action_new: list[str] = ["New Project", "Neues Projekt"]
         self.action_open: list[str] = ["Open Project", "Öffne Projekt"]
+        self.action_open_add: list[str] = ["Open Project as new scenarios", "Öffne Projekt als neue Szenarios"]
         self.action_rename_scenario: list[str] = ["Rename scenario", "Szenario umbenennen"]
         self.action_save: list[str] = ["Save Project", "Speichere Projekt"]
         self.action_save_as: list[str] = ["Save as", "Speichere Projekt unter ..."]

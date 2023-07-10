@@ -4,6 +4,7 @@ class Translations:  # pragma: no cover
         "action_delete_scenario",
         "action_new",
         "action_open",
+        "action_open_add",
         "action_rename_scenario",
         "action_save",
         "action_save_as",
@@ -89,6 +90,7 @@ class Translations:  # pragma: no cover
         self.action_delete_scenario: list[str] = ["Delete scenario", "Szenario löschen"]
         self.action_new: list[str] = ["New Project", "Neues Projekt"]
         self.action_open: list[str] = ["Open Project", "Öffne Projekt"]
+        self.action_open_add: list[str] = ["Open Project as new scenarios", "Öffne Projekt als neue Szenarios"]
         self.action_rename_scenario: list[str] = ["Rename scenario", "Szenario umbenennen"]
         self.action_save: list[str] = ["Save Project", "Speichere Projekt"]
         self.action_save_as: list[str] = ["Save as", "Speichere Projekt unter ..."]
@@ -164,7 +166,7 @@ class Translations:  # pragma: no cover
             "Wenn Automatisch speichern ausgewählt ist, wird das Szenario automatisch gespeichert, wenn ein Szenario geändert wird. Andernfalls muss das Szenario mit der Schaltfläche Szenario aktualisieren in der oberen linken Ecke gespeichert werden, wenn die Änderungen nicht verloren gehen sollen.",
         ]
         self.figure_results: list[str] = ["Plot,X-axis[-],Y-Axis[-],line", "Diagram,X-Achse[-],Y-Achse[-],Linie"]
-        self.figure_results_multiple_lines: list[str] = ["Plot,X-axis[-],Y-Axis[-],line,Line two", "Diagram,X-Achse[-],Y-Achse[-],Linie,Linie Zwei"]
+        self.figure_results_multiple_lines: list[str] = ["Plot,X-axis[-],Y-Axis[-],Line one,Line two", "Diagram,X-Achse[-],Y-Achse[-],Linie Eins,Linie Zwei"]
         self.figure_results_with_customizable_layout: list[str] = [
             "Plot with customizable layout,Y-Axis[-],X-axis[-]",
             "Plot mit anpassbarem Layout,Y-Achse[-],X-Achse[-]",
