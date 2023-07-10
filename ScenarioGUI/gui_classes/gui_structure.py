@@ -465,8 +465,8 @@ class GuiStructure:
             aim.widget.setChecked(True)
 
     @staticmethod
-    def show_option_under_multiple_conditions(option_to_be_shown: Option, options_2_be_checked: list[Option, Aim], function_2_be_checked: list[Callable[[],
-    bool]]) -> None:
+    def show_option_under_multiple_conditions(option_to_be_shown: Option, options_2_be_checked: list[Option, Aim], *, functions_check_for_and: list[Callable[[],
+    bool]] | None = None, functions_check_for_or: list[Callable[[], bool]] | None = None) -> None:
         """
         show the option_to_be_shown if all functions_of_options of the options_2_be_checked are returning true
 
@@ -476,35 +476,29 @@ class GuiStructure:
             The option which should be shown if all conditions are met
         options_2_be_checked: list[Option]
             list of options and function of the options that should be checked
-        function_2_be_checked: list[Callable[[], bool]]
-            list of options and function of the options that should be checked
+        functions_check_for_and: list[Callable[[], bool]] | None
+            list of options and function of the options that should be checked for the "and" condition (so all have to be true)
+        functions_check_for_or: list[Callable[[], bool]] | None
+            list of options and function of the options that should be checked for the "or" condition (so one have to be true)
 
         Returns
         -------
             None
         """
 
-        def check():
-            if all([func() for func in function_2_be_checked]):
-                option_to_be_shown.show()
-                return
-            option_to_be_shown.hide()
+        if functions_check_for_and is not None and functions_check_for_or is not None:
+            def check():
+                option_to_be_shown.show() if all([func() for func in functions_check_for_and]) and any([func() for func in functions_check_for_or]) else option_to_be_shown.hide()
+
+        elif functions_check_for_and is not None:
+            def check():
+                option_to_be_shown.show() if all([func() for func in functions_check_for_and]) else option_to_be_shown.hide()
+        else:
+            def check():
+                option_to_be_shown.show() if any([func() for func in functions_check_for_or]) else option_to_be_shown.hide()
+
         for option in options_2_be_checked:
             option.change_event(check)
-
-    def show_option_on_1_of_multiple_conditions(option_to_be_shown: Option, options_2_be_checked: list[Option, Aim], function_2_be_checked: list[Callable[[],
-    bool]]) -> None:
-        """
-
-        Parameters
-        ----------
-        options_2_be_checked
-        function_2_be_checked
-
-        Returns
-        -------
-
-        """
 
     def translate(self, index: int, translation: Translations) -> None:
         """
