@@ -1,10 +1,4 @@
-import PySide6.QtWidgets as QtW
-
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-
-from ..gui_structure_for_tests import GUI
-from ..result_creating_class_for_tests import ResultsClass, data_2_results
-from ..test_translations.translation_class import Translations
+from ..starting_closing_tests import close_tests, start_tests
 
 
 def test_toggle_buttons(qtbot):
@@ -16,9 +10,7 @@ def test_toggle_buttons(qtbot):
     qtbot: QtBot
 
     """
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     main_window.gui_structure.option_auto_saving.set_value(1)
     # no toggle behaviour
     main_window.gui_structure.option_toggle_buttons.set_value(0)
@@ -57,4 +49,4 @@ def test_toggle_buttons(qtbot):
     main_window.gui_structure.button_box.widget[val_before].click()
     val_after = main_window.gui_structure.button_box.get_value()
     assert val_before == val_after
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)

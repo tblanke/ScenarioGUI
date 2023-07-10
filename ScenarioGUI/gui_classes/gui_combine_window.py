@@ -16,12 +16,12 @@ import PySide6.QtWidgets as QtW
 from matplotlib import rcParams
 
 import ScenarioGUI.global_settings as globs
-from .gui_saving_thread import SavingThread
 
 from ..utils import change_font_size, set_default_font
 from .gui_base_class import BaseUI
 from .gui_calculation_thread import CalcProblem
 from .gui_data_storage import DataStorage
+from .gui_saving_thread import SavingThread
 from .gui_structure_classes import FigureOption, Option, ResultExport
 from .gui_structure_classes.functions import check_aim_options, show_linked_options
 

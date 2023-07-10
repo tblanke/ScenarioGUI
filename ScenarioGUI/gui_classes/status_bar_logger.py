@@ -3,12 +3,12 @@ script for a status bar logger class
 """
 from __future__ import annotations
 
-import PySide6.QtWidgets as QtW
-import PySide6.QtCore as QtC
-
 from functools import partial
 from logging import Handler
 from typing import TYPE_CHECKING
+
+import PySide6.QtCore as QtC
+import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as globs
 

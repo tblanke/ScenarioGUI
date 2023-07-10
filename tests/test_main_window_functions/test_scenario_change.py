@@ -3,14 +3,10 @@ from math import isclose
 import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW
 
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-
-from ..gui_structure_for_tests import GUI
-from ..result_creating_class_for_tests import ResultsClass, data_2_results
-from ..test_translations.translation_class import Translations
+from ..starting_closing_tests import close_tests, start_tests
 
 
-def test_change_scenario(qtbot):
+def test_change_scenario(qtbot):  # noqa: PLR0915
     """
     test if the scenario changing is handled correctly
 
@@ -20,9 +16,7 @@ def test_change_scenario(qtbot):
         bot for the GUI
     """
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     # add two scenarios and set different conductivity
     main_window.add_scenario()
     main_window.gui_structure.float_b.set_value(2.1)
@@ -37,6 +31,7 @@ def test_change_scenario(qtbot):
     assert main_window.list_widget_scenario.currentRow() == 0
     # change a value to trigger pop up window
     main_window.gui_structure.float_b.set_value(2.3)
+
     # create functions to handle pop up window
 
     def close():
@@ -129,4 +124,4 @@ def test_change_scenario(qtbot):
     main_window.scenario_is_changed(main_window.list_widget_scenario.item(1), main_window.list_widget_scenario.item(1))
     assert isclose(main_window.list_ds[1].float_b, 3)
     assert isclose(main_window.gui_structure.float_b.get_value(), 3)
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)

@@ -1,18 +1,15 @@
 import numpy as np
-import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as global_vars
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
-from ..gui_structure_for_tests import GUI
 from ..result_creating_class_for_tests import ResultsClass, data_2_results
-from ..test_translations.translation_class import Translations
+from ..starting_closing_tests import close_tests, start_tests
 
 global_vars.ResultsClass = ResultsClass
 global_vars.DATA_2_RESULTS_FUNCTION = data_2_results
 
 
-def test_flex_amount_option(qtbot):
+def test_flex_amount_option(qtbot):  # noqa: PLR0915
     """
     test float box functions
 
@@ -22,9 +19,7 @@ def test_flex_amount_option(qtbot):
         bot for the GUI
     """
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     flex_option = main_window.gui_structure.flex_option
     assert len(flex_option.get_value()) == flex_option.default_value
     for li_org, li_val in zip(flex_option.get_value(), flex_option.default_values):
@@ -101,4 +96,4 @@ def test_flex_amount_option(qtbot):
     flex_option.show()
     assert not flex_option.frame.isHidden()
     assert not flex_option.label.isHidden()
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)

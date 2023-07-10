@@ -4,17 +4,12 @@ from pathlib import Path
 
 import PySide6.QtWidgets as QtW
 
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-from tests.gui_structure_for_tests import GUI
-from tests.result_creating_class_for_tests import ResultsClass, data_2_results
-from tests.test_translations.translation_class import Translations
+from tests.starting_closing_tests import close_tests, start_tests
 
 
 def test_results_export(qtbot):
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     main_window.save_scenario()
     main_window.start_current_scenario_calculation(False)
     qtbot.wait(1500)
@@ -41,4 +36,4 @@ def test_results_export(qtbot):
     assert main_window.gui_structure.export_results.caption == "Set"
 
     os.remove(main_window.default_path.joinpath(file))
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)

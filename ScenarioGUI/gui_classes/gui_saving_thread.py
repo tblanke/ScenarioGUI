@@ -44,7 +44,7 @@ class SavingThread(QtC.QThread):
         self.date: datetime.datetime = date
         self.calculated: bool = False
 
-    def run(self) -> None:
+    def run(self) -> None:  # pragma: no cover
         """
         This function contains the actual code to run the different calculations.
         For each aim in the GUI, a new if statement is used. Here, one can put all the code

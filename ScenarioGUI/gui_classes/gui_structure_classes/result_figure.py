@@ -15,9 +15,9 @@ import numpy as np
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
+from matplotlib.backends import qt_compat
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.backends import qt_compat
 from matplotlib.colors import to_rgb
 
 import ScenarioGUI.global_settings as globs

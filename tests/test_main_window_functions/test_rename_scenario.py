@@ -1,31 +1,26 @@
 import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW
 
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-
-from ..gui_structure_for_tests import GUI
-from ..result_creating_class_for_tests import ResultsClass, data_2_results
-from ..test_translations.translation_class import Translations
+from ..starting_closing_tests import close_tests, start_tests
 
 
-def test_rename_scenario(qtbot):
+def test_rename_scenario(qtbot):  # noqa: PLR0915
     """
     test renaming of scenario by button and double click.
 
     Parameters
-    ----------
+    ---------- # noqa: PLR0915
     qtbot: qtbot
         bot for the GUI
     """
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     main_window.fun_rename_scenario("name")
     main_window.add_scenario()
     # set scenario names
     scenario_name = "test_name"
     scenario_name_2 = "test_name_2"
+
     # create functions to handle pop up dialog windows to change names, close and reject the dialog
 
     def change_name():
@@ -93,4 +88,4 @@ def test_rename_scenario(qtbot):
     main_window.list_widget_scenario.doubleClicked.emit(main_window.list_widget_scenario.model().index(0, 0))
     # check the name has been changed correctly
     assert main_window.list_widget_scenario.item(0).text() == scenario_name_2
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)

@@ -5,11 +5,8 @@ import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as globs
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 
-from ..gui_structure_for_tests import GUI
-from ..result_creating_class_for_tests import ResultsClass, data_2_results
-from ..test_translations.translation_class import Translations
+from ..starting_closing_tests import close_tests, start_tests
 
 
 def test_close(qtbot):
@@ -23,9 +20,7 @@ def test_close(qtbot):
     """
 
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     main_window.add_scenario()
     main_window.gui_structure.float_b.set_value(2.1)
     # set filenames
@@ -61,14 +56,14 @@ def test_close(qtbot):
     main_window.close()
 
     QtC.QTimer.singleShot(500, save)
-    
+
     def get_save_file_name(*args, **kwargs):
         """getSaveFileName proxy"""
         return kwargs["return_value"]
-    
+
     QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(f"{filename_1}", f"{main_window.filename_default[1]}"))
     main_window.close()
 
     QtC.QTimer.singleShot(500, exit_window)
     main_window.close()
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)

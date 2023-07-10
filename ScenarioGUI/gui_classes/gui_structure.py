@@ -26,10 +26,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     ResultText,
 )
 from ScenarioGUI.gui_classes.gui_structure_classes.font_list_box import FontListBox
-from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import (
-    font_list,
-    get_name,
-)
+from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import font_list, get_name
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
