@@ -23,7 +23,6 @@ def test_run(qtbot):  # noqa: PLR0915
     main_window.start_multiple_scenarios_calculation()
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is None
     main_window.gui_structure.filename.set_value(file)
-    main_window.check_results()
 
     main_window.gui_structure.aim_add.widget.click()
     main_window.save_scenario()
@@ -31,7 +30,10 @@ def test_run(qtbot):  # noqa: PLR0915
     qtbot.wait(1500)
 
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
-
+    main_window.check_results()
+    main_window.auto_save()
+    qtbot.wait(200)
+    main_window.load_backup()
     main_window.remove_previous_calculated_results()
 
     main_window.gui_structure.aim_sub.widget.click()
