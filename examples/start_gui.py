@@ -179,9 +179,6 @@ class GUI(GuiStructure):
         self.hint_flex = els.Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
         self.flex_option.add_link_2_show(self.hint_flex, 2, 6)
         self.aim_plot.add_link_2_show(self.flex_option)
-        # self.button_box.add_link_2_show(self.filename, on_index=1)
-        self.show_option_under_multiple_conditions(self.filename, [self.button_box, self.aim_add], [partial(self.button_box.check_linked_value, 1),
-                                                                                                    self.aim_add.widget.isChecked])
 
         self.category_grid = els.Category(page=self.page_inputs, label="Grid")
         self.category_grid.activate_grid_layout(3)
@@ -223,6 +220,18 @@ class GUI(GuiStructure):
         )
         self.category_grid.activate_graphic_left()
         self.category_grid.activate_graphic_right()
+
+        # the option float_units is shown if int_small_2 is below 26 and aim_plot is selected or int_small_1 is above 20
+        self.show_option_under_multiple_conditions(
+            self.float_units,
+            [self.aim_plot, self.int_small_1, self.int_small_2],
+            functions_check_for_or=[
+                self.aim_plot.widget.isChecked,
+                partial(self.int_small_1.check_linked_value, (None, 20)),
+            ],
+            functions_check_for_and=[
+                partial(self.int_small_2.check_linked_value, (26, None))]
+        )
 
         self.create_results_page()
         self.numerical_results = els.Category(page=self.page_result, label="Numerical results")
