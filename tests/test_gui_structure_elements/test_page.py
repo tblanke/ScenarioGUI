@@ -18,5 +18,5 @@ def test_page(qtbot):
     # check that 3 aim are in a row
     scroll_area = [widget for widget in main_window.gui_structure.page_inputs.page.children() if isinstance(widget, QtW.QScrollArea)][0]
     assert scroll_area.children()[0].children()[0].children()[1].children()[0].rowCount() == 1
-    assert scroll_area.children()[0].children()[0].children()[1].children()[0].columnCount() == 3
+    assert scroll_area.children()[0].children()[0].children()[1].children()[0].columnCount() == 4
     close_tests(main_window, qtbot)

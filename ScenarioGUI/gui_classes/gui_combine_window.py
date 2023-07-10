@@ -928,8 +928,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self._saving_threads_update()
 
     def _saving_threads_update(self):
+        if len(self.saving_threads) < 1:
+            return
         thread = self.saving_threads[0]
         if thread.calculated:
+            thread.terminate()
             self.saving_threads.remove(thread)
             self._saving_threads_update()
             return
@@ -1103,7 +1106,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # update backup file
         self.auto_save()
         # try to store the data in the pickle file
-        func = ft_partial(self._save_to_data, self.filename[0])
+        func = ft_partial(self._save_to_data, filename[0])
         self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
         self._saving_threads_update()
         # deactivate changed file * from window title

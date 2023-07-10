@@ -18,7 +18,7 @@ class SavingThread(QtC.QThread):
     class to calculate the problem in an external thread
     """
 
-    any_signal = QtC.Signal(tuple)
+    any_signal = QtC.Signal()
 
     def __init__(
         self,
@@ -59,9 +59,8 @@ class SavingThread(QtC.QThread):
         try:
             self.func()
         except FileNotFoundError:
-            self.calculated = True
-            return
+            pass
         except PermissionError:
-            self.calculated = True
-            return
+            pass
         self.calculated = True
+        self.any_signal.emit()
