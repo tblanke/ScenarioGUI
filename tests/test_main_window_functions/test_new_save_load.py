@@ -63,6 +63,7 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
         main_window.default_path.joinpath(filename_1),
         f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
     )
+    main_window.fun_save()
     # check if filename is set correctly
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
         main_window.default_path.joinpath(filename_1),

@@ -49,8 +49,9 @@ def test_add_scenarios_2_currents(qtbot):  # noqa: PLR0915
         """getSaveFileName proxy"""
         return kwargs["return_value"]
 
-    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
-        f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
+    QtW.QFileDialog.getSaveFileName = partial(
+        get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    )
     main_window.action_save_as.trigger()
     qtbot.wait(200)
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
@@ -58,8 +59,9 @@ def test_add_scenarios_2_currents(qtbot):  # noqa: PLR0915
         f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
     )
 
-    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
-        f"{main_window.default_path.joinpath(filename_2)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
+    QtW.QFileDialog.getSaveFileName = partial(
+        get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_2)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    )
     main_window.action_save_as.trigger()
     qtbot.wait(200)
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
@@ -70,8 +72,18 @@ def test_add_scenarios_2_currents(qtbot):  # noqa: PLR0915
     list_old = main_window.list_ds.copy()
     assert len(list_old) == 2
     # trigger open function and set filename 1
-    QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=(
-        f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
+    QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=("", ""))
+    main_window.action_open_add.trigger()
+    # check if filename is imported correctly and the data storages as well
+    assert (Path(main_window.filename[0]), main_window.filename[1]) == (
+        main_window.default_path.joinpath(filename_2),
+        f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
+    )
+    assert len(main_window.list_ds) == 2
+    # trigger open function and set filename 1
+    QtW.QFileDialog.getOpenFileName = partial(
+        get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    )
     main_window.action_open_add.trigger()
     # check if filename is imported correctly and the data storages as well
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
