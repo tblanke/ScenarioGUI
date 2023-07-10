@@ -24,9 +24,9 @@ def start_tests(qtbot) -> MainWindow:
 def close_tests(main_window: MainWindow, qtbot) -> None:
     [ds.close_figures() for ds in main_window.list_ds]
     [plt.close(cat.fig) for cat in main_window.gui_structure.page_result.list_categories if isinstance(cat, ResultFigure)]
-    if main_window.saving_threads:
+    if main_window.saving_threads:  # pragma: no cover
         qtbot.wait(100)
-        if main_window.saving_threads:
+        if main_window.saving_threads:  # pragma: no cover
             qtbot.wait(1_000)
 
     main_window.delete_backup()

@@ -1,4 +1,5 @@
 from ..starting_closing_tests import close_tests, start_tests
+import numpy as np
 
 
 def test_run(qtbot):  # noqa: PLR0915

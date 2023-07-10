@@ -48,12 +48,12 @@ def test_add_other_version_functions(qtbot):
     old_value = main_window.gui_structure.float_b.get_value()
     qtbot.wait(1000)
 
-    with open(main_window.filename[0]) as file:
+    with open(main_window.default_path.joinpath(filename_1)) as file:
         saving = load(file)
 
     saving["version"] = "0.0.1"
 
-    with open(main_window.filename[0], "w") as file:
+    with open(main_window.default_path.joinpath(filename_1), "w") as file:
         dump(saving, file, indent=1)
 
     close_tests(main_window, qtbot)
@@ -61,7 +61,8 @@ def test_add_other_version_functions(qtbot):
     main_window.add_other_version_import_function("v0.0.1", other_version_import)
 
     assert not np.isclose(main_window.gui_structure.float_b.get_value(), old_value + 10)
-    QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", "txt (.txt)"))
+    QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}",
+                                                                                f"{global_vars.FILE_EXTENSION} (.{global_vars.FILE_EXTENSION})"))
     main_window.fun_load()
     assert filename_1 in main_window.dia.windowTitle()
     assert np.isclose(main_window.gui_structure.float_b.get_value(), old_value + 10)

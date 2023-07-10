@@ -977,7 +977,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.list_widget_scenario.addItem(item)
 
         self.list_widget_scenario.setCurrentRow(0)
-        self.list_widget_scenario.item(0).data(MainWindow.role).set_values(self.gui_structure)
+        ds = self.list_widget_scenario.item(0).data(self.role)
+        if ds != DataStorage(self.gui_structure):
+            self.checking = False
+            ds.set_values(self.gui_structure)
+            self.checking = True
         self.check_results()
 
     def _save_to_data(self, location: str | Path) -> None:
