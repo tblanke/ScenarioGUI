@@ -71,7 +71,7 @@ class ButtonBox(Option):
                     ),
                 )
             )
-            button.clicked.connect(ft_partial(check, self.linked_options, self, self.get_value()))
+            button.toggled.connect(ft_partial(check, self.linked_options, self, self.get_value()))
 
     def get_value(self) -> int:
         """
@@ -165,10 +165,8 @@ class ButtonBox(Option):
         -------
         None
         """
-        def new_function_to_be_called():
-            QtC.QTimer.singleShot(10, function_to_be_called)
         for button in self.widget:
-            button.clicked.connect(new_function_to_be_called)  # pylint: disable=E1101
+            button.toggled.connect(function_to_be_called)  # pylint: disable=E1101
 
     def set_text(self, name: str) -> None:
         """
@@ -215,7 +213,6 @@ class ButtonBox(Option):
             index of entry which should be disabled
         """
         if self.widget[idx].isChecked():
-            self.widget[idx].click()
             self.widget[idx].setChecked(False)
             self.widget[idx].setEnabled(False)
             if self.widget[self.default_value].isEnabled():

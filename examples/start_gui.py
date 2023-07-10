@@ -7,6 +7,7 @@ from __future__ import annotations
 import logging
 import sys
 from functools import partial
+from json import dump, load
 from pathlib import Path
 from platform import system
 from sys import argv
@@ -16,6 +17,7 @@ from typing import TYPE_CHECKING
 from matplotlib import pyplot as plt
 from ScenarioGUI import GuiStructure
 from ScenarioGUI import elements as els
+from ScenarioGUI.gui_classes.gui_combine_window import JsonDict
 
 from examples.translation_class import Translations
 
@@ -288,6 +290,27 @@ def run(path_list=None):  # pragma: no cover
             0,
         )
         main_window.fun_load_known_filename()
+
+    def export_txt(file_path: Path, data: JsonDict) -> None:
+        # write data to back up file
+        with open(file_path, "w") as file:
+            dump(data, file, indent=1)
+
+    def import_txt(file_path: Path) -> JsonDict:
+        # write data to back up file
+        with open(file_path) as file:
+            data = load(file, indent=1)
+        return data
+
+    def other_version_import(data: JsonDict) -> JsonDict:
+        for dic in data["values"]:
+            dic["float_b"] = dic["float_b"] + 10
+        return data
+
+    main_window.add_other_export_function("txt", export_txt)
+    main_window.add_other_import_function("txt", import_txt)
+
+    main_window.add_other_version_import_function("v0.0.1", other_version_import)
 
     # show window
     window.showMaximized()

@@ -12,6 +12,31 @@ if TYPE_CHECKING:
     from .option import Option
 
 
+def check_and_set_max_min_values(widget: QtW.QSpinBox | QtW.QDoubleSpinBox, value: int | float, default_max: int | float, default_min: int | float) -> None:
+    """
+    checks if the value is above the current widget limits but within the default limits:
+
+    Parameters
+    ----------
+    widget: QtW.QSpinBox | QtW.QDoubleSpinBox
+        widget to be checked
+    value: int | float
+        value to be checked
+    default_max: int | float
+        default maximal value
+    default_min: int | float
+        default minimal value
+
+    Returns
+    -------
+        None
+    """
+    if default_max > value > widget.maximum():
+        widget.setMaximum(default_max)
+    if widget.minimum() > value > default_min:
+        widget.setMinimum(default_min)
+
+
 def update_opponent_not_change(button: QtW.QPushButton, false_button_list: list[QtW.QPushButton] = None):
     """
     This function controls the behaviour of the buttons.
@@ -75,10 +100,12 @@ def update_opponent_toggle(
     if not button.isChecked():
         button.setChecked(True)
 
+
 def check(
     linked_options: list[(Option | list[Option], int)],
     option_input: Option,
     index: int,
+    *args,
 ):
     """
     This function makes sure that the linked_options will be hidden when the index of the option_input
@@ -110,7 +137,7 @@ def check(
         option.show()
 
 
-def check_aim_options(list_aim: list[Aim]) -> None:
+def check_aim_options(list_aim: list[Aim], *args) -> None:
     """
     This function makes sure that all the options, that are linked to the Aim, are made invisible
     when the aim is not selected and that the options, linked to the Aim, will be shown whenever this Aim
