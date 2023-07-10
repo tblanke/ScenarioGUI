@@ -50,12 +50,14 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
 
     QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(f"{main_window.filename_default[0]}", f"{main_window.filename_default[1]}"))
     main_window.action_save.trigger()
+    qtbot.wait(200)
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (Path(main_window.filename_default[0]), main_window.filename_default[1])
     # trigger save action and add filename
 
     QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
         f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
     main_window.action_save.trigger()
+    qtbot.wait(200)
     # check if filename is set correctly
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
         main_window.default_path.joinpath(filename_1),
@@ -75,11 +77,15 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
         f"{main_window.default_path.joinpath(filename_2)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
     main_window.action_save_as.trigger()
+    qtbot.wait(200)
     # check if filename is set correctly
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
         main_window.default_path.joinpath(filename_2),
         f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
     )
+    main_window.start_current_scenario_calculation()
+    qtbot.wait(1500)
+    main_window._save_to_data(main_window.filename[0])
     # trigger open function and set filename 1
     QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=(
         f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
@@ -99,6 +105,7 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
                 assert getattr(ds_old, option) == getattr(ds_new, option)
                 continue
 
+    main_window._load_from_data(main_window.filename[0])
     # set a different filename and test new action
     QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
         f"{main_window.default_path.joinpath(filename_3)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))

@@ -11,7 +11,7 @@ def test_backup(qtbot):
     main_window.gui_structure.int_a.set_value(10)
     main_window.save_scenario()
     list_old = main_window.list_ds.copy()
-
+    qtbot.wait(200)
     main_window.load_backup()
     # check if the imported values are the same
     for ds_old, ds_new in zip(list_old, main_window.list_ds):
@@ -29,6 +29,7 @@ def test_backup(qtbot):
     qtbot.wait(1500)
     main_window.save_scenario()
     list_old = main_window.list_ds.copy()
+    qtbot.wait(200)
     main_window.load_backup()
     # check if the imported values are the same
     for ds_old, ds_new in zip(list_old, main_window.list_ds):

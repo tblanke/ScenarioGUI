@@ -868,10 +868,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         for idx, (val, results, name) in enumerate(zip(saving["values"], saving["results"], saving["names"])):
             d_s = DataStorage(self.gui_structure)
             d_s.from_dict(val)
-            if results is None:
-                d_s.results = None
-            else:
-                d_s.results = self.result_creating_class.from_dict(results)
+            d_s.results = None if results is None else self.result_creating_class.from_dict(results)
             item = QtW.QListWidgetItem(name)
             item.setData(MainWindow.role, d_s)
             self.list_widget_scenario.addItem(item)
