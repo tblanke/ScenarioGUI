@@ -22,7 +22,6 @@ def test_show_multiple_under_conditions(qtbot):
             partial(g_s.int_a.check_linked_value, (None, 50)),
         ],
     )
-    _ = [g_s.aim_add.widget.toggled.connect(func) for func in g_s.aim_add.functions]
     g_s.aim_add.widget.click() if not g_s.aim_add.widget.isChecked() else None
     g_s.int_a.set_value(55)
     assert g_s.aim_add.widget.isChecked()
@@ -46,7 +45,6 @@ def test_show_multiple_under_conditions(qtbot):
             partial(g_s.int_a.check_linked_value, (None, 20)),
         ],
     )
-    _ = [g_s.aim_sub.widget.toggled.connect(func) for func in g_s.aim_sub.functions]
 
     g_s.int_a.set_value(25)
     assert g_s.aim_sub.widget.isChecked()
@@ -71,7 +69,6 @@ def test_show_multiple_under_conditions(qtbot):
         ],
         functions_check_for_and=[partial(g_s.int_small_2.check_linked_value, (26, None))],
     )
-    _ = [g_s.aim_plot.widget.toggled.connect(func) for func in g_s.aim_plot.functions]
     g_s.int_small_2.set_value(20)
     g_s.int_small_1.set_value(21)
     g_s.aim_plot.widget.click()
