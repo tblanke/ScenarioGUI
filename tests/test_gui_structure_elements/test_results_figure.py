@@ -42,7 +42,7 @@ def test_results_figure(qtbot):  # noqa: PLR0915
     main_window.gui_structure.aim_add.add_link_2_show(main_window.gui_structure.figure_results)
     main_window.gui_structure.aim_sub.add_link_2_show(main_window.gui_structure.figure_results)
     # get sum
-    main_window.gui_structure.figure_results.set_text("Hello,Y-Values,X-Values,Line 1")
+    main_window.gui_structure.figure_results.set_text("Hello,Y-Val,X-Val,Line 1")
     # calc sum from gui
     main_window.save_scenario()
     main_window.start_current_scenario_calculation()
@@ -55,8 +55,8 @@ def test_results_figure(qtbot):  # noqa: PLR0915
     main_window.display_results()
     # check text output
     assert main_window.gui_structure.figure_results.label.text() == "Hello"
-    assert main_window.gui_structure.figure_results.a_x.get_ylabel() == "Y-Values"
-    assert main_window.gui_structure.figure_results.a_x.get_xlabel() == "X-Values"
+    assert main_window.gui_structure.figure_results.a_x.get_ylabel() == "Y-Val"
+    assert main_window.gui_structure.figure_results.a_x.get_xlabel() == "X-Val"
     assert main_window.gui_structure.figure_results.a_x.get_legend().get_texts()[0].get_text() == "Line 1"
 
     main_window.gui_structure.figure_results.set_text("Hello,Y-Values,X-Values,Line 1")
