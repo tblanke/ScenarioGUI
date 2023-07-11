@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Flag in gui_structure to disable functions while loading the gui (issue 79)
 - Different file extension can be saved and loaded using add_other_export_function or add_other_import_function from MainWindow class (issue 89)
 - A conversation function to convert old json version styles of the gui to new ones can be added using add_other_version_import_function from MainWindow class
+- Qthread class for saving of files (issue 82)
 
 ### Added
 - Ability to deactivate button box entries (issue 46)

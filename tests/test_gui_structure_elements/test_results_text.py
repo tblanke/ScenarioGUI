@@ -1,28 +1,20 @@
-import PySide6.QtWidgets as QtW
-
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-from tests.gui_structure_for_tests import GUI
-from tests.result_creating_class_for_tests import ResultsClass, data_2_results
-from tests.test_translations.translation_class import Translations
+from tests.starting_closing_tests import close_tests, start_tests
 
 
 def test_results_text(qtbot):
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     # get sum
     sum_ab = main_window.gui_structure.int_a.get_value() + main_window.gui_structure.float_b.get_value()
     main_window.gui_structure.result_text_add.set_text("Hello,kW")
     # calc sum from gui
     main_window.save_scenario()
-    main_window.start_current_scenario_calculation(False)
-    thread = main_window.threads[0]
-    while thread.isRunning():  # pragma: no cover
-        qtbot.wait(100)
-    qtbot.wait(100)
+    main_window.start_current_scenario_calculation()
+    thread = main_window.threads[-1]
+    thread.run()
+    assert thread.calculated
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     main_window.display_results()
     # check text output
     assert main_window.gui_structure.result_text_add.label.text() == f"Hello{sum_ab}kW"
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)

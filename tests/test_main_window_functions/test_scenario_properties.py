@@ -1,10 +1,4 @@
-import PySide6.QtWidgets as QtW
-
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-
-from ..gui_structure_for_tests import GUI
-from ..result_creating_class_for_tests import ResultsClass, data_2_results
-from ..test_translations.translation_class import Translations
+from ..starting_closing_tests import close_tests, start_tests
 
 
 def test_gui_scenario_properties(qtbot):
@@ -17,9 +11,7 @@ def test_gui_scenario_properties(qtbot):
         bot for the GUI
     """
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     # check if at start no scenario exists
     assert len(main_window.list_ds) == 0
     assert main_window.list_widget_scenario.count() == 0
@@ -42,4 +34,4 @@ def test_gui_scenario_properties(qtbot):
     main_window.delete_scenario()
     assert len(main_window.list_ds) == 1
     assert main_window.list_widget_scenario.count() == 1
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)

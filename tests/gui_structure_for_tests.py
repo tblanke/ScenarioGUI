@@ -201,7 +201,7 @@ class GUI(GuiStructure):
 
         self.figure_results = ResultFigure(label=self.translations.figure_results, page=self.page_result)
         self.legend_figure_results = FigureOption(
-            category=self.figure_results, label=["Legend on"], param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
+            category=self.figure_results, label=["Show legend?"], param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
         )
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import logging
+import datetime
 from functools import partial as ft_partial
 from json import dump, load
 from os import makedirs, remove
@@ -21,6 +21,7 @@ from ..utils import change_font_size, set_default_font
 from .gui_base_class import BaseUI
 from .gui_calculation_thread import CalcProblem
 from .gui_data_storage import DataStorage
+from .gui_saving_thread import SavingThread
 from .gui_structure_classes import FigureOption, Option, ResultExport
 from .gui_structure_classes.functions import check_aim_options, show_linked_options
 
@@ -104,8 +105,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
     filename_default: tuple = ("", "")
     role: int = 99
+    TEST_MODE: bool = False
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         dialog: QtW.QWidget,
         app: QtW.QApplication,
@@ -181,6 +183,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.changedFile: bool = False  # set change file variable to false
         self.ax: list = []  # axes of figure
         self.threads: list[CalcProblem] = []  # list of calculation threads
+        self.saving_threads: list[SavingThread] = []
         CalcProblem.role = MainWindow.role
         self.size_b = QtC.QSize(48, 48)  # size of big logo on push button
         self.size_s = QtC.QSize(24, 24)  # size of small logo on push button
@@ -622,7 +625,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 and DataStorage(self.gui_structure) != old_row_item.data(MainWindow.role)
                 and self.push_button_save_scenario.isEnabled()
             ):
-                logging.info(f"old: {old_row_item.data(0)}; new: {new_row_item.data(0)}, {DataStorage(self.gui_structure) != old_row_item.data(MainWindow.role)}")
                 old_row_item.data(MainWindow.role).close_figures()
                 old_row_item.setData(MainWindow.role, DataStorage(self.gui_structure))
             # update backup fileImport
@@ -887,7 +889,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        if exists(self.backup_file):
+        if exists(self.backup_file):  # pragma: no cover
             remove(self.backup_file)
 
     def load_backup(self) -> None:
@@ -924,7 +926,23 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if self.list_widget_scenario.count() < 1:
             self.add_scenario()
 
-        self._save_to_data(self.backup_file)
+        func = ft_partial(self._save_to_data, self.backup_file)
+        self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
+        self._saving_threads_update()
+
+    def _saving_threads_update(self):
+        if len(self.saving_threads) < 1:
+            return
+        thread = self.saving_threads[0]
+        if thread.calculated:
+            thread.terminate()
+            self.saving_threads.remove(thread)
+            self._saving_threads_update()
+            return
+        if thread.isRunning():  # pragma: no cover
+            return
+        thread.any_signal.connect(self._saving_threads_update)
+        thread.start() if not MainWindow.TEST_MODE else None
 
     def _load_from_data(self, location: str | Path) -> None:
         """
@@ -956,16 +974,17 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         for _idx, (val, results, name) in enumerate(zip(saving["values"], saving["results"], saving["names"])):
             d_s = DataStorage(self.gui_structure)
             d_s.from_dict(val)
-            if results is None:
-                d_s.results = None
-            else:
-                d_s.results = self.result_creating_class.from_dict(results)
+            d_s.results = None if results is None else self.result_creating_class.from_dict(results)
             item = QtW.QListWidgetItem(name)
             item.setData(MainWindow.role, d_s)
             self.list_widget_scenario.addItem(item)
 
         self.list_widget_scenario.setCurrentRow(0)
-        self.list_widget_scenario.item(0).data(MainWindow.role).set_values(self.gui_structure)
+        ds = self.list_widget_scenario.item(0).data(self.role)
+        if ds != DataStorage(self.gui_structure):
+            self.checking = False
+            ds.set_values(self.gui_structure)
+            self.checking = True
         self.check_results()
 
     def _save_to_data(self, location: str | Path) -> None:
@@ -1083,19 +1102,22 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             True if the saving was successful.
         """
         # ask for pickle file if the filename is still the default
-        logging.info(f"{filename}, {MainWindow.filename_default}: {self.filename}")
         if not isinstance(filename, tuple):
             if self.filename == MainWindow.filename_default:
                 self.fun_save_as()
                 return True
             else:
                 filename = self.filename
+
+        self.change_window_title() if self.filename == filename else None
         # save scenarios
         self.save_scenario()
         # update backup file
         self.auto_save()
         # try to store the data in the pickle file
-        self._save_to_data(filename[0])
+        func = ft_partial(self._save_to_data, filename[0])
+        self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
+        self._saving_threads_update()
         # deactivate changed file * from window title
         self.changedFile: bool = False
         self.change_window_title()
@@ -1296,8 +1318,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.update_bar(n_closed_threads)
         # if number of finished is the number that has to be calculated enable buttons and actions and change page to
         # results page
-        if open_threads:  # start new thread
-            open_threads[0].start()
+        if open_threads:  # pragma: no cover
+            # start new thread
+            open_threads[0].start() if not MainWindow.TEST_MODE else None
             open_threads[0].any_signal.connect(self.thread_function)
             return
         # display results
@@ -1339,17 +1362,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if [thread for thread in self.threads if thread.isRunning()]:  # pragma: no cover
             return
         for thread in self.threads[: self.gui_structure.option_n_threads.get_value()]:
-            thread.start()
+            thread.start() if not MainWindow.TEST_MODE else None
             thread.any_signal.connect(self.thread_function)
 
-    def start_current_scenario_calculation(self, no_run: bool = False) -> None:
+    def start_current_scenario_calculation(self) -> None:
         """
         This function starts the calculation of the selected/current scenario, when check_values() is True.
-
-        Parameters
-        ----------
-        no_run : bool
-            Implemented to make sure that the gui_tests are working.
 
         Returns
         -------
@@ -1374,8 +1392,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # update progress bar
         self.update_bar(0)
         # start calculation
-        if not no_run and len(self.threads) == 1:
-            self.threads[0].start()
+        if len(self.threads) == 1:
+            self.threads[0].start() if not MainWindow.TEST_MODE else None
             self.threads[0].any_signal.connect(self.thread_function)
 
     def display_results(self) -> None:
