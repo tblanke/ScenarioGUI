@@ -10,7 +10,10 @@ def test_result_text_on_on_result_page(qtbot):
     assert not gs.result_text_not_on_result_page.is_hidden()
 
     main_window.save_scenario()
-    main_window.start_current_scenario_calculation(False)
-    qtbot.wait(1500)
+    main_window.start_current_scenario_calculation()
+    thread = main_window.threads[0]
+    thread.run()
+    assert thread.calculated
+    main_window.display_results()
     assert gs.result_text_add.label.text() == "Result: 102.0m"
     close_tests(main_window, qtbot)

@@ -2,8 +2,8 @@ import os
 from functools import partial
 from json import dump, load
 
-import PySide6.QtWidgets as QtW
 import numpy as np
+import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.gui_classes.gui_combine_window import JsonDict

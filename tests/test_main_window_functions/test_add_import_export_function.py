@@ -3,8 +3,8 @@ from functools import partial
 from json import dump, load
 from pathlib import Path
 
-import PySide6.QtWidgets as QtW
 import numpy as np
+import PySide6.QtWidgets as QtW
 
 from ScenarioGUI.gui_classes.gui_combine_window import JsonDict
 

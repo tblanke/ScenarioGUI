@@ -2,13 +2,10 @@ from os import remove
 from os.path import exists
 from pathlib import Path
 
-# from pytestqt import qtbot
-
-import ScenarioGUI.global_settings as globs
-
 import PySide6.QtWidgets as QtW
 from matplotlib import pyplot as plt
 
+import ScenarioGUI.global_settings as globs
 from ScenarioGUI import load_config
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 from ScenarioGUI.gui_classes.gui_structure_classes import ResultFigure
@@ -18,7 +15,7 @@ from .result_creating_class_for_tests import ResultsClass, data_2_results
 from .test_translations.translation_class import Translations
 
 load_config(Path(__file__).absolute().parent.joinpath("./gui_config.ini"))
-
+MainWindow.TEST_MODE = True
 
 
 def start_tests(qtbot) -> MainWindow:

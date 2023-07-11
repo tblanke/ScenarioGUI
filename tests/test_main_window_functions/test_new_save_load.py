@@ -25,10 +25,10 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     main_window.gui_structure.float_b.set_value(1.1)
     main_window.gui_structure.int_a.set_value(10)
     main_window.gui_structure.list_small_2.set_value(2)
-    main_window.start_current_scenario_calculation(True)
-    main_window.threads[-1].run()
-    main_window.threads[-1].any_signal.connect(main_window.thread_function)
-    qtbot.wait(1500)
+    main_window.start_current_scenario_calculation()
+    thread = main_window.threads[-1]
+    thread.run()
+    assert thread.calculated
     main_window.save_scenario()
     # set filenames
     filename_1 = f"test_1.{global_vars.FILE_EXTENSION}"
@@ -50,14 +50,18 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
 
     QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(f"{main_window.filename_default[0]}", f"{main_window.filename_default[1]}"))
     main_window.action_save.trigger()
-    qtbot.wait(200)
+    thread = main_window.saving_threads[0]
+    thread.run()
+    assert thread.calculated
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (Path(main_window.filename_default[0]), main_window.filename_default[1])
     # trigger save action and add filename
     QtW.QFileDialog.getSaveFileName = partial(
         get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
     )
     main_window.action_save.trigger()
-    qtbot.wait(200)
+    thread = main_window.saving_threads[0]
+    thread.run()
+    assert thread.calculated
     # check if filename is set correctly
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
         main_window.default_path.joinpath(filename_1),
@@ -77,14 +81,18 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
         f"{main_window.default_path.joinpath(filename_2)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
     main_window.action_save_as.trigger()
-    qtbot.wait(200)
+    thread = main_window.saving_threads[0]
+    thread.run()
+    assert thread.calculated
     # check if filename is set correctly
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
         main_window.default_path.joinpath(filename_2),
         f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
     )
     main_window.start_current_scenario_calculation()
-    qtbot.wait(1500)
+    thread = main_window.threads[-1]
+    thread.run()
+    assert thread.calculated
     main_window.fun_save(main_window.filename)
     main_window._save_to_data(main_window.filename[0])
     # trigger open function and set filename 1

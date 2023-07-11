@@ -11,8 +11,10 @@ def test_results_export(qtbot):
     # init gui window
     main_window = start_tests(qtbot)
     main_window.save_scenario()
-    main_window.start_current_scenario_calculation(False)
-    qtbot.wait(1500)
+    main_window.start_current_scenario_calculation()
+    thread = main_window.threads[-1]
+    thread.run()
+    assert thread.calculated
     folder = Path(__file__).parent.parent
     file = f'{folder.joinpath("./test_export.txt")}'
     # delete files if they already exists
