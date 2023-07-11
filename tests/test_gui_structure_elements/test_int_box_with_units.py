@@ -44,6 +44,10 @@ def test_int_box_with_units(qtbot):
     assert not main_window.gui_structure.float_b.is_hidden()
     int_units.set_value((22, 0))
     assert not main_window.gui_structure.float_b.is_hidden()
+    int_units.unit_widget.setCurrentIndex(1)
+    int_units.set_value(20)
+    assert int_units.unit_widget.currentIndex() == 0
+    assert int_units.widget.value() == 20
     main_window.save_scenario()
     assert "int_units" in main_window.list_ds[0].to_dict()
     close_tests(main_window, qtbot)

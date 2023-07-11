@@ -105,8 +105,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
     filename_default: tuple = ("", "")
     role: int = 99
+    TEST_MODE: bool = False
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         dialog: QtW.QWidget,
         app: QtW.QApplication,
@@ -910,7 +911,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        if exists(self.backup_file):
+        if exists(self.backup_file):  # pragma: no cover
             remove(self.backup_file)
 
     def load_backup(self) -> None:
@@ -960,10 +961,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.saving_threads.remove(thread)
             self._saving_threads_update()
             return
-        if thread.isRunning():
+        if thread.isRunning():  # pragma: no cover
             return
         thread.any_signal.connect(self._saving_threads_update)
-        thread.start()
+        thread.start() if not MainWindow.TEST_MODE else None
 
     def _load_from_data(self, location: str | Path, append: bool = False) -> None:
         """
@@ -1163,6 +1164,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 return True
             else:
                 filename = self.filename
+
+        self.change_window_title() if self.filename == filename else None
         # save scenarios
         self.save_scenario()
         # update backup file
@@ -1373,8 +1376,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.update_bar(n_closed_threads)
         # if number of finished is the number that has to be calculated enable buttons and actions and change page to
         # results page
-        if open_threads:  # start new thread
-            open_threads[0].start()
+        if open_threads:  # pragma: no cover
+            # start new thread
+            open_threads[0].start() if not MainWindow.TEST_MODE else None
             open_threads[0].any_signal.connect(self.thread_function)
             return
         # display results
@@ -1416,17 +1420,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if [thread for thread in self.threads if thread.isRunning()]:  # pragma: no cover
             return
         for thread in self.threads[: self.gui_structure.option_n_threads.get_value()]:
-            thread.start()
+            thread.start() if not MainWindow.TEST_MODE else None
             thread.any_signal.connect(self.thread_function)
 
-    def start_current_scenario_calculation(self, no_run: bool = False) -> None:
+    def start_current_scenario_calculation(self) -> None:
         """
         This function starts the calculation of the selected/current scenario, when check_values() is True.
-
-        Parameters
-        ----------
-        no_run : bool
-            Implemented to make sure that the gui_tests are working.
 
         Returns
         -------
@@ -1451,8 +1450,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # update progress bar
         self.update_bar(0)
         # start calculation
-        if not no_run and len(self.threads) == 1:
-            self.threads[0].start()
+        if len(self.threads) == 1:
+            self.threads[0].start() if not MainWindow.TEST_MODE else None
             self.threads[0].any_signal.connect(self.thread_function)
 
     def display_results(self) -> None:

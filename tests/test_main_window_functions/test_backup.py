@@ -11,7 +11,9 @@ def test_backup(qtbot):
     main_window.gui_structure.int_a.set_value(10)
     main_window.save_scenario()
     list_old = main_window.list_ds.copy()
-    qtbot.wait(200)
+    thread = main_window.saving_threads[0]
+    thread.run()
+    assert thread.calculated
     main_window.load_backup()
     # check if the imported values are the same
     for ds_old, ds_new in zip(list_old, main_window.list_ds):
@@ -23,13 +25,15 @@ def test_backup(qtbot):
                 assert getattr(ds_old, option) == getattr(ds_new, option)
                 continue
 
-    main_window.start_current_scenario_calculation(True)
-    main_window.threads[-1].run()
-    main_window.threads[-1].any_signal.connect(main_window.thread_function)
-    qtbot.wait(1500)
+    main_window.start_current_scenario_calculation()
+    thread = main_window.threads[-1]
+    thread.run()
+    assert thread.calculated
     main_window.save_scenario()
     list_old = main_window.list_ds.copy()
-    qtbot.wait(200)
+    thread = main_window.saving_threads[0]
+    thread.run()
+    assert thread.calculated
     main_window.load_backup()
     # check if the imported values are the same
     for ds_old, ds_new in zip(list_old, main_window.list_ds):

@@ -31,62 +31,36 @@ def test_change_scenario(qtbot):  # noqa: PLR0915
     assert main_window.list_widget_scenario.currentRow() == 0
     # change a value to trigger pop up window
     main_window.gui_structure.float_b.set_value(2.3)
-
     # create functions to handle pop up window
+    response = QtW.QMessageBox.Cancel
 
-    def close():
-        while main_window.dialog is None:  # pragma: no cover
-            QtW.QApplication.processEvents()
-        # handle dialog now
-        if isinstance(main_window.dialog, QtW.QMessageBox):
-            main_window.dialog.close()
+    class NewMessageBox(QtW.QMessageBox):
+        def exec(self):
+            return response
 
-    def abort():
-        while main_window.dialog is None:  # pragma: no cover
-            QtW.QApplication.processEvents()
-        # handle dialog now
-        if isinstance(main_window.dialog, QtW.QMessageBox):
-            main_window.dialog.buttons()[2].click()
-
-    def exit_window():
-        while main_window.dialog is None:  # pragma: no cover
-            QtW.QApplication.processEvents()
-        # handle dialog now
-        if isinstance(main_window.dialog, QtW.QMessageBox):
-            main_window.dialog.buttons()[1].click()
-
-    def save():
-        while main_window.dialog is None:  # pragma: no cover
-            QtW.QApplication.processEvents()
-        # handle dialog now
-        if isinstance(main_window.dialog, QtW.QMessageBox):
-            main_window.dialog.buttons()[0].click()
+    QtW.QMessageBox = NewMessageBox
 
     # test if closing the window is not changing the value and scenario
-    QtC.QTimer.singleShot(200, close)
     main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(1))
+    qtbot.wait(100)
     assert isclose(main_window.gui_structure.float_b.get_value(), 2.3)
-    qtbot.wait(200)
     assert main_window.list_widget_scenario.currentRow() == 0
     # test if canceling the window is not changing the value and scenario
-    QtC.QTimer.singleShot(200, abort)
     main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(1))
+    qtbot.wait(100)
     assert isclose(main_window.gui_structure.float_b.get_value(), 2.3)
-    qtbot.wait(200)
     assert main_window.list_widget_scenario.currentRow() == 0
     # test if exiting the window is rejecting the changed the value and changing the scenario
-    QtC.QTimer.singleShot(200, exit_window)
+    response = QtW.QMessageBox.Close
     main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(1))
-    qtbot.wait(200)
     assert isclose(main_window.gui_structure.float_b.get_value(), 1.1)
     assert isclose(main_window.list_ds[0].float_b, 2.1)
     assert main_window.list_widget_scenario.currentRow() == 1
     # change a value to trigger pop up window
     main_window.gui_structure.float_b.set_value(3)
     # test if saving is saving the changed the value and changing the scenario
-    QtC.QTimer.singleShot(200, save)
+    response = QtW.QMessageBox.Save
     main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(0))
-    qtbot.wait(200)
     assert isclose(main_window.list_ds[1].float_b, 3)
     assert main_window.list_widget_scenario.currentRow() == 0
     # check if the * is removed when it is changed to old values

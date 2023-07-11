@@ -2,8 +2,8 @@ import os
 from functools import partial
 from json import dump, load
 
-import PySide6.QtWidgets as QtW
 import numpy as np
+import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI.gui_classes.gui_combine_window import JsonDict
@@ -44,6 +44,9 @@ def test_add_other_version_functions(qtbot):
         get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (.{global_vars.FILE_EXTENSION})")
     )
     main_window.fun_save_as()
+    for thread in main_window.saving_threads:
+        thread.run()
+        assert thread.calculated
     assert filename_1 in main_window.dia.windowTitle()
     old_value = main_window.gui_structure.float_b.get_value()
     qtbot.wait(1000)

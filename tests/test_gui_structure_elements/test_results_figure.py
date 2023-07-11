@@ -45,8 +45,10 @@ def test_results_figure(qtbot):  # noqa: PLR0915
     main_window.gui_structure.figure_results.set_text("Hello,Y-Values,X-Values,Line 1")
     # calc sum from gui
     main_window.save_scenario()
-    main_window.start_current_scenario_calculation(False)
-    qtbot.wait(1500)
+    main_window.start_current_scenario_calculation()
+    thread = main_window.threads[-1]
+    thread.run()
+    assert thread.calculated
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     main_window.gui_structure.page_result.button.click()
     main_window.gui_structure.legend_figure_results.widget[1].click()
