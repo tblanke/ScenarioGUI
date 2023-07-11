@@ -102,7 +102,7 @@ class FloatBoxWithUnits(FloatBox):
         """
         return self.widget.value() * self.units[self.unit_widget.currentIndex()][1], self.unit_widget.currentIndex()
 
-    def set_value(self, value: tuple[float, int]) -> None:
+    def set_value(self, value: tuple[float | int, int] | float | int) -> None:
         """
         This function sets the value of the IntBox.
 
@@ -115,6 +115,11 @@ class FloatBoxWithUnits(FloatBox):
         -------
         None
         """
+        if not isinstance(value, (tuple, list)):
+            self.unit_widget.setCurrentIndex(0)
+            check_and_set_max_min_values(self.widget, value, self.maximal_value, self.minimal_value)
+            self.widget.setValue(value)
+            return
         self.unit_widget.setCurrentIndex(value[1])
         value = value[0] / self.units[value[1]][1]
         check_and_set_max_min_values(self.widget, value, self.maximal_value, self.minimal_value)

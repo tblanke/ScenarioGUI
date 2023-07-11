@@ -1,15 +1,12 @@
 from __future__ import annotations
+
 import os
 from pathlib import Path
 
-import PySide6.QtWidgets as QtW
 import numpy as np
 from matplotlib.backends import qt_compat
 
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-from tests.gui_structure_for_tests import GUI
-from tests.result_creating_class_for_tests import ResultsClass, data_2_results
-from tests.test_translations.translation_class import Translations
+from tests.starting_closing_tests import close_tests, start_tests
 
 
 class Event:
@@ -18,17 +15,16 @@ class Event:
 
 
 class VerticalBar:
-
     def __init__(self):
         self.val = 50
 
-    def setValue(self, val: int):
+    def setValue(self, val: int):  # noqa: N802
         self.val = val
 
     def value(self) -> int:
         return self.val
 
-    def singleStep(self) -> int:
+    def singleStep(self) -> int:  # noqa: N802
         return 10
 
 
@@ -36,23 +32,23 @@ class ScrollArea:
     def __init__(self):
         self.vertical_bar = VerticalBar()
 
-    def verticalScrollBar(self) -> VerticalBar:
+    def verticalScrollBar(self) -> VerticalBar:  # noqa: N802
         return self.vertical_bar
 
 
-def test_results_figure(qtbot):
+def test_results_figure(qtbot):  # noqa: PLR0915
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     main_window.gui_structure.aim_add.add_link_2_show(main_window.gui_structure.figure_results)
     main_window.gui_structure.aim_sub.add_link_2_show(main_window.gui_structure.figure_results)
     # get sum
     main_window.gui_structure.figure_results.set_text("Hello,Y-Values,X-Values,Line 1")
     # calc sum from gui
     main_window.save_scenario()
-    main_window.start_current_scenario_calculation(False)
-    qtbot.wait(1500)
+    main_window.start_current_scenario_calculation()
+    thread = main_window.threads[-1]
+    thread.run()
+    assert thread.calculated
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     main_window.gui_structure.page_result.button.click()
     main_window.gui_structure.legend_figure_results.widget[1].click()
@@ -152,4 +148,4 @@ def test_results_figure(qtbot):
     assert np.allclose(main_window.gui_structure.figure_results_with_customizable_layout.option_legend_text.get_value(), (1, 2, 3))
     assert np.allclose(main_window.gui_structure.figure_results_with_customizable_layout.option_title.get_value(), (4, 5, 6))
 
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)

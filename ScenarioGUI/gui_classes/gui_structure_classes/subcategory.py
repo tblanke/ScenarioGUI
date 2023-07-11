@@ -9,9 +9,9 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from . import Category
 
 from ...utils import set_default_font
+from . import Category
 from .hint import Hint
 
 if TYPE_CHECKING:  # pragma: no cover

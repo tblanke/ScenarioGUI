@@ -14,6 +14,8 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     Aim,
     ButtonBox,
     Category,
+    FigureOption,
+    FlexibleAmount,
     FunctionButton,
     Hint,
     IntBox,
@@ -26,10 +28,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     ResultText,
 )
 from ScenarioGUI.gui_classes.gui_structure_classes.font_list_box import FontListBox
-from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import (
-    font_list,
-    get_name,
-)
+from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import font_list, get_name
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
@@ -252,28 +251,28 @@ class GuiStructure:
             if not fig.customizable_figure == 2:
                 continue
             for option, name in zip(
-                    [
-                        fig.option_axes,
-                        fig.option_font,
-                        fig.option_font_size,
-                        fig.option_title,
-                        fig.option_title,
-                        fig.option_legend_text,
-                        fig.option_plot_background,
-                        fig.option_figure_background,
-                        fig.default_figure_colors
-                    ],
-                    [
-                        "option_axes",
-                        "option_font",
-                        "option_font_size",
-                        "option_title",
-                        "option_title",
-                        "option_legend_text",
-                        "option_plot_background",
-                        "option_figure_background",
-                        "default_figure_colors",
-                    ],
+                [
+                    fig.option_axes,
+                    fig.option_font,
+                    fig.option_font_size,
+                    fig.option_title,
+                    fig.option_title,
+                    fig.option_legend_text,
+                    fig.option_plot_background,
+                    fig.option_figure_background,
+                    fig.default_figure_colors,
+                ],
+                [
+                    "option_axes",
+                    "option_font",
+                    "option_font_size",
+                    "option_title",
+                    "option_title",
+                    "option_legend_text",
+                    "option_plot_background",
+                    "option_figure_background",
+                    "default_figure_colors",
+                ],
             ):
                 option.label_text = getattr(self.translations, name) if hasattr(self.translations, name) else option.label_text
             fig.option_save_layout.button_text = (
@@ -390,15 +389,15 @@ class GuiStructure:
             fig.update_default_settings()
 
     def save_layout_from_figure(
-            self,
-            option_figure_background: MultipleIntBox,
-            option_plot_background: MultipleIntBox,
-            option_axes_text: MultipleIntBox,
-            option_axes: MultipleIntBox,
-            option_font: FontListBox,
-            option_font_size_figure: IntBox,
-            option_legend_text: MultipleIntBox,
-            option_title: MultipleIntBox,
+        self,
+        option_figure_background: MultipleIntBox,
+        option_plot_background: MultipleIntBox,
+        option_axes_text: MultipleIntBox,
+        option_axes: MultipleIntBox,
+        option_font: FontListBox,
+        option_font_size_figure: IntBox,
+        option_legend_text: MultipleIntBox,
+        option_title: MultipleIntBox,
     ):
         self.option_figure_background.set_value(option_figure_background.get_value())
         self.option_plot_background.set_value(option_plot_background.get_value())
@@ -461,8 +460,9 @@ class GuiStructure:
             aim.widget.setChecked(True)
 
     @staticmethod
-    def show_option_under_multiple_conditions(option_to_be_shown: Option, options_2_be_checked: list[Option, Aim], function_2_be_checked: list[Callable[[],
-    bool]]) -> None:
+    def show_option_under_multiple_conditions(
+        option_to_be_shown: Option, options_2_be_checked: list[Option, Aim], function_2_be_checked: list[Callable[[], bool]]
+    ) -> None:
         """
         show the option_to_be_shown if all functions_of_options of the options_2_be_checked are returning true
 
@@ -485,22 +485,9 @@ class GuiStructure:
                 option_to_be_shown.show()
                 return
             option_to_be_shown.hide()
+
         for option in options_2_be_checked:
             option.change_event(check)
-
-    def show_option_on_1_of_multiple_conditions(option_to_be_shown: Option, options_2_be_checked: list[Option, Aim], function_2_be_checked: list[Callable[[],
-    bool]]) -> None:
-        """
-
-        Parameters
-        ----------
-        options_2_be_checked
-        function_2_be_checked
-
-        Returns
-        -------
-
-        """
 
     def translate(self, index: int, translation: Translations) -> None:
         """

@@ -1,11 +1,6 @@
 import numpy as np
-import PySide6.QtWidgets as QtW
 
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-
-from ..gui_structure_for_tests import GUI
-from ..result_creating_class_for_tests import ResultsClass, data_2_results
-from ..test_translations.translation_class import Translations
+from ..starting_closing_tests import close_tests, start_tests
 
 
 def test_int_box(qtbot):
@@ -18,9 +13,7 @@ def test_int_box(qtbot):
         bot for the GUI
     """
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     int_a = main_window.gui_structure.int_a
     assert np.isclose(int_a.get_value(), int_a.default_value)
     int_a.set_value(int_a.default_value + 5)
@@ -47,4 +40,4 @@ def test_int_box(qtbot):
     assert not main_window.gui_structure.float_b.is_hidden()
     main_window.save_scenario()
     assert "int_a" in main_window.list_ds[0].to_dict()
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)

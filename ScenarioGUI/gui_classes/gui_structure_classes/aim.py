@@ -116,6 +116,8 @@ class Aim:
         None
         """
         self.functions.append(lambda: function_to_be_called(*args))  # pylint: disable=E1101
+        if self.widget.parent() != self.default_parent:
+            self.widget.toggled.connect(lambda: function_to_be_called(*args))
 
     def add_link_2_show(self, option: Option | Category | FunctionButton | Hint):
         """
