@@ -1312,6 +1312,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # stop finished thread
         results.terminate()
         # count number of finished calculated scenarios
+        item_list = [thread.item for thread in self.threads]
         open_threads = [thread for thread in self.threads if not thread.calculated and not thread.isRunning()]
         n_closed_threads = len(self.threads) - len([thread for thread in self.threads if not thread.calculated])
         # update progress bar
@@ -1325,7 +1326,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             return
         # display results
         self.check_buttons()
-        if self.list_widget_scenario.currentItem() in [thread.item for thread in self.threads]:
+        if self.list_widget_scenario.currentItem() in item_list:
             self.gui_structure.page_result.button.click()
 
     def start_multiple_scenarios_calculation(self) -> None:
