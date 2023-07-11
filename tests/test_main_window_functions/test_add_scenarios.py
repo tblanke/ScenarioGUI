@@ -53,7 +53,9 @@ def test_add_scenarios_2_currents(qtbot):  # noqa: PLR0915
         get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
     )
     main_window.action_save_as.trigger()
-    qtbot.wait(200)
+    for thread in main_window.saving_threads:
+        thread.run()
+        assert thread.calculated
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
         main_window.default_path.joinpath(filename_1),
         f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
@@ -63,7 +65,9 @@ def test_add_scenarios_2_currents(qtbot):  # noqa: PLR0915
         get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_2)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
     )
     main_window.action_save_as.trigger()
-    qtbot.wait(200)
+    for thread in main_window.saving_threads:
+        thread.run()
+        assert thread.calculated
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
         main_window.default_path.joinpath(filename_2),
         f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
