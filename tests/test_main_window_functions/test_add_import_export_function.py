@@ -50,6 +50,9 @@ def test_add_other_file_extensions(qtbot):
 
     QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", "txt (.txt)"))
     main_window.fun_save_as()
+    for thread in main_window.saving_threads:
+        thread.run()
+        assert thread.calculated
     assert filename_1 not in main_window.dia.windowTitle()
     close_tests(main_window, qtbot)
     main_window = start_tests(qtbot)
