@@ -5,28 +5,14 @@ import PySide6.QtWidgets as QtW
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 from tests.gui_structure_for_tests import GUI
 from tests.result_creating_class_for_tests import ResultsClass, data_2_results
+from tests.starting_closing_tests import close_tests, start_tests
 from tests.test_translations.translation_class import Translations
 
 
 def test_show_multiple_under_conditions(qtbot):
     # init gui window
-    main_window = MainWindow(
-        QtW.QMainWindow(),
-        qtbot,
-        GUI,
-        Translations,
-        result_creating_class=ResultsClass,
-        data_2_results_function=data_2_results,
-    )
-    main_window.delete_backup()
-    main_window = MainWindow(
-        QtW.QMainWindow(),
-        qtbot,
-        GUI,
-        Translations,
-        result_creating_class=ResultsClass,
-        data_2_results_function=data_2_results,
-    )
+    # init gui window
+    main_window = start_tests(qtbot)
     g_s: GUI = main_window.gui_structure
     g_s.show_option_under_multiple_conditions(
         g_s.float_b,
@@ -83,8 +69,7 @@ def test_show_multiple_under_conditions(qtbot):
             g_s.aim_plot.widget.isChecked,
             partial(g_s.int_small_1.check_linked_value, (None, 20)),
         ],
-        functions_check_for_and=[
-            partial(g_s.int_small_2.check_linked_value, (26, None))]
+        functions_check_for_and=[partial(g_s.int_small_2.check_linked_value, (26, None))],
     )
     _ = [g_s.aim_plot.widget.toggled.connect(func) for func in g_s.aim_plot.functions]
     g_s.int_small_2.set_value(20)
@@ -107,5 +92,4 @@ def test_show_multiple_under_conditions(qtbot):
     assert not g_s.float_units.is_hidden()
     g_s.int_small_1.set_value(18)
     assert g_s.float_units.is_hidden()
-
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)
