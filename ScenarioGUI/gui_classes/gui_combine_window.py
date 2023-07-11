@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from functools import partial as ft_partial
 from json import dump, load
 from os import makedirs, remove
@@ -621,6 +622,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 and DataStorage(self.gui_structure) != old_row_item.data(MainWindow.role)
                 and self.push_button_save_scenario.isEnabled()
             ):
+                logging.info(f"old: {old_row_item.data(0)}; new: {new_row_item.data(0)}, {DataStorage(self.gui_structure) != old_row_item.data(MainWindow.role)}")
                 old_row_item.data(MainWindow.role).close_figures()
                 old_row_item.setData(MainWindow.role, DataStorage(self.gui_structure))
             # update backup fileImport
@@ -826,11 +828,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         for idx in range(self.list_widget_scenario.count()):
+            data = self.list_widget_scenario.item(idx).data(MainWindow.role)
             setattr(
-                self.list_widget_scenario.item(idx).data(MainWindow.role),
+                data,
                 name_of_option,
-                getattr(self.gui_structure, name_of_option).get_value() if len(args) < 1 else args[0],
+                getattr(self.gui_structure, name_of_option).get_value(),
             )
+            self.list_widget_scenario.item(idx).setData(MainWindow.role, data)
 
     def change_language(self) -> None:
         """
@@ -1079,6 +1083,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             True if the saving was successful.
         """
         # ask for pickle file if the filename is still the default
+        logging.info(f"{filename}, {MainWindow.filename_default}: {self.filename}")
         if not isinstance(filename, tuple):
             if self.filename == MainWindow.filename_default:
                 self.fun_save_as()

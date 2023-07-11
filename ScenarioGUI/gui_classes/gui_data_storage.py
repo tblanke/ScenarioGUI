@@ -15,16 +15,35 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..global_settings import ResultsClass
 
 
+def is_equal(var_1: any, var_2: any) -> bool:
+    """
+    check if the two variables are equal
+
+    Parameters
+    ----------
+    var_1: any
+        variable 1
+    var_2: any
+        variable 2
+    Returns
+    -------
+        bool
+    """
+    if isinstance(var_1, (tuple, list, dict)):
+        if len(var_1) != len(var_2):
+            return False
+        for new, old in zip(var_1, var_2):
+            if not is_equal(new, old):
+                return False
+        return True
+    return var_1 == var_2
+
+
 class DataStorage:
     """
     An instance of this class contains all the information available in the GuiStructure.
     It also contains some extra information that is based on the direct inputs of the GuiStructure, given
     in the attributes below.
-
-    Attributes
-    ----------
-    hourly_data : bool
-        True if hourly data should be used
     """
 
     def __init__(self, gui_structure: GuiStructure) -> DataStorage:
@@ -138,7 +157,10 @@ class DataStorage:
         for i in self.list_options_aims:
             if not hasattr(self, i) or not hasattr(other, i):
                 return False
-            if getattr(self, i) != getattr(other, i):
+            if not is_equal(getattr(self, i), getattr(other, i)):
                 return False
         # if all match return true
         return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
