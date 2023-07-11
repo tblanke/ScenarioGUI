@@ -1,12 +1,7 @@
-import PySide6.QtCore as QtC
-import PySide6.QtWidgets as QtW
 import numpy as np
+import PySide6.QtCore as QtC
 
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-
-from ..gui_structure_for_tests import GUI
-from ..result_creating_class_for_tests import ResultsClass, data_2_results
-from ..test_translations.translation_class import Translations
+from ..starting_closing_tests import close_tests, start_tests
 
 
 def test_move_scenario_upwards(qtbot):
@@ -19,9 +14,7 @@ def test_move_scenario_upwards(qtbot):
         bot for the GUI
     """
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     main_window.add_scenario()
     # add three scenarios
     for i in range(1, 6):
@@ -52,7 +45,7 @@ def test_move_scenario_upwards(qtbot):
             if isinstance(getattr(ds_old, option), (str, bool)):
                 assert getattr(ds_old, option) == getattr(ds_new, option)
                 continue
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)
 
 
 def test_move_scenario_downwards(qtbot):
@@ -65,9 +58,7 @@ def test_move_scenario_downwards(qtbot):
         bot for the GUI
     """
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     main_window.add_scenario()
     # add three scenarios
     for i in range(1, 6):
@@ -98,4 +89,4 @@ def test_move_scenario_downwards(qtbot):
             if isinstance(getattr(ds_old, option), (str, bool)):
                 assert getattr(ds_old, option) == getattr(ds_new, option)
                 continue
-    main_window.delete_backup()
+    close_tests(main_window, qtbot)

@@ -1,16 +1,9 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
 
-from ScenarioGUI import load_config
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-
-from ..gui_structure_for_tests import GUI
-from ..result_creating_class_for_tests import ResultsClass, data_2_results
-from ..test_translations.translation_class import Translations
+from ..starting_closing_tests import close_tests, start_tests
 
 
 def test_change_font_size(qtbot):
@@ -23,13 +16,9 @@ def test_change_font_size(qtbot):
         bot for the GUI
     """
     # init gui window
-    load_config(Path(".").absolute().joinpath("./tests/gui_config.ini") if Path(".").absolute().joinpath("./tests/gui_config.ini").exists() else Path(
-        "..").absolute().joinpath("./tests/gui_config.ini"))
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
     main_window.gui_structure.option_font_size.set_value(8)
-    
+
     check_font_size(main_window.push_button_cancel, 8)
     check_font_size(main_window.push_button_start_single, 8)
     check_font_size(main_window.push_button_start_multiple, 8)
@@ -75,8 +64,9 @@ def test_change_font_size(qtbot):
     check_font_size(main_window.gui_structure.flex_option.label, 8)
     [check_font_size(widget, 8) for widget in main_window.gui_structure.flex_option.frame.children() if isinstance(widget, QtW.QWidget)]
 
+    close_tests(main_window, qtbot)
+
 
 def check_font_size(widget: QtW.QWidget | QtG.QAction, size: int):
     font = widget.font()
     assert font.pointSize() == size
-    
