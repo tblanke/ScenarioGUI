@@ -14,7 +14,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     Aim,
     ButtonBox,
     Category,
-    FunctionButton,
+    FigureOption, FlexibleAmount, FunctionButton,
     Hint,
     IntBox,
     ListBox,
@@ -456,6 +456,16 @@ class GuiStructure:
         aim.widget.setFont(font)
         if len([aim_i for aim_i in at_page.upper_frame if aim_i.widget.isEnabled()]) == 1:
             aim.widget.setChecked(True)
+
+    def reset(self):
+        """
+        resets the gui structure to default values.
+        """
+        _ = [option.set_value(option.default_value) for option, _ in self.list_of_options if not isinstance(option, (FlexibleAmount, FigureOption)) ]
+        for page in [page for page in self.list_of_pages if page.upper_frame]:
+            if page.upper_frame[0].widget.isChecked():
+                continue
+            page.upper_frame[0].widget.click()
 
     @staticmethod
     def show_option_under_multiple_conditions(option_to_be_shown: Option, options_2_be_checked: list[Option, Aim], function_2_be_checked: list[Callable[[],

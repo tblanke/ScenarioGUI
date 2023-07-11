@@ -29,41 +29,25 @@ def test_close(qtbot):
     if os.path.exists(main_window.default_path.joinpath(filename_1)):  # pragma: no cover
         os.remove(main_window.default_path.joinpath(filename_1))
 
-    def close():
-        # handle dialog now
-        if isinstance(main_window.dialog, QtW.QMessageBox):
-            main_window.dialog.close()
+    response = QtW.QMessageBox.Cancel
 
-    def cancel():
-        # handle dialog now
-        if isinstance(main_window.dialog, QtW.QMessageBox):
-            main_window.dialog.buttons()[2].click()
+    class NewMessageBox(QtW.QMessageBox):
+        def exec(self):
+            return response
 
-    def exit_window():
-        # handle dialog now
-        if isinstance(main_window.dialog, QtW.QMessageBox):
-            main_window.dialog.buttons()[1].click()
-
-    def save():
-        # handle dialog now
-        if isinstance(main_window.dialog, QtW.QMessageBox):
-            main_window.dialog.buttons()[0].click()
-
-    QtC.QTimer.singleShot(500, close)
+    QtW.QMessageBox = NewMessageBox
     main_window.close()
-
-    QtC.QTimer.singleShot(500, cancel)
-    main_window.close()
-
-    QtC.QTimer.singleShot(500, save)
 
     def get_save_file_name(*args, **kwargs):
         """getSaveFileName proxy"""
         return kwargs["return_value"]
 
-    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(f"{filename_1}", f"{main_window.filename_default[1]}"))
+    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", f"{main_window.filename_default[1]}"))
+    response = QtW.QMessageBox.Save
     main_window.close()
+    assert filename_1 in main_window.filename[0]
+    assert filename_1 in main_window.dia.windowTitle()
 
-    QtC.QTimer.singleShot(500, exit_window)
+    response = QtW.QMessageBox.Close
     main_window.close()
     close_tests(main_window, qtbot)

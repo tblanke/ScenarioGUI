@@ -1107,6 +1107,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 return True
             else:
                 filename = self.filename
+
+        self.change_window_title() if self.filename == filename else None
         # save scenarios
         self.save_scenario()
         # update backup file
@@ -1494,6 +1496,14 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 if callable(text):
                     text = getattr(results, result_text_obj.var_name)()
                 result_text_obj.set_text_value(text)
+
+    def reset(self):
+        """
+        resets the window to default values
+        """
+        self.list_widget_scenario.clear()
+        self.gui_structure.reset()
+        self.filename = MainWindow.filename_default
 
     def closeEvent(self, event) -> None:  # noqa: N802
         """

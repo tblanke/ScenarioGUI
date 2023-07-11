@@ -1,6 +1,6 @@
 import PySide6.QtCore as QtC
 
-from ..starting_closing_tests import start_tests
+from ..starting_closing_tests import close_tests, start_tests
 
 
 def test_resize_event_button_sizes(qtbot):
@@ -22,3 +22,4 @@ def test_resize_event_button_sizes(qtbot):
     main_window.resizeEvent(None)
     assert main_window.size_push_s.height() == 75
     assert main_window.size_push_b.height() == 75
+    close_tests(main_window, qtbot)
