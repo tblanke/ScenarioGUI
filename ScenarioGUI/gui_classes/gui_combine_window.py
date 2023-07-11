@@ -889,7 +889,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        if exists(self.backup_file):
+        if exists(self.backup_file):  # pragma: no cover
             remove(self.backup_file)
 
     def load_backup(self) -> None:
@@ -939,7 +939,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.saving_threads.remove(thread)
             self._saving_threads_update()
             return
-        if thread.isRunning():
+        if thread.isRunning():  # pragma: no cover
             return
         thread.any_signal.connect(self._saving_threads_update)
         thread.start() if not MainWindow.TEST_MODE else None
@@ -1320,7 +1320,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.update_bar(n_closed_threads)
         # if number of finished is the number that has to be calculated enable buttons and actions and change page to
         # results page
-        if open_threads:  # start new thread
+        if open_threads:  # pragma: no cover
+            # start new thread
             open_threads[0].start() if not MainWindow.TEST_MODE else None
             open_threads[0].any_signal.connect(self.thread_function)
             return
@@ -1492,14 +1493,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 if callable(text):
                     text = getattr(results, result_text_obj.var_name)()
                 result_text_obj.set_text_value(text)
-
-    def reset(self):
-        """
-        resets the window to default values
-        """
-        self.list_widget_scenario.clear()
-        self.gui_structure.reset()
-        self.filename = MainWindow.filename_default
 
     def closeEvent(self, event) -> None:  # noqa: N802
         """

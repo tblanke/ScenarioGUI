@@ -44,6 +44,10 @@ def test_float_box_with_units(qtbot):
     assert not main_window.gui_structure.int_a.is_hidden()
     float_units.set_value((220, 0))
     assert not main_window.gui_structure.int_a.is_hidden()
+    float_units.unit_widget.setCurrentIndex(1)
+    float_units.set_value(20)
+    assert float_units.unit_widget.currentIndex() == 0
+    assert float_units.widget.value() == 20
     # test set text
     main_window.gui_structure.float_units.set_text("Hello")
     assert main_window.gui_structure.float_units.label.text() == "Hello"
