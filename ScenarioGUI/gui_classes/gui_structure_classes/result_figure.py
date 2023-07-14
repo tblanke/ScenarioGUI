@@ -270,7 +270,10 @@ class ResultFigure(Category):
 
     def update_figure_layout(self, event):
         self.canvas.draw()  # Redraw the canvas
-        self.fig.tight_layout()  # Adjust the layout of the figure
+        self.fig.tight_layout() if self.frame.isVisible() else None  # Adjust the layout of the figure
+        print(self.frame_canvas.window().size().height())
+        self.frame_canvas.setMinimumHeight(self.frame_canvas.window().size().height() * 0.6)
+        self.frame_canvas.setMaximumHeight(self.frame_canvas.window().size().height() * 0.6)
         QtW.QFrame.resizeEvent(self.frame_canvas, event)
 
     def replace_figure(self, fig: plt.Figure) -> None:
@@ -363,6 +366,7 @@ class ResultFigure(Category):
         self.layout_frame.addWidget(self.frame_canvas)
         # set minimal height to ensure a minimal height of the plots
         self.frame_canvas.setMinimumHeight(500)
+        self.frame_canvas.setMaximumHeight(500)
         # add canvas and toolbar to local frame
         self.layout_frame_canvas.addWidget(self.canvas)
         self.layout_frame_canvas.addWidget(self.toolbar)
