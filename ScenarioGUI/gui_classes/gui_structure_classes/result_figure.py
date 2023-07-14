@@ -271,7 +271,6 @@ class ResultFigure(Category):
     def update_figure_layout(self, event):
         self.canvas.draw()  # Redraw the canvas
         self.fig.tight_layout() if self.frame.isVisible() else None  # Adjust the layout of the figure
-        print(self.frame_canvas.window().size().height())
         self.frame_canvas.setMinimumHeight(self.frame_canvas.window().size().height() * 0.6)
         self.frame_canvas.setMaximumHeight(self.frame_canvas.window().size().height() * 0.6)
         QtW.QFrame.resizeEvent(self.frame_canvas, event)
