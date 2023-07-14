@@ -295,7 +295,7 @@ class GUI(GuiStructure):
         self.category_grid.activate_graphic_left()
         self.category_grid.activate_graphic_right()
 
-        # the option float_units is shown if int_small_2 is below 26 and aim_plot is selected or int_small_1 is above 20
+        # the option float_units is shown if int_small_2 is below 26 and (aim_plot is selected or int_small_1 is above 20)
         self.show_option_under_multiple_conditions(
             self.float_units,
             [self.aim_plot, self.int_small_1, self.int_small_2],
