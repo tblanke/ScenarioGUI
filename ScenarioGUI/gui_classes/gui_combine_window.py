@@ -1082,8 +1082,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         bool
             True if the saving was successful.
         """
-        # ask for pickle file if the filename is still the default
-        logging.info(f"{filename}, {MainWindow.filename_default}: {self.filename}")
         if not isinstance(filename, tuple):
             if self.filename == MainWindow.filename_default:
                 self.fun_save_as()
