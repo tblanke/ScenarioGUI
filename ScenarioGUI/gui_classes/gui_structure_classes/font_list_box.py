@@ -69,6 +69,7 @@ class FontListBox(ListBox):
         self.widget: FontComboBox = FontComboBox(self.default_parent)
         self.widget.clear()
         self.widget.addItems(self.entries)
+        self._link_matrix: list[int] | None = None
 
     def link_matrix(self) -> list[int]:
         return [[self.widget.itemText(index) for index in range(self.widget.count())].index(font) for font in self.entries]
