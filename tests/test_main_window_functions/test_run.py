@@ -52,7 +52,6 @@ def test_run(qtbot):  # noqa: PLR0915
     thread = main_window.threads[-1]
     thread.run()
     assert thread.calculated
-
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     main_window.start_current_scenario_calculation()
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None

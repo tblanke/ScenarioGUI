@@ -1312,11 +1312,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # stop finished thread
         results.terminate()
-
         # count number of finished calculated scenarios
         item_list = [thread.item for thread in self.threads]
-        open_threads = [thread for thread in self.threads if not thread.calculated]
-        n_closed_threads = len(self.threads) - len(open_threads)
+        open_threads = [thread for thread in self.threads if not thread.calculated and not thread.isRunning()]
+        n_closed_threads = len(self.threads) - len([thread for thread in self.threads if not thread.calculated])
         # update progress bar
         self.update_bar(n_closed_threads)
         # if number of finished is the number that has to be calculated enable buttons and actions and change page to

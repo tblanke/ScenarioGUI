@@ -37,6 +37,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - ResultsFigure has now translatable legend texts by adding them with a commma to the current translation (example: "Label text,Y-axis,X-Axis,Line 1,Line 2") 
   (issue 65)
 - Remove references to GHEtool (issue 76)
+- Multiprocessing approach implemented (issue 68)
 - If a value in the int Box of float box is set it is checked if the value is between the default limits and the current widget limits. If so the limits 
   are reset to the default ones and the value is set. (issue 83)
 - Translation now works without the same names as the option etc.
