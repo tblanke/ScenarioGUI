@@ -444,8 +444,6 @@ class ResultFigure(Category):
         font.set_size(font_size)
         font.set_style("normal")
         font.set_weight("normal")
-        if hasattr(self, "option_font"):
-            print(font, font_index, self.option_font.default_value)
 
         self.a_x.set_xlabel(self.a_x.get_xlabel(), fontproperties=font)
         self.a_x.set_ylabel(self.a_x.get_ylabel(), fontproperties=font)
