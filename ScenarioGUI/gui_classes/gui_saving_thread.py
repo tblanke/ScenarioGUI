@@ -48,7 +48,7 @@ class SavingThread(QtC.QThread):
         """
         This function contains the actual code to run the different calculations.
         For each aim in the GUI, a new if statement is used. Here, one can put all the code
-        needed to run the simulation/calculation with the all the functionalities of GHEtool.
+        needed to run the simulation/calculation.
         This function should return the DataStorage as a signal.
 
         Returns

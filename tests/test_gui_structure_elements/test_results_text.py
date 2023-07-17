@@ -14,6 +14,7 @@ def test_results_text(qtbot):
     thread.run()
     assert thread.calculated
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
+    main_window.display_results()
     # check text output
     assert main_window.gui_structure.result_text_add.label.text() == f"Hello{sum_ab}kW"
     close_tests(main_window, qtbot)
