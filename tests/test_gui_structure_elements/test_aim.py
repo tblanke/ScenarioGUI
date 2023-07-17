@@ -15,6 +15,16 @@ def test_aim(qtbot):
         main_window.gui_structure.aim_plot.widget.click()
 
     assert main_window.gui_structure.aim_plot.widget.isChecked()
+    main_window.gui_structure.int_a.set_value(201)
+    main_window.save_scenario()
+    main_window.add_scenario()
+    main_window.gui_structure.int_a.set_value(100)
+    main_window.gui_structure.aim_sub.widget.click()
+    main_window.save_scenario()
+    main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(0))
+    main_window.list_widget_scenario.setCurrentItem(main_window.list_widget_scenario.item(1))
+
+    assert main_window.gui_structure.aim_sub.widget.isChecked()
 
     main_window.gui_structure.aim_plot.set_text("Hello")
     assert main_window.gui_structure.aim_plot.widget.text() == "Hello"

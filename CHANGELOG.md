@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - Ability to deactivate button box entries (issue 46)
 - Ability to deactivate aims
+- Ability to load a file as new scenarios and add them to the existing once's (issue 88)
 
 ### Fixed
 - Scenario buttons not resizing (issue 42)

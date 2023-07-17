@@ -3,6 +3,7 @@ action_add_scenario;Add scenario;Szenario hinzufügen
 action_delete_scenario;Delete scenario;Szenario löschen
 action_new;New Project;Neues Projekt
 action_open;Open Project;Öffne Projekt
+action_open_add;Open Project as new scenarios;Öffne Projekt als neue Szenarios
 action_rename_scenario;Rename scenario;Szenario umbenennen
 action_save;Save Project;Speichere Projekt
 action_save_as;Save as;Speichere Projekt unter ...

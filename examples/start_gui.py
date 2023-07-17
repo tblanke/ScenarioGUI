@@ -253,7 +253,6 @@ class GUI(GuiStructure):
         )
         self.figure_results_multiple_lines.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot_multiple_lines")
 
-
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_add.add_link_2_show(self.result_export)
         self.aim_sub.add_link_2_show(self.result_text_sub)
@@ -301,7 +300,7 @@ def run(path_list=None):  # pragma: no cover
     def import_txt(file_path: Path) -> JsonDict:
         # write data to back up file
         with open(file_path) as file:
-            data = load(file, indent=1)
+            data = load(file)
         return data
 
     def other_version_import(data: JsonDict) -> JsonDict:
@@ -313,6 +312,7 @@ def run(path_list=None):  # pragma: no cover
     main_window.add_other_import_function("txt", import_txt)
 
     main_window.add_other_version_import_function("v0.0.1", other_version_import)
+    main_window.activate_load_as_new_scenarios()
 
     # show window
     window.showMaximized()
