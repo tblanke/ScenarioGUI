@@ -108,7 +108,7 @@ def test_results_figure(qtbot):  # noqa: PLR0915
     assert not np.allclose(main_window.gui_structure.option_axes_text.get_value(), (100, 110, 111))
     assert not np.allclose(main_window.gui_structure.option_axes.get_value(), (100, 110, 111))
     assert not np.isclose(main_window.gui_structure.option_font.get_value()[0], 3)
-    assert not np.isclose(main_window.gui_structure.option_font_size_figure.get_value(), 15)
+    assert not np.isclose(main_window.gui_structure.option_font_size_figure.get_value(), 16)
     assert not np.allclose(main_window.gui_structure.option_legend_text.get_value(), (120, 121, 122))
     assert not np.allclose(main_window.gui_structure.option_title.get_value(), (130, 131, 132))
     main_window.gui_structure.figure_results_with_customizable_layout.option_save_layout.button.click()
@@ -117,7 +117,7 @@ def test_results_figure(qtbot):  # noqa: PLR0915
     assert np.allclose(main_window.gui_structure.option_axes_text.get_value(), (99, 113, 115))
     assert np.allclose(main_window.gui_structure.option_axes.get_value(), (89, 90, 91))
     assert np.allclose(main_window.gui_structure.option_font.get_value()[0], 3)
-    assert np.isclose(main_window.gui_structure.option_font_size_figure.get_value(), 15)
+    assert np.isclose(main_window.gui_structure.option_font_size_figure.get_value(), 16)
     assert np.allclose(main_window.gui_structure.option_legend_text.get_value(), (120, 121, 122))
     assert np.allclose(main_window.gui_structure.option_title.get_value(), (130, 131, 132))
 
