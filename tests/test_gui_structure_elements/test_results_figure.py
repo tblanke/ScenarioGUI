@@ -100,7 +100,7 @@ def test_results_figure(qtbot):  # noqa: PLR0915
     main_window.gui_structure.figure_results_with_customizable_layout.option_axes_text.set_value((99, 113, 115))
     main_window.gui_structure.figure_results_with_customizable_layout.option_axes.set_value((89, 90, 91))
     main_window.gui_structure.figure_results_with_customizable_layout.option_font.set_value(3)
-    main_window.gui_structure.figure_results_with_customizable_layout.option_font_size.set_value(15)
+    main_window.gui_structure.figure_results_with_customizable_layout.option_font_size.set_value(16)
     main_window.gui_structure.figure_results_with_customizable_layout.option_legend_text.set_value((120, 121, 122))
     main_window.gui_structure.figure_results_with_customizable_layout.option_title.set_value((130, 131, 132))
     assert not np.allclose(main_window.gui_structure.option_figure_background.get_value(), (100, 110, 111))
