@@ -298,7 +298,7 @@ def run(path_list=None):  # pragma: no cover
     def import_txt(file_path: Path) -> JsonDict:
         # write data to back up file
         with open(file_path) as file:
-            data = load(file, indent=1)
+            data = load(file)
         return data
 
     def other_version_import(data: JsonDict) -> JsonDict:

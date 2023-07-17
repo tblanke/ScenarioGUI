@@ -993,6 +993,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.filename = tuple(saving["filename"])
             self.change_window_title()
             self.list_widget_scenario.clear()
+        else:
+            self.changedFile: bool = True
+            self.change_window_title()
         # write data to variables
         for _idx, (val, results, name) in enumerate(zip(saving["values"], saving["results"], saving["names"])):
             d_s = DataStorage(self.gui_structure)
@@ -1074,7 +1077,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # activate checking
         self.checking: bool = True
         self.gui_structure.loaded = True
-
 
     def fun_load(self) -> None:
         """

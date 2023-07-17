@@ -88,12 +88,14 @@ def test_add_scenarios_2_currents(qtbot):  # noqa: PLR0915
     QtW.QFileDialog.getOpenFileName = partial(
         get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
     )
+    assert main_window.dia.windowTitle()[-1] != "*"
     main_window.action_open_add.trigger()
     # check if filename is imported correctly and the data storages as well
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (
         main_window.default_path.joinpath(filename_2),
         f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})",
     )
+    assert main_window.dia.windowTitle()[-1] == "*"
     assert len(main_window.list_ds) == 4
     # check if the imported values are the same
     for ds_old, ds_new in zip(list_old, main_window.list_ds[2:]):
