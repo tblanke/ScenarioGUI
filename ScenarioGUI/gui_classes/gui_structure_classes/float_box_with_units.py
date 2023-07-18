@@ -230,6 +230,7 @@ class FloatBoxWithUnits(FloatBox):
         """
         self.widget.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
         self.unit_widget.currentIndexChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        self.visibilityChanged.connect(function_to_be_called)
 
     def create_widget(
             self,

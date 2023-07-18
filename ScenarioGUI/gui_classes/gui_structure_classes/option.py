@@ -7,6 +7,7 @@ import abc
 from typing import TYPE_CHECKING
 
 import PySide6.QtWidgets as QtW  # type: ignore
+import PySide6.QtCore as QtC
 
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.utils import change_font_size, set_default_font
@@ -23,10 +24,12 @@ if TYPE_CHECKING:  # pragma: no cover
         list_of_options: list[Option]
 
 
-class Option(metaclass=abc.ABCMeta):
+class Option(QtC.QObject):
     """
     Abstract base class for a gui option.
     """
+
+    visibilityChanged = QtC.Signal()
 
     default_parent: QtW.QWidget | None = None
     hidden_option_editable: bool = True
@@ -47,6 +50,7 @@ class Option(metaclass=abc.ABCMeta):
         category : Category FlexibleOption
             The category in which the option should be placed
         """
+        super().__init__()
         self.label_text: list[str] = [label] if isinstance(label, str) else label
         self.default_value: bool | int | float | str = default_value
         self.widget: QtW.QWidget | None = None
@@ -265,6 +269,7 @@ class Option(metaclass=abc.ABCMeta):
         self.frame.hide()
         self.frame.setEnabled(False) if not self.hidden_option_editable else None
         [option.hide() for option, value in self.linked_options]
+        self.visibilityChanged.emit()
 
     def is_hidden(self) -> bool:
         """
@@ -290,6 +295,8 @@ class Option(metaclass=abc.ABCMeta):
         self.frame.show()
         self.frame.setEnabled(True)
         [option.show() for option, value in self.linked_options if self.check_linked_value(value)]
+        self.visibilityChanged.emit()
+
 
     @abc.abstractmethod
     def check_linked_value(

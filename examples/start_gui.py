@@ -301,6 +301,7 @@ class GUI(GuiStructure):
             [self.aim_plot, self.int_small_1, self.int_small_2],
             custom_logic=lambda: (self.aim_plot.widget.isChecked() or self.int_small_1.check_linked_value((None, 20))) and self.int_small_2.check_linked_value((26, None))
         )
+        self.float_units.change_event(lambda: print(f'Visible {self.float_units.is_hidden()}'))
 
         self.create_results_page()
         self.numerical_results = els.Category(page=self.page_result, label="Numerical results")
