@@ -52,6 +52,31 @@ class GUI(GuiStructure):
 
         self.sub_category = els.Subcategory("Subcategory", self.category_inputs)
 
+        self.float_a = els.FloatBox(
+            label="a",
+            default_value=100,
+            minimal_value=0,
+            maximal_value=1000,
+            decimal_number=2,
+            category=self.sub_category,
+        )
+        self.float_c = els.FloatBox(
+            label="c",
+            default_value=100,
+            minimal_value=0,
+            maximal_value=1000,
+            decimal_number=2,
+            category=self.sub_category,
+        )
+        self.float_d = els.FloatBox(
+            label="d",
+            default_value=100,
+            minimal_value=0,
+            maximal_value=1000,
+            decimal_number=2,
+            category=self.sub_category,
+        )
+
         self.float_b = els.FloatBox(
             label="b",
             default_value=100,
