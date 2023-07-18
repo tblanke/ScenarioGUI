@@ -428,7 +428,7 @@ class GuiStructure:
         return partial(self._disable_button_box, button_box, at_index, func_2_check)
 
     @staticmethod
-    def _disable_button_box(button_box: ButtonBox, at_index: int, func_2_check: Callable[[], bool], args):
+    def _disable_button_box(button_box: ButtonBox, at_index: int, func_2_check: Callable[[], bool], *args):
         if func_2_check():
             button_box.disable_entry(at_index)
             return
@@ -438,7 +438,7 @@ class GuiStructure:
         return partial(self._disable_aim, aim, at_page, func_2_check)
 
     @staticmethod
-    def _disable_aim(aim: Aim, at_page: Page, func_2_check: Callable[[], bool], args):
+    def _disable_aim(aim: Aim, at_page: Page, func_2_check: Callable[[], bool], *args):
         if func_2_check():
             if aim.widget.isChecked():
                 aim.widget.click()
