@@ -299,11 +299,7 @@ class GUI(GuiStructure):
         self.show_option_under_multiple_conditions(
             self.float_units,
             [self.aim_plot, self.int_small_1, self.int_small_2],
-            functions_check_for_or=[
-                self.aim_plot.widget.isChecked,
-                partial(self.int_small_1.check_linked_value, (None, 20)),
-            ],
-            functions_check_for_and=[partial(self.int_small_2.check_linked_value, (26, None))],
+            custom_logic=lambda: (self.aim_plot.widget.isChecked() or self.int_small_1.check_linked_value((None, 20))) and self.int_small_2.check_linked_value((26, None))
         )
 
         self.create_results_page()
