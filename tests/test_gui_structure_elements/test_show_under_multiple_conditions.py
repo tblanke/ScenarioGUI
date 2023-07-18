@@ -1,5 +1,5 @@
 from functools import partial
-
+import pytest
 import PySide6.QtWidgets as QtW
 
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
@@ -63,12 +63,8 @@ def test_show_multiple_under_conditions(qtbot):
     g_s.show_option_under_multiple_conditions(
         g_s.float_units,
         [g_s.aim_plot, g_s.int_small_1, g_s.int_small_2],
-        functions_check_for_or=[
-            g_s.aim_plot.widget.isChecked,
-            partial(g_s.int_small_1.check_linked_value, (None, 20)),
-        ],
-        functions_check_for_and=[partial(g_s.int_small_2.check_linked_value, (26, None))],
-    )
+        custom_logic=lambda:(g_s.aim_plot.widget.isChecked() or g_s.int_small_1.check_linked_value((None, 20))) and g_s.int_small_2.check_linked_value((26, None))
+                             )
     g_s.int_small_2.set_value(20)
     g_s.int_small_1.set_value(21)
     g_s.aim_plot.widget.click()
