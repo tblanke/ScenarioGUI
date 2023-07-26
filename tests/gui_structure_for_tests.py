@@ -234,7 +234,9 @@ class GUI(GuiStructure):
         self.result_text_sub = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
-
+        self.result_depending_visibility = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
+        self.result_depending_visibility.text_to_be_shown("ResultsClass", "get_result")
+        self.result_depending_visibility.function_to_convert_to_text(lambda x: round(x, 2))
         self.export_results = ResultExport(
             "Export", icon="Download", category=self.numerical_results, export_function="export", caption="Please select file", file_extension="txt"
         )

@@ -11,7 +11,6 @@ from tests.test_translations.translation_class import Translations
 
 def test_show_multiple_under_conditions(qtbot):
     # init gui window
-    # init gui window
     main_window = start_tests(qtbot)
     g_s: GUI = main_window.gui_structure
     g_s.show_option_under_multiple_conditions(

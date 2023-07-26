@@ -295,23 +295,26 @@ class GUI(GuiStructure):
         self.category_grid.activate_graphic_left()
         self.category_grid.activate_graphic_right()
 
-        # the option float_units is shown if int_small_2 is below 26 and (aim_plot is selected or int_small_1 is above 20)
-        self.show_option_under_multiple_conditions(
-            self.float_units,
-            [self.aim_plot, self.int_small_1, self.int_small_2],
-            custom_logic=lambda: (self.aim_plot.widget.isChecked() or self.int_small_1.check_linked_value((None, 20))) and self.int_small_2.check_linked_value((26, None))
-        )
-        self.float_units.change_event(lambda: print(f'Visible {self.float_units.is_hidden()}'))
-
         self.create_results_page()
         self.numerical_results = els.Category(page=self.page_result, label="Numerical results")
 
         self.result_text_add = els.ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
         self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2))
+        self.result_depending_visibility = els.ResultText("Result depending visibility", category=self.numerical_results, prefix="Result depending visibility: ", suffix="m")
+        self.result_depending_visibility.text_to_be_shown("ResultsClass", "get_result")
+        self.result_depending_visibility.function_to_convert_to_text(lambda x: round(x, 2))
         self.result_text_sub = els.ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
+
+        # the option float_units is shown if int_small_2 is below 26 and (aim_plot is selected or int_small_1 is above 20)
+        self.show_option_under_multiple_conditions(
+            [self.result_depending_visibility, self.float_units],
+            [self.aim_plot, self.int_small_1, self.int_small_2],
+            custom_logic=lambda: (self.aim_plot.widget.isChecked() or self.int_small_1.check_linked_value(
+                (None, 20))) and self.int_small_2.check_linked_value((26, None))
+        )
 
         self.result_export = els.ResultExport(
             "Export results",
