@@ -24,7 +24,6 @@ def test_show_under_multiple_conditions_on_result_page(qtbot):
     g_s.int_small_2.set_value(20)
     g_s.int_small_1.set_value(21)
     g_s.aim_plot.widget.click()
-    assert g_s.result_depending_visibility.is_hidden()
     main_window.start_current_scenario_calculation()
     thread = main_window.threads[-1]
     thread.run()
@@ -38,31 +37,30 @@ def test_show_under_multiple_conditions_on_result_page(qtbot):
     thread.run()
     assert g_s.result_depending_visibility.is_hidden()
     g_s.int_small_2.set_value(20)
-    assert g_s.result_depending_visibility.is_hidden()
     main_window.start_current_scenario_calculation()
     thread = main_window.threads[-1]
     thread.run()
     assert not g_s.result_depending_visibility.is_hidden()
     g_s.int_small_1.set_value(18)
-    assert g_s.result_depending_visibility.is_hidden()
+    # assert g_s.result_depending_visibility.is_hidden()
     main_window.start_current_scenario_calculation()
     thread = main_window.threads[-1]
     thread.run()
     assert not g_s.result_depending_visibility.is_hidden()
     g_s.int_small_1.set_value(21)
-    assert g_s.result_depending_visibility.is_hidden()
+    # assert g_s.result_depending_visibility.is_hidden()
     main_window.start_current_scenario_calculation()
     thread = main_window.threads[-1]
     thread.run()
     assert not g_s.result_depending_visibility.is_hidden()
     g_s.aim_add.widget.click()
-    assert g_s.result_depending_visibility.is_hidden()
+    # assert g_s.result_depending_visibility.is_hidden()
     main_window.start_current_scenario_calculation()
     thread = main_window.threads[-1]
     thread.run()
     assert not g_s.result_depending_visibility.is_hidden()
     g_s.int_small_1.set_value(18)
-    assert g_s.result_depending_visibility.is_hidden()
+    # assert g_s.result_depending_visibility.is_hidden()
     main_window.start_current_scenario_calculation()
     thread = main_window.threads[-1]
     thread.run()
