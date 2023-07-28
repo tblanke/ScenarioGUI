@@ -24,6 +24,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .function_button import FunctionButton
     from .hint import Hint
 
+import PySide6.QtGui as QtG
 
 class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
     def wheelEvent(self, event: QtG.QWheelEvent):
@@ -31,6 +32,24 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
             super().wheelEvent(event)
             return
         self.parent().wheelEvent(event)
+
+    def validate(self, input: str, pos: int) -> object:
+        # position is index +1 in input
+        max_val = self.maximum()
+        min_val = self.minimum()
+        input_float = float(input.replace(',', '.'))
+        nb_of_chars = len(input) - 1 if ',' in input else 0
+        nb_of_decimals = 0 if ',' not in input else nb_of_chars - input.index(',')
+        # overwrite decimals
+        if nb_of_decimals > self.decimals():
+            print(nb_of_chars, pos)
+            if pos == nb_of_chars + 1:
+                return QtG.QValidator.State.Invalid
+            else:
+                self.setValue(float(input[:-1].replace(',', '.')))
+                return QtG.QValidator.State.Acceptable
+            
+        return QtG.QValidator.State.Acceptable
 
 
 class FloatBox(Option):
@@ -280,7 +299,7 @@ class FloatBox(Option):
         self.widget.setProperty("showGroupSeparator", True)
         self.widget.setMinimum(self.minimal_value)
         self.widget.setMaximum(self.maximal_value)
-        self.widget.setDecimals(self.decimal_number)
+        self.widget.setDecimals(self.decimal_number+5)
         self.widget.setValue(self.default_value)
         self.widget.setSingleStep(self.step)
         self.widget.setFocusPolicy(QtC.Qt.FocusPolicy.StrongFocus)
