@@ -299,7 +299,7 @@ class FloatBox(Option):
         self.widget.setProperty("showGroupSeparator", True)
         self.widget.setMinimum(self.minimal_value)
         self.widget.setMaximum(self.maximal_value)
-        self.widget.setDecimals(self.decimal_number+5)
+        self.widget.setDecimals(self.decimal_number)
         self.widget.setValue(self.default_value)
         self.widget.setSingleStep(self.step)
         self.widget.setFocusPolicy(QtC.Qt.FocusPolicy.StrongFocus)
