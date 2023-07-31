@@ -31,10 +31,11 @@ from ScenarioGUI.gui_classes.gui_structure_classes.font_list_box import FontList
 from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import font_list, get_name
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     import PySide6.QtWidgets as QtW
 
     from ScenarioGUI.gui_classes.translation_class import Translations
-    from collections.abc import Callable
 
 
 class GuiStructure:

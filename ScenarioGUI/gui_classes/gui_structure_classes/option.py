@@ -6,8 +6,8 @@ from __future__ import annotations
 import abc
 from typing import TYPE_CHECKING
 
-import PySide6.QtWidgets as QtW  # type: ignore
 import PySide6.QtCore as QtC
+import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.utils import change_font_size, set_default_font
@@ -18,9 +18,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
     from typing import Protocol
 
-
     class CategoryOrFlexibleOption(Protocol):
         """class with list_of_options"""
+
         list_of_options: list[Option]
 
 
@@ -297,7 +297,6 @@ class Option(QtC.QObject):
         [option.show() for option, value in self.linked_options if self.check_linked_value(value)]
         self.visibilityChanged.emit()
 
-
     @abc.abstractmethod
     def check_linked_value(
         self,
@@ -330,6 +329,26 @@ class Option(QtC.QObject):
         Returns
         -------
         None
+        """
+
+    @abc.abstractmethod
+    def create_function_2_check_linked_value(
+        self,
+        value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | str | bool,
+        value_if_hidden: bool | None,
+    ) -> Callable[[], bool]:
+        """
+        creates from values a function to check linked values
+
+        Parameters
+        ----------
+        value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | str | bool
+
+        value_if_hidden: bool | None
+
+        Returns
+        -------
+
         """
 
     def set_font_size(self, size: int) -> None:

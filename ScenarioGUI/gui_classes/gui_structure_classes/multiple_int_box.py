@@ -135,7 +135,7 @@ class MultipleIntBox(Option):
 
         Parameters
         ----------
-        value : tuple of 2 optional ints
+        value : Iterable of ints
             first one is the below value and the second the above value
 
         Returns
@@ -149,6 +149,31 @@ class MultipleIntBox(Option):
         if above is not None and np.any(np.greater(self.get_value(), above)):
             return True
         return False
+
+    def create_function_2_check_linked_value(self, value: tuple[Iterable[int] | None, Iterable[int] | None], value_if_hidden: bool | None) -> Callable[[], bool]:
+        """
+        creates from values a function to check linked values
+
+        Parameters
+        ----------
+        value : Iterable of ints
+            first one is the below value and the second the above value
+        value_if_hidden: bool
+            the return value, if the option is hidden
+
+        Returns
+        -------
+        function
+        """
+        if value_if_hidden is None:
+            return ft_partial(self.check_linked_value, value)
+
+        def func():
+            if self.is_hidden():
+                return value_if_hidden
+            self.check_linked_value(value)
+
+        return func
 
     def add_link_2_show(
         self,

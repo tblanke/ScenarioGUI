@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from functools import partial as ft_partial
 from math import log10
 from typing import TYPE_CHECKING
 
@@ -214,6 +215,31 @@ class FloatBoxWithUnits(FloatBox):
         if above is not None and self.get_value()[0] > above:
             return True
         return False
+
+    def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None) -> Callable[[], bool]:
+        """
+        creates from values a function to check linked values
+
+        Parameters
+        ----------
+        value : tuple of 2 optional floats
+            first one is the below value and the second the above value
+        value_if_hidden: bool
+            the return value, if the option is hidden
+
+        Returns
+        -------
+        function
+        """
+        if value_if_hidden is None:
+            return ft_partial(self.check_linked_value, value)
+
+        def func():
+            if self.is_hidden():
+                return value_if_hidden
+            self.check_linked_value(value)
+
+        return func
 
     def change_event(self, function_to_be_called: Callable) -> None:
         """

@@ -3,6 +3,7 @@ text box multi line option class
 """
 from __future__ import annotations
 
+from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
@@ -125,6 +126,31 @@ class TextBoxMultiLine(Option):
             True if the linked "option" should be shown
         """
         return self.get_value() == value
+
+    def create_function_2_check_linked_value(self, value: str, value_if_hidden: bool | None) -> Callable[[], bool]:
+        """
+        creates from values a function to check linked values
+
+        Parameters
+        ----------
+        value : str
+            str on which the option should be shown
+        value_if_hidden: bool
+            the return value, if the option is hidden
+
+        Returns
+        -------
+        function
+        """
+        if value_if_hidden is None:
+            return ft_partial(self.check_linked_value, value)
+
+        def func():
+            if self.is_hidden():
+                return value_if_hidden
+            self.check_linked_value(value)
+
+        return func
 
     def change_event(self, function_to_be_called: Callable) -> None:
         """

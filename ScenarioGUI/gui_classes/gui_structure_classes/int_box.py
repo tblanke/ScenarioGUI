@@ -10,9 +10,9 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from .functions import check_and_set_max_min_values
 
 from ...utils import set_default_font
+from .functions import check_and_set_max_min_values
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -221,6 +221,31 @@ class IntBox(Option):
         if above is not None and self.get_value() > above:
             return option.show()
         option.hide()
+
+    def create_function_2_check_linked_value(self, value: tuple[int | None, int | None], value_if_hidden: bool | None) -> Callable[[], bool]:
+        """
+        creates from values a function to check linked values
+
+        Parameters
+        ----------
+        value : tuple of 2 optional ints
+            first one is the below value and the second the above value
+        value_if_hidden: bool
+            the return value, if the option is hidden
+
+        Returns
+        -------
+        function
+        """
+        if value_if_hidden is None:
+            return ft_partial(self.check_linked_value, value)
+
+        def func():
+            if self.is_hidden():
+                return value_if_hidden
+            self.check_linked_value(value)
+
+        return func
 
     def change_event(self, function_to_be_called: Callable) -> None:
         """

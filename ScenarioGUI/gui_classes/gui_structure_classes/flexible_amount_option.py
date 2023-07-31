@@ -4,6 +4,7 @@ float box option class
 from __future__ import annotations
 
 from functools import partial
+from functools import partial as ft_partial
 from typing import TYPE_CHECKING, Collection
 
 import PySide6.QtCore as QtC  # type: ignore
@@ -313,14 +314,14 @@ class FlexibleAmount(Option):
         super().show()
         self.label.show()
 
-    def check_linked_value(self, value: tuple[float | None, float | None]) -> bool:
+    def check_linked_value(self, value: tuple[int | None, int | None]) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
         Parameters
         ----------
-        value : tuple of 2 optional floats
-            first one is the below value and the second the above value
+        value : tuple of 2 optional ints
+            first value minimal length and second maximal length
 
         Returns
         -------
@@ -333,6 +334,31 @@ class FlexibleAmount(Option):
         if max_length is not None and len(self.get_value()) > max_length:
             return True
         return False
+
+    def create_function_2_check_linked_value(self, value: tuple[int | None, int | None], value_if_hidden: bool | None) -> Callable[[], bool]:
+        """
+        creates from values a function to check linked values
+
+        Parameters
+        ----------
+        value : tuple of 2 optional ints
+            first value minimal length and second maximal length
+        value_if_hidden: bool
+            the return value, if the option is hidden
+
+        Returns
+        -------
+        function
+        """
+        if value_if_hidden is None:
+            return ft_partial(self.check_linked_value, value)
+
+        def func():
+            if self.is_hidden():
+                return value_if_hidden
+            self.check_linked_value(value)
+
+        return func
 
     def change_event(self, function_to_be_called: Callable) -> None:
         """
