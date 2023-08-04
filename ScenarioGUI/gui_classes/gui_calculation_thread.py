@@ -72,8 +72,12 @@ class CalcProblem(QtC.QThread):
         queue = multiprocessing.Queue()
         process = multiprocessing.Process(target=calculate, args=(self.data_2_results_function, self.d_s, queue))
         process.start()
-        process.join()
-        debug_message, results = queue.get()
+        process.join(timeout=self.d_s.time_out)
+        if process.is_alive():
+            process.terminate()
+            debug_message, results = f"{RuntimeError(f'RuntimeError: run time > {self.d_s.time_out}s')}", None
+        else:
+            debug_message, results = queue.get()
         self.d_s.debug_message = debug_message
         # save bore field in Datastorage
         self.d_s.results = results
