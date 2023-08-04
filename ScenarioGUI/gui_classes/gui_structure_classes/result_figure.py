@@ -79,11 +79,11 @@ class ResultFigure(Category):
     It is a category showing a figure and optionally a couple of FigureOptions to alter this figure.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913, PLR0915
         self,
         label: str | list[str],
         page: Page,
-        x_axes_text: str | None = None,  # noqa: PLR0913
+        x_axes_text: str | None = None,
         y_axes_text: str | None = None,
         customizable_figure: int = 0,
         legend_text: str | None = None,
@@ -263,8 +263,8 @@ class ResultFigure(Category):
             self._change_axes_color(self.default_settings["axes_text"])
             self._change_legend_text_color(self.default_settings["legend_text"])
             self._change_font(self.default_settings["font"], self.default_settings["font_size"])
-            self.fig.tight_layout() if self.frame.isVisible() else None
-            self.canvas.draw()
+            self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout()) else None
+            self.canvas.draw() if self.frame.isVisible() else None
             return
         self.change_figure_background_color()
         self.change_plot_background_color()
@@ -275,8 +275,8 @@ class ResultFigure(Category):
         self.change_font()
 
     def update_figure_layout(self, event):
-        self.canvas.draw()  # Redraw the canvas
-        self.fig.tight_layout() if self.frame.isVisible() else None  # Adjust the layout of the figure
+        self.canvas.draw() if self.frame.isVisible() else None  # Redraw the canvas
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout()) else None  # Adjust the layout of the figure
         self.frame_canvas.setMinimumHeight(self.frame_canvas.window().size().height() * 0.6)
         self.frame_canvas.setMaximumHeight(self.frame_canvas.window().size().height() * 0.6)
         QtW.QFrame.resizeEvent(self.frame_canvas, event)
@@ -294,18 +294,9 @@ class ResultFigure(Category):
         -------
         None
         """
-        from time import process_time_ns
-
-        dt1 = process_time_ns()
         plt.close(self.fig)
-        print(f"close: = {(process_time_ns() - dt1) / 1_000_000} ms")
-        dt1 = process_time_ns()
         self.fig = copy.copy(fig)
-        print(f"copy: = {(process_time_ns() - dt1) / 1_000_000} ms")
-        dt1 = process_time_ns()
         plt.close(fig)
-        print(f"close 2: = {(process_time_ns() - dt1) / 1_000_000} ms")
-        dt1 = process_time_ns()
         self.a_x = fig.get_axes()[0]
         self.a_x.set_xlabel(self.x_axes_text)
         self.a_x.set_ylabel(self.y_axes_text)
@@ -340,9 +331,6 @@ class ResultFigure(Category):
             )
             toolbar._actions[name].setIcon(icon)
 
-        print(f"create: = {(process_time_ns() - dt1) / 1_000_000} ms")
-        dt1 = process_time_ns()
-
         self.layout_frame_canvas.replaceWidget(self.canvas, canvas)
         self.layout_frame_canvas.replaceWidget(self.toolbar, toolbar)
 
@@ -350,14 +338,10 @@ class ResultFigure(Category):
         self.canvas.a_x = copy.deepcopy(self.a_x)
         self.canvas.mpl_connect("scroll_event", self.scrolling)
         self.toolbar = toolbar
-        print(f"create 2: = {(process_time_ns() - dt1) / 1_000_000} ms")
-        dt1 = process_time_ns()
         if self.customizable_figure == 2:
             self.change_2_default_settings()
-            print(f"change_2_default_settings: = {(process_time_ns() - dt1) / 1_000_000} ms; {self.default_figure_colors.get_value()}")
         else:
             self._change_font(font_list_by_name.index(globs.FONT.upper()), globs.FONT_SIZE)
-            print(f"_change_font: = {(process_time_ns() - dt1) / 1_000_000} ms")
 
     def create_widget(self, page: QtW.QScrollArea, layout: QtW.QLayout):
         """
@@ -414,18 +398,18 @@ class ResultFigure(Category):
 
     def change_figure_background_color(self):
         self.fig.set_facecolor(to_rgb(np.array(self.option_figure_background.get_value()) / 255))
-        self.fig.tight_layout() if self.frame.isVisible() else None
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def change_plot_background_color(self):
         self.a_x.set_facecolor(to_rgb(np.array(self.option_plot_background.get_value()) / 255))
-        self.fig.tight_layout() if self.frame.isVisible() else None
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def change_axes_color(self):
         self._change_axes_color(self.option_axes.get_value())
-        self.fig.tight_layout() if self.frame.isVisible() else None
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def _change_axes_color(self, color: tuple[int, int, int]):
         self.a_x.tick_params(axis="x", colors=to_rgb(np.array(color) / 255))
@@ -437,19 +421,19 @@ class ResultFigure(Category):
 
     def change_title_color(self):
         self.a_x.set_title(self.a_x.get_title(), color=to_rgb(np.array(self.option_title.get_value()) / 255))
-        self.fig.tight_layout() if self.frame.isVisible() else None
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def change_axis_text_color(self):
         self.a_x.xaxis.label.set_color(to_rgb(np.array(self.option_axes_text.get_value()) / 255))
         self.a_x.yaxis.label.set_color(to_rgb(np.array(self.option_axes_text.get_value()) / 255))
-        self.fig.tight_layout() if self.frame.isVisible() else None
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def change_legend_text_color(self):
         self._change_legend_text_color(self.option_legend_text.get_value())
-        self.fig.tight_layout() if self.frame.isVisible() else None
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def _change_legend_text_color(self, colors: tuple[int, int, int]):
         legend = self.a_x.get_legend()
@@ -460,8 +444,8 @@ class ResultFigure(Category):
 
     def change_font(self):
         self._change_font(self.option_font.link_matrix()[self.option_font.get_value()[0]], self.option_font_size.get_value())
-        self.fig.tight_layout() if self.frame.isVisible() else None
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def _change_font(self, font_index: int, font_size: int):
         font: fm.FontProperties = font_list[font_index]
