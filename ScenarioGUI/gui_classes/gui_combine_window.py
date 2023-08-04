@@ -151,6 +151,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.data_2_results_function = data_2_results_function
 
         self.gui_structure = gui_structure(self.central_widget, self.translations)
+
         [page.create_page(self.central_widget, self.stacked_widget, self.vertical_layout_menu) for page in self.gui_structure.list_of_pages]
 
         self.verticalSpacer = QtW.QSpacerItem(20, 40, QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Expanding)
