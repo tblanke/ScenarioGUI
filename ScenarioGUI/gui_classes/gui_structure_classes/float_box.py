@@ -10,9 +10,9 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from .functions import check_and_set_max_min_values
 
 from ...utils import set_default_font
+from .functions import check_and_set_max_min_values
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
