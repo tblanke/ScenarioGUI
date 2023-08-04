@@ -37,8 +37,8 @@ class FlexibleAmount(Option):
             entry_mame: str,
             category: Category,
             *, 
-            min_length: int | None = None,
-            max_length: int | None = None,
+            min_length: int = 0,
+            max_length: int = 1000,
             default_values: Collection[Collection[int | float | str | bool]] | None = None
     ):
         """
@@ -80,6 +80,9 @@ class FlexibleAmount(Option):
         self.option_entries: list[list[Option]] = []
         self.option_classes: list[tuple[type[Option], dict, str]] = []
         self.func_on_change: list[Callable[[]]] = []
+        # check correct limits:
+        if max_length<min_length or min_length < 1:
+            raise ValueError('Please enter the correct values for the flexible_amount_option')
         self.len_limits: tuple[int | None, int | None] = (min_length, max_length)
         
     def add_option(self, option: type[Option], name: str, **kwargs):
@@ -109,6 +112,9 @@ class FlexibleAmount(Option):
         self.frame.layout().addWidget(delete_button, length + 1, i + 1)
 
     def _add_entry_at_row(self, *args, row: int):
+        length = len(self.option_entries)
+        if length == self.len_limits[1]:
+            return
         values = list(self.get_value())
         values.insert(row + 1, values[row]) if row + 1 < len(values) else values.append(values[row])
         self.set_value(values)
@@ -123,13 +129,15 @@ class FlexibleAmount(Option):
         Parameters
         ----------
         row : int | None
-            row in which should be deleted (None = last one)
+            row which should be deleted (None = last one)
 
         Returns
         -------
             None
         """
         length = len(self.option_entries)
+        if length == self.len_limits[0]:
+            return
         row = (length - 1) if row is None else row
         if row == length - 1 == 0:
             return
