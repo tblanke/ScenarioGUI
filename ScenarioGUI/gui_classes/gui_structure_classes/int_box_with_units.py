@@ -7,8 +7,8 @@ import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.utils import change_font_size, set_default_font
-from .functions import check_and_set_max_min_values
 
+from .functions import check_and_set_max_min_values
 from .int_box import IntBox
 from .list_box import ComboBox
 

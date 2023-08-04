@@ -171,7 +171,7 @@ class GUI(GuiStructure):
         self.text_box.deactivate_size_limit()
         self.pass_word = els.TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
         
-        self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs,
+        self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=3, entry_mame="Layer", category=self.category_inputs,
                                               min_length=2, max_length=5,default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
         self.flex_option.add_option(els.TextBox, name="name", default_text="layer")
 

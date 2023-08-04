@@ -1,6 +1,8 @@
 import numpy as np
+from pytest import raises
 
 import ScenarioGUI.global_settings as global_vars
+from ScenarioGUI import elements as els
 from ScenarioGUI.gui_classes.gui_structure_classes.flexible_amount_option import FlexibleAmount
 
 from ..result_creating_class_for_tests import ResultsClass, data_2_results
@@ -32,6 +34,17 @@ def test_flex_amount_option(qtbot):  # noqa: PLR0915
                 assert org[0] == val
                 continue
             assert org == val
+
+    with raises(ValueError):
+        flex_option = els.FlexibleAmount(
+            label="Test",
+            default_length=3,
+            entry_mame="Layer",
+            category=main_window.gui_structure.category_inputs,
+            min_length=5,
+            max_length=2,
+            default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]],
+        )
     flex_option._add_entry()
     assert len(flex_option.get_value()) == flex_option.default_value + 1
     flex_option._del_entry()
