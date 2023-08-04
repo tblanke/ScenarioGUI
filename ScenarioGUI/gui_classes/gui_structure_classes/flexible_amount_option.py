@@ -108,7 +108,7 @@ class FlexibleAmount(Option):
         self.frame.layout().addWidget(add_button, length + 1, i)
         self.frame.layout().addWidget(delete_button, length + 1, i + 1)
 
-    def _add_entry_at_row(self, row: int):
+    def _add_entry_at_row(self, *args, row: int):
         values = list(self.get_value())
         values.insert(row + 1, values[row]) if row + 1 < len(values) else values.append(values[row])
         self.set_value(values)
@@ -116,7 +116,7 @@ class FlexibleAmount(Option):
             self.show_option(option, min_length, max_length)
         _ = [func() for func in self.func_on_change]
 
-    def _del_entry(self, *, row: int | None = None) -> None:
+    def _del_entry(self, *args, row: int | None = None) -> None:
         """
         delete an entry.
 
