@@ -166,7 +166,7 @@ class ButtonBox(Option):
         None
         """
         for button in self.widget:
-            button.toggled.connect(function_to_be_called)  # pylint: disable=E1101
+            button.clicked.connect(function_to_be_called)  # pylint: disable=E1101
 
     def set_text(self, name: str) -> None:
         """
