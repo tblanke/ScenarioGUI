@@ -16,6 +16,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     Category,
     FigureOption,
     FlexibleAmount,
+    FloatBox,
     FunctionButton,
     Hint,
     IntBox,
@@ -131,6 +132,8 @@ class GuiStructure:
             category=self.category_save_scenario,
             minimal_value=1,
         )
+        self.time_out = FloatBox(label=self.translations.time_out if hasattr(self.translations, "time_out") else "Maximal runtime [s]:", default_value=600,
+                                 category=self.category_save_scenario, minimal_value=1, maximal_value=3600*24)
         self.option_font_size = IntBox(
             label=self.translations.option_font_size if hasattr(self.translations, "option_font_size") else "Font size",
             default_value=globs.FONT_SIZE,
