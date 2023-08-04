@@ -261,6 +261,13 @@ class GUI(GuiStructure):
 
         self.create_settings_page()
         self.create_lists()
+        # you can either automatically links all pages by order of creation
+        self.automatically_create_page_links()
+        # or do this by hand like this:
+        # self.page_inputs.set_next_page(self.page_result)
+        # self.page_result.set_previous_page(self.page_inputs)
+        # self.page_result.set_next_page(self.page_settings)
+        # self.page_settings.set_previous_page(self.page_result)
 
     def check(self) -> bool:
         if self.started:
