@@ -83,7 +83,7 @@ class FlexibleAmount(Option):
         # check correct limits:
         if max_length < min_length or min_length < 1 or not (default_length<=max_length and default_length>=min_length):
             raise ValueError('Please enter the correct values for the flexible_amount_option')
-        self.len_limits: tuple[int | None, int | None] = (min_length, max_length)
+        self.len_limits: tuple[int, int] = (min_length if min_length is not None else 1, max_length if max_length is not None else 999_999)
         
     def add_option(self, option: type[Option], name: str, **kwargs):
         self.option_classes.append((option, kwargs, name))
@@ -104,25 +104,25 @@ class FlexibleAmount(Option):
             options.append(option_i)
             i += 1
         self.option_entries.append(options)
-        add_button: QtW.QPushButton = QtW.QPushButton(text=" + ", parent=self.frame, clicked=partial(self._add_entry_at_row, row=length))
-        delete_button: QtW.QPushButton = QtW.QPushButton(text=" - ", parent=self.frame, clicked=partial(self._del_entry, row=length))
+        add_button: QtW.QPushButton = QtW.QPushButton(text=" + ", parent=self.frame)
+        add_button.clicked.connect(partial(self._add_entry_at_row, row=length))
+        delete_button: QtW.QPushButton = QtW.QPushButton(text=" - ", parent=self.frame)
+        delete_button.clicked.connect(partial(self._del_entry, row=length))
         set_default_font(add_button, bold=True)
         set_default_font(delete_button, bold=True)
         self.frame.layout().addWidget(add_button, length + 1, i)
         self.frame.layout().addWidget(delete_button, length + 1, i + 1)
 
-    def _add_entry_at_row(self, *args, row: int):
-        length = len(self.option_entries)
-        if length == self.len_limits[1]:
-            return
         values = list(self.get_value())
+        if len(values) +1  > self.len_limits[1]:
+            return
         values.insert(row + 1, values[row]) if row + 1 < len(values) else values.append(values[row])
         self.set_value(values)
         for option, (min_length, max_length) in self.linked_options:
             self.show_option(option, min_length, max_length)
         _ = [func() for func in self.func_on_change]
 
-    def _del_entry(self, *args, row: int | None = None) -> None:
+    def _del_entry(self, *, row: int | None = None) -> None:
         """
         delete an entry.
 
@@ -136,10 +136,8 @@ class FlexibleAmount(Option):
             None
         """
         length = len(self.option_entries)
-        if length == self.len_limits[0]:
-            return
         row = (length - 1) if row is None else row
-        if row == length - 1 == 0:
+        if row == length - 1 and  length - 1 < self.len_limits[0]:
             return
         values = list(self.get_value())
         del values[row]
