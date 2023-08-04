@@ -61,6 +61,7 @@ class Translations:  # pragma: no cover
         "no_file_selected",
         "flex_option",
         "page_inputs",
+        "page_output",
         "option_n_threads",
         "cat_no_results",
         "text_no_result",
@@ -156,6 +157,7 @@ class Translations:  # pragma: no cover
         self.no_file_selected: list[str] = ["No file selected.", "Keine Datei ausgewählt."]
         self.flex_option: list[str] = ["layers,Layer,name,thickness,amount,amount", "Schichten,Schicht,Name,Dicke,Anzahl,Anzahl"]
         self.page_inputs: list[str] = ["Inputs,Input", "Eingaben,Eingabe"]
+        self.page_output: list[str] = ["Outputs,Output", "Ausgaben,Ausgabe"]
         self.option_n_threads: list[str] = ["Number of parallel threads [-]: ", "Anzahl an parallelen Prozessen [-]:"]
         self.cat_no_results: list[str] = ["No results", "Keine Ergebnisse"]
         self.text_no_result: list[str] = ["No results are yet calculated", "Es wurden noch keine Ergebnisse berechnet"]

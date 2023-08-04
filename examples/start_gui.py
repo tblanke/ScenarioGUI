@@ -97,7 +97,8 @@ def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
 class GUI(GuiStructure):
     def __init__(self, default_parent: QtW.QWidget, translations: Translations):
         super().__init__(default_parent, translations)
-        self.page_inputs = els.Page(name=self.translations.page_inputs, button_name="Inputs", icon="Add.svg")
+        self.page_inputs = els.Page(name=translations.page_inputs, button_name="Inputs", icon="Add.svg")
+        self.page_export = els.Page(name=translations.page_output, button_name="Output", icon="Delete.svg")
         self.aim_add = els.Aim(label="Adding", icon="Add", page=self.page_inputs)
         self.aim_sub = els.Aim(label="Substract", icon="Delete", page=self.page_inputs)
         self.aim_plot = els.Aim(label="Plot", icon="Parameters", page=self.page_inputs)
@@ -260,10 +261,6 @@ class GUI(GuiStructure):
 
         self.create_settings_page()
         self.create_lists()
-        self.page_inputs.set_next_page(self.page_result)
-        self.page_result.set_previous_page(self.page_inputs)
-        self.page_result.set_next_page(self.page_settings)
-        self.page_settings.set_previous_page(self.page_result)
 
     def check(self) -> bool:
         if self.started:
