@@ -37,7 +37,7 @@ class FlexibleAmount(Option):
             entry_mame: str,
             category: Category,
             *, 
-            min_length: int = 0,
+            min_length: int = 1,
             max_length: int = 1000,
             default_values: Collection[Collection[int | float | str | bool]] | None = None
     ):
@@ -81,7 +81,7 @@ class FlexibleAmount(Option):
         self.option_classes: list[tuple[type[Option], dict, str]] = []
         self.func_on_change: list[Callable[[]]] = []
         # check correct limits:
-        if max_length<min_length or min_length < 1:
+        if max_length < min_length or min_length < 1 or not (default_length<=max_length and default_length>=min_length):
             raise ValueError('Please enter the correct values for the flexible_amount_option')
         self.len_limits: tuple[int | None, int | None] = (min_length, max_length)
         
