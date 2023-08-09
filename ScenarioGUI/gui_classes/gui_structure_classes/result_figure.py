@@ -33,6 +33,70 @@ if TYPE_CHECKING:  # pragma: no cover
     from .page import Page
 
 
+def mpl_to_pyqt_mouse_event(mpl_event):
+    x, y = mpl_event.xdata, mpl_event.ydata
+    mpl_event_type = mpl_event.name
+
+    if mpl_event_type in ['button_press_event', 'button_release_event', 'motion_notify_event']:
+        pyqt_event_type = {
+            'button_press_event': QtG.QMouseEvent.MouseButtonPress,
+            'button_release_event': QtG.QMouseEvent.MouseButtonRelease,
+            'motion_notify_event': QtG.QMouseEvent.MouseMove,
+        }[mpl_event_type]
+
+        pyqt_buttons = {
+            1: QtC.Qt.LeftButton,
+            2: QtC.Qt.MiddleButton,
+            3: QtC.Qt.RightButton,
+        }
+        button = pyqt_buttons.get(mpl_event.button, QtC.Qt.NoButton)
+
+        pyqt_event = QtG.QMouseEvent(
+            pyqt_event_type,
+            QtC.QPointF(x, y),
+            button,
+            button,
+            QtC.Qt.NoModifier
+        )
+
+    elif mpl_event_type == 'scroll_event':
+        delta = mpl_event.step
+        print(delta)
+        pos = QtC.QPoint(100, 100)  # Position of the event
+        global_pos = QtC.QPoint(100, 100)  # Global position of the event
+        pixel_delta = QtC.QPoint(0, delta)  # Scroll pixel delta
+        angle_delta = QtC.QPoint(0, delta)  # Scroll angle delta
+        buttons = QtC.Qt.LeftButton | QtC.Qt.RightButton  # Mouse buttons pressed during the event
+        modifiers = QtC.Qt.ControlModifier | QtC.Qt.ShiftModifier  # Modifiers active during the event
+        phase = QtC.Qt.ScrollUpdate  # Scroll phase
+        
+        # Create the QWheelEvent
+        pyqt_event = QtG.QWheelEvent(
+            pos,  # Position of the event
+            global_pos,  # Global position of the event
+            pixel_delta,  # Scroll pixel delta
+            angle_delta,  # Scroll angle delta
+            buttons,  # Mouse buttons pressed during the event
+            modifiers,  # Modifiers active during the event
+            phase,  # Scroll phase
+            False
+        )
+
+        #pyqt_event = QtG.QWheelEvent()
+        """
+            QtC.QPointF(x, y),
+            QtC.QPointF(x, y),
+            QtC.QPoint(0,delta * 120),  # Convert Matplotlib scroll units to PyQt units
+            QtC.QPoint(0, 0),
+            QtC.Qt.NoButton,
+            QtC.Qt.NoModifier,
+            QtC.Qt.ScrollUpdate  # Assuming vertical scrolling
+        )"""
+
+    return pyqt_event
+
+
+
 def get_name(font: fm.FontProperties) -> str:
     """
     get the name of the font and catch the MacOS runtime error
@@ -468,11 +532,14 @@ class ResultFigure(Category):
         -------
         None
         """
+        self.scroll_area.verticalScrollBar().wheelEvent(mpl_to_pyqt_mouse_event(event))
+        #self.scroll_area.verticalScrollBar().changeEvent(mpl_to_pyqt_mouse_event(event))
+        """
         val = self.scroll_area.verticalScrollBar().value()
         if event.button == "down":
             self.scroll_area.verticalScrollBar().setValue(val + self.scroll_area.verticalScrollBar().singleStep())
             return
-        self.scroll_area.verticalScrollBar().setValue(val - self.scroll_area.verticalScrollBar().singleStep())
+        self.scroll_area.verticalScrollBar().setValue(val - self.scroll_area.verticalScrollBar().singleStep())"""
 
     def set_text(self, name: str) -> None:
         """
