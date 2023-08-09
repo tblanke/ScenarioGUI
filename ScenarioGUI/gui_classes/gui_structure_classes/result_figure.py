@@ -4,18 +4,14 @@ result figure class script
 from __future__ import annotations
 
 import copy
-import logging
-import os
 from typing import TYPE_CHECKING
 
-import matplotlib as mpl
 import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 import numpy as np
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
-from matplotlib.backends import qt_compat
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.colors import to_rgb
@@ -52,14 +48,14 @@ def get_name(font: fm.FontProperties) -> str:
 
 
 font_list: list[fm.FontProperties] = [fm.FontProperties(fname=font_path, size=12) for font_path in fm.findSystemFonts()]
-font_list = sorted(font_list, key=lambda x: get_name(x))
+font_list = sorted(font_list, key=lambda x: x.get_file().upper().split("\\")[-1].replace(".TTF", ""))
 font_name_set = set()
 font_list = [font for font in font_list if get_name(font) not in font_name_set and not font_name_set.add(get_name(font))]
+font_list_by_name: list[str] = [get_name(font).upper() for font in font_list]
 
 
 # overwrite navigationToolbar
 class NavigationToolbarScenarioGUI(NavigationToolbar):
-
     def __init__(self, overwrite: bool, canvas, parent, coordinate):
         self.overwrite = overwrite
         super().__init__(canvas, parent, coordinate)
@@ -70,7 +66,7 @@ class NavigationToolbarScenarioGUI(NavigationToolbar):
         old_figure = self.canvas.figure
         self.canvas.figure = copy.deepcopy(self.canvas.figure)
         globs.set_print_layout(self.canvas.figure.get_axes()[0])
-        self.canvas.figure.set_facecolor('white')
+        self.canvas.figure.set_facecolor("white")
         res = super().save_figure(args)
         self.canvas.figure = old_figure
         return res
@@ -83,9 +79,15 @@ class ResultFigure(Category):
     It is a category showing a figure and optionally a couple of FigureOptions to alter this figure.
     """
 
-    def __init__(self, label: str | list[str], page: Page, x_axes_text: str | None = None,
-                 y_axes_text: str | None = None, customizable_figure: int = 0,
-                 legend_text: str | None = None):
+    def __init__(  # noqa: PLR0913, PLR0915
+        self,
+        label: str | list[str],
+        page: Page,
+        x_axes_text: str | None = None,
+        y_axes_text: str | None = None,
+        customizable_figure: int = 0,
+        legend_text: str | None = None,
+    ):
         """
 
         Parameters
@@ -126,7 +128,9 @@ class ResultFigure(Category):
         self.canvas: FigureCanvas = FigureCanvas(self.fig)
         self.canvas.a_x = self.a_x
         # create navigation toolbar and replace icons with white ones
-        self.toolbar: NavigationToolbarScenarioGUI = NavigationToolbarScenarioGUI(overwrite=customizable_figure==1, canvas=self.canvas, parent=None, coordinate=True)
+        self.toolbar: NavigationToolbarScenarioGUI = NavigationToolbarScenarioGUI(
+            overwrite=customizable_figure == 1, canvas=self.canvas, parent=None, coordinate=True
+        )
         for name, icon_name in [
             ("save_figure", "Save_Inv"),
             ("home", "Home"),
@@ -215,7 +219,7 @@ class ResultFigure(Category):
                 label="Font family: ",
                 category=self,
                 entries=[get_name(font) for font in font_list],
-                default_index=[get_name(font).upper() for font in font_list].index(globs.FONT.upper()),
+                default_index=font_list_by_name.index(globs.FONT.upper()),
             )
             self.option_save_layout = FunctionButton(button_text="Save layout", category=self, icon="Save")
             self.default_figure_colors.add_link_2_show(self.option_figure_background, on_index=0)
@@ -239,14 +243,16 @@ class ResultFigure(Category):
             self.update_default_settings()
 
     def update_default_settings(self):
-        self.default_settings = {"figure_background": self.option_figure_background.get_value(),
-                                 "plot_background": self.option_plot_background.get_value(),
-                                 "axes_text": self.option_axes_text.get_value(),
-                                 "axes": self.option_axes.get_value(),
-                                 "title": self.option_title.get_value(),
-                                 "legend_text": self.option_legend_text.get_value(),
-                                 "font_size": self.option_font_size.get_value(),
-                                 "font": self.option_font.get_value()}
+        self.default_settings = {
+            "figure_background": self.option_figure_background.get_value(),
+            "plot_background": self.option_plot_background.get_value(),
+            "axes_text": self.option_axes_text.get_value(),
+            "axes": self.option_axes.get_value(),
+            "title": self.option_title.get_value(),
+            "legend_text": self.option_legend_text.get_value(),
+            "font_size": self.option_font_size.get_value(),
+            "font": self.option_font.link_matrix()[self.option_font.get_value()[0]],
+        }
 
     def change_2_default_settings(self):
         if self.default_figure_colors.get_value() == 1:
@@ -256,9 +262,9 @@ class ResultFigure(Category):
             self.a_x.tick_params(axis="y", colors=to_rgb(np.array(self.default_settings["axes"]) / 255))
             self._change_axes_color(self.default_settings["axes_text"])
             self._change_legend_text_color(self.default_settings["legend_text"])
-            self._change_font(self.default_settings["font"][0], self.default_settings["font_size"])
-            self.fig.tight_layout()
-            self.canvas.draw()
+            self._change_font(self.default_settings["font"], self.default_settings["font_size"])
+            self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout()) else None
+            self.canvas.draw() if self.frame.isVisible() else None
             return
         self.change_figure_background_color()
         self.change_plot_background_color()
@@ -269,8 +275,10 @@ class ResultFigure(Category):
         self.change_font()
 
     def update_figure_layout(self, event):
-        self.canvas.draw()  # Redraw the canvas
-        self.fig.tight_layout()  # Adjust the layout of the figure
+        self.canvas.draw() if self.frame.isVisible() else None  # Redraw the canvas
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout()) else None  # Adjust the layout of the figure
+        self.frame_canvas.setMinimumHeight(self.frame_canvas.window().size().height() * 0.6)
+        self.frame_canvas.setMaximumHeight(self.frame_canvas.window().size().height() * 0.6)
         QtW.QFrame.resizeEvent(self.frame_canvas, event)
 
     def replace_figure(self, fig: plt.Figure) -> None:
@@ -301,7 +309,9 @@ class ResultFigure(Category):
         self.toolbar.hide()
         canvas = FigureCanvas(self.fig)
         # create navigation toolbar and replace icons with white ones
-        toolbar: NavigationToolbarScenarioGUI = NavigationToolbarScenarioGUI(overwrite=self.customizable_figure==1, canvas=canvas, parent=self.frame_canvas, coordinate=True)
+        toolbar: NavigationToolbarScenarioGUI = NavigationToolbarScenarioGUI(
+            overwrite=self.customizable_figure == 1, canvas=canvas, parent=self.frame_canvas, coordinate=True
+        )
         for name, icon_name in [
             ("save_figure", "Save_Inv"),
             ("home", "Home"),
@@ -331,7 +341,7 @@ class ResultFigure(Category):
         if self.customizable_figure == 2:
             self.change_2_default_settings()
         else:
-            self._change_font([get_name(font).upper() for font in font_list].index(globs.FONT.upper()), globs.FONT_SIZE)
+            self._change_font(font_list_by_name.index(globs.FONT.upper()), globs.FONT_SIZE)
 
     def create_widget(self, page: QtW.QScrollArea, layout: QtW.QLayout):
         """
@@ -363,6 +373,7 @@ class ResultFigure(Category):
         self.layout_frame.addWidget(self.frame_canvas)
         # set minimal height to ensure a minimal height of the plots
         self.frame_canvas.setMinimumHeight(500)
+        self.frame_canvas.setMaximumHeight(500)
         # add canvas and toolbar to local frame
         self.layout_frame_canvas.addWidget(self.canvas)
         self.layout_frame_canvas.addWidget(self.toolbar)
@@ -387,18 +398,18 @@ class ResultFigure(Category):
 
     def change_figure_background_color(self):
         self.fig.set_facecolor(to_rgb(np.array(self.option_figure_background.get_value()) / 255))
-        self.fig.tight_layout()
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def change_plot_background_color(self):
         self.a_x.set_facecolor(to_rgb(np.array(self.option_plot_background.get_value()) / 255))
-        self.fig.tight_layout()
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def change_axes_color(self):
         self._change_axes_color(self.option_axes.get_value())
-        self.fig.tight_layout()
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def _change_axes_color(self, color: tuple[int, int, int]):
         self.a_x.tick_params(axis="x", colors=to_rgb(np.array(color) / 255))
@@ -410,19 +421,19 @@ class ResultFigure(Category):
 
     def change_title_color(self):
         self.a_x.set_title(self.a_x.get_title(), color=to_rgb(np.array(self.option_title.get_value()) / 255))
-        self.fig.tight_layout()
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def change_axis_text_color(self):
         self.a_x.xaxis.label.set_color(to_rgb(np.array(self.option_axes_text.get_value()) / 255))
         self.a_x.yaxis.label.set_color(to_rgb(np.array(self.option_axes_text.get_value()) / 255))
-        self.fig.tight_layout()
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def change_legend_text_color(self):
         self._change_legend_text_color(self.option_legend_text.get_value())
-        self.fig.tight_layout()
-        self.canvas.draw()
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def _change_legend_text_color(self, colors: tuple[int, int, int]):
         legend = self.a_x.get_legend()
@@ -432,9 +443,9 @@ class ResultFigure(Category):
             text.set_color(to_rgb(np.array(colors) / 255))
 
     def change_font(self):
-        self._change_font(self.option_font.get_value()[0], self.option_font_size.get_value())
-        self.fig.tight_layout()
-        self.canvas.draw()
+        self._change_font(self.option_font.link_matrix()[self.option_font.get_value()[0]], self.option_font_size.get_value())
+        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.canvas.draw() if self.frame.isVisible() else None
 
     def _change_font(self, font_index: int, font_size: int):
         font: fm.FontProperties = font_list[font_index]
@@ -447,7 +458,7 @@ class ResultFigure(Category):
         _ = [label.set_fontproperties(font) for label in self.a_x.get_xticklabels()]
         _ = [label.set_fontproperties(font) for label in self.a_x.get_yticklabels()]
         if self.a_x.get_title() is not None:
-            self.a_x.set_title(self.a_x.get_title(), fontproperties=font)
+            self.a_x.set_title(self.a_x.get_title(), fontproperties=font, fontstyle="italic", fontweight="bold")
         legend = self.a_x.get_legend()
         if legend is not None:
             for text in legend.get_texts():

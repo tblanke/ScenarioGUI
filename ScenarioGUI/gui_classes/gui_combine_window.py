@@ -1527,7 +1527,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 fig_obj.show()
                 fig_obj.canvas.show()
                 # draw new plot
-                fig.tight_layout()
+                fig.tight_layout() if fig_obj.frame.isVisible() else None
                 fig_obj.canvas.draw()
                 # set figure to datastorage
                 setattr(ds, fig_name, fig)
@@ -1539,7 +1539,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             fig_obj.show()
             fig_obj.canvas.show()
             # draw new plot
-            fig.tight_layout()
+            fig.tight_layout() if fig_obj.frame.isVisible() and not(fig_obj.fig.get_tight_layout()) else None
             fig_obj.canvas.draw()
 
         # update result for every ResultText object

@@ -230,8 +230,6 @@ class GUI(GuiStructure):
 
         self.figure_results_with_customizable_layout.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
-        self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
-
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_sub.add_link_2_show(self.result_text_sub)
         self.aim_plot.add_link_2_show(self.figure_results)

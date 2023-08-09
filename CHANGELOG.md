@@ -31,6 +31,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Flexible amount does not save (issue 69)
 - Setable variable to activate the ability to set invisible elements values (issue 72)
 - Problem with autosaving (issue 74)
+- Inconsistent figure font layout (issue 97)
+- Changing aims is not noticed (issue 98)
 
 ### Changed
 - list_ds in MainWindow removed and replaced by QListWidget data
