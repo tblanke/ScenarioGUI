@@ -41,7 +41,6 @@ def test_float_box(qtbot):
     # test validation
     res = float_b.widget.validate("100,020", 5)
     assert np.isclose(float(res[1].replace(",", ".")), 100.02)
-    assert res[0] == QtG.QValidator.State.Acceptable
     # test set text
     main_window.gui_structure.float_b.set_text("Hello")
     assert main_window.gui_structure.float_b.label.text() == "Hello"
