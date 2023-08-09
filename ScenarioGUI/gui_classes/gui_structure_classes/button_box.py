@@ -6,8 +6,8 @@ from __future__ import annotations
 from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
-import PySide6.QtWidgets as QtW  # type: ignore
 import PySide6.QtCore as QtC  # type: ignore
+import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 

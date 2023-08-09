@@ -7,24 +7,22 @@ from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
+import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from .functions import check_and_set_max_min_values
 
 from ...utils import set_default_font
+from .functions import check_and_set_max_min_values
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
-    import PySide6.QtGui as QtG
-
     from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
 
-import PySide6.QtGui as QtG
 
 class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
     def wheelEvent(self, event: QtG.QWheelEvent):
@@ -33,23 +31,27 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
             return
         self.parent().wheelEvent(event)
 
-    def validate(self, input: str, pos: int) -> object:
+    def validate(self, float_str: str, pos: int) -> object:
+        """
+        validates the float str and makes the numbers behind the decimal point set able
+
+        Parameters
+        ----------
+        float_str: str
+            string of the float inside the double spin box
+        pos: int
+            position of cursor inside the double spin box
+
+        Returns
+        -------
+            object
+        """
         # position is index +1 in input
-        max_val = self.maximum()
-        min_val = self.minimum()
-        input_float = float(input.replace(',', '.'))
-        nb_of_chars = len(input) - 1 if ',' in input else 0
-        nb_of_decimals = 0 if ',' not in input else nb_of_chars - input.index(',')
+        nb_of_chars = len(float_str) - 1 if "," in float_str else 0
+        nb_of_decimals = 0 if "," not in float_str else nb_of_chars - float_str.index(",")
         # overwrite decimals
-        if nb_of_decimals > self.decimals():
-            print(nb_of_chars, pos)
-            if pos == nb_of_chars + 1:
-                return QtG.QValidator.State.Invalid
-            else:
-                self.setValue(float(input[:-1].replace(',', '.')))
-                return QtG.QValidator.State.Acceptable
-            
-        return QtG.QValidator.State.Acceptable
+        float_str = float_str[:-1] if nb_of_decimals > self.decimals() and pos != nb_of_chars + 1 else float_str
+        return QtW.QDoubleSpinBox.validate(self, float_str, pos)
 
 
 class FloatBox(Option):
@@ -58,7 +60,7 @@ class FloatBox(Option):
     The FloatBox can be used to input floating point numbers.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         label: str | list[str],
         default_value: float,
@@ -292,8 +294,7 @@ class FloatBox(Option):
         layout = self.create_frame(frame, layout_parent)
         self.widget.setParent(self.frame)
         self.widget.setStyleSheet(
-            f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};'
-            f'border: 1px solid {globs.WHITE};{"}"}'
+            f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};' f'border: 1px solid {globs.WHITE};{"}"}'
         )
         self.widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
         self.widget.setProperty("showGroupSeparator", True)

@@ -140,7 +140,7 @@ class GUI(GuiStructure):
             default_value=100,
             minimal_value=0,
             maximal_value=1000,
-            decimal_number=2,
+            decimal_number=4,
             category=self.sub_category,
         )
 
