@@ -24,7 +24,7 @@ def test_add_other_file_extensions(qtbot):
     # init gui window
     main_window = start_tests(qtbot)
 
-    def export_txt(file_path: Path, data: JsonDict) -> None:
+    def export_txt(file_path: Path, data: JsonDict) -> None:  # pragma: no cover
         # write data to back up file
         with open(file_path, "w") as file:
             dump(data, file, indent=1)

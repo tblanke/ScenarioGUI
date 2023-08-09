@@ -16,6 +16,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     Category,
     FigureOption,
     FlexibleAmount,
+    FloatBox,
     FunctionButton,
     Hint,
     IntBox,
@@ -99,6 +100,11 @@ class GuiStructure:
         self.cat_no_results = Category(page=self.page_result, label=self.translations.cat_no_results)
         self.text_no_result = Hint(self.translations.text_no_result, category=self.cat_no_results, warning=True)
 
+    def automatically_create_page_links(self):
+        # couple to previous and next buttons
+        _ = [page.set_previous_page(page_previous) for page, page_previous in zip(self.list_of_pages[1:], self.list_of_pages[:-1])]
+        _ = [page.set_next_page(page_next) for page, page_next in zip(self.list_of_pages[:-1], self.list_of_pages[1:])]
+
     def create_settings_page(self):
         """
         creates the settings page
@@ -132,6 +138,8 @@ class GuiStructure:
             category=self.category_save_scenario,
             minimal_value=1,
         )
+        self.time_out = FloatBox(label=self.translations.time_out if hasattr(self.translations, "time_out") else "Maximal runtime [s]:", default_value=600,
+                                 category=self.category_save_scenario, minimal_value=1, maximal_value=3600*24)
         self.option_font_size = IntBox(
             label=self.translations.option_font_size if hasattr(self.translations, "option_font_size") else "Font size",
             default_value=globs.FONT_SIZE,

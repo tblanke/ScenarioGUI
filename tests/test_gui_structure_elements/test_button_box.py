@@ -61,5 +61,12 @@ def test_button_box(qtbot):
     Option.hidden_option_editable = True
     assert not button_box.hidden_option_editable
     button_box.hidden_option_editable = True
+    # check that no value error is displayed
+    main_window.status_bar.label.setText("")
+    button_box.set_value(0)
+    assert button_box.get_value() == 0
+    button_box.widget[0].click()
+    assert button_box.get_value() == 1
+    assert main_window.status_bar.label.text() == ""
     main_window.delete_backup()
 
