@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-import logging
+import datetime
 from functools import partial as ft_partial
 from json import dump, load
 from os import makedirs, remove
-from os.path import dirname, exists, realpath, splitext
+from os.path import dirname, exists, realpath
 from os.path import split as os_split
+from os.path import splitext
 from pathlib import Path
 from sys import path
 from typing import TYPE_CHECKING, TypedDict
@@ -21,6 +22,7 @@ from ..utils import change_font_size, set_default_font
 from .gui_base_class import BaseUI
 from .gui_calculation_thread import CalcProblem
 from .gui_data_storage import DataStorage
+from .gui_saving_thread import SavingThread
 from .gui_structure_classes import FigureOption, Option, ResultExport
 from .gui_structure_classes.functions import check_aim_options, show_linked_options
 
@@ -104,8 +106,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
     filename_default: tuple = ("", "")
     role: int = 99
+    TEST_MODE: bool = False
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         dialog: QtW.QWidget,
         app: QtW.QApplication,
@@ -149,6 +152,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.data_2_results_function = data_2_results_function
 
         self.gui_structure = gui_structure(self.central_widget, self.translations)
+
         [page.create_page(self.central_widget, self.stacked_widget, self.vertical_layout_menu) for page in self.gui_structure.list_of_pages]
 
         self.verticalSpacer = QtW.QSpacerItem(20, 40, QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Expanding)
@@ -181,6 +185,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.changedFile: bool = False  # set change file variable to false
         self.ax: list = []  # axes of figure
         self.threads: list[CalcProblem] = []  # list of calculation threads
+        self.saving_threads: list[SavingThread] = []
         CalcProblem.role = MainWindow.role
         self.size_b = QtC.QSize(48, 48)  # size of big logo on push button
         self.size_s = QtC.QSize(24, 24)  # size of small logo on push button
@@ -214,6 +219,16 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # this is so that no changes are made when the file is opening
         self.gui_structure.started = True
         self.gui_structure.loaded = True
+
+    def activate_load_as_new_scenarios(self) -> None:
+        """
+        activates the possibility to load files as new scenarios and append them to the current scenario list
+        Returns
+        -------
+            None
+        """
+        self.menu_file.addAction(self.action_open_add)
+        self.tool_bar.addAction(self.action_open_add)
 
     def resizeEvent(self, event: QtG.QResizeEvent) -> None:
         """
@@ -375,8 +390,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.action_save.triggered.connect(self.fun_save)
         self.action_save_as.triggered.connect(self.fun_save_as)
         self.action_open.triggered.connect(self.fun_load)
+        self.action_open_add.triggered.connect(self.load_add_scenarios)
         self.action_new.triggered.connect(self.fun_new)
-        self.action_rename_scenario.triggered.connect(lambda: self.fun_rename_scenario())
+        self.action_rename_scenario.triggered.connect(self.fun_rename_scenario)
         self.list_widget_scenario.setDragDropMode(QtW.QAbstractItemView.InternalMove)
         # self.list_widget_scenario.model().rowsMoved.connect(self.fun_move_scenario)
         self.list_widget_scenario.currentItemChanged.connect(self.scenario_is_changed)
@@ -622,7 +638,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 and DataStorage(self.gui_structure) != old_row_item.data(MainWindow.role)
                 and self.push_button_save_scenario.isEnabled()
             ):
-                logging.info(f"old: {old_row_item.data(0)}; new: {new_row_item.data(0)}, {DataStorage(self.gui_structure) != old_row_item.data(MainWindow.role)}")
                 old_row_item.data(MainWindow.role).close_figures()
                 old_row_item.setData(MainWindow.role, DataStorage(self.gui_structure))
             # update backup fileImport
@@ -699,6 +714,23 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         )
         button.setIcon(icon)  # set icon to button
 
+    def set_name(self, name: str) -> str:
+        """
+        set the text of the item and checks for the appearens in the current scenario names
+        Parameters
+        ----------
+        name: str
+            scenario name
+
+        Returns
+        -------
+            str
+        """
+        # sets the name of the current scenario to text
+        if name in [self.list_widget_scenario.item(x).text().split("*")[0] for x in range(self.list_widget_scenario.count())]:
+            name += "(2)"
+        return name
+
     def fun_rename_scenario(self, name: str = "") -> None:
         """
         Function to rename the current scenario with a dialog box to ask for a new name
@@ -718,17 +750,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if item is None:
             return
 
-        def set_name(text):
-            # sets the name of the current scenario to text
-            list_of_scenarios = [self.list_widget_scenario.item(x).text().split("*")[0] for x in range(self.list_widget_scenario.count())]
-            if text in list_of_scenarios:
-                text += "(2)"
-            item.setText(text) if text else None
-
         # get first item if no one is selected
         item = self.list_widget_scenario.item(0) if item is None else item
         if name:
-            set_name(name)
+            item.setText(self.set_name(name)) if name else None
             return
 
         # create dialog box to ask for a new name
@@ -745,7 +770,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         [set_default_font(button) for button in li]
         # set new name if the dialog is not canceled and the text is not None
         if self.dialog.exec() == QtW.QDialog.Accepted:
-            set_name(self.dialog.textValue())
+            name = self.dialog.textValue()
+            item.setText(self.set_name(name)) if name else None
 
         self.dialog = None
 
@@ -887,7 +913,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        if exists(self.backup_file):
+        if exists(self.backup_file):  # pragma: no cover
             remove(self.backup_file)
 
     def load_backup(self) -> None:
@@ -924,9 +950,25 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if self.list_widget_scenario.count() < 1:
             self.add_scenario()
 
-        self._save_to_data(self.backup_file)
+        func = ft_partial(self._save_to_data, self.backup_file)
+        self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
+        self._saving_threads_update()
 
-    def _load_from_data(self, location: str | Path) -> None:
+    def _saving_threads_update(self):
+        if len(self.saving_threads) < 1:
+            return
+        thread = self.saving_threads[0]
+        if thread.calculated:
+            thread.terminate()
+            self.saving_threads.remove(thread)
+            self._saving_threads_update()
+            return
+        if thread.isRunning():  # pragma: no cover
+            return
+        thread.any_signal.connect(self._saving_threads_update)
+        thread.start() if not MainWindow.TEST_MODE else None
+
+    def _load_from_data(self, location: str | Path, append: bool = False) -> None:
         """
         This function loads the data from a JSON formatted file.
 
@@ -949,23 +991,28 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if saving["version"] in self.version_import_functions:
             saving = self.version_import_functions[saving["version"]](saving)
         # set and change the window title
-        self.filename = tuple(saving["filename"])
-        self.change_window_title()
-        self.list_widget_scenario.clear()
+        if not append:
+            self.filename = tuple(saving["filename"])
+            self.change_window_title()
+            self.list_widget_scenario.clear()
+        else:
+            self.changedFile: bool = True
+            self.change_window_title()
         # write data to variables
         for _idx, (val, results, name) in enumerate(zip(saving["values"], saving["results"], saving["names"])):
             d_s = DataStorage(self.gui_structure)
             d_s.from_dict(val)
-            if results is None:
-                d_s.results = None
-            else:
-                d_s.results = self.result_creating_class.from_dict(results)
-            item = QtW.QListWidgetItem(name)
+            d_s.results = None if results is None else self.result_creating_class.from_dict(results)
+            item = QtW.QListWidgetItem(self.set_name(name))
             item.setData(MainWindow.role, d_s)
             self.list_widget_scenario.addItem(item)
 
         self.list_widget_scenario.setCurrentRow(0)
-        self.list_widget_scenario.item(0).data(MainWindow.role).set_values(self.gui_structure)
+        ds = self.list_widget_scenario.item(0).data(self.role)
+        if ds != DataStorage(self.gui_structure):
+            self.checking = False
+            ds.set_values(self.gui_structure)
+            self.checking = True
         self.check_results()
 
     def _save_to_data(self, location: str | Path) -> None:
@@ -1000,6 +1047,38 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()[0]])
         except PermissionError:  # pragma: no cover
             globs.LOGGER.error("PermissionError")
+
+    def load_add_scenarios(self) -> None:
+        """
+        This function sets the filename by opening a QFileDialog box.
+        Afterwards, it runs fun_load_known_filename() to open this file.
+
+        Returns
+        -------
+        None
+        """
+        # open interface and get file name
+        filename = QtW.QFileDialog.getOpenFileName(
+            self.central_widget,
+            caption=self.translations.choose_load[self.gui_structure.option_language.get_value()[0]],
+            filter=";;".join(
+                    extension
+                    for extension in [f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})"]
+                    + [f"{extension} (*.{extension})" for extension in list(self.import_functions.keys())[2:]]
+                ),
+            dir=str(self.default_path),
+        )
+        # break function if no file is selected
+        if filename == MainWindow.filename_default or not filename[0]:
+            return
+        # deactivate checking
+        self.checking: bool = False
+        self.gui_structure.loaded = False
+        # open file and set data
+        self._load_from_data(filename[0], append=True)
+        # activate checking
+        self.checking: bool = True
+        self.gui_structure.loaded = True
 
     def fun_load(self) -> None:
         """
@@ -1082,18 +1161,24 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         bool
             True if the saving was successful.
         """
+        # ask for pickle file if the filename is still the default
+        logging.info(f"{filename}, {MainWindow.filename_default}: {self.filename}")
         if not isinstance(filename, tuple):
             if self.filename == MainWindow.filename_default:
                 self.fun_save_as()
                 return True
             else:
                 filename = self.filename
+
+        self.change_window_title() if self.filename == filename else None
         # save scenarios
         self.save_scenario()
         # update backup file
         self.auto_save()
         # try to store the data in the pickle file
-        self._save_to_data(filename[0])
+        func = ft_partial(self._save_to_data, filename[0])
+        self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
+        self._saving_threads_update()
         # deactivate changed file * from window title
         self.changedFile: bool = False
         self.change_window_title()
@@ -1287,17 +1372,17 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # stop finished thread
         results.terminate()
-
         # count number of finished calculated scenarios
         item_list = [thread.item for thread in self.threads]
-        open_threads = [thread for thread in self.threads if not thread.calculated]
-        n_closed_threads = len(self.threads) - len(open_threads)
+        open_threads = [thread for thread in self.threads if not thread.calculated and not thread.isRunning()]
+        n_closed_threads = len(self.threads) - len([thread for thread in self.threads if not thread.calculated])
         # update progress bar
         self.update_bar(n_closed_threads)
         # if number of finished is the number that has to be calculated enable buttons and actions and change page to
         # results page
-        if open_threads:  # start new thread
-            open_threads[0].start()
+        if open_threads:  # pragma: no cover
+            # start new thread
+            open_threads[0].start() if not MainWindow.TEST_MODE else None
             open_threads[0].any_signal.connect(self.thread_function)
             return
         # display results
@@ -1339,17 +1424,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if [thread for thread in self.threads if thread.isRunning()]:  # pragma: no cover
             return
         for thread in self.threads[: self.gui_structure.option_n_threads.get_value()]:
-            thread.start()
+            thread.start() if not MainWindow.TEST_MODE else None
             thread.any_signal.connect(self.thread_function)
 
-    def start_current_scenario_calculation(self, no_run: bool = False) -> None:
+    def start_current_scenario_calculation(self) -> None:
         """
         This function starts the calculation of the selected/current scenario, when check_values() is True.
-
-        Parameters
-        ----------
-        no_run : bool
-            Implemented to make sure that the gui_tests are working.
 
         Returns
         -------
@@ -1374,8 +1454,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # update progress bar
         self.update_bar(0)
         # start calculation
-        if not no_run and len(self.threads) == 1:
-            self.threads[0].start()
+        if len(self.threads) == 1:
+            self.threads[0].start() if not MainWindow.TEST_MODE else None
             self.threads[0].any_signal.connect(self.thread_function)
 
     def display_results(self) -> None:
@@ -1460,7 +1540,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             fig_obj.show()
             fig_obj.canvas.show()
             # draw new plot
-            fig.tight_layout() if fig_obj.frame.isVisible() else None
+            fig.tight_layout() if fig_obj.frame.isVisible() and not(fig_obj.fig.get_tight_layout()) else None
             fig_obj.canvas.draw()
 
         # update result for every ResultText object

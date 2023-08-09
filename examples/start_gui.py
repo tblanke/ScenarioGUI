@@ -37,8 +37,10 @@ class ResultsClass:
         self.result = None
 
     def adding(self):
-        from time import sleep
-        sleep(5)
+        # loop over 1_000_000 to take some time
+        self.result = 0
+        for i in range(50_000_000):
+            self.result += i
         self.result = self.a + self.b
 
     def subtract(self):
@@ -95,7 +97,8 @@ def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
 class GUI(GuiStructure):
     def __init__(self, default_parent: QtW.QWidget, translations: Translations):
         super().__init__(default_parent, translations)
-        self.page_inputs = els.Page(name=self.translations.page_inputs, button_name="Inputs", icon="Add.svg")
+        self.page_inputs = els.Page(name=translations.page_inputs, button_name="Inputs", icon="Add.svg")
+        self.page_export = els.Page(name=translations.page_output, button_name="Output", icon="Delete.svg")
         self.aim_add = els.Aim(label="Adding", icon="Add", page=self.page_inputs)
         self.aim_sub = els.Aim(label="Substract", icon="Delete", page=self.page_inputs)
         self.aim_plot = els.Aim(label="Plot", icon="Parameters", page=self.page_inputs)
@@ -169,8 +172,8 @@ class GUI(GuiStructure):
         self.text_box.deactivate_size_limit()
         self.pass_word = els.TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
         
-        self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=2, entry_mame="Layer", category=self.category_inputs,
-                                              min_length=2,default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
+        self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=3, entry_mame="Layer", category=self.category_inputs,
+                                              min_length=2, max_length=5,default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
         self.flex_option.add_option(els.TextBox, name="name", default_text="layer")
 
         self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number = 2)
@@ -251,18 +254,47 @@ class GUI(GuiStructure):
         )
         self.figure_results_multiple_lines.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot_multiple_lines")
 
+        self.figure_results_with_different_other_saved_figure = els.ResultFigure(label=self.translations.figure_results,
+                                                                                 page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes",
+                                                                                 customizable_figure=1)
+        self.legend_figure_results_with_other_saved_figure = els.FigureOption(
+            category=self.figure_results_with_different_other_saved_figure, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
+            entries_values=[False, True]
+        )
+
+        self.figure_results_with_different_other_saved_figure.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
+
+        self.figure_results_with_customizable_layout = els.ResultFigure(label=self.translations.figure_results, page=self.page_result,
+                                                                        x_axes_text="X-Axes", y_axes_text="Y-Axes", customizable_figure=2)
+        self.legend_figure_results_with_customizable_layout = els.FigureOption(
+            category=self.figure_results_with_customizable_layout, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
+            entries_values=[False, True]
+        )
+
+        self.figure_results_with_customizable_layout.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_add.add_link_2_show(self.result_export)
         self.aim_sub.add_link_2_show(self.result_text_sub)
         self.aim_plot.add_link_2_show(self.figure_results)
 
+        self.aim_add.add_link_2_show(self.figure_results_with_different_other_saved_figure)
+        self.aim_sub.add_link_2_show(self.figure_results_with_different_other_saved_figure)
+        self.aim_plot.add_link_2_show(self.figure_results_with_different_other_saved_figure)
+
+        self.aim_add.add_link_2_show(self.figure_results_with_customizable_layout)
+        self.aim_sub.add_link_2_show(self.figure_results_with_customizable_layout)
+        self.aim_plot.add_link_2_show(self.figure_results_with_customizable_layout)
+
         self.create_settings_page()
         self.create_lists()
-        self.page_inputs.set_next_page(self.page_result)
-        self.page_result.set_previous_page(self.page_inputs)
-        self.page_result.set_next_page(self.page_settings)
-        self.page_settings.set_previous_page(self.page_result)
+        # you can either automatically links all pages by order of creation
+        self.automatically_create_page_links()
+        # or do this by hand like this:
+        # self.page_inputs.set_next_page(self.page_result)
+        # self.page_result.set_previous_page(self.page_inputs)
+        # self.page_result.set_next_page(self.page_settings)
+        # self.page_settings.set_previous_page(self.page_result)
 
     def check(self) -> bool:
         if self.started:
@@ -299,7 +331,7 @@ def run(path_list=None):  # pragma: no cover
     def import_txt(file_path: Path) -> JsonDict:
         # write data to back up file
         with open(file_path) as file:
-            data = load(file, indent=1)
+            data = load(file)
         return data
 
     def other_version_import(data: JsonDict) -> JsonDict:
@@ -311,6 +343,7 @@ def run(path_list=None):  # pragma: no cover
     main_window.add_other_import_function("txt", import_txt)
 
     main_window.add_other_version_import_function("v0.0.1", other_version_import)
+    main_window.activate_load_as_new_scenarios()
 
     # show window
     window.showMaximized()

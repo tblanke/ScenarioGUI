@@ -1,16 +1,11 @@
 import PySide6.QtWidgets as QtW
 
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-from tests.gui_structure_for_tests import GUI
-from tests.result_creating_class_for_tests import ResultsClass, data_2_results
-from tests.test_translations.translation_class import Translations
+from tests.starting_closing_tests import close_tests, start_tests
 
 
 def test_page(qtbot):
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
 
     main_window.gui_structure.page_result.set_text("button name,Name")
     assert main_window.gui_structure.page_result.button.text() == "button name"
@@ -21,7 +16,24 @@ def test_page(qtbot):
     main_window.gui_structure.page_inputs.button.click()
     assert main_window.gui_structure.counter == 2
     # check that 3 aim are in a row
-    scroll_area = [widget for widget in main_window.gui_structure.page_inputs.page.children() if isinstance(widget, QtW.QScrollArea)][0]
+    scroll_area = next(widget for widget in main_window.gui_structure.page_inputs.page.children() if isinstance(widget, QtW.QScrollArea))
     assert scroll_area.children()[0].children()[0].children()[1].children()[0].rowCount() == 1
     assert scroll_area.children()[0].children()[0].children()[1].children()[0].columnCount() == 4
-    main_window.delete_backup()
+
+    assert main_window.gui_structure.page_inputs.next_page == main_window.gui_structure.page_result
+    assert main_window.gui_structure.page_result.previous_page == main_window.gui_structure.page_inputs
+    assert main_window.gui_structure.page_result.next_page == main_window.gui_structure.page_settings
+    assert main_window.gui_structure.page_settings.previous_page is None
+
+    main_window.gui_structure.page_inputs.next_page = None
+    main_window.gui_structure.page_result.previous_page = None
+    main_window.gui_structure.page_result.next_page = None
+
+    main_window.gui_structure.automatically_create_page_links()
+
+    assert main_window.gui_structure.page_inputs.next_page == main_window.gui_structure.page_result
+    assert main_window.gui_structure.page_result.previous_page == main_window.gui_structure.page_inputs
+    assert main_window.gui_structure.page_result.next_page == main_window.gui_structure.page_settings
+    assert main_window.gui_structure.page_settings.previous_page == main_window.gui_structure.page_result
+
+    close_tests(main_window, qtbot)

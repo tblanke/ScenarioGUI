@@ -91,6 +91,7 @@ class DataStorage:
         None
         """
         [aim.widget.setChecked(False) for aim, _ in gui_structure.list_of_aims]
+        [aim.widget.setEnabled(True) for aim, _ in gui_structure.list_of_aims]
         # run over options to hide or show the relevant ones
         [aim.widget.click() for aim, name in gui_structure.list_of_aims if getattr(self, name)]
         [option.set_value(getattr(self, name)) for option, name in gui_structure.list_of_options if hasattr(self, name)]

@@ -12,8 +12,8 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from .list_box import ListBox
 from .functions import check
+from .list_box import ListBox
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -35,6 +35,8 @@ class FontListBox(ListBox):
     This class contains all the functionalities of the ListBox option in the GUI.
     The ListBox can be used to select one option out of many (sort of like the ButtonBox)
     """
+
+    LinkMatrix: list[int] | None = None
 
     def __init__(self, label: str | list[str], default_index: int, entries: list[str], category: Category):
         """
@@ -67,13 +69,17 @@ class FontListBox(ListBox):
         self.widget: FontComboBox = FontComboBox(self.default_parent)
         self.widget.clear()
         self.widget.addItems(self.entries)
+        self._link_matrix: list[int] | None = None
+
+    def link_matrix(self) -> list[int]:
+        return [[self.widget.itemText(index) for index in range(self.widget.count())].index(font) for font in self.entries]
 
     def create_widget(
         self,
         frame: QtW.QFrame,
         layout_parent: QtW.QLayout,
-        row: int = None,
-        column: int = None,
+        row: int | None = None,
+        column: int | None = None,
     ) -> None:
         """
         This functions creates the ListBox widget in the frame.
@@ -84,10 +90,10 @@ class FontListBox(ListBox):
             The frame object in which the widget should be created
         layout_parent : QtW.QLayout
             The parent layout of the current widget
-        row : int
+        row : int | None
             The index of the row in which the widget should be created
             (only needed when there is a grid layout)
-        column : int
+        column : int | None
             The index of the column in which the widget should be created
             (only needed when there is a grid layout)
 
@@ -103,7 +109,7 @@ class FontListBox(ListBox):
             f"QComboBox QAbstractItemView::item:hover{'{'}color: {globs.WHITE};background-color: {globs.LIGHT_SELECT};{'}'}"
             f"QComboBox QAbstractItemView::item:selected{'{'}color: {globs.WHITE};background-color: {globs.LIGHT_SELECT};{'}'}"
         )
-        self.widget.setCurrentIndex(self.default_value)
+        self.widget.setCurrentIndex(self.link_matrix().index(self.default_value))
         if self.limit_size:
             # self.widget.setMaximumWidth(100)
             self.widget.setMinimumWidth(100)

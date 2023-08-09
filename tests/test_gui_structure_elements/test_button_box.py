@@ -1,12 +1,8 @@
 import numpy as np
-import PySide6.QtWidgets as QtW
 
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 from ScenarioGUI.gui_classes.gui_structure_classes import Option
 
-from ..gui_structure_for_tests import GUI
-from ..result_creating_class_for_tests import ResultsClass, data_2_results
-from ..test_translations.translation_class import Translations
+from ..starting_closing_tests import start_tests
 
 
 def test_button_box(qtbot):
@@ -19,9 +15,7 @@ def test_button_box(qtbot):
         bot for the GUI
     """
     # init gui window
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
-    main_window.delete_backup()
-    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = start_tests(qtbot)
 
     button_box = main_window.gui_structure.button_box
     assert np.isclose(button_box.get_value(), button_box.default_value)
@@ -67,5 +61,12 @@ def test_button_box(qtbot):
     Option.hidden_option_editable = True
     assert not button_box.hidden_option_editable
     button_box.hidden_option_editable = True
+    # check that no value error is displayed
+    main_window.status_bar.label.setText("")
+    button_box.set_value(0)
+    assert button_box.get_value() == 0
+    button_box.widget[0].click()
+    assert button_box.get_value() == 1
+    assert main_window.status_bar.label.text() == ""
     main_window.delete_backup()
 
