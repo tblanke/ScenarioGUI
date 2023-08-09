@@ -265,7 +265,10 @@ class FloatBox(Option):
         -------
         None
         """
-        self.widget.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        self.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        self.widget.valueChanged.connect(self.valueChanged.emit)
+        self.valueChanged =self.widget.valueChanged
+
         self.visibilityChanged.connect(function_to_be_called)
 
     def create_widget(

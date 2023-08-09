@@ -3,7 +3,8 @@ script which contain basic gui structure functions
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
+from functools import partial as ft_partial
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW  # type: ignore
@@ -183,3 +184,20 @@ def show_linked_options(options_list: list[Option]) -> None:
             continue
         # show already shown option to evoke linked options
         option.show()
+
+
+def _create_function_2_check_linked_value(
+    option: Option,
+    value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | str | bool,
+    value_if_hidden: bool | None,
+) -> Callable[[], bool]:
+    value_if_hidden = option.value_if_hidden if value_if_hidden is None else value_if_hidden
+    if value_if_hidden is None:
+        return ft_partial(option.check_linked_value, value)
+
+    def func():
+        if option.is_hidden():
+            return value_if_hidden
+        option.check_linked_value(value)
+
+    return func

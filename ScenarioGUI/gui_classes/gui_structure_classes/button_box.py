@@ -11,7 +11,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 
-from .functions import check, update_opponent_not_change, update_opponent_toggle
+from .functions import _create_function_2_check_linked_value, check, update_opponent_not_change, update_opponent_toggle
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -203,7 +203,7 @@ class ButtonBox(Option):
         """
         return self.get_value() == value
 
-    def create_function_2_check_linked_value(self, value: int, value_if_hidden: bool | None) -> Callable[[], bool]:
+    def create_function_2_check_linked_value(self, value: int, value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
         creates from values a function to check linked values
 
@@ -211,22 +211,14 @@ class ButtonBox(Option):
         ----------
         value : int
             int of index on which the option should be shown
-        value_if_hidden: bool
+        value_if_hidden: bool  | None
             the return value, if the option is hidden
 
         Returns
         -------
         function
         """
-        if value_if_hidden is None:
-            return ft_partial(self.check_linked_value, value)
-
-        def func():
-            if self.is_hidden():
-                return value_if_hidden
-            self.check_linked_value(value)
-
-        return func
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
 
     def disable_entry(self, idx: int):
         """

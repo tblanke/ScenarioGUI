@@ -34,6 +34,8 @@ class Option(QtC.QObject):
     default_parent: QtW.QWidget | None = None
     hidden_option_editable: bool = True
 
+    value_if_hidden: bool | None = True
+
     def __init__(
         self,
         label: str | list[str],
