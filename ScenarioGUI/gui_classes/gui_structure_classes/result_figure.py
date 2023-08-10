@@ -476,11 +476,20 @@ class ResultFigure(Category):
         -------
         None
         """
-        val = self.scroll_area.verticalScrollBar().value()
-        if event.button == "down":
-            self.scroll_area.verticalScrollBar().setValue(val + self.scroll_area.verticalScrollBar().singleStep())
-            return
-        self.scroll_area.verticalScrollBar().setValue(val - self.scroll_area.verticalScrollBar().singleStep())
+        delta = event.step
+
+        # Create the QWheelEvent
+        pyqt_event = QtG.QWheelEvent(
+            QtC.QPoint(0, 0),  # Position of the event
+            QtC.QPoint(0, 0) ,  # Global position of the event
+            QtC.QPoint(0, 0),  # Scroll pixel delta
+            QtC.QPoint(0, delta * 120) ,  # Scroll angle delta
+            QtC.Qt.MouseButton.NoButton,  # Mouse buttons pressed during the event
+            QtC.Qt.KeyboardModifier.NoModifier,  # Modifiers active during the event
+            QtC.Qt.ScrollPhase.NoScrollPhase,  # Scroll phase
+            False,
+        )
+        self.scroll_area.wheelEvent(pyqt_event)
 
     def set_text(self, name: str) -> None:
         """

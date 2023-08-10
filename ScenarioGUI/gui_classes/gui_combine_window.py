@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import logging
 from functools import partial as ft_partial
 from json import dump, load
 from os import makedirs, remove
@@ -1162,6 +1163,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             True if the saving was successful.
         """
         # ask for pickle file if the filename is still the default
+        logging.info(f"{filename}, {MainWindow.filename_default}: {self.filename}")
         if not isinstance(filename, tuple):
             if self.filename == MainWindow.filename_default:
                 self.fun_save_as()
