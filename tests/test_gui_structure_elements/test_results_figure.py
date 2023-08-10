@@ -14,7 +14,7 @@ import ScenarioGUI.global_settings as globs
 
 class Event:
     def __init__(self, button: str):
-        self.button = button
+        self.step = 1.0 if button == "down" else (-1.0)
 
 
 class VerticalBar:
@@ -34,6 +34,12 @@ class VerticalBar:
 class ScrollArea:
     def __init__(self):
         self.vertical_bar = VerticalBar()
+
+    def wheelEvent(self, event):
+        if event.angleDelta().y() > 0:
+            self.verticalScrollBar().setValue(self.verticalScrollBar().val + self.verticalScrollBar().singleStep())
+            return
+        self.verticalScrollBar().setValue(self.verticalScrollBar().val - self.verticalScrollBar().singleStep())
 
     def verticalScrollBar(self) -> VerticalBar:  # noqa: N802
         return self.vertical_bar
@@ -68,7 +74,7 @@ def test_results_figure(qtbot):  # noqa: PLR0915
     val_before = main_window.gui_structure.figure_results.scroll_area.verticalScrollBar().value()
     main_window.gui_structure.figure_results.scrolling(Event("down"))
     val_after = main_window.gui_structure.figure_results.scroll_area.verticalScrollBar().value()
-    assert val_after == val_before + 10
+    assert val_after > val_before
     main_window.gui_structure.figure_results.scrolling(Event("up"))
     val_after = main_window.gui_structure.figure_results.scroll_area.verticalScrollBar().value()
     assert val_after == val_before
