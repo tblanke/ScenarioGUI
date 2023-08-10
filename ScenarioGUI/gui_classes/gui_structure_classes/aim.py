@@ -69,7 +69,7 @@ class Aim:
         self.list_options: list[Option | Category | FunctionButton] = []
         self.visibilityChanged: Signal = Signal()
         self.valueChanged: Signal = Signal()
-        self.widget: QtW.QPushButton = QtW.QPushButton(self.default_parent, toggled=self.valueChanged.emit)
+        self.widget: QtW.QPushButton = QtW.QPushButton(self.default_parent)
         page.upper_frame.append(self)
 
     def show(self):
@@ -190,6 +190,7 @@ class Aim:
         push_button.setIconSize(QtC.QSize(30, 30))
         push_button.setCheckable(True)
         push_button.setText(self.label[0])
+        push_button.toggled.connect(self.valueChanged.emit)
         layout.addWidget(push_button, idx[0], idx[1], 1, 1)
 
     def translate(self, idx: int) -> None:

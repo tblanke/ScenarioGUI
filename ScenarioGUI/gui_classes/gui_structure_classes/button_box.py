@@ -72,7 +72,6 @@ class ButtonBox(Option):
                 )
             )
             button.toggled.connect(ft_partial(check, self.linked_options, self, self.get_value()))
-            button.toggled.connect(self.valueChanged.emit)
 
     def get_value(self) -> int:
         """
@@ -286,6 +285,7 @@ class ButtonBox(Option):
             widget.setCheckable(True)
             widget.setChecked(idx == self.default_value)
             widget.setMinimumHeight(30)
+            widget.clicked.connect(self.valueChanged.emit)
             font = widget.font()
             font.setFamily(globs.FONT)
             font.setPointSize(globs.FONT_SIZE)

@@ -37,11 +37,13 @@ def test_aim(qtbot):
     def func(val: list):
         val.append(1)
 
-    main_window.gui_structure.aim_plot.add_link_2_show(main_window.gui_structure.button_box)
     main_window.gui_structure.aim_plot.change_event(partial(func, a), also_on_visibility=True)
     assert not main_window.gui_structure.button_box.is_hidden()
-    main_window.gui_structure.aim_plot.widget.click()
+    main_window.gui_structure.aim_plot.add_link_2_show(main_window.gui_structure.button_box)
+    main_window.gui_structure.aim_add.widget.click()
     assert main_window.gui_structure.button_box.is_hidden()
+    main_window.gui_structure.aim_plot.widget.click()
+    assert not main_window.gui_structure.button_box.is_hidden()
 
     assert not main_window.gui_structure.aim_plot.is_hidden()
     a_before = len(a)
