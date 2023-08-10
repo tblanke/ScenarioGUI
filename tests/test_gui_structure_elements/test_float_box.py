@@ -1,5 +1,5 @@
 import numpy as np
-
+import PySide6.QtGui as QtG
 from ..starting_closing_tests import close_tests, start_tests
 
 
@@ -38,6 +38,9 @@ def test_float_box(qtbot):
     assert not main_window.gui_structure.int_a.is_hidden()
     float_b.set_value(220)
     assert not main_window.gui_structure.int_a.is_hidden()
+    # test validation
+    res = float_b.widget.validate("100,020", 5)
+    assert np.isclose(float(res[1].replace(",", ".")), 100.02)
     # test set text
     main_window.gui_structure.float_b.set_text("Hello")
     assert main_window.gui_structure.float_b.label.text() == "Hello"
