@@ -1,12 +1,8 @@
 from functools import partial
-import pytest
-import PySide6.QtWidgets as QtW
+from pytest import raises
 
-from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 from tests.gui_structure_for_tests import GUI
-from tests.result_creating_class_for_tests import ResultsClass, data_2_results
 from tests.starting_closing_tests import close_tests, start_tests
-from tests.test_translations.translation_class import Translations
 
 
 def test_show_multiple_under_conditions(qtbot):
@@ -18,7 +14,7 @@ def test_show_multiple_under_conditions(qtbot):
         [g_s.aim_add, g_s.int_a],
         functions_check_for_and=[
             g_s.aim_add.widget.isChecked,
-            partial(g_s.int_a.check_linked_value, (None, 50)),
+            g_s.int_a.create_function_2_check_linked_value((None, 50)),
         ],
     )
     g_s.aim_add.widget.click() if not g_s.aim_add.widget.isChecked() else None
@@ -27,6 +23,7 @@ def test_show_multiple_under_conditions(qtbot):
     assert g_s.int_a.check_linked_value((None, 50))
     assert not g_s.float_b.is_hidden()
     g_s.int_a.set_value(40)
+    assert not g_s.int_a.check_linked_value((None, 50))
     assert g_s.float_b.is_hidden()
     g_s.int_a.set_value(55)
     assert not g_s.float_b.is_hidden()
@@ -62,8 +59,9 @@ def test_show_multiple_under_conditions(qtbot):
     g_s.show_option_under_multiple_conditions(
         g_s.float_units,
         [g_s.aim_plot, g_s.int_small_1, g_s.int_small_2],
-        custom_logic=lambda:(g_s.aim_plot.widget.isChecked() or g_s.int_small_1.check_linked_value((None, 20))) and g_s.int_small_2.check_linked_value((26, None))
-                             )
+        custom_logic=lambda: (g_s.aim_plot.widget.isChecked() or g_s.int_small_1.check_linked_value((None, 20)))
+        and g_s.int_small_2.check_linked_value((26, None)),
+    )
     g_s.int_small_2.set_value(20)
     g_s.int_small_1.set_value(21)
     g_s.aim_plot.widget.click()
@@ -84,6 +82,12 @@ def test_show_multiple_under_conditions(qtbot):
     assert not g_s.float_units.is_hidden()
     g_s.int_small_1.set_value(18)
     assert g_s.float_units.is_hidden()
+    with raises(UserWarning):
+        g_s.show_option_under_multiple_conditions(g_s.float_units, [g_s.aim_plot, g_s.int_small_1, g_s.int_small_2],
+        custom_logic=lambda: (g_s.aim_plot.widget.isChecked() or g_s.int_small_1.check_linked_value((None, 20))),functions_check_for_and=[
+            g_s.aim_add.widget.isChecked,
+            partial(g_s.int_a.check_linked_value, (None, 50)),
+        ])
     close_tests(main_window, qtbot)
 
 
@@ -151,8 +155,9 @@ def test_show_multiple_under_conditions_multiple_options(qtbot):
     g_s.show_option_under_multiple_conditions(
         [g_s.float_units, g_s.float_d],
         [g_s.aim_plot, g_s.int_small_1, g_s.int_small_2],
-        custom_logic=lambda:(g_s.aim_plot.widget.isChecked() or g_s.int_small_1.check_linked_value((None, 20))) and g_s.int_small_2.check_linked_value((26, None))
-                             )
+        custom_logic=lambda: (g_s.aim_plot.widget.isChecked() or g_s.int_small_1.check_linked_value((None, 20)))
+        and g_s.int_small_2.check_linked_value((26, None)),
+    )
     g_s.int_small_2.set_value(20)
     g_s.int_small_1.set_value(21)
     g_s.aim_plot.widget.click()

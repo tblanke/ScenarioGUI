@@ -8,6 +8,7 @@ def test_list_box(qtbot):
     assert main_window.gui_structure.list_small_2.get_value()[0] == main_window.gui_structure.list_small_2.default_value
     main_window.gui_structure.list_small_2.set_value(main_window.gui_structure.list_small_2.default_value + 1)
     assert main_window.gui_structure.list_small_2.get_value()[0] == main_window.gui_structure.list_small_2.default_value + 1
+    main_window.gui_structure.list_small_2.add_link_2_show(main_window.gui_structure.hint_2, on_index=1)
     # test links
     main_window.gui_structure.list_small_2.set_value(0)
     assert main_window.gui_structure.hint_2.is_hidden()

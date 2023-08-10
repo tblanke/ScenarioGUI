@@ -135,7 +135,6 @@ class GUI(GuiStructure):
         self.function_button = FunctionButton(button_text=translations.function_button, icon="Add", category=self.category_inputs)
 
         self.button_box = els.ButtonBox(label="a or b or c?", default_index=0, entries=["a", "b", "c"], category=self.category_inputs)
-        self.button_box.add_link_2_show(self.filename, on_index=1)
 
         self.aim_plot.widget.toggled.connect(self.disable_button_box(self.button_box, at_index=2, func_2_check=self.aim_plot.widget.isChecked))
         self.float_b.change_event(self.disable_button_box(self.button_box, 1, partial(self.float_b.check_linked_value, (50, None))))
@@ -145,8 +144,6 @@ class GUI(GuiStructure):
         self.float_b.change_event(self.disable_button_box(self.button_box_short, 1, partial(self.float_b.check_linked_value, (50, None))))
         self.int_a.change_event(self.disable_button_box(self.button_box_short, 0, partial(self.int_a.check_linked_value, (None, 10))))
 
-        self.aim_plot.add_link_2_show(self.button_box)
-
         self.list_box = ListBox(
             label="List box",
             default_index=0,
@@ -154,8 +151,6 @@ class GUI(GuiStructure):
             category=self.category_inputs,
         )
         self.text_box_only_on_add = els.TextBox(label="Only visible on add", default_text="Hello", category=self.category_inputs)
-
-        self.aim_add.add_link_2_show(self.text_box_only_on_add)
 
         self.text_box = TextBox(label="Login", default_text="Example text 15", category=self.category_inputs)
         self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)
@@ -167,7 +162,6 @@ class GUI(GuiStructure):
         self.flex_option.add_option(IntBox, name="amount", default_value=4, minimal_value=2)
         self.flex_option.add_option(ListBox, name="entry", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
         self.hint_flex = Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
-        self.flex_option.add_link_2_show(self.hint_flex, 4, 12)
 
         self.multiple_ints = els.MultipleIntBox(label="Multiple int box:", category=self.category_inputs, default_value=(1, 2, 3), minimal_value=(1, 1, 1),
                                                 maximal_value=(100, 110, 120))
@@ -217,10 +211,6 @@ class GUI(GuiStructure):
         self.text_box_multi_line_small = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_grid)
         self.category_grid.activate_graphic_left()
         self.category_grid.activate_graphic_right()
-
-        self.button_box.add_link_2_show(self.hint_1, on_index=1)
-        self.list_small_2.add_link_2_show(self.hint_2, on_index=1)
-        self.aim_add.add_link_2_show(self.int_small_2)
 
         self.int_small_2.add_aim_option_2_be_set_for_check(self.aim_plot)
         self.float_small_1.add_aim_option_2_be_set_for_check(self.aim_add)

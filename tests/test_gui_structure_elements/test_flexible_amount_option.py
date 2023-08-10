@@ -21,6 +21,7 @@ def test_flex_amount_option(qtbot):  # noqa: PLR0915
     # init gui window
     main_window = start_tests(qtbot)
     flex_option = main_window.gui_structure.flex_option
+    flex_option.add_link_2_show(main_window.gui_structure.hint_flex, 4, 12)
     assert len(flex_option.get_value()) == flex_option.default_value
     for li_org, li_val in zip(flex_option.get_value(), flex_option.default_values):
         for org, val in zip(li_org, li_val):
@@ -72,6 +73,7 @@ def test_flex_amount_option(qtbot):  # noqa: PLR0915
     assert not flex_option.check_linked_value((None, 20))
     assert flex_option.check_linked_value((4, 20))
     assert flex_option.check_linked_value((None, 2))
+    assert flex_option.check_linked_value((4, 20)) == flex_option.create_function_2_check_linked_value((4, 20))()
     main_window.gui_structure.page_inputs.button.click()
     flex_option._init_links()
     assert not main_window.gui_structure.hint_flex.is_hidden()

@@ -12,7 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from .functions import check_and_set_max_min_values
+from .functions import check_and_set_max_min_values, _create_function_2_check_linked_value
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -90,7 +90,7 @@ class FloatBox(Option):
         self.minimal_value: float = minimal_value
         self.maximal_value: float = maximal_value
         self.step: float = step
-        self.widget: DoubleSpinBox = DoubleSpinBox(self.default_parent)
+        self.widget: DoubleSpinBox = DoubleSpinBox(self.default_parent, valueChanged=self.valueChanged.emit)
 
     def get_value(self) -> float:
         """
@@ -227,7 +227,7 @@ class FloatBox(Option):
             return True
         return False
 
-    def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None) -> Callable[[], bool]:
+    def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
         creates from values a function to check linked values
 
@@ -235,41 +235,14 @@ class FloatBox(Option):
         ----------
         value : tuple of 2 optional floats
             first one is the below value and the second the above value
-        value_if_hidden: bool
+        value_if_hidden: bool | None
             the return value, if the option is hidden
 
         Returns
         -------
         function
         """
-        if value_if_hidden is None:
-            return ft_partial(self.check_linked_value, value)
-
-        def func():
-            if self.is_hidden():
-                return value_if_hidden
-            self.check_linked_value(value)
-
-        return func
-
-    def change_event(self, function_to_be_called: Callable) -> None:
-        """
-        This function calls the function_to_be_called whenever the FloatBox is changed.
-
-        Parameters
-        ----------
-        function_to_be_called : callable
-            Function which should be called
-
-        Returns
-        -------
-        None
-        """
-        self.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
-        self.widget.valueChanged.connect(self.valueChanged.emit)
-        self.valueChanged =self.widget.valueChanged
-
-        self.visibilityChanged.connect(function_to_be_called)
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
 
     def create_widget(
         self,

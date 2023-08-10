@@ -18,7 +18,8 @@ def test_compatibility_with_add_link_2_show(qtbot):
     g_s.show_option_under_multiple_conditions(
         g_s.float_f,
         [g_s.float_e, g_s.float_d],
-        custom_logic=lambda: g_s.float_d.check_linked_value((20, None)) and not g_s.float_e.is_hidden(),
+        check_on_visibility_change=True,
+        custom_logic=lambda: g_s.float_d.create_function_2_check_linked_value((20, None))() and not g_s.float_e.is_hidden()
     )
     g_s.float_a.add_link_2_show(g_s.float_e, below=20)
     g_s.float_a.set_value(200)

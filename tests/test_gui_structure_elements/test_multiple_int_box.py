@@ -22,6 +22,7 @@ def test_multiple_int_box(qtbot):
     assert multiple_ints.check_linked_value((20, None))
     assert multiple_ints.check_linked_value((None, 2))
     assert not multiple_ints.check_linked_value((5, 20))
+    assert multiple_ints.create_function_2_check_linked_value((5, 20))() == multiple_ints.check_linked_value((5, 20))
     multiple_ints.show_option(main_window.gui_structure.float_b, 5, 20)
     main_window.gui_structure.page_inputs.button.click()
     assert main_window.gui_structure.float_b.is_hidden()

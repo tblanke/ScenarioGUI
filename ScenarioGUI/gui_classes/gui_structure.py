@@ -465,7 +465,8 @@ class GuiStructure:
                                               options_2_be_checked: list[Option, Aim], *,
                                               functions_check_for_and: list[Callable[[], bool]] | None = None,
                                               functions_check_for_or: list[Callable[[], bool]] | None = None,
-                                              custom_logic: Callable[[], bool] | None = None) -> None:
+                                              custom_logic: Callable[[], bool] | None = None,
+                                              check_on_visibility_change: bool = False) -> None:
         """
         show the option_to_be_shown if all functions_of_options of the options_2_be_checked are returning true
 
@@ -481,6 +482,8 @@ class GuiStructure:
             list of options and function of the options that should be checked for the "or" condition (so one have to be true)
         custom_logic : Callable
             custom logic for the evaluation of the truth value
+        check_on_visibility_change: bool
+            check also on visibility change
 
         Returns
         -------
@@ -503,7 +506,7 @@ class GuiStructure:
             def check():
                 _ = [i.show() for i in options_to_be_shown] if custom_logic() else [i.hide() for i in options_to_be_shown]
         for option in options_2_be_checked:
-            option.change_event(check)
+            option.change_event(check, also_on_visibility=check_on_visibility_change)
 
     def translate(self, index: int, translation: Translations) -> None:
         """

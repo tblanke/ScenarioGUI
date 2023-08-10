@@ -10,7 +10,7 @@ import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from ScenarioGUI.utils import change_font_size, set_default_font
+from ScenarioGUI.utils import change_font_size, set_default_font, Signal
 
 from .aim import Aim
 
@@ -29,12 +29,10 @@ class Option(QtC.QObject):
     Abstract base class for a gui option.
     """
 
-    visibilityChanged = QtC.Signal()
-
     default_parent: QtW.QWidget | None = None
     hidden_option_editable: bool = True
 
-    value_if_hidden: bool | None = True
+    value_if_hidden: bool | None = None
 
     def __init__(
         self,
@@ -62,6 +60,8 @@ class Option(QtC.QObject):
         self.limit_size: bool = True
         category.list_of_options.append(self)
         self.list_2_check_before_value: list[tuple[Option, int], Aim] = []
+        self.visibilityChanged: Signal = Signal()
+        self.valueChanged: Signal = Signal()
 
     @abc.abstractmethod
     def get_value(self) -> bool | int | float | str:
@@ -269,7 +269,7 @@ class Option(QtC.QObject):
         # if self.is_hidden():
         #     return
         self.frame.hide()
-        self.frame.setEnabled(False) if not self.hidden_option_editable else None
+        self.frame.setEnabled(self.hidden_option_editable)
         [option.hide() for option, value in self.linked_options]
         self.visibilityChanged.emit()
 
@@ -318,20 +318,24 @@ class Option(QtC.QObject):
             True if it is the current value
         """
 
-    @abc.abstractmethod
-    def change_event(self, function_to_be_called: Callable) -> None:
+    def change_event(self, function_to_be_called: Callable, *, also_on_visibility: bool = False) -> None:
         """
-        This function calls the function_to_be_called whenever the option is changed.
+        This function calls the function_to_be_called whenever the FloatBox is changed.
 
         Parameters
         ----------
         function_to_be_called : callable
             Function which should be called
+        also_on_visibility: bool
+            should the function also be called if the visibility has changed
 
         Returns
         -------
         None
         """
+        self.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        if also_on_visibility:
+            self.visibilityChanged.connect(function_to_be_called)
 
     @abc.abstractmethod
     def create_function_2_check_linked_value(

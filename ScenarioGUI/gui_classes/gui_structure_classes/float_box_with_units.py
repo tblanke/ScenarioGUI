@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from functools import partial as ft_partial
 from math import log10
 from typing import TYPE_CHECKING
 
@@ -11,7 +10,7 @@ import ScenarioGUI.global_settings as globs
 from ScenarioGUI.utils import change_font_size, set_default_font
 
 from .float_box import FloatBox
-from .functions import check_and_set_max_min_values
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check_and_set_max_min_values, _create_function_2_check_linked_value
 from .list_box import ComboBox
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -76,7 +75,7 @@ class FloatBoxWithUnits(FloatBox):
         super().__init__(label=label, default_value=default_value, category=category, maximal_value=maximal_value, minimal_value=minimal_value, step=step,
                          decimal_number=decimal_number)
         self.units: list[tuple[str, float]] = [] if units is None else units
-        self.unit_widget: ComboBox = ComboBox(self.default_parent)
+        self.unit_widget: ComboBox = ComboBox(self.default_parent, currentIndexChanged=self.valueChanged.emit)
 
     def activate_scale_decimals(self) -> None:
         """
@@ -216,7 +215,7 @@ class FloatBoxWithUnits(FloatBox):
             return True
         return False
 
-    def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None) -> Callable[[], bool]:
+    def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
         creates from values a function to check linked values
 
@@ -224,39 +223,14 @@ class FloatBoxWithUnits(FloatBox):
         ----------
         value : tuple of 2 optional floats
             first one is the below value and the second the above value
-        value_if_hidden: bool
+        value_if_hidden: bool | None
             the return value, if the option is hidden
 
         Returns
         -------
         function
         """
-        if value_if_hidden is None:
-            return ft_partial(self.check_linked_value, value)
-
-        def func():
-            if self.is_hidden():
-                return value_if_hidden
-            self.check_linked_value(value)
-
-        return func
-
-    def change_event(self, function_to_be_called: Callable) -> None:
-        """
-        This function calls the function_to_be_called whenever the IntBox is changed.
-
-        Parameters
-        ----------
-        function_to_be_called : callable
-            Function which should be called
-
-        Returns
-        -------
-        None
-        """
-        self.widget.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
-        self.unit_widget.currentIndexChanged.connect(function_to_be_called)  # pylint: disable=E1101
-        self.visibilityChanged.connect(function_to_be_called)
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
 
     def create_widget(
             self,

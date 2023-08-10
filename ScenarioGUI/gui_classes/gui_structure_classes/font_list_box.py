@@ -12,7 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from .functions import check
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check
 from .list_box import ListBox
 from .option import Option
 
@@ -67,6 +67,7 @@ class FontListBox(ListBox):
         self.widget: FontComboBox = FontComboBox(self.default_parent)
         self.widget.clear()
         self.widget.addItems(self.entries)
+        self.widget.currentIndexChanged.connect(self.valueChanged.emit)
 
     def create_widget(
         self,

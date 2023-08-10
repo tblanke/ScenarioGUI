@@ -11,7 +11,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 
-from .functions import _create_function_2_check_linked_value, check, update_opponent_not_change, update_opponent_toggle
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import _create_function_2_check_linked_value, check, update_opponent_not_change, update_opponent_toggle
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -72,6 +72,7 @@ class ButtonBox(Option):
                 )
             )
             button.toggled.connect(ft_partial(check, self.linked_options, self, self.get_value()))
+            button.toggled.connect(self.valueChanged.emit)
 
     def get_value(self) -> int:
         """
@@ -152,22 +153,6 @@ class ButtonBox(Option):
 
         self.linked_options.append([option, on_index])
 
-    def change_event(self, function_to_be_called: Callable) -> None:
-        """
-        This function calls the function_to_be_called whenever the ButtonBox is changed.
-
-        Parameters
-        ----------
-        function_to_be_called : callable
-            Function which should be called
-
-        Returns
-        -------
-        None
-        """
-        for button in self.widget:
-            button.toggled.connect(function_to_be_called)  # pylint: disable=E1101
-
     def set_text(self, name: str) -> None:
         """
         This function sets the text of the label and of the different buttons in the ButtonBox.
@@ -243,8 +228,6 @@ class ButtonBox(Option):
         self.widget[idx].hide()
         if not [widget for widget in self.widget if widget.isEnabled()]:
             self.hide()
-        #if len([widget for widget in self.widget if widget.isEnabled()]) == 1:
-        #    [widget for widget in self.widget if widget.isEnabled()][0].setChecked(True)
 
     def enable_entry(self, idx: int):
         """

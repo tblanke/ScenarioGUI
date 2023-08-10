@@ -24,7 +24,7 @@ from .gui_calculation_thread import CalcProblem
 from .gui_data_storage import DataStorage
 from .gui_saving_thread import SavingThread
 from .gui_structure_classes import FigureOption, Option, ResultExport
-from .gui_structure_classes.functions import check_aim_options, show_linked_options
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check_aim_options, show_linked_options
 
 if TYPE_CHECKING:
     from collections.abc import Callable

@@ -9,8 +9,8 @@ from functools import partial as ft_partial
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW  # type: ignore
 
-    from .aim import Aim
-    from .option import Option
+    from ScenarioGUI.gui_classes.gui_structure_classes.aim import Aim
+    from ScenarioGUI.gui_classes.gui_structure_classes.option import Option
 
 
 def check_and_set_max_min_values(widget: QtW.QSpinBox | QtW.QDoubleSpinBox, value: int | float, default_max: int | float, default_min: int | float) -> None:

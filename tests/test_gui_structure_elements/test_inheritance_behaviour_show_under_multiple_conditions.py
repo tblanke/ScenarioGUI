@@ -19,11 +19,13 @@ def test_inheritance_behaviour(qtbot):
         g_s.float_f,
         [g_s.float_e, g_s.float_d],
         custom_logic=lambda: g_s.float_d.check_linked_value((20, None)) and not g_s.float_e.is_hidden(),
+        check_on_visibility_change=True
     )
     g_s.show_option_under_multiple_conditions(
         g_s.float_e,
         [g_s.float_a, g_s.float_b, g_s.float_c],
         custom_logic=lambda: (g_s.float_a.check_linked_value((20, None)) and g_s.float_b.check_linked_value((20, None))) or g_s.float_c.check_linked_value((20, None)),
+        check_on_visibility_change=True
     )
     g_s.float_a.set_value(200)
     assert not g_s.float_a.is_hidden()

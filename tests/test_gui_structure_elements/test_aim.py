@@ -16,5 +16,10 @@ def test_aim(qtbot):
 
     assert main_window.gui_structure.aim_plot.widget.isChecked()
 
+    main_window.gui_structure.aim_plot.add_link_2_show(main_window.gui_structure.button_box)
+    assert not main_window.gui_structure.button_box.is_hidden()
+    main_window.gui_structure.aim_plot.widget.click()
+    assert main_window.gui_structure.button_box.is_hidden()
+
     main_window.gui_structure.aim_plot.set_text("Hello")
     assert main_window.gui_structure.aim_plot.widget.text() == "Hello"

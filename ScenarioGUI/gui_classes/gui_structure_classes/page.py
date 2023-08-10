@@ -14,7 +14,7 @@ import ScenarioGUI.global_settings as globs
 
 from ...utils import change_font_size, set_default_font
 from .aim import Aim
-from .functions import check_aim_options, update_opponent_not_change, update_opponent_toggle
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check_aim_options, update_opponent_not_change, update_opponent_toggle
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -284,7 +284,6 @@ class Page:
                                                       )
                                            )  # pylint: disable=E1101
                 aim.widget.toggled.connect(ft_partial(check_aim_options, list_aims))  # pylint: disable=E1101
-                _ = [aim.widget.toggled.connect(func) for func in aim.functions]
             list_aims[0].widget.click()
 
     def update_function(

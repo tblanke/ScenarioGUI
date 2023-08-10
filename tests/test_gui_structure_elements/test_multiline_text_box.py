@@ -20,6 +20,9 @@ def test_multiline_text_box(qtbot):
     assert main_window.gui_structure.text_box_multi_line.get_value() == "Hello\nWorld"
 
     assert main_window.gui_structure.text_box_multi_line.check_linked_value("Hello\nWorld")
+    assert main_window.gui_structure.text_box.create_function_2_check_linked_value("Hello\nWorld")() == main_window.gui_structure.text_box.check_linked_value(
+        "Hello\nWorld"
+    )
 
     # test set text
     main_window.gui_structure.text_box_multi_line.set_text("Hello")

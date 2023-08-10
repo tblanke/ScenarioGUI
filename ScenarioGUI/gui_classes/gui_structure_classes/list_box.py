@@ -12,7 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from .functions import check
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check, _create_function_2_check_linked_value
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -67,7 +67,7 @@ class ListBox(Option):
         """
         super().__init__(label, default_index, category)
         self.entries: list[str] = entries
-        self.widget: ComboBox = ComboBox(self.default_parent)
+        self.widget: ComboBox = ComboBox(self.default_parent, currentIndexChanged=self.valueChanged.emit)
 
     def get_text(self) -> str:
         """
@@ -192,21 +192,6 @@ class ListBox(Option):
         """
         return self.widget.currentIndex() == value
 
-    def change_event(self, function_to_be_called: Callable) -> None:
-        """
-        This function calls the function_to_be_called whenever the index of the ListBox is changed.
-
-        Parameters
-        ----------
-        function_to_be_called : callable
-            Function which should be called
-
-        Returns
-        -------
-        None
-        """
-        self.widget.currentIndexChanged.connect(function_to_be_called)  # pylint: disable=E1101
-
     def create_function_2_check_linked_value(self, value: int, value_if_hidden: bool | None) -> Callable[[], bool]:
         """
         creates from values a function to check linked values
@@ -222,15 +207,7 @@ class ListBox(Option):
         -------
         function
         """
-        if value_if_hidden is None:
-            return ft_partial(self.check_linked_value, value)
-
-        def func():
-            if self.is_hidden():
-                return value_if_hidden
-            self.check_linked_value(value)
-
-        return func
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
 
     def create_widget(
         self,
