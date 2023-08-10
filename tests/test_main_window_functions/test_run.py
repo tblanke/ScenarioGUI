@@ -52,7 +52,6 @@ def test_run(qtbot):  # noqa: PLR0915
     thread = main_window.threads[-1]
     thread.run()
     assert thread.calculated
-
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     main_window.start_current_scenario_calculation()
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
@@ -114,3 +113,30 @@ def test_run(qtbot):  # noqa: PLR0915
 
     main_window.remove_previous_calculated_results()
     close_tests(main_window, qtbot)
+
+
+def test_max_run_time(qtbot):
+    """
+    test if maximal runtime error is occurring
+
+    Parameters
+    ----------
+    qtbot: qtbot
+        bot for the GUI
+    """
+    # init gui window
+    main_window = start_tests(qtbot)
+    main_window.remove_previous_calculated_results()
+    main_window.add_scenario()
+    file = main_window.gui_structure.filename.get_value()
+    assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is None
+    main_window.gui_structure.filename.set_value(file)
+    main_window.gui_structure.time_out.set_value(1)
+
+    main_window.gui_structure.aim_sub.widget.click() if not main_window.gui_structure.aim_sub.widget.isChecked() else None
+    main_window.save_scenario()
+    main_window.start_current_scenario_calculation()
+    thread = main_window.threads[-1]
+    thread.run()
+    assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is None
+    assert "run time" in main_window.gui_structure.text_no_result.label.text()

@@ -1,6 +1,9 @@
 import numpy as np
+from pytest import raises
 
 import ScenarioGUI.global_settings as global_vars
+from ScenarioGUI import elements as els
+from ScenarioGUI.gui_classes.gui_structure_classes.flexible_amount_option import FlexibleAmount
 
 from ..result_creating_class_for_tests import ResultsClass, data_2_results
 from ..starting_closing_tests import close_tests, start_tests
@@ -32,6 +35,17 @@ def test_flex_amount_option(qtbot):  # noqa: PLR0915
                 assert org[0] == val
                 continue
             assert org == val
+
+    with raises(ValueError):
+        flex_option = els.FlexibleAmount(
+            label="Test",
+            default_length=3,
+            entry_mame="Layer",
+            category=main_window.gui_structure.category_inputs,
+            min_length=5,
+            max_length=2,
+            default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]],
+        )
     flex_option._add_entry()
     assert len(flex_option.get_value()) == flex_option.default_value + 1
     flex_option._del_entry()
@@ -46,7 +60,7 @@ def test_flex_amount_option(qtbot):  # noqa: PLR0915
     flex_option.frame.layout().itemAtPosition(2, 3).widget().setValue(flex_option.option_classes[1][1]["default_value"] + 10)
     flex_option.frame.layout().itemAtPosition(3, 3).widget().setValue(flex_option.option_classes[1][1]["default_value"] + 15)
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 5, flex_option.frame.layout().itemAtPosition(1, 3).widget().value())
-    flex_option._add_entry_at_row(0)
+    flex_option._add_entry_at_row(row=0)
     values = flex_option.get_value()
     assert len(values) == 4
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 5, flex_option.frame.layout().itemAtPosition(1, 3).widget().value())
@@ -99,3 +113,21 @@ def test_flex_amount_option(qtbot):  # noqa: PLR0915
     assert not flex_option.frame.isHidden()
     assert not flex_option.label.isHidden()
     close_tests(main_window, qtbot)
+
+    min_max: FlexibleAmount = main_window.gui_structure.flex_option_min_max
+    assert len(min_max.option_entries) == 2
+    min_max._del_entry(row=1)
+    assert len(min_max.option_entries) == 2
+    min_max._add_entry_at_row(row=0)
+    assert len(min_max.option_entries) == 3
+    min_max._del_entry(row=1)
+    assert len(min_max.option_entries) == 2
+    min_max._add_entry_at_row(row=0)
+    min_max._add_entry_at_row(row=0)
+    min_max._add_entry_at_row(row=0)
+    min_max._add_entry_at_row(row=0)
+    min_max._add_entry_at_row(row=0)
+    min_max._add_entry_at_row(row=0)
+    assert len(min_max.option_entries) == 5
+    min_max._del_entry(row=0)
+    assert len(min_max.option_entries) == 4

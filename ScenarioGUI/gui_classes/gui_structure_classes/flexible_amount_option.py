@@ -32,15 +32,15 @@ class FlexibleAmount(Option):
     COUNTER: int = 0
 
     def __init__(
-            self,
-            label: str | Collection[str],
-            default_length: int,
-            entry_mame: str,
-            category: Category,
-            *, 
-            min_length: int | None = None,
-            max_length: int | None = None,
-            default_values: Collection[Collection[int | float | str | bool]] | None = None
+        self,
+        label: str | Collection[str],
+        default_length: int,
+        entry_mame: str,
+        category: Category,
+        *,
+        min_length: int = 1,
+        max_length: int = 1000,
+        default_values: Collection[Collection[int | float | str | bool]] | None = None,
     ):
         """
 
@@ -80,8 +80,11 @@ class FlexibleAmount(Option):
         self.list_of_options: Collection[Option] = []
         self.option_entries: list[list[Option]] = []
         self.option_classes: list[tuple[type[Option], dict, str]] = []
+        # check correct limits:
+        if max_length < min_length or min_length < 1:
+            raise ValueError("Please enter the correct values for the flexible_amount_option")
         self.len_limits: tuple[int | None, int | None] = (min_length, max_length)
-        
+
     def add_option(self, option: type[Option], name: str, **kwargs):
         self.option_classes.append((option, kwargs, name))
 
@@ -101,14 +104,19 @@ class FlexibleAmount(Option):
             options.append(option_i)
             i += 1
         self.option_entries.append(options)
-        add_button: QtW.QPushButton = QtW.QPushButton(text=" + ", parent=self.frame, clicked=partial(self._add_entry_at_row, row=length))
-        delete_button: QtW.QPushButton = QtW.QPushButton(text=" - ", parent=self.frame, clicked=partial(self._del_entry, row=length))
+        add_button: QtW.QPushButton = QtW.QPushButton(text=" + ", parent=self.frame)
+        add_button.clicked.connect(partial(self._add_entry_at_row, row=length))
+        delete_button: QtW.QPushButton = QtW.QPushButton(text=" - ", parent=self.frame)
+        delete_button.clicked.connect(partial(self._del_entry, row=length))
         set_default_font(add_button, bold=True)
         set_default_font(delete_button, bold=True)
         self.frame.layout().addWidget(add_button, length + 1, i)
         self.frame.layout().addWidget(delete_button, length + 1, i + 1)
 
-    def _add_entry_at_row(self, row: int):
+    def _add_entry_at_row(self, *, row: int):
+        length = len(self.option_entries)
+        if length == self.len_limits[1]:
+            return
         values = list(self.get_value())
         values.insert(row + 1, values[row]) if row + 1 < len(values) else values.append(values[row])
         self.set_value(values)
@@ -123,16 +131,16 @@ class FlexibleAmount(Option):
         Parameters
         ----------
         row : int | None
-            row in which should be deleted (None = last one)
+            row which should be deleted (None = last one)
 
         Returns
         -------
             None
         """
         length = len(self.option_entries)
-        row = (length - 1) if row is None else row
-        if row == length - 1 == 0:
+        if length == self.len_limits[0]:
             return
+        row = (length - 1) if row is None else row
         values = list(self.get_value())
         del values[row]
         self.set_value(values)
@@ -150,7 +158,7 @@ class FlexibleAmount(Option):
             Values of the FlexibleAmount
         """
         return tuple(tuple(option.get_value() for option in option_tuple) for option_tuple in self.option_entries)
-    
+
     def set_text(self, name: str) -> None:
         """
         This function sets the label text.
@@ -168,8 +176,7 @@ class FlexibleAmount(Option):
         self.label.setText(entry_name[0])
         self.entry_name = entry_name[1]
         length = len(self.option_entries)
-        for idx, label in enumerate([item.widget() for item in [self.frame.layout().itemAtPosition(i, 0) for i in range(1, length + 1)] 
-                                     if item is not None]):
+        for idx, label in enumerate([item.widget() for item in [self.frame.layout().itemAtPosition(i, 0) for i in range(1, length + 1)] if item is not None]):
             label.setText(f"{self.entry_name} {idx + 1}")
         for idx, name in enumerate(entry_name[2:]):
             self.frame.layout().itemAtPosition(0, idx + 2).widget().setText(name)
@@ -191,14 +198,16 @@ class FlexibleAmount(Option):
         len_options = len(self.option_entries)
         if len(value) < len_options:
             for length in reversed(range(len(value), len_options)):
-                for item in [self.frame.layout().itemAtPosition(length + 1, i) for i in range(len(self.option_classes) + 4)
-                             if self.frame.layout().itemAtPosition(length + 1, i) is not None]:
+                for item in [
+                    self.frame.layout().itemAtPosition(length + 1, i)
+                    for i in range(len(self.option_classes) + 4)
+                    if self.frame.layout().itemAtPosition(length + 1, i) is not None
+                ]:
                     item.widget().setParent(None)
                 del self.option_entries[length]
         else:
             for _ in range(len_options, len(value)):
                 self._add_entry()
-                
         self.valueChanged.emit()
         self._init_links()
 
@@ -230,10 +239,10 @@ class FlexibleAmount(Option):
         return not self.check_linked_value(self.len_limits)
 
     def add_link_2_show(
-            self,
-            option: Option | Category | FunctionButton | Hint,
-            min_length: int = None,
-            max_length: int = None,
+        self,
+        option: Option | Category | FunctionButton | Hint,
+        min_length: int = None,
+        max_length: int = None,
     ) -> None:
         """
         This function couples the visibility of an option to the value of the FloatBox object.
@@ -261,11 +270,11 @@ class FlexibleAmount(Option):
         self.linked_options.append((option, (min_length, max_length)))
 
     def show_option(
-            self,
-            option: Option | Category | FunctionButton | Hint,
-            min_length: int | None,
-            max_length: int | None,
-            args=None,
+        self,
+        option: Option | Category | FunctionButton | Hint,
+        min_length: int | None,
+        max_length: int | None,
+        args=None,
     ):
         """
         This function shows the option if the value of the FloatBox is between the below and above value.
@@ -367,12 +376,12 @@ class FlexibleAmount(Option):
         [change_font_size(widget, size) for widget in self.frame.children() if isinstance(widget, QtW.QWidget)]
 
     def create_widget(
-            self,
-            frame: QtW.QFrame,
-            layout_parent: QtW.QLayout,
-            *,
-            row: int = None,
-            column: int = None,
+        self,
+        frame: QtW.QFrame,
+        layout_parent: QtW.QLayout,
+        *,
+        row: int = None,
+        column: int = None,
     ) -> None:
         """
         This functions creates the FloatBox widget in the frame.

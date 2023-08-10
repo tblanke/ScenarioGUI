@@ -4,6 +4,8 @@ from collections.abc import Callable
 
 from matplotlib import pyplot as plt
 
+from time import sleep
+
 
 class ResultsClass:
     def __init__(self, a: int = 1, b: int = 2):
@@ -18,6 +20,7 @@ class ResultsClass:
         if self.a > 190:
             raise ValueError("Value above 190")
         self.result = self.a - self.b
+        sleep(2)
 
     def get_result(self) -> float:
         return self.result

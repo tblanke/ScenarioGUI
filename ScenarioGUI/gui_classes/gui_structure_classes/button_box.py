@@ -152,7 +152,6 @@ class ButtonBox(Option):
         """
 
         self.linked_options.append([option, on_index])
-
     def set_text(self, name: str) -> None:
         """
         This function sets the text of the label and of the different buttons in the ButtonBox.

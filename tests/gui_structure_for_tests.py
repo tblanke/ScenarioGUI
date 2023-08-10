@@ -161,6 +161,12 @@ class GUI(GuiStructure):
         self.flex_option.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number=2)
         self.flex_option.add_option(IntBox, name="amount", default_value=4, minimal_value=2)
         self.flex_option.add_option(ListBox, name="entry", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
+        self.flex_option_min_max = FlexibleAmount(label="layers", default_length=2, entry_mame="Layer",
+                                                    category=self.category_inputs,
+                                                    default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]],
+                                                  min_length=2, max_length=5)
+        self.flex_option_min_max.add_option(TextBox, name="name", default_text="layer")
+        self.flex_option_min_max.add_option(FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number=2)
         self.hint_flex = Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
 
         self.multiple_ints = els.MultipleIntBox(label="Multiple int box:", category=self.category_inputs, default_value=(1, 2, 3), minimal_value=(1, 1, 1),
@@ -255,8 +261,6 @@ class GUI(GuiStructure):
         )
 
         self.figure_results_with_customizable_layout.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
-
-        self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_sub.add_link_2_show(self.result_text_sub)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import logging
 from functools import partial as ft_partial
 from json import dump, load
 from os import makedirs, remove
@@ -152,6 +153,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.data_2_results_function = data_2_results_function
 
         self.gui_structure = gui_structure(self.central_widget, self.translations)
+
         [page.create_page(self.central_widget, self.stacked_widget, self.vertical_layout_menu) for page in self.gui_structure.list_of_pages]
 
         self.verticalSpacer = QtW.QSpacerItem(20, 40, QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Expanding)
@@ -218,6 +220,16 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # this is so that no changes are made when the file is opening
         self.gui_structure.started = True
         self.gui_structure.loaded = True
+
+    def activate_load_as_new_scenarios(self) -> None:
+        """
+        activates the possibility to load files as new scenarios and append them to the current scenario list
+        Returns
+        -------
+            None
+        """
+        self.menu_file.addAction(self.action_open_add)
+        self.tool_bar.addAction(self.action_open_add)
 
     def resizeEvent(self, event: QtG.QResizeEvent) -> None:
         """
@@ -379,8 +391,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.action_save.triggered.connect(self.fun_save)
         self.action_save_as.triggered.connect(self.fun_save_as)
         self.action_open.triggered.connect(self.fun_load)
+        self.action_open_add.triggered.connect(self.load_add_scenarios)
         self.action_new.triggered.connect(self.fun_new)
-        self.action_rename_scenario.triggered.connect(lambda: self.fun_rename_scenario())
+        self.action_rename_scenario.triggered.connect(self.fun_rename_scenario)
         self.list_widget_scenario.setDragDropMode(QtW.QAbstractItemView.InternalMove)
         # self.list_widget_scenario.model().rowsMoved.connect(self.fun_move_scenario)
         self.list_widget_scenario.currentItemChanged.connect(self.scenario_is_changed)
@@ -702,6 +715,23 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         )
         button.setIcon(icon)  # set icon to button
 
+    def set_name(self, name: str) -> str:
+        """
+        set the text of the item and checks for the appearens in the current scenario names
+        Parameters
+        ----------
+        name: str
+            scenario name
+
+        Returns
+        -------
+            str
+        """
+        # sets the name of the current scenario to text
+        if name in [self.list_widget_scenario.item(x).text().split("*")[0] for x in range(self.list_widget_scenario.count())]:
+            name += "(2)"
+        return name
+
     def fun_rename_scenario(self, name: str = "") -> None:
         """
         Function to rename the current scenario with a dialog box to ask for a new name
@@ -721,17 +751,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if item is None:
             return
 
-        def set_name(text):
-            # sets the name of the current scenario to text
-            list_of_scenarios = [self.list_widget_scenario.item(x).text().split("*")[0] for x in range(self.list_widget_scenario.count())]
-            if text in list_of_scenarios:
-                text += "(2)"
-            item.setText(text) if text else None
-
         # get first item if no one is selected
         item = self.list_widget_scenario.item(0) if item is None else item
         if name:
-            set_name(name)
+            item.setText(self.set_name(name)) if name else None
             return
 
         # create dialog box to ask for a new name
@@ -748,7 +771,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         [set_default_font(button) for button in li]
         # set new name if the dialog is not canceled and the text is not None
         if self.dialog.exec() == QtW.QDialog.Accepted:
-            set_name(self.dialog.textValue())
+            name = self.dialog.textValue()
+            item.setText(self.set_name(name)) if name else None
 
         self.dialog = None
 
@@ -945,7 +969,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         thread.any_signal.connect(self._saving_threads_update)
         thread.start() if not MainWindow.TEST_MODE else None
 
-    def _load_from_data(self, location: str | Path) -> None:
+    def _load_from_data(self, location: str | Path, append: bool = False) -> None:
         """
         This function loads the data from a JSON formatted file.
 
@@ -968,15 +992,19 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if saving["version"] in self.version_import_functions:
             saving = self.version_import_functions[saving["version"]](saving)
         # set and change the window title
-        self.filename = tuple(saving["filename"])
-        self.change_window_title()
-        self.list_widget_scenario.clear()
+        if not append:
+            self.filename = tuple(saving["filename"])
+            self.change_window_title()
+            self.list_widget_scenario.clear()
+        else:
+            self.changedFile: bool = True
+            self.change_window_title()
         # write data to variables
         for _idx, (val, results, name) in enumerate(zip(saving["values"], saving["results"], saving["names"])):
             d_s = DataStorage(self.gui_structure)
             d_s.from_dict(val)
             d_s.results = None if results is None else self.result_creating_class.from_dict(results)
-            item = QtW.QListWidgetItem(name)
+            item = QtW.QListWidgetItem(self.set_name(name))
             item.setData(MainWindow.role, d_s)
             self.list_widget_scenario.addItem(item)
 
@@ -1020,6 +1048,38 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()[0]])
         except PermissionError:  # pragma: no cover
             globs.LOGGER.error("PermissionError")
+
+    def load_add_scenarios(self) -> None:
+        """
+        This function sets the filename by opening a QFileDialog box.
+        Afterwards, it runs fun_load_known_filename() to open this file.
+
+        Returns
+        -------
+        None
+        """
+        # open interface and get file name
+        filename = QtW.QFileDialog.getOpenFileName(
+            self.central_widget,
+            caption=self.translations.choose_load[self.gui_structure.option_language.get_value()[0]],
+            filter=";;".join(
+                    extension
+                    for extension in [f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})"]
+                    + [f"{extension} (*.{extension})" for extension in list(self.import_functions.keys())[2:]]
+                ),
+            dir=str(self.default_path),
+        )
+        # break function if no file is selected
+        if filename == MainWindow.filename_default or not filename[0]:
+            return
+        # deactivate checking
+        self.checking: bool = False
+        self.gui_structure.loaded = False
+        # open file and set data
+        self._load_from_data(filename[0], append=True)
+        # activate checking
+        self.checking: bool = True
+        self.gui_structure.loaded = True
 
     def fun_load(self) -> None:
         """
@@ -1103,6 +1163,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             True if the saving was successful.
         """
         # ask for pickle file if the filename is still the default
+        logging.info(f"{filename}, {MainWindow.filename_default}: {self.filename}")
         if not isinstance(filename, tuple):
             if self.filename == MainWindow.filename_default:
                 self.fun_save_as()
@@ -1312,11 +1373,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # stop finished thread
         results.terminate()
-
         # count number of finished calculated scenarios
         item_list = [thread.item for thread in self.threads]
-        open_threads = [thread for thread in self.threads if not thread.calculated]
-        n_closed_threads = len(self.threads) - len(open_threads)
+        open_threads = [thread for thread in self.threads if not thread.calculated and not thread.isRunning()]
+        n_closed_threads = len(self.threads) - len([thread for thread in self.threads if not thread.calculated])
         # update progress bar
         self.update_bar(n_closed_threads)
         # if number of finished is the number that has to be calculated enable buttons and actions and change page to
@@ -1469,7 +1529,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 fig_obj.show()
                 fig_obj.canvas.show()
                 # draw new plot
-                fig.tight_layout()
+                fig.tight_layout() if fig_obj.frame.isVisible() else None
                 fig_obj.canvas.draw()
                 # set figure to datastorage
                 setattr(ds, fig_name, fig)
@@ -1481,7 +1541,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             fig_obj.show()
             fig_obj.canvas.show()
             # draw new plot
-            fig.tight_layout()
+            fig.tight_layout() if fig_obj.frame.isVisible() and not(fig_obj.fig.get_tight_layout()) else None
             fig_obj.canvas.draw()
 
         # update result for every ResultText object

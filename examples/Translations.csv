@@ -3,6 +3,7 @@ action_add_scenario;Add scenario;Szenario hinzufügen
 action_delete_scenario;Delete scenario;Szenario löschen
 action_new;New Project;Neues Projekt
 action_open;Open Project;Öffne Projekt
+action_open_add;Open Project as new scenarios;Öffne Projekt als neue Szenarios
 action_rename_scenario;Rename scenario;Szenario umbenennen
 action_save;Save Project;Speichere Projekt
 action_save_as;Save as;Speichere Projekt unter ...
@@ -59,6 +60,7 @@ option_toggle_buttons;Use toggle buttons?:, no , yes ;Umschalterbutton?:, Nein ,
 no_file_selected;No file selected.;Keine Datei ausgewählt.
 flex_option;layers,Layer,name,thickness,amount,amount;Schichten,Schicht,Name,Dicke,Anzahl,Anzahl
 page_inputs;Inputs,Input;Eingaben,Eingabe
+page_output;Outputs,Output;Ausgaben,Ausgabe
 option_n_threads;Number of parallel threads [-]: ;Anzahl an parallelen Prozessen [-]:
 cat_no_results;No results;Keine Ergebnisse
 text_no_result;No results are yet calculated;Es wurden noch keine Ergebnisse berechnet
