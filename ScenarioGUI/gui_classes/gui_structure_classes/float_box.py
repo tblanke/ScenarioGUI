@@ -13,7 +13,8 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from .functions import check_and_set_max_min_values
+
+from .functions import check_and_set_max_min_values, _create_function_2_check_linked_value
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -111,7 +112,7 @@ class FloatBox(Option):
         self.minimal_value: float = minimal_value
         self.maximal_value: float = maximal_value
         self.step: float = step
-        self.widget: DoubleSpinBox = DoubleSpinBox(self.default_parent)
+        self.widget: DoubleSpinBox = DoubleSpinBox(self.default_parent, valueChanged=self.valueChanged.emit)
 
     def get_value(self) -> float:
         """
@@ -248,20 +249,22 @@ class FloatBox(Option):
             return True
         return False
 
-    def change_event(self, function_to_be_called: Callable) -> None:
+    def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
-        This function calls the function_to_be_called whenever the FloatBox is changed.
+        creates from values a function to check linked values
 
         Parameters
         ----------
-        function_to_be_called : callable
-            Function which should be called
+        value : tuple of 2 optional floats
+            first one is the below value and the second the above value
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
-        None
+        function
         """
-        self.widget.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
 
     def create_widget(
         self,

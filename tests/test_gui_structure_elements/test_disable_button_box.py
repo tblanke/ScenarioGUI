@@ -55,6 +55,7 @@ def test_disable_button_box(qtbot):
     main_window.delete_backup()
     for toggled in [0, 1]:
         main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+        main_window.gui_structure.button_box.add_link_2_show(main_window.gui_structure.filename, on_index=1)
         main_window.gui_structure.option_toggle_buttons.set_value(toggled)
         g_s = main_window.gui_structure
         g_s.button_box.set_value(1)

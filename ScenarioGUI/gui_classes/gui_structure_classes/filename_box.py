@@ -12,6 +12,7 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import _create_function_2_check_linked_value
 
 from ...utils import change_font_size, set_default_font
 from .option import Option
@@ -74,6 +75,7 @@ class FileNameBox(Option):
         self.button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
         self.file_extension = [file_extension] if isinstance(file_extension, str) else file_extension
         self.check_active: bool = False
+        self.widget.textChanged.connect(self.valueChanged.emit)
 
     def get_value(self) -> str:
         """
@@ -140,28 +142,22 @@ class FileNameBox(Option):
         """
         return self.get_value() == value
 
-    def change_event(self, function_to_be_called: Callable) -> None:
+    def create_function_2_check_linked_value(self, value: str, value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
-        This function calls the function_to_be_called whenever the FileNameBox is changed.
+        creates from values a function to check linked values
 
         Parameters
         ----------
-        function_to_be_called : callable
-            Function which should be called
+        value : str
+            str on which the option should be shown
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
-        None
-
-        Examples
-        --------
-        >>> self.option_filename.change_event(self.fun_update_combo_box_data_file)
-
-        The code above is used in gui_structure.py to update the information related to the input of hourly data,
-        whenever a new file is selected.
-
+        function
         """
-        self.widget.textChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
 
     def create_widget(
         self,

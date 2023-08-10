@@ -39,6 +39,7 @@ def test_filename_read(qtbot) -> None:
     main_window.gui_structure.filename.button.click()
     assert main_window.gui_structure.filename.get_value() == file
     assert main_window.gui_structure.filename.check_linked_value(file)
+    assert main_window.gui_structure.filename.create_function_2_check_linked_value(file)() == main_window.gui_structure.filename.check_linked_value(file)
     main_window.save_scenario()
     assert "filename" in main_window.list_ds[0].to_dict()
     close_tests(main_window, qtbot)

@@ -28,6 +28,7 @@ def test_float_box_with_units(qtbot):
     assert float_units.check_linked_value((200, None))
     assert float_units.check_linked_value((None, 50))
     assert not float_units.check_linked_value((50, 200))
+    assert float_units.check_linked_value((50, 200)) == float_units.create_function_2_check_linked_value((50, 200))()
     float_units.show_option(main_window.gui_structure.int_a, 50, 200)
     main_window.gui_structure.page_inputs.button.click()
     assert main_window.gui_structure.int_a.is_hidden()

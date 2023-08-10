@@ -14,7 +14,7 @@ import ScenarioGUI.global_settings as globs
 
 from ...utils import change_font_size, set_default_font
 from .aim import Aim
-from .functions import check_aim_options, update_opponent_not_change, update_opponent_toggle
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check_aim_options, update_opponent_not_change, update_opponent_toggle
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -141,10 +141,10 @@ class Page:
         self.next_page = next_page
 
     def create_page(
-            self,
-            central_widget: QtW.QWidget,
-            stacked_widget: QtW.QStackedWidget,
-            vertical_layout_menu: QtW.QVBoxLayout,
+        self,
+        central_widget: QtW.QWidget,
+        stacked_widget: QtW.QStackedWidget,
+        vertical_layout_menu: QtW.QVBoxLayout,
     ) -> None:
         """
         This function creates the Page onto the central_widget.
@@ -276,22 +276,21 @@ class Page:
             for idx, aim in enumerate(list_aims):
                 default_value = 1 if idx == 0 else 0
                 aim.widget.clicked.connect(
-                                                      ft_partial(
-                                                          self.update_function,
-                                                          aim.widget,
-                                                          list_aims[default_value].widget,
-                                                          [aim.widget for i, aim in enumerate(list_aims) if i not in [idx, default_value]],
-                                                      )
-                                           )  # pylint: disable=E1101
+                    ft_partial(
+                        self.update_function,
+                        aim.widget,
+                        list_aims[default_value].widget,
+                        [aim.widget for i, aim in enumerate(list_aims) if i not in [idx, default_value]],
+                    )
+                )  # pylint: disable=E1101
                 aim.widget.toggled.connect(ft_partial(check_aim_options, list_aims))  # pylint: disable=E1101
-                _ = [aim.widget.toggled.connect(func) for func in aim.functions]
             list_aims[0].widget.click()
 
     def update_function(
-            self,
-            button: QtW.QPushButton,
-            button_opponent: QtW.QPushButton,
-            false_button_list: list[QtW.QPushButton] = None,
+        self,
+        button: QtW.QPushButton,
+        button_opponent: QtW.QPushButton,
+        false_button_list: list[QtW.QPushButton] = None,
     ) -> None:
         """
         This function updates which button should be checked/activated or unchecked/deactivated

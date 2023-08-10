@@ -6,10 +6,11 @@ from __future__ import annotations
 import abc
 from typing import TYPE_CHECKING
 
+import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from ScenarioGUI.utils import change_font_size, set_default_font
+from ScenarioGUI.utils import change_font_size, set_default_font, Signal
 
 from .aim import Aim
 
@@ -17,19 +18,21 @@ if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
     from typing import Protocol
 
-
     class CategoryOrFlexibleOption(Protocol):
         """class with list_of_options"""
+
         list_of_options: list[Option]
 
 
-class Option(metaclass=abc.ABCMeta):
+class Option(QtC.QObject):
     """
     Abstract base class for a gui option.
     """
 
     default_parent: QtW.QWidget | None = None
     hidden_option_editable: bool = True
+
+    value_if_hidden: bool | None = None
 
     def __init__(
         self,
@@ -47,6 +50,7 @@ class Option(metaclass=abc.ABCMeta):
         category : Category FlexibleOption
             The category in which the option should be placed
         """
+        super().__init__()
         self.label_text: list[str] = [label] if isinstance(label, str) else label
         self.default_value: bool | int | float | str = default_value
         self.widget: QtW.QWidget | None = None
@@ -56,6 +60,8 @@ class Option(metaclass=abc.ABCMeta):
         self.limit_size: bool = True
         category.list_of_options.append(self)
         self.list_2_check_before_value: list[tuple[Option, int], Aim] = []
+        self.visibilityChanged: Signal = Signal()
+        self.valueChanged: Signal = Signal()
 
     @abc.abstractmethod
     def get_value(self) -> bool | int | float | str:
@@ -263,8 +269,9 @@ class Option(metaclass=abc.ABCMeta):
         # if self.is_hidden():
         #     return
         self.frame.hide()
-        self.frame.setEnabled(False) if not self.hidden_option_editable else None
+        self.frame.setEnabled(self.hidden_option_editable)
         [option.hide() for option, value in self.linked_options]
+        self.visibilityChanged.emit()
 
     def is_hidden(self) -> bool:
         """
@@ -290,6 +297,7 @@ class Option(metaclass=abc.ABCMeta):
         self.frame.show()
         self.frame.setEnabled(True)
         [option.show() for option, value in self.linked_options if self.check_linked_value(value)]
+        self.visibilityChanged.emit()
 
     @abc.abstractmethod
     def check_linked_value(
@@ -310,19 +318,43 @@ class Option(metaclass=abc.ABCMeta):
             True if it is the current value
         """
 
-    @abc.abstractmethod
-    def change_event(self, function_to_be_called: Callable) -> None:
+    def change_event(self, function_to_be_called: Callable, *, also_on_visibility: bool = False) -> None:
         """
-        This function calls the function_to_be_called whenever the option is changed.
+        This function calls the function_to_be_called whenever the FloatBox is changed.
 
         Parameters
         ----------
         function_to_be_called : callable
             Function which should be called
+        also_on_visibility: bool
+            should the function also be called if the visibility has changed
 
         Returns
         -------
         None
+        """
+        self.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        if also_on_visibility:
+            self.visibilityChanged.connect(function_to_be_called)
+
+    @abc.abstractmethod
+    def create_function_2_check_linked_value(
+        self,
+        value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | str | bool,
+        value_if_hidden: bool | None,
+    ) -> Callable[[], bool]:
+        """
+        creates from values a function to check linked values
+
+        Parameters
+        ----------
+        value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | str | bool
+
+        value_if_hidden: bool | None
+
+        Returns
+        -------
+
         """
 
     def set_font_size(self, size: int) -> None:

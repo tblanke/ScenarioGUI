@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC
@@ -8,7 +9,8 @@ import PySide6.QtWidgets as QtW
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.utils import change_font_size, set_default_font
 
-from .functions import check_and_set_max_min_values
+from .functions import check_and_set_max_min_values, _create_function_2_check_linked_value
+
 from .int_box import IntBox
 from .list_box import ComboBox
 
@@ -70,7 +72,7 @@ class IntBoxWithUnits(IntBox):
         """
         super().__init__(label=label, default_value=default_value, category=category, maximal_value=maximal_value, minimal_value=minimal_value, step=step)
         self.units: list[tuple[str, float]] = [] if units is None else units
-        self.unit_widget: ComboBox = ComboBox(self.default_parent)
+        self.unit_widget: ComboBox = ComboBox(self.default_parent, currentIndexChanged=self.valueChanged.emit)
 
     def _init_links(self) -> None:
         """
@@ -184,21 +186,22 @@ class IntBoxWithUnits(IntBox):
         value = self.get_value()
         return self.minimal_value <= value[0] / self.units[value[1]][1] <= self.maximal_value
 
-    def change_event(self, function_to_be_called: Callable) -> None:
+    def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
-        This function calls the function_to_be_called whenever the IntBox is changed.
+        creates from values a function to check linked values
 
         Parameters
         ----------
-        function_to_be_called : callable
-            Function which should be called
+        value : tuple of 2 optional ints
+            first one is the below value and the second the above value
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
-        None
+        function
         """
-        self.widget.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
-        self.unit_widget.currentIndexChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
 
     def set_font_size(self, size: int) -> None:
         """

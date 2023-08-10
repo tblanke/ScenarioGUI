@@ -3,13 +3,14 @@ script which contain basic gui structure functions
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
+from functools import partial as ft_partial
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW  # type: ignore
 
-    from .aim import Aim
-    from .option import Option
+    from ScenarioGUI.gui_classes.gui_structure_classes.aim import Aim
+    from ScenarioGUI.gui_classes.gui_structure_classes.option import Option
 
 
 def check_and_set_max_min_values(widget: QtW.QSpinBox | QtW.QDoubleSpinBox, value: int | float, default_max: int | float, default_min: int | float) -> None:
@@ -164,22 +165,18 @@ def check_aim_options(list_aim: list[Aim], *args) -> None:
             option.show()
 
 
-def show_linked_options(options_list: list[Option]) -> None:
-    """
-    This function makes sure that for a given list of options, all linked options are shown if the option
-    itself is not hidden.
+def _create_function_2_check_linked_value(
+    option: Option,
+    value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | str | bool,
+    value_if_hidden: bool | None,
+) -> Callable[[], bool]:
+    value_if_hidden = option.value_if_hidden if value_if_hidden is None else value_if_hidden
+    if value_if_hidden is None:
+        return ft_partial(option.check_linked_value, value)
 
-    Parameters
-    ----------
-    options_list : List(Option)
-        A list of options which have linked options
-
-    Returns
-    -------
-    None
-    """
-    for option in options_list:
+    def func():
         if option.is_hidden():
-            continue
-        # show already shown option to evoke linked options
-        option.show()
+            return value_if_hidden
+        return option.check_linked_value(value)
+
+    return func

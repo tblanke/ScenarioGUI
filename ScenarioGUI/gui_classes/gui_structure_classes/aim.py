@@ -11,7 +11,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 
-from ...utils import change_font_size, set_default_font
+from ...utils import change_font_size, set_default_font, Signal
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -66,10 +66,22 @@ class Aim:
         """
         self.label: list[str] = [label] if isinstance(label, str) else label
         self.icon: str = icon
-        self.widget: QtW.QPushButton = QtW.QPushButton(self.default_parent)
         self.list_options: list[Option | Category | FunctionButton] = []
-        self.functions: list[Callable] = []
+        self.visibilityChanged: Signal = Signal()
+        self.valueChanged: Signal = Signal()
+        self.widget: QtW.QPushButton = QtW.QPushButton(self.default_parent)
         page.upper_frame.append(self)
+
+    def show(self):
+        self.widget.show()
+        self.visibilityChanged.emit()
+
+    def hide(self):
+        self.widget.hide()
+        self.visibilityChanged.emit()
+
+    def is_hidden(self) -> bool:
+        return self.widget.isHidden()
 
     def set_text(self, name: str) -> None:
         """
@@ -100,24 +112,24 @@ class Aim:
         """
         change_font_size(self.widget, size)
 
-    def change_event(self, function_to_be_called: Callable, *args) -> None:
+    def change_event(self, function_to_be_called: Callable, *, also_on_visibility: bool = False) -> None:
         """
-        This function calls the function_to_be_called whenever the Aim is changed.
+        This function calls the function_to_be_called whenever the FloatBox is changed.
 
         Parameters
         ----------
         function_to_be_called : callable
             Function which should be called
-        *args
-            Arguments which are passed through to the function_to_be_called
+        also_on_visibility: bool
+            should the function also be called if the visibility has changed
 
         Returns
         -------
         None
         """
-        self.functions.append(lambda: function_to_be_called(*args))  # pylint: disable=E1101
-        if self.widget.parent() != self.default_parent:
-            self.widget.toggled.connect(lambda: function_to_be_called(*args))
+        self.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        if also_on_visibility:
+            self.visibilityChanged.connect(function_to_be_called)
 
     def add_link_2_show(self, option: Option | Category | FunctionButton | Hint):
         """
@@ -178,6 +190,7 @@ class Aim:
         push_button.setIconSize(QtC.QSize(30, 30))
         push_button.setCheckable(True)
         push_button.setText(self.label[0])
+        push_button.toggled.connect(self.valueChanged.emit)
         layout.addWidget(push_button, idx[0], idx[1], 1, 1)
 
     def translate(self, idx: int) -> None:

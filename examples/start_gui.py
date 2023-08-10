@@ -110,9 +110,15 @@ class GUI(GuiStructure):
             default_value=2,
             minimal_value=0,
             maximal_value=200,
-            category=self.category_inputs
+            category=self.category_inputs,
         )
-        self.int_a.change_event(self.disable_aim(self.aim_sub, self.page_inputs, partial(self.int_a.check_linked_value, (None, 5))))
+        self.int_a.change_event(
+            self.disable_aim(
+                self.aim_sub,
+                self.page_inputs,
+                partial(self.int_a.check_linked_value, (None, 5)),
+            )
+        )
 
         self.int_units = els.IntBoxWithUnits(
             label="IntBoxWithUnits",
@@ -120,7 +126,7 @@ class GUI(GuiStructure):
             minimal_value=0,
             maximal_value=200,
             category=self.category_inputs,
-            units=[("kW", 1), ("W", 0.001), ("MW", 1_000)]
+            units=[("kW", 1), ("W", 0.001), ("MW", 1_000)],
         )
 
         self.float_units = els.FloatBoxWithUnits(
@@ -130,7 +136,7 @@ class GUI(GuiStructure):
             maximal_value=200,
             decimal_number=2,
             category=self.category_inputs,
-            units=[("kW", 1), ("W", 0.001), ("MW", 1_000)]
+            units=[("kW", 1), ("W", 0.001), ("MW", 1_000)],
         )
         self.float_units.activate_scale_decimals()
 
@@ -141,49 +147,116 @@ class GUI(GuiStructure):
             default_value=100,
             minimal_value=0,
             maximal_value=1000,
-            decimal_number=4,
+            decimal_number=2,
             category=self.sub_category,
         )
 
-        self.list_box = els.ListBox(label="List box", default_index=0, category=self.category_inputs, entries=["1", "2", "3", "4"])
+        self.list_box = els.ListBox(
+            label="List box",
+            default_index=0,
+            category=self.category_inputs,
+            entries=["1", "2", "3", "4"],
+        )
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
-        self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
-                                        file_extension=["txt", "csv"])
+        self.filename = els.FileNameBox(
+            label="Filename",
+            default_value=file,
+            category=self.category_inputs,
+            dialog_text="Hello",
+            error_text="no file found",
+            file_extension=["txt", "csv"],
+        )
 
-        self.text_box_only_on_add = els.TextBox(label="Only visible on add", default_text="Hello", category=self.category_inputs)
+        self.text_box_only_on_add = els.TextBox(
+            label="Only visible on add",
+            default_text="Hello",
+            category=self.category_inputs,
+        )
 
         self.aim_add.add_link_2_show(self.text_box_only_on_add)
         # self.aim_add.add_link_2_show(self.filename)
-        self.button_box = els.ButtonBox(label="a or b or c?", default_index=0, entries=["a", "b", "c"], category=self.category_inputs)
+        self.button_box = els.ButtonBox(
+            label="a or b or c?",
+            default_index=0,
+            entries=["a", "b", "c"],
+            category=self.category_inputs,
+        )
 
         self.aim_plot.widget.toggled.connect(self.disable_button_box(self.button_box, at_index=2, func_2_check=self.aim_plot.widget.isChecked))
         self.float_b.change_event(self.disable_button_box(self.button_box, 1, partial(self.float_b.check_linked_value, (50, None))))
         self.int_a.change_event(self.disable_button_box(self.button_box, 0, partial(self.int_a.check_linked_value, (None, 10))))
 
-        self.button_box_short = els.ButtonBox(label="b or c?", default_index=0, entries=["b", "c"], category=self.category_inputs)
-        self.float_b.change_event(self.disable_button_box(self.button_box_short, 1, partial(self.float_b.check_linked_value, (50, None))))
-        self.int_a.change_event(self.disable_button_box(self.button_box_short, 0, partial(self.int_a.check_linked_value, (None, 10))))
+        self.button_box_short = els.ButtonBox(
+            label="b or c?",
+            default_index=0,
+            entries=["b", "c"],
+            category=self.category_inputs,
+        )
+        self.float_b.change_event(
+            self.disable_button_box(
+                self.button_box_short,
+                1,
+                partial(self.float_b.check_linked_value, (50, None)),
+            )
+        )
+        self.int_a.change_event(
+            self.disable_button_box(
+                self.button_box_short,
+                0,
+                partial(self.int_a.check_linked_value, (None, 10)),
+            )
+        )
 
         self.function_button = els.FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
 
         self.text_box = els.TextBox(label="Login", default_text="Hello", category=self.category_inputs)
-        self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)
+        self.text_box_multi_line = els.TextBoxMultiLine(
+            label="Example Multi Line",
+            default_text="Hello\nmulti line",
+            category=self.category_inputs,
+        )
         self.text_box.deactivate_size_limit()
-        self.pass_word = els.TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
-        
-        self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=3, entry_mame="Layer", category=self.category_inputs,
-                                              min_length=2, max_length=5,default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
+        self.pass_word = els.TextBox(
+            label="Password",
+            default_text="1234",
+            category=self.category_inputs,
+            password=True,
+        )
+
+        self.flex_option = els.FlexibleAmount(
+            label=self.translations.flex_option,
+            default_length=2,
+            entry_mame="Layer",
+            category=self.category_inputs,
+            min_length=2,
+            default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]],
+        )
         self.flex_option.add_option(els.TextBox, name="name", default_text="layer")
 
-        self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number = 2)
+        self.flex_option.add_option(
+            els.FloatBox,
+            name="thickness",
+            default_value=10,
+            minimal_value=5,
+            decimal_number=2,
+        )
         self.flex_option.add_option(els.IntBox, name="amount", default_value=4, minimal_value=2)
-        self.flex_option.add_option(els.ListBox, name="entry", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
-        self.hint_flex = els.Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
+        self.flex_option.add_option(
+            els.ListBox,
+            name="entry",
+            default_index=0,
+            entries=["entry 1", "entry 2", "entry 3"],
+        )
+        self.hint_flex = els.Hint(
+            hint="wrong length of flexible option",
+            category=self.category_inputs,
+            warning=True,
+        )
         self.flex_option.add_link_2_show(self.hint_flex, 2, 6)
         self.aim_plot.add_link_2_show(self.flex_option)
         # self.button_box.add_link_2_show(self.filename, on_index=1)
-        self.show_option_under_multiple_conditions(self.filename, [self.button_box, self.aim_add], [partial(self.button_box.check_linked_value, 1),
+        self.show_option_under_multiple_conditions(self.filename, [self.button_box, self.aim_add], functions_check_for_and= [partial(self.button_box.check_linked_value, 1),
                                                                                                     self.aim_add.widget.isChecked])
 
         self.category_grid = els.Category(page=self.page_inputs, label="Grid")
@@ -233,24 +306,61 @@ class GUI(GuiStructure):
         self.result_text_add = els.ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
         self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2))
+        self.result_depending_visibility = els.ResultText("Result depending visibility", category=self.numerical_results,
+                                                          prefix="Result depending visibility: ", suffix="m")
+        self.result_depending_visibility.text_to_be_shown("ResultsClass", "get_result")
+        self.result_depending_visibility.function_to_convert_to_text(lambda x: round(x, 2))
         self.result_text_sub = els.ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
 
-        self.result_export = els.ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
-                                          caption="Select file", file_extension="txt")
+        # the option float_units is shown if int_small_2 is below 26 and (aim_plot is selected or int_small_1 is above 20)
+        self.show_option_under_multiple_conditions(
+            [self.result_depending_visibility, self.float_units],
+            [self.aim_plot, self.int_small_1, self.int_small_2],
+            custom_logic=lambda: (self.aim_plot.widget.isChecked() or self.int_small_1.check_linked_value(
+                (None, 20))) and self.int_small_2.check_linked_value((26, None))
+        )
 
-        self.figure_results = els.ResultFigure(label=self.translations.figure_results, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
+        self.result_export = els.ResultExport(
+            "Export results",
+            icon="Download",
+            category=self.numerical_results,
+            export_function=ResultsClass.export,
+            caption="Select file",
+            file_extension="txt",
+        )
+
+        self.figure_results = els.ResultFigure(
+            label=self.translations.figure_results,
+            page=self.page_result,
+            x_axes_text="X-Axes",
+            y_axes_text="Y-Axes",
+        )
         self.legend_figure_results = els.FigureOption(
-            category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
+            category=self.figure_results,
+            label="Legend on",
+            param="legend",
+            default=0,
+            entries=["No", "Yes"],
+            entries_values=[False, True],
         )
 
         self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
 
-        self.figure_results_multiple_lines = els.ResultFigure(label=self.translations.figure_results_multiple_lines, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
+        self.figure_results_multiple_lines = els.ResultFigure(
+            label=self.translations.figure_results_multiple_lines,
+            page=self.page_result,
+            x_axes_text="X-Axes",
+            y_axes_text="Y-Axes",
+        )
         self.legend_figure_results_multiple_lines = els.FigureOption(
-            category=self.figure_results_multiple_lines, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
-            entries_values=[False, True]
+            category=self.figure_results_multiple_lines,
+            label="Legend on",
+            param="legend",
+            default=0,
+            entries=["No", "Yes"],
+            entries_values=[False, True],
         )
         self.figure_results_multiple_lines.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot_multiple_lines")
 
@@ -298,7 +408,7 @@ class GUI(GuiStructure):
 
     def check(self) -> bool:
         if self.started:
-            logging.info('This should not be shown whilst loading')
+            logging.info("This should not be shown whilst loading")
 
 
 def run(path_list=None):  # pragma: no cover
@@ -314,7 +424,14 @@ def run(path_list=None):  # pragma: no cover
     # init window
     window = QtW.QMainWindow()
     # init gui window
-    main_window = MainWindow(window, app, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = MainWindow(
+        window,
+        app,
+        GUI,
+        Translations,
+        result_creating_class=ResultsClass,
+        data_2_results_function=data_2_results,
+    )
     # load file if it is in path list
     if path_list is not None:
         main_window.filename = (
