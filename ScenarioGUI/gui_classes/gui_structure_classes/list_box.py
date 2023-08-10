@@ -192,7 +192,7 @@ class ListBox(Option):
         """
         return self.widget.currentIndex() == value
 
-    def create_function_2_check_linked_value(self, value: int, value_if_hidden: bool | None) -> Callable[[], bool]:
+    def create_function_2_check_linked_value(self, value: int, value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
         creates from values a function to check linked values
 
@@ -200,7 +200,7 @@ class ListBox(Option):
         ----------
         value : int
             int of index on which the option should be shown
-        value_if_hidden: bool
+        value_if_hidden: bool | None
             the return value, if the option is hidden
 
         Returns

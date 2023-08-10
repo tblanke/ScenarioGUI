@@ -24,7 +24,7 @@ from .gui_calculation_thread import CalcProblem
 from .gui_data_storage import DataStorage
 from .gui_saving_thread import SavingThread
 from .gui_structure_classes import FigureOption, Option, ResultExport
-from ScenarioGUI.gui_classes.gui_structure_classes.functions import check_aim_options, show_linked_options
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check_aim_options
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -1416,7 +1416,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         def update_results():
             # update so all the relevant options are shown
             check_aim_options([aim for aim, _ in self.gui_structure.list_of_aims])
-            show_linked_options([option for option, _ in self.gui_structure.list_of_options_with_dependent_results])
+            [option.show() for option, _ in self.gui_structure.list_of_options_with_dependent_results if not option.is_hidden()]
 
         # hide widgets if no list of scenarios exists and display not calculated text
         def hide_no_result(hide: bool = True):

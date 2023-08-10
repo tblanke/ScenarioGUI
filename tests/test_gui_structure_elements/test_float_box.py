@@ -26,6 +26,8 @@ def test_float_box(qtbot):
     assert float_b.create_function_2_check_linked_value((None, 50), value_if_hidden=True)()
     assert not float_b.create_function_2_check_linked_value((None, 50), value_if_hidden=False)()
     float_b.show()
+    assert not float_b.is_hidden()
+    assert float_b.create_function_2_check_linked_value((None, 50), value_if_hidden=True)() == float_b.check_linked_value((None, 50))
     float_b.hide()
     float_b.value_if_hidden = True
     assert float_b.create_function_2_check_linked_value((None, 50))()

@@ -165,27 +165,6 @@ def check_aim_options(list_aim: list[Aim], *args) -> None:
             option.show()
 
 
-def show_linked_options(options_list: list[Option]) -> None:
-    """
-    This function makes sure that for a given list of options, all linked options are shown if the option
-    itself is not hidden.
-
-    Parameters
-    ----------
-    options_list : List(Option)
-        A list of options which have linked options
-
-    Returns
-    -------
-    None
-    """
-    for option in options_list:
-        if option.is_hidden():
-            continue
-        # show already shown option to evoke linked options
-        option.show()
-
-
 def _create_function_2_check_linked_value(
     option: Option,
     value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | str | bool,
@@ -198,6 +177,6 @@ def _create_function_2_check_linked_value(
     def func():
         if option.is_hidden():
             return value_if_hidden
-        option.check_linked_value(value)
+        return option.check_linked_value(value)
 
     return func
