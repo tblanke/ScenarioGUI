@@ -158,8 +158,14 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.verticalSpacer = QtW.QSpacerItem(20, 40, QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Expanding)
         self.vertical_layout_menu.addItem(self.verticalSpacer)
 
-        self.import_functions: dict[str, Callable[[str | Path], JsonDict]] = {globs.FILE_EXTENSION: normal_import, f"{globs.FILE_EXTENSION}BackUp": normal_import}
-        self.export_functions: dict[str, Callable[[str | Path, JsonDict], None]] = {globs.FILE_EXTENSION: normal_export, f"{globs.FILE_EXTENSION}BackUp": normal_export}
+        self.import_functions: dict[str, Callable[[str | Path], JsonDict]] = {
+            globs.FILE_EXTENSION: normal_import,
+            f"{globs.FILE_EXTENSION}BackUp": normal_import,
+        }
+        self.export_functions: dict[str, Callable[[str | Path, JsonDict], None]] = {
+            globs.FILE_EXTENSION: normal_export,
+            f"{globs.FILE_EXTENSION}BackUp": normal_export,
+        }
         self.version_import_functions: dict[str, Callable[[JsonDict], JsonDict]] = {}
 
         # set app and dialog
@@ -243,13 +249,19 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             None
         """
         height = self.dia.size().height()
-        if len(self.gui_structure.list_of_pages) * 80 > height * 0.7:
-            self.size_push_b = QtC.QSize(150, int(height * 0.7 / len(self.gui_structure.list_of_pages)))  # size of big push button
-            self.size_push_s = QtC.QSize(75, int(height * 0.7 / len(self.gui_structure.list_of_pages)))  # size of small push button
+        if (len(self.gui_structure.list_of_pages) + 1) * 80 > height * 0.7:
+            self.size_push_b = QtC.QSize(150, int((height * 0.7 - 5 * len(self.gui_structure.list_of_pages)) / (len(self.gui_structure.list_of_pages) + 1)))  # size of big push button
+            self.size_push_s = QtC.QSize(75, int((height * 0.7 - 5 * len(self.gui_structure.list_of_pages)) / (len(self.gui_structure.list_of_pages) + 1)))  # size of
+            # small push button
+            self.size_b = QtC.QSize(
+                min(48, max(int(self.size_push_b.height() / 75 * 48), self.size_s.height())),
+                min(48, max(int(self.size_push_b.height() / 75 * 48), self.size_s.height())),
+            )
             self.check_page_button_layout(False)
         else:
             self.size_push_b = QtC.QSize(150, 75)  # size of big push button
             self.size_push_s = QtC.QSize(75, 75)  # size of small push button
+            self.size_b = QtC.QSize(48, 48)
             self.check_page_button_layout(False)
         QtW.QWidget.resizeEvent(self.dia, event)
 
@@ -1062,10 +1074,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.central_widget,
             caption=self.translations.choose_load[self.gui_structure.option_language.get_value()[0]],
             filter=";;".join(
-                    extension
-                    for extension in [f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})"]
-                    + [f"{extension} (*.{extension})" for extension in list(self.import_functions.keys())[2:]]
-                ),
+                extension
+                for extension in [f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})"]
+                + [f"{extension} (*.{extension})" for extension in list(self.import_functions.keys())[2:]]
+            ),
             dir=str(self.default_path),
         )
         # break function if no file is selected
@@ -1094,10 +1106,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.central_widget,
             caption=self.translations.choose_load[self.gui_structure.option_language.get_value()[0]],
             filter=";;".join(
-                    extension
-                    for extension in [f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})"]
-                    + [f"{extension} (*.{extension})" for extension in list(self.import_functions.keys())[2:]]
-                ),
+                extension
+                for extension in [f"{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})"]
+                + [f"{extension} (*.{extension})" for extension in list(self.import_functions.keys())[2:]]
+            ),
             dir=str(self.default_path),
         )
         # break function if no file is selected
@@ -1465,11 +1477,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        #if not exitst(reuts):
+
+        # if not exitst(reuts):
         #    self.gui_structure.page_result.page_0.show()
         #    _ = [res_fig.fig.close() for res_fig, _ in self.gui_structure.list_of_result_figures]
         #    return
-        #self.gui_structure.page_result.page_1.show()
+        # self.gui_structure.page_result.page_1.show()
 
         def update_results():
             # update so all the relevant options are shown
