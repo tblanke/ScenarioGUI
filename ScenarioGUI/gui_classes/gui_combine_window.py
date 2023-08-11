@@ -107,6 +107,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
     filename_default: tuple = ("", "")
     role: int = 99
     TEST_MODE: bool = False
+    button_width_large: int = 150
+    button_width_small: int = 75
+    button_height: int = 75
+    icon_size_small: int = 24
+    icon_size_large: int = 48
 
     def __init__(  # noqa: PLR0913
         self,
@@ -193,10 +198,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.threads: list[CalcProblem] = []  # list of calculation threads
         self.saving_threads: list[SavingThread] = []
         CalcProblem.role = MainWindow.role
-        self.size_b = QtC.QSize(48, 48)  # size of big logo on push button
-        self.size_s = QtC.QSize(24, 24)  # size of small logo on push button
-        self.size_push_b = QtC.QSize(150, 75)  # size of big push button
-        self.size_push_s = QtC.QSize(75, 75)  # size of small push button
+        self.size_b = QtC.QSize(self.icon_size_large, self.icon_size_large)  # size of big logo on push button
+        self.size_s = QtC.QSize(self.icon_size_small, self.icon_size_small)  # size of small logo on push button
+        self.size_push_b = QtC.QSize(self.button_width_large, self.button_height)  # size of big push button
+        self.size_push_s = QtC.QSize(self.button_width_small, self.button_height)  # size of small push button
         # init links from buttons to functions
         self.set_links()
         # set event filter for push button sizing
@@ -248,22 +253,29 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
             None
         """
+
         height = self.dia.size().height()
-        if (len(self.gui_structure.list_of_pages) + 1) * 80 > height * 0.7:
-            self.size_push_b = QtC.QSize(150, int((height * 0.7 - 5 * len(self.gui_structure.list_of_pages)) / (len(self.gui_structure.list_of_pages) + 1)))  # size of big push button
-            self.size_push_s = QtC.QSize(75, int((height * 0.7 - 5 * len(self.gui_structure.list_of_pages)) / (len(self.gui_structure.list_of_pages) + 1)))  # size of
+        if (len(self.gui_structure.list_of_pages) + 1) * (self.button_height + 6) > height * 0.7:
+            self.size_push_b = QtC.QSize(
+                self.button_width_large,
+                max(int((height * 0.7 - 6 * len(self.gui_structure.list_of_pages)) / (len(self.gui_structure.list_of_pages) + 1)), self.icon_size_small + 5),
+            )  # size of big push button
+            self.size_push_s = QtC.QSize(
+                self.button_width_small,
+                max(int((height * 0.7 - 6 * len(self.gui_structure.list_of_pages)) / (len(self.gui_structure.list_of_pages) + 1)), self.icon_size_small + 5),
+            )  # size of
             # small push button
             self.size_b = QtC.QSize(
-                min(48, max(int(self.size_push_b.height() / 75 * 48), self.size_s.height())),
-                min(48, max(int(self.size_push_b.height() / 75 * 48), self.size_s.height())),
+                min(self.icon_size_large, max(int(self.size_push_b.height() / self.button_height * self.icon_size_large), self.size_s.height())),
+                min(self.icon_size_large, max(int(self.size_push_b.height() / self.button_height * self.icon_size_large), self.size_s.height())),
             )
             self.check_page_button_layout(False)
         else:
-            self.size_push_b = QtC.QSize(150, 75)  # size of big push button
-            self.size_push_s = QtC.QSize(75, 75)  # size of small push button
-            self.size_b = QtC.QSize(48, 48)
+            self.size_push_b = QtC.QSize(self.button_width_large, self.button_height)  # size of big push button
+            self.size_push_s = QtC.QSize(self.button_width_small, self.button_height)  # size of small push button
+            self.size_b = QtC.QSize(self.icon_size_large, self.icon_size_large)
             self.check_page_button_layout(False)
-        QtW.QWidget.resizeEvent(self.dia, event)
+        QtW.QMainWindow.resizeEvent(self.dia, event)
 
     def add_other_import_function(self, file_extension: str, func: Callable[[str | Path], JsonDict]):
         """
@@ -522,12 +534,17 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if big:
             button.setIconSize(self.size_s)
             button.setMaximumSize(self.size_push_b)
-            button.setMinimumSize(self.size_push_b)
+            button.setMinimumSize(self.size_push_b.width(), self.size_s.height() + 5)
             button.resize(self.size_push_b)
+            button.setSizePolicy(QtW.QSizePolicy.Fixed, QtW.QSizePolicy.Expanding)
             return
         button.setIconSize(self.size_b)
+        #icon: QtG.QIcon = button.icon()
+        #icon.si
         button.setMaximumSize(self.size_push_s)
-        button.setMinimumSize(self.size_push_s)
+        button.setMinimumSize(self.size_s.height()+5, self.size_s.height()+5)
+        button.setSizePolicy(QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Expanding)
+        # button.setMinimumSize(self.size_push_s)
         button.resize(self.size_push_s)
 
     def change(self) -> None:
@@ -1163,10 +1180,14 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.filename = filename if splitext(filename[0])[1].replace(".", "") == globs.FILE_EXTENSION else self.filename
         self.fun_save(filename)  # save data under a new filename
 
-    def fun_save(self, filename: tuple[str, str] = None) -> bool:
+    def fun_save(self, filename: tuple[str, str] | None = None) -> bool:
         """
         This function saves all the scenarios in a JSON formatted *.{FILE_EXTENSION} file.
 
+        Parameters
+        -------
+        filename: tuple[str, str] | None
+            name of file
 
         Returns
         -------
@@ -1477,12 +1498,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-
-        # if not exitst(reuts):
-        #    self.gui_structure.page_result.page_0.show()
-        #    _ = [res_fig.fig.close() for res_fig, _ in self.gui_structure.list_of_result_figures]
-        #    return
-        # self.gui_structure.page_result.page_1.show()
 
         def update_results():
             # update so all the relevant options are shown
