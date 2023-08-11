@@ -4,285 +4,28 @@ script to start the GUI
 # pragma: no cover
 from __future__ import annotations
 
-import logging
 import sys
-from functools import partial
 from json import dump, load
 from pathlib import Path
 from platform import system
 from sys import argv
 from sys import exit as sys_exit
-from typing import TYPE_CHECKING
 
-from matplotlib import pyplot as plt
-from ScenarioGUI import GuiStructure
-from ScenarioGUI import elements as els
-from ScenarioGUI.gui_classes.gui_combine_window import JsonDict
+import PySide6.QtWidgets as QtW
 
-from examples.translation_class import Translations
-
-if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    import PySide6.QtWidgets as QtW
+from examples.example_classes.data_2_class_function import data_2_results
+from examples.example_classes.gui_structure import GUI
+from examples.example_classes.results_creation_class import ResultsClass
+from examples.translation_class_creation.translation_class import Translations
+from ScenarioGUI import load_config
+from ScenarioGUI.global_settings import FILE_EXTENSION
+from ScenarioGUI.gui_classes.gui_combine_window import JsonDict, MainWindow
 
 os_system = system()
 is_frozen = getattr(sys, "frozen", False) and os_system == "Windows"  # pragma: no cover
 
 
-class ResultsClass:
-    def __init__(self, a: int = 1, b: int = 2):
-        self.a = a
-        self.b = b
-        self.result = None
-
-    def adding(self):
-        # loop over 1_000_000 to take some time
-        self.result = 0
-        for i in range(50_000_000):
-            self.result += i
-        self.result = self.a + self.b
-
-    def subtract(self):
-        if self.a > 190:
-            raise ValueError
-        self.result = self.a - self.b
-
-    def get_result(self) -> float:
-        return self.result
-
-    def export(self, filename: str):
-        with open(filename, "w") as file:
-            file.write(f"result: {self.result}")
-
-    def create_plot(self, legend: bool = False) -> tuple[plt.Figure, plt.Axes]:
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        # set axes labels
-        ax.set_xlabel(r"Time (year)")
-        ax.set_ylabel(r"Temperature ($^\circ C$)")
-        ax.hlines(self.a, 0, self.b, colors="r", linestyles="dashed", label="line", lw=1)
-        if legend:
-            ax.legend()
-        return fig, ax
-
-    def create_plot_multiple_lines(self, legend: bool = False) -> tuple[plt.Figure, plt.Axes]:
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        # set axes labels
-        ax.set_xlabel(r"Time (year)")
-        ax.set_ylabel(r"Temperature ($^\circ C$)")
-        ax.hlines(self.a, 0, self.b, colors="r", linestyles="dashed", label="line", lw=1)
-        ax.hlines(self.a * 2, 0, self.b, colors="b", linestyles="dashed", label="line", lw=1)
-
-        if legend:
-            ax.legend()
-        return fig, ax
-
-    def to_dict(self) -> dict:
-        return {"a": self.a, "b": self.b, "result": self.result}
-
-    @staticmethod
-    def from_dict(dictionary: dict) -> ResultsClass:
-        res = ResultsClass(dictionary["a"], dictionary["b"])
-        res.result = dictionary["result"]
-        return res
-
-
-def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
-    result = ResultsClass(data.int_a, data.float_b)
-    return result, result.adding if data.aim_add else result.subtract
-
-
-class GUI(GuiStructure):
-    def __init__(self, default_parent: QtW.QWidget, translations: Translations):
-        super().__init__(default_parent, translations)
-        self.page_inputs = els.Page(name=translations.page_inputs, button_name="Inputs", icon="Add.svg")
-        self.page_inputs2 = els.Page(name=translations.page_inputs, button_name="Inputs", icon="Add.svg")
-        self.page_inputs3 = els.Page(name=translations.page_inputs, button_name="Inputs", icon="Add.svg")
-        self.page_inputs4 = els.Page(name=translations.page_inputs, button_name="Inputs", icon="Add.svg")
-        self.page_export = els.Page(name=translations.page_output, button_name="Output", icon="Delete.svg")
-        self.aim_add = els.Aim(label="Adding", icon="Add", page=self.page_inputs)
-        self.aim_sub = els.Aim(label="Substract", icon="Delete", page=self.page_inputs)
-        self.aim_plot = els.Aim(label="Plot", icon="Parameters", page=self.page_inputs)
-        # this three aims can appear in one row by setting:
-        self.page_inputs.aims_in_row = 3
-        self.category_inputs = els.Category(page=self.page_inputs, label="Inputs")
-        self.int_a = els.IntBox(
-            label="a",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            category=self.category_inputs
-        )
-        self.int_a.change_event(self.disable_aim(self.aim_sub, self.page_inputs, partial(self.int_a.check_linked_value, (None, 5))))
-
-        self.int_units = els.IntBoxWithUnits(
-            label="IntBoxWithUnits",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            category=self.category_inputs,
-            units=[("kW", 1), ("W", 0.001), ("MW", 1_000)]
-        )
-
-        self.float_units = els.FloatBoxWithUnits(
-            label="FloatBoxWithUnits",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            decimal_number=2,
-            category=self.category_inputs,
-            units=[("kW", 1), ("W", 0.001), ("MW", 1_000)]
-        )
-        self.float_units.activate_scale_decimals()
-
-        self.sub_category = els.Subcategory("Subcategory", self.category_inputs)
-
-        self.float_b = els.FloatBox(
-            label="b",
-            default_value=100,
-            minimal_value=0,
-            maximal_value=1000,
-            decimal_number=2,
-            category=self.sub_category,
-        )
-
-        self.list_box = els.ListBox(label="List box", default_index=0, category=self.category_inputs, entries=["1", "2", "3", "4"])
-        folder: Path = Path(__file__).parent
-        file = f'{folder.joinpath("./example_data.csv")}'
-        self.filename = els.FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found",
-                                        file_extension=["txt", "csv"])
-
-        self.text_box_only_on_add = els.TextBox(label="Only visible on add", default_text="Hello", category=self.category_inputs)
-
-        self.aim_add.add_link_2_show(self.text_box_only_on_add)
-        # self.aim_add.add_link_2_show(self.filename)
-        self.button_box = els.ButtonBox(label="a or b or c?", default_index=0, entries=["a", "b", "c"], category=self.category_inputs)
-
-        self.aim_plot.widget.toggled.connect(self.disable_button_box(self.button_box, at_index=2, func_2_check=self.aim_plot.widget.isChecked))
-        self.float_b.change_event(self.disable_button_box(self.button_box, 1, partial(self.float_b.check_linked_value, (50, None))))
-        self.int_a.change_event(self.disable_button_box(self.button_box, 0, partial(self.int_a.check_linked_value, (None, 10))))
-
-        self.button_box_short = els.ButtonBox(label="b or c?", default_index=0, entries=["b", "c"], category=self.category_inputs)
-        self.float_b.change_event(self.disable_button_box(self.button_box_short, 1, partial(self.float_b.check_linked_value, (50, None))))
-        self.int_a.change_event(self.disable_button_box(self.button_box_short, 0, partial(self.int_a.check_linked_value, (None, 10))))
-
-        self.function_button = els.FunctionButton(button_text="function", icon="Add", category=self.category_inputs)
-
-        self.text_box = els.TextBox(label="Login", default_text="Hello", category=self.category_inputs)
-        self.text_box_multi_line = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_inputs)
-        self.text_box.deactivate_size_limit()
-        self.pass_word = els.TextBox(label="Password", default_text="1234", category=self.category_inputs, password=True)
-        
-        self.flex_option = els.FlexibleAmount(label=self.translations.flex_option, default_length=3, entry_mame="Layer", category=self.category_inputs,
-                                              min_length=2, max_length=5,default_values=[["layer 1", 9.5, 3, 2], ["layer 2", 10.5, 2, 1]])
-        self.flex_option.add_option(els.TextBox, name="name", default_text="layer")
-
-        self.flex_option.add_option(els.FloatBox, name="thickness", default_value=10, minimal_value=5, decimal_number = 2)
-        self.flex_option.add_option(els.IntBox, name="amount", default_value=4, minimal_value=2)
-        self.flex_option.add_option(els.ListBox, name="entry", default_index=0, entries=["entry 1", "entry 2", "entry 3"])
-        self.hint_flex = els.Hint(hint="wrong length of flexible option", category=self.category_inputs, warning=True)
-        self.flex_option.add_link_2_show(self.hint_flex, 2, 6)
-        self.aim_plot.add_link_2_show(self.flex_option)
-        # self.button_box.add_link_2_show(self.filename, on_index=1)
-        self.show_option_under_multiple_conditions(self.filename, [self.button_box, self.aim_add], [partial(self.button_box.check_linked_value, 1),
-                                                                                                    self.aim_add.widget.isChecked])
-
-        self.category_grid = els.Category(page=self.page_inputs, label="Grid")
-        self.category_grid.activate_grid_layout(3)
-        self.hint_1 = els.Hint(category=self.category_grid, hint="Grid example")
-        # int boxes and float boxes with no label are displayed small in a grid layout
-        self.int_small_1 = els.IntBox(
-            label="",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            category=self.category_grid,
-        )
-        # int boxes and float boxes with no label are displayed small in a grid layout
-        self.float_small_1 = els.FloatBox(
-            label="",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            decimal_number=2,
-            category=self.category_grid,
-        )
-        self.hint_2 = els.Hint(category=self.category_grid, hint="Grid example")
-        # int boxes and float boxes with no label are displayed small in a grid layout
-        self.int_small_2 = els.IntBox(
-            label="",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            category=self.category_grid,
-        )
-        # int boxes and float boxes with no label are displayed small in a grid layout
-        self.float_small_2 = els.FloatBox(
-            label="",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            decimal_number=2,
-            category=self.category_grid,
-        )
-        self.category_grid.activate_graphic_left()
-        self.category_grid.activate_graphic_right()
-
-        self.create_results_page()
-        self.numerical_results = els.Category(page=self.page_result, label="Numerical results")
-
-        self.result_text_add = els.ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
-        self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
-        self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2))
-        self.result_text_sub = els.ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
-        self.result_text_sub.text_to_be_shown("ResultsClass", "result")
-        self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
-
-        self.result_export = els.ResultExport("Export results", icon="Download", category=self.numerical_results, export_function=ResultsClass.export,
-                                          caption="Select file", file_extension="txt")
-
-        self.figure_results = els.ResultFigure(label=self.translations.figure_results, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
-        self.legend_figure_results = els.FigureOption(
-            category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
-        )
-
-        self.figure_results.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot")
-
-        self.figure_results_multiple_lines = els.ResultFigure(label=self.translations.figure_results_multiple_lines, page=self.page_result, x_axes_text="X-Axes", y_axes_text="Y-Axes")
-        self.legend_figure_results_multiple_lines = els.FigureOption(
-            category=self.figure_results_multiple_lines, label="Legend on", param="legend", default=0, entries=["No", "Yes"],
-            entries_values=[False, True]
-        )
-        self.figure_results_multiple_lines.fig_to_be_shown(class_name="ResultsClass", function_name="create_plot_multiple_lines")
-
-        self.aim_add.add_link_2_show(self.result_text_add)
-        self.aim_add.add_link_2_show(self.result_export)
-        self.aim_sub.add_link_2_show(self.result_text_sub)
-        self.aim_plot.add_link_2_show(self.figure_results)
-
-        self.create_settings_page()
-        self.create_lists()
-        # you can either automatically links all pages by order of creation
-        self.automatically_create_page_links()
-        # or do this by hand like this:
-        # self.page_inputs.set_next_page(self.page_result)
-        # self.page_result.set_previous_page(self.page_inputs)
-        # self.page_result.set_next_page(self.page_settings)
-        # self.page_settings.set_previous_page(self.page_result)
-
-    def check(self) -> bool:
-        if self.started:
-            logging.info('This should not be shown whilst loading')
-
-
 def run(path_list=None):  # pragma: no cover
-    import PySide6.QtWidgets as QtW
-    from ScenarioGUI.global_settings import FILE_EXTENSION
-    from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
-    from ScenarioGUI import load_config
-
     load_config(Path("gui_config.ini"))
 
     # init application
@@ -290,11 +33,18 @@ def run(path_list=None):  # pragma: no cover
     # init window
     window = QtW.QMainWindow()
     # init gui window
-    main_window = MainWindow(window, app, GUI, Translations, result_creating_class=ResultsClass, data_2_results_function=data_2_results)
+    main_window = MainWindow(
+        window,
+        app,
+        GUI,
+        Translations,
+        result_creating_class=ResultsClass,
+        data_2_results_function=data_2_results,
+    )
     # load file if it is in path list
     if path_list is not None:
         main_window.filename = (
-            [path for path in path_list if path.endswith(f".{FILE_EXTENSION}")][0],
+            next(path for path in path_list if path.endswith(f".{FILE_EXTENSION}")),
             0,
         )
         main_window.fun_load_known_filename()

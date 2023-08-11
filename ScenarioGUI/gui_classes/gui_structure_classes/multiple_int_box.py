@@ -14,6 +14,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
+from .functions import _create_function_2_check_linked_value
 from .int_box import SpinBox
 from .option import Option
 
@@ -77,7 +78,7 @@ class MultipleIntBox(Option):
         self.minimal_value: list[int] = [minimal_value for _ in default_value] if not isinstance(minimal_value, Iterable) else minimal_value
         self.maximal_value: list[int] = [maximal_value for _ in default_value] if not isinstance(maximal_value, Iterable) else maximal_value
         self.step: list[int] = [step for _ in default_value] if not isinstance(step, Iterable) else step
-        self.widget: list[SpinBox] = [SpinBox(self.default_parent) for _ in default_value]
+        self.widget: list[SpinBox] = [SpinBox(self.default_parent, valueChanged=self.valueChanged.emit) for _ in default_value]
 
     def get_value(self) -> tuple[int]:
         """
@@ -135,7 +136,7 @@ class MultipleIntBox(Option):
 
         Parameters
         ----------
-        value : tuple of 2 optional ints
+        value : Iterable of ints
             first one is the below value and the second the above value
 
         Returns
@@ -149,6 +150,25 @@ class MultipleIntBox(Option):
         if above is not None and np.any(np.greater(self.get_value(), above)):
             return True
         return False
+
+    def create_function_2_check_linked_value(
+        self, value: tuple[Iterable[int] | None, Iterable[int] | None], value_if_hidden: bool | None = None
+    ) -> Callable[[], bool]:
+        """
+        creates from values a function to check linked values
+
+        Parameters
+        ----------
+        value : Iterable of ints
+            first one is the below value and the second the above value
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
+
+        Returns
+        -------
+        function
+        """
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
 
     def add_link_2_show(
         self,
@@ -213,21 +233,6 @@ class MultipleIntBox(Option):
             return option.show()
         option.hide()
 
-    def change_event(self, function_to_be_called: Callable) -> None:
-        """
-        This function calls the function_to_be_called whenever the IntBox is changed.
-
-        Parameters
-        ----------
-        function_to_be_called : callable
-            Function which should be called
-
-        Returns
-        -------
-        None
-        """
-        _ = [widget.valueChanged.connect(function_to_be_called) for widget in self.widget]  # pylint: disable=E1101
-
     def create_widget(
         self,
         frame: QtW.QFrame,
@@ -260,8 +265,7 @@ class MultipleIntBox(Option):
         for widget, max_val, min_val, step, def_val in zip(self.widget, self.maximal_value, self.minimal_value, self.step, self.default_value):
             widget.setParent(self.frame)
             widget.setStyleSheet(
-                f'QSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};'
-                f'border: 1px solid {globs.WHITE};{"}"}'
+                f'QSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};' f'border: 1px solid {globs.WHITE};{"}"}'
             )
             widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
             widget.setMinimum(min_val)

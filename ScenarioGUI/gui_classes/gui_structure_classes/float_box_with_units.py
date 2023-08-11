@@ -7,10 +7,10 @@ import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as globs
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import _create_function_2_check_linked_value, check_and_set_max_min_values
 from ScenarioGUI.utils import change_font_size, set_default_font
 
 from .float_box import FloatBox
-from .functions import check_and_set_max_min_values
 from .list_box import ComboBox
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -75,7 +75,7 @@ class FloatBoxWithUnits(FloatBox):
         super().__init__(label=label, default_value=default_value, category=category, maximal_value=maximal_value, minimal_value=minimal_value, step=step,
                          decimal_number=decimal_number)
         self.units: list[tuple[str, float]] = [] if units is None else units
-        self.unit_widget: ComboBox = ComboBox(self.default_parent)
+        self.unit_widget: ComboBox = ComboBox(self.default_parent, currentIndexChanged=self.valueChanged.emit)
 
     def activate_scale_decimals(self) -> None:
         """
@@ -215,21 +215,22 @@ class FloatBoxWithUnits(FloatBox):
             return True
         return False
 
-    def change_event(self, function_to_be_called: Callable) -> None:
+    def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
-        This function calls the function_to_be_called whenever the IntBox is changed.
+        creates from values a function to check linked values
 
         Parameters
         ----------
-        function_to_be_called : callable
-            Function which should be called
+        value : tuple of 2 optional floats
+            first one is the below value and the second the above value
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
-        None
+        function
         """
-        self.widget.valueChanged.connect(function_to_be_called)  # pylint: disable=E1101
-        self.unit_widget.currentIndexChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
 
     def create_widget(
             self,

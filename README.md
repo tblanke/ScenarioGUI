@@ -87,10 +87,12 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
-    from examples.translation_class import Translations
+    from examples.translation_class_creation.translation_class import Translations
+
 
 class GUI(GuiStructure):
     """your own customized GUI"""
+
     def __init__(self, default_parent: QtW.QWidget, translations: Translations):
         # first init the parent clas
         super().__init__(default_parent, translations)
@@ -105,7 +107,7 @@ class GUI(GuiStructure):
         # a category with the label "Inputs" can be added to the inputs page like:
         self.category_inputs = els.Category(label="Inputs", page=self.page_inputs)
         # an integer box can be added with different options like this (some of these options are optional):
-        self.int_a = els.IntBox(label="a",default_value=2,minimal_value=0,maximal_value=200,step=2,category=self.category_inputs)
+        self.int_a = els.IntBox(label="a", default_value=2, minimal_value=0, maximal_value=200, step=2, category=self.category_inputs)
         # a float box can be added with different options like this (some of these options are optional):
         self.float_b = els.FloatBox(
             label="b",
@@ -144,7 +146,7 @@ class GUI(GuiStructure):
         # this figure can then be linked to an option to display the legend like this:
         self.legend_figure_results = els.FigureOption(
             category=self.figure_results, label="Legend on", param="legend", default=0, entries=["No", "Yes"], entries_values=[False, True]
-        )        
+        )
         # with this function the results options will be displayed if one of the aims is selected
         self.aim_add.add_link_2_show(self.result_text_add)
         self.aim_plot.add_link_2_show(self.figure_results)

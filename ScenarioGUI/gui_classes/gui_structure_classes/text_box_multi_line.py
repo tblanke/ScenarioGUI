@@ -3,6 +3,7 @@ text box multi line option class
 """
 from __future__ import annotations
 
+from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC  # type: ignore
@@ -11,6 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
+from .functions import _create_function_2_check_linked_value
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -58,7 +60,7 @@ class TextBoxMultiLine(Option):
         """
         super().__init__(label, default_text, category)
         self.wrong_value: str = wrong_value
-        self.widget: QtW.QTextEdit = QtW.QTextEdit(self.default_parent)
+        self.widget: QtW.QTextEdit = QtW.QTextEdit(self.default_parent, textChanged=self.valueChanged.emit)
 
     def get_value(self) -> str:
         """
@@ -126,20 +128,22 @@ class TextBoxMultiLine(Option):
         """
         return self.get_value() == value
 
-    def change_event(self, function_to_be_called: Callable) -> None:
+    def create_function_2_check_linked_value(self, value: str, value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
-        This function calls the function_to_be_called whenever the FloatBox is changed.
+        creates from values a function to check linked values
 
         Parameters
         ----------
-        function_to_be_called : callable
-            Function which should be called
+        value : str
+            str on which the option should be shown
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
-        None
+        function
         """
-        self.widget.textChanged.connect(function_to_be_called)  # pylint: disable=E1101
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
 
     def create_widget(
         self,
