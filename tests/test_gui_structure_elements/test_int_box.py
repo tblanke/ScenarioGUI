@@ -22,6 +22,7 @@ def test_int_box(qtbot):
     assert int_a.check_linked_value((20, None))
     assert int_a.check_linked_value((None, 2))
     assert not int_a.check_linked_value((5, 20))
+    assert int_a.create_function_2_check_linked_value((None, 50))() == int_a.check_linked_value((None, 50))
     int_a.show_option(main_window.gui_structure.float_b, 5, 20)
     main_window.gui_structure.page_inputs.button.click()
     assert main_window.gui_structure.float_b.is_hidden()

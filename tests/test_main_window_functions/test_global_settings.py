@@ -27,7 +27,7 @@ def test_global_settings(qtbot):  # noqa: PLR0915
         "..").absolute().joinpath("./tests/gui_config.ini"))
     main_window = start_tests(qtbot)
     assert main_window.dia.font().family() == globs.FONT == ("Arial" if system() == "Windows" else 'Helvetica')
-    assert main_window.dia.font().pointSize() == (10 if system() == "Windows" else 14) == globs.FONT_SIZE
+    assert main_window.dia.font().pointSize() == (11 if system() == "Windows" else 14) == globs.FONT_SIZE
 
     assert globs.WHITE == "rgb(255, 255, 255)"
     assert globs.LIGHT == "rgb(84, 188, 235)"

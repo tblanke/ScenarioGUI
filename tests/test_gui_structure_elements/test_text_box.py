@@ -20,6 +20,7 @@ def test_text_box(qtbot):
     assert main_window.gui_structure.text_box.get_value() == "Hello"
 
     assert main_window.gui_structure.text_box.check_linked_value("Hello")
+    assert main_window.gui_structure.text_box.create_function_2_check_linked_value("Hello")() == main_window.gui_structure.text_box.check_linked_value("Hello")
 
     # test set text
     main_window.gui_structure.text_box.set_text("Hello")

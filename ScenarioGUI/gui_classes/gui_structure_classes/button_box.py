@@ -10,8 +10,13 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import (
+    _create_function_2_check_linked_value,
+    check,
+    update_opponent_not_change,
+    update_opponent_toggle,
+)
 
-from .functions import check, update_opponent_not_change, update_opponent_toggle
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -151,23 +156,6 @@ class ButtonBox(Option):
         """
 
         self.linked_options.append([option, on_index])
-
-    def change_event(self, function_to_be_called: Callable) -> None:
-        """
-        This function calls the function_to_be_called whenever the ButtonBox is changed.
-
-        Parameters
-        ----------
-        function_to_be_called : callable
-            Function which should be called
-
-        Returns
-        -------
-        None
-        """
-        for button in self.widget:
-            button.clicked.connect(function_to_be_called)  # pylint: disable=E1101
-
     def set_text(self, name: str) -> None:
         """
         This function sets the text of the label and of the different buttons in the ButtonBox.
@@ -203,6 +191,23 @@ class ButtonBox(Option):
         """
         return self.get_value() == value
 
+    def create_function_2_check_linked_value(self, value: int, value_if_hidden: bool | None = None) -> Callable[[], bool]:
+        """
+        creates from values a function to check linked values
+
+        Parameters
+        ----------
+        value : int
+            int of index on which the option should be shown
+        value_if_hidden: bool  | None
+            the return value, if the option is hidden
+
+        Returns
+        -------
+        function
+        """
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
+
     def disable_entry(self, idx: int):
         """
         Disables the entry at index
@@ -226,8 +231,6 @@ class ButtonBox(Option):
         self.widget[idx].hide()
         if not [widget for widget in self.widget if widget.isEnabled()]:
             self.hide()
-        #if len([widget for widget in self.widget if widget.isEnabled()]) == 1:
-        #    [widget for widget in self.widget if widget.isEnabled()][0].setChecked(True)
 
     def enable_entry(self, idx: int):
         """
@@ -287,6 +290,7 @@ class ButtonBox(Option):
             widget.setCheckable(True)
             widget.setChecked(idx == self.default_value)
             widget.setMinimumHeight(30)
+            widget.clicked.connect(self.valueChanged.emit)
             font = widget.font()
             font.setFamily(globs.FONT)
             font.setPointSize(globs.FONT_SIZE)

@@ -1,4 +1,4 @@
-from ..starting_closing_tests import close_tests, start_tests
+from tests.starting_closing_tests import close_tests, start_tests
 
 
 def test_result_text_on_on_result_page(qtbot):

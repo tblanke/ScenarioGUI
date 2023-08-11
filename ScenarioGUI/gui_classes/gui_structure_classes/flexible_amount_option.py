@@ -10,6 +10,7 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import _create_function_2_check_linked_value
 
 from ...utils import change_font_size, set_default_font
 from .option import Option
@@ -79,7 +80,6 @@ class FlexibleAmount(Option):
         self.list_of_options: Collection[Option] = []
         self.option_entries: list[list[Option]] = []
         self.option_classes: list[tuple[type[Option], dict, str]] = []
-        self.func_on_change: list[Callable[[]]] = []
         # check correct limits:
         if max_length < min_length or min_length < 1:
             raise ValueError("Please enter the correct values for the flexible_amount_option")
@@ -98,7 +98,7 @@ class FlexibleAmount(Option):
         i = 2
         for option, kwargs, _ in self.option_classes:
             option_i = option(**kwargs, category=self, label="")
-            _ = [option_i.change_event(func) for func in self.func_on_change]
+            option_i.change_event(self.valueChanged.emit)
             option_i.create_widget(self.frame, self.frame.layout(), column=length + 1, row=i)
             set_default_font(option_i.widget)
             options.append(option_i)
@@ -122,7 +122,7 @@ class FlexibleAmount(Option):
         self.set_value(values)
         for option, (min_length, max_length) in self.linked_options:
             self.show_option(option, min_length, max_length)
-        _ = [func() for func in self.func_on_change]
+        self.valueChanged.emit()
 
     def _del_entry(self, *, row: int | None = None) -> None:
         """
@@ -146,7 +146,7 @@ class FlexibleAmount(Option):
         self.set_value(values)
         for option, (min_length, max_length) in self.linked_options:
             self.show_option(option, min_length, max_length)
-        _ = [func() for func in self.func_on_change]
+        self.valueChanged.emit()
 
     def get_value(self) -> tuple[tuple[str | float | int | bool]]:
         """
@@ -208,8 +208,7 @@ class FlexibleAmount(Option):
         else:
             for _ in range(len_options, len(value)):
                 self._add_entry()
-
-        _ = [func() for func in self.func_on_change]
+        self.valueChanged.emit()
         self._init_links()
 
         for options, values in zip(self.option_entries, value):
@@ -323,14 +322,14 @@ class FlexibleAmount(Option):
         super().show()
         self.label.show()
 
-    def check_linked_value(self, value: tuple[float | None, float | None]) -> bool:
+    def check_linked_value(self, value: tuple[int | None, int | None]) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
         Parameters
         ----------
-        value : tuple of 2 optional floats
-            first one is the below value and the second the above value
+        value : tuple of 2 optional ints
+            first value minimal length and second maximal length
 
         Returns
         -------
@@ -344,22 +343,22 @@ class FlexibleAmount(Option):
             return True
         return False
 
-    def change_event(self, function_to_be_called: Callable) -> None:
+    def create_function_2_check_linked_value(self, value: tuple[int | None, int | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
-        This function calls the function_to_be_called whenever the FloatBox is changed.
+        creates from values a function to check linked values
 
         Parameters
         ----------
-        function_to_be_called : callable
-            Function which should be called
+        value : tuple of 2 optional ints
+            first value minimal length and second maximal length
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
-        None
+        function
         """
-        self.func_on_change.append(function_to_be_called)
-        for option in self.list_of_options:
-            option.change_event(function_to_be_called)
+        return _create_function_2_check_linked_value(self, value, value_if_hidden)
 
     def set_font_size(self, size: int) -> None:
         """

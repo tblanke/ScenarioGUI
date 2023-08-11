@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import logging
 from functools import partial as ft_partial
 from json import dump, load
 from os import makedirs, remove
@@ -17,6 +18,7 @@ import PySide6.QtWidgets as QtW
 from matplotlib import rcParams
 
 import ScenarioGUI.global_settings as globs
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check_aim_options
 
 from ..utils import change_font_size, set_default_font
 from .gui_base_class import BaseUI
@@ -24,7 +26,6 @@ from .gui_calculation_thread import CalcProblem
 from .gui_data_storage import DataStorage
 from .gui_saving_thread import SavingThread
 from .gui_structure_classes import FigureOption, Option, ResultExport
-from .gui_structure_classes.functions import check_aim_options, show_linked_options
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -1187,6 +1188,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             True if the saving was successful.
         """
         # ask for pickle file if the filename is still the default
+        logging.info(f"{filename}, {MainWindow.filename_default}: {self.filename}")
         if not isinstance(filename, tuple):
             if self.filename == MainWindow.filename_default:
                 self.fun_save_as()
@@ -1494,7 +1496,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         def update_results():
             # update so all the relevant options are shown
             check_aim_options([aim for aim, _ in self.gui_structure.list_of_aims])
-            show_linked_options([option for option, _ in self.gui_structure.list_of_options_with_dependent_results])
+            [option.show() for option, _ in self.gui_structure.list_of_options_with_dependent_results if not option.is_hidden()]
 
         # hide widgets if no list of scenarios exists and display not calculated text
         def hide_no_result(hide: bool = True):
@@ -1547,7 +1549,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 fig_obj.show()
                 fig_obj.canvas.show()
                 # draw new plot
-                fig.tight_layout()
+                fig.tight_layout() if fig_obj.frame.isVisible() else None
                 fig_obj.canvas.draw()
                 # set figure to datastorage
                 setattr(ds, fig_name, fig)
@@ -1559,7 +1561,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             fig_obj.show()
             fig_obj.canvas.show()
             # draw new plot
-            fig.tight_layout()
+            fig.tight_layout() if fig_obj.frame.isVisible() and not(fig_obj.fig.get_tight_layout()) else None
             fig_obj.canvas.draw()
 
         # update result for every ResultText object
