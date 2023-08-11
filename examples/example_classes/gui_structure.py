@@ -20,6 +20,8 @@ class GUI(GuiStructure):
     def __init__(self, default_parent: QtW.QWidget, translations: Translations):
         super().__init__(default_parent, translations)
         self.page_inputs = els.Page(name=translations.page_inputs, button_name="Inputs", icon="Add.svg")
+        self.page_inputs1 = els.Page(name=translations.page_inputs, button_name="Inputs", icon="Add.svg")
+        self.page_inputs2 = els.Page(name=translations.page_inputs, button_name="Inputs", icon="Add.svg")
         self.page_export = els.Page(name=translations.page_output, button_name="Output", icon="Delete.svg")
         self.aim_add = els.Aim(label="Adding", icon="Add", page=self.page_inputs)
         self.aim_sub = els.Aim(label="Substract", icon="Delete", page=self.page_inputs)

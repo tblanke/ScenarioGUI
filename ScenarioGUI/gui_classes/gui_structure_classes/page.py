@@ -203,7 +203,6 @@ class Page:
         self.create_navigation_buttons(central_widget, layout)
 
         self.button.setParent(central_widget)
-        self.button.setMinimumSize(QtC.QSize(100, 100))
         icon23 = QtG.QIcon()
         icon23.addFile(f"{globs.FOLDER}/icons/{self.icon}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
         self.button.setIcon(icon23)
