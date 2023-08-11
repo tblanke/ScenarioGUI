@@ -256,25 +256,17 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         height = self.dia.size().height()
         if (len(self.gui_structure.list_of_pages) + 1) * (self.button_height + 6) > height * 0.7:
-            self.size_push_b = QtC.QSize(
-                self.button_width_large,
-                max(int((height * 0.7 - 6 * len(self.gui_structure.list_of_pages)) / (len(self.gui_structure.list_of_pages) + 1)), self.icon_size_small + 5),
-            )  # size of big push button
-            self.size_push_s = QtC.QSize(
-                self.button_width_small,
-                max(int((height * 0.7 - 6 * len(self.gui_structure.list_of_pages)) / (len(self.gui_structure.list_of_pages) + 1)), self.icon_size_small + 5),
-            )  # size of
+            height = max(
+                int((height * 0.7 - 6 * len(self.gui_structure.list_of_pages)) / (len(self.gui_structure.list_of_pages) + 1)), self.icon_size_small + 5
+            )
             # small push button
             self.size_b = QtC.QSize(
-                min(self.icon_size_large, max(int(self.size_push_b.height() / self.button_height * self.icon_size_large), self.size_s.height())),
-                min(self.icon_size_large, max(int(self.size_push_b.height() / self.button_height * self.icon_size_large), self.size_s.height())),
+                min(self.icon_size_large, max(int(height / self.button_height * self.icon_size_large), self.size_s.height())),
+                min(self.icon_size_large, max(int(height / self.button_height * self.icon_size_large), self.size_s.height())),
             )
-            self.check_page_button_layout(False)
         else:
-            self.size_push_b = QtC.QSize(self.button_width_large, self.button_height)  # size of big push button
-            self.size_push_s = QtC.QSize(self.button_width_small, self.button_height)  # size of small push button
             self.size_b = QtC.QSize(self.icon_size_large, self.icon_size_large)
-            self.check_page_button_layout(False)
+        self.check_page_button_layout(False)
         QtW.QMainWindow.resizeEvent(self.dia, event)
 
     def add_other_import_function(self, file_extension: str, func: Callable[[str | Path], JsonDict]):
@@ -539,10 +531,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             button.setSizePolicy(QtW.QSizePolicy.Fixed, QtW.QSizePolicy.Expanding)
             return
         button.setIconSize(self.size_b)
-        #icon: QtG.QIcon = button.icon()
-        #icon.si
+        # icon: QtG.QIcon = button.icon()
+        # icon.si
         button.setMaximumSize(self.size_push_s)
-        button.setMinimumSize(self.size_s.height()+5, self.size_s.height()+5)
+        button.setMinimumSize(self.size_s.height() + 5, self.size_s.height() + 5)
         button.setSizePolicy(QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Expanding)
         # button.setMinimumSize(self.size_push_s)
         button.resize(self.size_push_s)
