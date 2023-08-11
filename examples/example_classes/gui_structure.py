@@ -10,13 +10,13 @@ from ScenarioGUI import elements as els
 
 from .results_creation_class import ResultsClass
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import PySide6.QtWidgets as QtW
 
     from .translation_class import Translations
 
 
-class GUI(GuiStructure):
+class GUI(GuiStructure):  # pragma: no cover
     def __init__(self, default_parent: QtW.QWidget, translations: Translations):
         super().__init__(default_parent, translations)
         self.page_inputs = els.Page(name=translations.page_inputs, button_name="Inputs", icon="Add.svg")

@@ -3,7 +3,7 @@ from __future__ import annotations
 from matplotlib import pyplot as plt
 
 
-class ResultsClass:
+class ResultsClass:  # pragma: no cover
     def __init__(self, a: int = 1, b: int = 2):
         self.a = a
         self.b = b
