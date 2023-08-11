@@ -4,7 +4,7 @@ aims in the GUI.
 """
 from __future__ import annotations
 
-import multiprocessing
+import multiprocessing as mp
 from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC
@@ -69,15 +69,16 @@ class CalcProblem(QtC.QThread):
         -------
         None
         """
-        queue = multiprocessing.Queue()
-        process = multiprocessing.Process(target=calculate, args=(self.data_2_results_function, self.d_s, queue))
+        queue = mp.Queue()
+        stop_event: mp.Event = mp.Event()
+        process: mp.Process = mp.Process(target=calculate, args=(self.data_2_results_function, self.d_s, queue, stop_event))
         process.start()
-        process.join(timeout=self.d_s.time_out)
-        if process.is_alive():
-            process.terminate()
+
+        if not stop_event.wait(self.d_s.time_out):
             debug_message, results = f"{RuntimeError(f'RuntimeError: run time > {self.d_s.time_out}s')}", None
         else:
             debug_message, results = queue.get()
+        process.terminate()
         self.d_s.debug_message = debug_message
         # save bore field in Datastorage
         self.d_s.results = results
@@ -87,11 +88,11 @@ class CalcProblem(QtC.QThread):
         self.any_signal.emit(self)
 
 
-def calculate(data_2_results_function: Callable[[DataStorage], tuple[object, Callable]], d_s: DataStorage, queue: multiprocessing.Queue) -> None:
+def calculate(data_2_results_function: Callable[[DataStorage], tuple[object, Callable]], d_s: DataStorage, queue: mp.Queue, stop_event: mp.Event) -> None:
     """
     This function contains the actual code to run the different calculations.
     For each aim in the GUI, a new if statement is used. Here, one can put all the code
-    needed to run the simulation/calculation with the all the functionalities of GHEtool.
+    needed to run the simulation/calculation with the all the functionalities.
     This function should return the DataStorage as a signal.
 
     Returns
@@ -108,4 +109,5 @@ def calculate(data_2_results_function: Callable[[DataStorage], tuple[object, Cal
 
     # set debug message to "" and save borefield in Datastorage
     queue.put(("", results))
+    stop_event.set()
     return
