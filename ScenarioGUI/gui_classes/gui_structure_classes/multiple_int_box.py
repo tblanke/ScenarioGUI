@@ -12,9 +12,9 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from .functions import _create_function_2_check_linked_value
 
 from ...utils import set_default_font
+from .functions import _create_function_2_check_linked_value
 from .int_box import SpinBox
 from .option import Option
 

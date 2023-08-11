@@ -10,7 +10,7 @@ import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from ScenarioGUI.utils import change_font_size, set_default_font, Signal
+from ScenarioGUI.utils import Signal, change_font_size, set_default_font
 
 from .aim import Aim
 

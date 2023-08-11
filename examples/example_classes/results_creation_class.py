@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from time import sleep
-
 from matplotlib import pyplot as plt
 
 
@@ -13,13 +10,16 @@ class ResultsClass:
         self.result = None
 
     def adding(self):
+        # loop over 1_000_000 to take some time
+        self.result = 0
+        for i in range(50_000_000):
+            self.result += i
         self.result = self.a + self.b
 
     def subtract(self):
         if self.a > 190:
-            raise ValueError("Value above 190")
+            raise ValueError
         self.result = self.a - self.b
-        sleep(2)
 
     def get_result(self) -> float:
         return self.result
@@ -39,18 +39,24 @@ class ResultsClass:
             ax.legend()
         return fig, ax
 
+    def create_plot_multiple_lines(self, legend: bool = False) -> tuple[plt.Figure, plt.Axes]:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        # set axes labels
+        ax.set_xlabel(r"Time (year)")
+        ax.set_ylabel(r"Temperature ($^\circ C$)")
+        ax.hlines(self.a, 0, self.b, colors="r", linestyles="dashed", label="line", lw=1)
+        ax.hlines(self.a * 2, 0, self.b, colors="b", linestyles="dashed", label="line", lw=1)
+
+        if legend:
+            ax.legend()
+        return fig, ax
+
     def to_dict(self) -> dict:
         return {"a": self.a, "b": self.b, "result": self.result}
 
     @staticmethod
     def from_dict(dictionary: dict) -> ResultsClass:
-        res = ResultsClass()
-        res.a = dictionary["a"]
-        res.b = dictionary["b"]
+        res = ResultsClass(dictionary["a"], dictionary["b"])
         res.result = dictionary["result"]
         return res
-
-
-def data_2_results(data) -> tuple[ResultsClass, Callable[[], None]]:
-    result = ResultsClass(data.int_a, data.float_b)
-    return result, result.adding if data.aim_add else result.subtract

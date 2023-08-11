@@ -3,8 +3,8 @@ script which contain basic gui structure functions
 """
 from __future__ import annotations
 
-from typing import Callable, TYPE_CHECKING
 from functools import partial as ft_partial
+from typing import TYPE_CHECKING, Callable
 
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW  # type: ignore

@@ -1,4 +1,5 @@
 from functools import partial
+
 from pytest import raises
 
 from tests.gui_structure_for_tests import GUI

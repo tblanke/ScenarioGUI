@@ -1,6 +1,7 @@
 from functools import partial
-import pytest
+
 import PySide6.QtWidgets as QtW
+import pytest
 
 from ScenarioGUI.gui_classes.gui_combine_window import MainWindow
 from tests.gui_structure_for_tests import GUI

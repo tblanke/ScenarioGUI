@@ -10,9 +10,9 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check
 
 from ...utils import set_default_font
-from ScenarioGUI.gui_classes.gui_structure_classes.functions import check
 from .list_box import ListBox
 from .option import Option
 

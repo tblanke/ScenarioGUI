@@ -2,7 +2,7 @@ import numpy as np
 
 from ScenarioGUI.gui_classes.gui_structure_classes import Option
 
-from ..starting_closing_tests import start_tests, close_tests
+from ..starting_closing_tests import close_tests, start_tests
 
 
 def test_button_box(qtbot):

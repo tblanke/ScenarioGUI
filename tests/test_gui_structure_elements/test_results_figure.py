@@ -7,9 +7,9 @@ from platform import system
 import numpy as np
 from matplotlib.backends import qt_compat
 
+import ScenarioGUI.global_settings as globs
 from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import font_list_by_name
 from tests.starting_closing_tests import close_tests, start_tests
-import ScenarioGUI.global_settings as globs
 
 
 class Event:

@@ -11,10 +11,10 @@ import PySide6.QtGui as QtG  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check_aim_options, update_opponent_not_change, update_opponent_toggle
 
 from ...utils import change_font_size, set_default_font
 from .aim import Aim
-from ScenarioGUI.gui_classes.gui_structure_classes.functions import check_aim_options, update_opponent_not_change, update_opponent_toggle
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
