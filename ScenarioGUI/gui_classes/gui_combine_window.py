@@ -1276,7 +1276,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if not all(option.check_value() for option, _ in self.gui_structure.list_of_options):
             for option, _ in self.gui_structure.list_of_options:
                 if not option.check_value():
-                    globs.LOGGER.info(f"Wrong value in option with label: {option.label_text[0]}")
+                    globs.LOGGER.info(f"Wrong value in option with label: {option.label_text[self.gui_structure.option_language.get_value()]}")
                     return False
         return True
 
