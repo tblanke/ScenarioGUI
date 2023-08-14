@@ -48,6 +48,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Translation now works without the same names as the option etc.
 - Redefine list_of_result_texts (issue 86)
 - Resizing icons in the page buttons (issue 112)
+- Shorter 'wrong value' error warnings (issue 119)
 
 ## [0.2.2] - 2023-04-21
 
