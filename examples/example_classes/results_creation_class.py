@@ -1,3 +1,4 @@
+# pragma: no cover
 from __future__ import annotations
 
 from matplotlib import pyplot as plt
