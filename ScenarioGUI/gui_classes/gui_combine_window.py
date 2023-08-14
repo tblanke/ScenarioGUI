@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, TypedDict
 import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
+import pandas as pd
 from matplotlib import rcParams
 
 import ScenarioGUI.global_settings as globs
@@ -1452,6 +1453,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         for thread in self.threads[: self.gui_structure.option_n_threads.get_value()]:
             thread.start() if not MainWindow.TEST_MODE else None
             thread.any_signal.connect(self.thread_function)
+            if thread.USE_MULTITHREADING:
+                QtC.QTimer.singleShot(1, ft_partial(self.wait_2_terminate, thread))
 
     def start_current_scenario_calculation(self) -> None:
         """
@@ -1483,6 +1486,21 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if len(self.threads) == 1:
             self.threads[0].start() if not MainWindow.TEST_MODE else None
             self.threads[0].any_signal.connect(self.thread_function)
+            if self.threads[0].USE_MULTITHREADING:
+                QtC.QTimer.singleShot(1, ft_partial(self.wait_2_terminate, self.threads[0]))
+
+    @staticmethod
+    def wait_2_terminate(thread: CalcProblem):
+        finished = thread.wait(thread.d_s.time_out*1000)
+        if finished:
+            return
+        thread.d_s.debug_message = f"{RuntimeError(f'RuntimeError: run time > {thread.d_s.time_out}s')}"
+        # save bore field in Datastorage
+        thread.d_s.results = None
+        thread.calculated = True
+        thread.item.setData(CalcProblem.role, thread.d_s)
+        thread.any_signal.emit(thread)
+        thread.terminate()
 
     def display_results(self) -> None:
         """
