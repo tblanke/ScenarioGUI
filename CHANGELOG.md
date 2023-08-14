@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file including pl
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.3.0] - expected: July 2023
+## [0.3.0] - expected: August 2023
 
 ### Added
 - Multiline text box (issue 56)
@@ -15,11 +15,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Different file extension can be saved and loaded using add_other_export_function or add_other_import_function from MainWindow class (issue 89)
 - A conversation function to convert old json version styles of the gui to new ones can be added using add_other_version_import_function from MainWindow class
 - Qthread class for saving of files (issue 82)
-
-### Added
 - Ability to deactivate button box entries (issue 46)
 - Ability to deactivate aims
 - Ability to load a file as new scenarios and add them to the existing once's (issue 88)
+- Option implemented to limit the maximal runtime (issue 107)
+- Automated previous/next buttons creation (issue 106)
 
 ### Fixed
 - Scenario buttons not resizing (issue 42)
@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Problem with autosaving (issue 74)
 - Inconsistent figure font layout (issue 97)
 - Changing aims is not noticed (issue 98)
+- Wrong value in ButtonBox (issue 104)
 
 ### Changed
 - list_ds in MainWindow removed and replaced by QListWidget data
@@ -45,6 +46,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   are reset to the default ones and the value is set. (issue 83)
 - Translation now works without the same names as the option etc.
 - Redefine list_of_result_texts (issue 86)
+- Resizing icons in the page buttons (issue 112)
 
 ## [0.2.2] - 2023-04-21
 

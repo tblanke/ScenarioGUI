@@ -1453,6 +1453,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         for thread in self.threads[: self.gui_structure.option_n_threads.get_value()]:
             thread.start() if not MainWindow.TEST_MODE else None
             thread.any_signal.connect(self.thread_function)
+            if thread.USE_MULTITHREADING:
+                QtC.QTimer.singleShot(1, ft_partial(self.wait_2_terminate, thread))
 
     def start_current_scenario_calculation(self) -> None:
         """
