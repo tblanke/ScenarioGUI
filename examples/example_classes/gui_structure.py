@@ -108,7 +108,7 @@ class GUI(GuiStructure):  # pragma: no cover
             category=self.category_inputs,
         )
 
-        self.aim_plot.widget.toggled.connect(self.disable_button_box(self.button_box, at_index=2, func_2_check=self.aim_plot.widget.isChecked))
+        self.aim_plot.change_event(self.disable_button_box(self.button_box, at_index=2, func_2_check=self.aim_plot.widget.isChecked))
         self.float_b.change_event(self.disable_button_box(self.button_box, 1, partial(self.float_b.check_linked_value, (50, None))))
         self.int_a.change_event(self.disable_button_box(self.button_box, 0, partial(self.int_a.check_linked_value, (None, 10))))
 

@@ -221,14 +221,14 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         [aim.init_links() for aim, _ in self.gui_structure.list_of_aims]
 
         globs.LOGGER.info(self.translations.tool_imported[self.gui_structure.option_language.get_value()[0]])
-
+        # allow checking of changes
+        self.checking: bool = True
         # set the correct graph layout
         globs.set_graph_layout()
 
         self.display_results()
         self.change_window_title()
-        # allow checking of changes
-        self.checking: bool = True
+
         # set started to True
         # this is so that no changes are made when the file is opening
         self.gui_structure.started = True

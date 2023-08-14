@@ -498,7 +498,7 @@ class GuiStructure:
             None
         """
 
-        options_to_be_shown: list[Option] = [options_to_be_shown] if not isinstance(options_to_be_shown, list) else options_2_be_checked
+        options_to_be_shown: list[Option] = [options_to_be_shown] if not isinstance(options_to_be_shown, list) else options_to_be_shown
 
         options_2_be_checked = [options_2_be_checked] if not isinstance(options_2_be_checked, list) else options_2_be_checked
 
