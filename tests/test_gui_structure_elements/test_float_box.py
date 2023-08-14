@@ -19,7 +19,7 @@ def test_float_box(qtbot):
     assert np.isclose(float_b.get_value(), float_b.default_value)
     float_b.set_value(float_b.default_value + 50)
     assert np.isclose(float_b.default_value + 50, float_b.get_value())
-    float_b._init_links()
+
     assert float_b.check_linked_value((200, None))
     assert float_b.check_linked_value((None, 50))
     assert float_b.create_function_2_check_linked_value((None, 50))() == float_b.check_linked_value((None, 50))

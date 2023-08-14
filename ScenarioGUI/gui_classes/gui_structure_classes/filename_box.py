@@ -103,18 +103,6 @@ class FileNameBox(Option):
         """
         self.widget.setText(value)
 
-    def _init_links(self) -> None:
-        """
-        Function on how the links for the FileNameBox should be set.
-
-        Returns
-        -------
-        None
-        """
-        current_value: str = self.get_value()
-        self.set_value("test")
-        self.set_value(current_value)
-
     def _check_value(self) -> bool:
         """
         This function checks whether or not a value is given in the FileNameBox.

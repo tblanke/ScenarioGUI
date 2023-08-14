@@ -24,7 +24,7 @@ def test_int_box_with_units(qtbot):
     assert np.isclose((int_units.default_value + 5) * 1000, int_units.get_value()[0])
     assert np.isclose(0, int_units.get_value()[1])
     int_units.set_value(((int_units.default_value + 5), 0))
-    int_units._init_links()
+
     assert int_units.check_linked_value((20, None))
     assert int_units.check_linked_value((None, 2))
     assert not int_units.check_linked_value((5, 20))

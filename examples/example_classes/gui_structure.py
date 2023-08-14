@@ -237,11 +237,16 @@ class GUI(GuiStructure):  # pragma: no cover
         self.result_depending_visibility = els.ResultText(
             "Result depending visibility", category=self.numerical_results, prefix="Result depending visibility: ", suffix="m"
         )
+
         self.result_depending_visibility.text_to_be_shown("ResultsClass", "get_result")
         self.result_depending_visibility.function_to_convert_to_text(lambda x: round(x, 2))
         self.result_text_sub = els.ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
+
+        self.result_text_add2 = els.ResultText("Result", category=self.numerical_results, prefix="Result multiple: ", suffix="m")
+        self.result_text_add2.text_to_be_shown("ResultsClass", "get_result")
+        self.result_text_add2.function_to_convert_to_text(lambda x: round(x, 2))
 
         # the option float_units is shown if int_small_2 is below 26 and (aim_plot is selected or int_small_1 is above 20)
         self.show_option_under_multiple_conditions(
@@ -325,6 +330,11 @@ class GUI(GuiStructure):  # pragma: no cover
         self.aim_add.add_link_2_show(self.result_export)
         self.aim_sub.add_link_2_show(self.result_text_sub)
         self.aim_plot.add_link_2_show(self.figure_results)
+        self.show_option_under_multiple_conditions(
+            self.result_text_add2,
+            [self.aim_add, self.float_b],
+            functions_check_for_and=[self.aim_add.widget.isChecked, self.float_b.create_function_2_check_linked_value((100, None))],
+        )
 
         self.aim_add.add_link_2_show(self.figure_results_with_different_other_saved_figure)
         self.aim_sub.add_link_2_show(self.figure_results_with_different_other_saved_figure)

@@ -159,4 +159,7 @@ def test_results_figure(qtbot):  # noqa: PLR0915
     assert np.allclose(main_window.gui_structure.figure_results_with_customizable_layout.option_legend_text.get_value(), (1, 2, 3))
     assert np.allclose(main_window.gui_structure.figure_results_with_customizable_layout.option_title.get_value(), (4, 5, 6))
 
+    main_window.gui_structure.figure_results_with_customizable_layout.default_figure_colors.set_value(0)
+    main_window.gui_structure.figure_results_with_customizable_layout.change_2_default_settings()
+
     close_tests(main_window, qtbot)

@@ -18,7 +18,7 @@ def test_multiple_int_box(qtbot):
     assert np.allclose(multiple_ints.get_value(), multiple_ints.default_value)
     multiple_ints.set_value((multiple_ints.default_value[0] + 5, multiple_ints.default_value[1] + 5, multiple_ints.default_value[2] + 5))
     assert np.allclose((multiple_ints.default_value[0] + 5, multiple_ints.default_value[1] + 5, multiple_ints.default_value[2] + 5), multiple_ints.get_value())
-    multiple_ints._init_links()
+
     assert multiple_ints.check_linked_value((20, None))
     assert multiple_ints.check_linked_value((None, 2))
     assert not multiple_ints.check_linked_value((5, 20))

@@ -193,6 +193,16 @@ class Aim:
         push_button.toggled.connect(self.valueChanged.emit)
         layout.addWidget(push_button, idx[0], idx[1], 1, 1)
 
+    def init_links(self) -> None:
+        """
+        Function on how the links for the FloatBox should be set.
+
+        Returns
+        -------
+        None
+        """
+        self.valueChanged.emit()
+
     def translate(self, idx: int) -> None:
         """
         Translates the label.

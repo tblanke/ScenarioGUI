@@ -92,18 +92,6 @@ class TextBox(Option):
         """
         self.widget.setText(value)
 
-    def _init_links(self) -> None:
-        """
-        Function on how the links for the FloatBox should be set.
-
-        Returns
-        -------
-        None
-        """
-        current_value: str = self.get_value()
-        self.set_value(f"{current_value}1")
-        self.set_value(current_value)
-
     def _check_value(self) -> bool:
         """
         This function checks if the value of the FloatBox is between the minimal_value

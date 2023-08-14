@@ -24,7 +24,7 @@ def test_float_box_with_units(qtbot):
     assert np.isclose((float_units.default_value + 50) * 1000, float_units.get_value()[0])
     assert np.isclose(0, float_units.get_value()[1])
     float_units.set_value(((float_units.default_value + 50), 0))
-    float_units._init_links()
+
     assert float_units.check_linked_value((200, None))
     assert float_units.check_linked_value((None, 50))
     assert not float_units.check_linked_value((50, 200))

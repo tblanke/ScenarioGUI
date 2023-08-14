@@ -13,8 +13,6 @@ def test_text_box(qtbot):
     # init gui window
     main_window = start_tests(qtbot)
 
-    main_window.gui_structure.text_box._init_links()
-
     assert main_window.gui_structure.text_box.get_value() == main_window.gui_structure.text_box.default_value
     main_window.gui_structure.text_box.set_value("Hello")
     assert main_window.gui_structure.text_box.get_value() == "Hello"

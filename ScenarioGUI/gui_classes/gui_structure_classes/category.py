@@ -241,7 +241,7 @@ class Category:
         """
         self.frame.hide()
         self.label.hide()
-        for option in self.list_of_options:
+        for option in [option for option in self.list_of_options if not isinstance(option, ResultText)]:
             # only hide the options that were not already hidden
             # this since otherwise there can be problems with options at the results page
             if option.is_hidden():
@@ -252,7 +252,7 @@ class Category:
         # when results is given as an argument, the current category is on the result page
         # all ResultTexts should be out of the options_hidden list
         if kwargs.get("results"):
-            self.options_hidden = [i for i in self.options_hidden if not isinstance(i, ResultText)]
+            self.options_hidden = [option for option in self.options_hidden if not isinstance(option, ResultText)]
 
     def show(self, **kwargs) -> None:
         """

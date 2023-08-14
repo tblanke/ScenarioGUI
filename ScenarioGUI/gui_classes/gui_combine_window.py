@@ -218,17 +218,17 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.last_idx = 0
 
         [option.init_links() for option, _ in self.gui_structure.list_of_options]
+        [aim.init_links() for aim, _ in self.gui_structure.list_of_aims]
 
         globs.LOGGER.info(self.translations.tool_imported[self.gui_structure.option_language.get_value()[0]])
-        # allow checking of changes
-        self.checking: bool = True
 
         # set the correct graph layout
         globs.set_graph_layout()
 
         self.display_results()
         self.change_window_title()
-
+        # allow checking of changes
+        self.checking: bool = True
         # set started to True
         # this is so that no changes are made when the file is opening
         self.gui_structure.started = True
@@ -461,7 +461,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         getattr(d_s.results, result_export.export_function)(filename[0])
 
     def change_figure_option(self):
-        d_s = self.list_widget_scenario.currentItem().data(MainWindow.role)
+        item = self.list_widget_scenario.currentItem()
+        if item is None:
+            return
+        d_s = item.data(MainWindow.role)
         for option, name in [(opt, name) for opt, name in self.gui_structure.list_of_options if isinstance(opt, FigureOption)]:
             setattr(d_s, name, option.get_value())
         self.remove_previous_calculated_results()
@@ -1515,7 +1518,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         def update_results():
             # update so all the relevant options are shown
             check_aim_options([aim for aim, _ in self.gui_structure.list_of_aims])
-            [option.show() for option, _ in self.gui_structure.list_of_options_with_dependent_results if not option.is_hidden()]
+            # [option.show() for option, _ in self.gui_structure.list_of_options_with_dependent_results if not option.is_hidden()]
 
         # hide widgets if no list of scenarios exists and display not calculated text
         def hide_no_result(hide: bool = True):

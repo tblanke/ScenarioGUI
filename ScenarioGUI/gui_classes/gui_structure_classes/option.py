@@ -170,16 +170,6 @@ class Option(QtC.QObject):
         None
         """
 
-    @abc.abstractmethod
-    def _init_links(self) -> None:
-        """
-        Abstract function on how the links for this particular object should be set.
-
-        Returns
-        -------
-        None
-        """
-
     def init_links(self) -> None:
         """
         This function initiates the links.
@@ -188,8 +178,8 @@ class Option(QtC.QObject):
         -------
         None
         """
-        if self.linked_options:
-            self._init_links()
+        self.valueChanged.emit()
+        self.visibilityChanged.emit()
 
     def set_text(self, name: str) -> None:
         """

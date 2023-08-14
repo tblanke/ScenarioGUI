@@ -24,7 +24,7 @@ def test_list_box(qtbot):
     assert main_window.gui_structure.list_small_2.get_value()[0] == 2
     main_window.gui_structure.list_small_2.set_value((3, "Hi"))
     assert main_window.gui_structure.list_small_2.get_value() == (3, "3")
-    main_window.gui_structure.list_small_2._init_links()
+
     assert main_window.gui_structure.list_small_2.get_value() == (3, "3")
     assert main_window.gui_structure.list_small_2.check_linked_value(3)
     assert not main_window.gui_structure.list_small_2.check_linked_value(2)

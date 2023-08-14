@@ -226,7 +226,13 @@ class GUI(GuiStructure):
 
         self.result_text_add = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_add.text_to_be_shown("ResultsClass", "get_result")
-        self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2))
+        self.result_text_add.function_to_convert_to_text(lambda x: round(x, 2)),
+        self.result_text_add2 = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
+        self.result_text_add2.text_to_be_shown("ResultsClass", "get_result")
+        self.result_text_add2.function_to_convert_to_text(lambda x: round(x, 2))
+        self.result_text_add3 = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
+        self.result_text_add3.text_to_be_shown("ResultsClass", "get_result")
+        self.result_text_add3.function_to_convert_to_text(lambda x: round(x, 2))
         self.result_text_sub = ResultText("Result", category=self.numerical_results, prefix="Result: ", suffix="m")
         self.result_text_sub.text_to_be_shown("ResultsClass", "result")
         self.result_text_sub.function_to_convert_to_text(lambda x: round(x, 2))
