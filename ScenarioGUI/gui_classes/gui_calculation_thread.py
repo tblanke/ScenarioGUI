@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC
 
+
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
     from functools import partial
@@ -25,6 +26,7 @@ class CalcProblem(QtC.QThread):
 
     any_signal = QtC.Signal(tuple)
     role: int = 1
+    USE_MULTITHREADING: bool = True
 
     def __init__(
         self,
@@ -69,16 +71,24 @@ class CalcProblem(QtC.QThread):
         -------
         None
         """
-        queue = mp.Queue()
-        stop_event: mp.Event = mp.Event()
-        process: mp.Process = mp.Process(target=calculate, args=(self.data_2_results_function, self.d_s, queue, stop_event))
-        process.start()
-
-        if not stop_event.wait(self.d_s.time_out):
-            debug_message, results = f"{RuntimeError(f'RuntimeError: run time > {self.d_s.time_out}s')}", None
+        if self.USE_MULTITHREADING:
+            try:
+                results, func = self.data_2_results_function(self.d_s)
+                func()
+                debug_message = None
+            except Exception as err:
+                debug_message, results = err, None
         else:
-            debug_message, results = queue.get()
-        process.terminate()
+            queue = mp.Queue()
+            stop_event: mp.Event = mp.Event()
+            process: mp.Process = mp.Process(target=calculate, args=(self.data_2_results_function, self.d_s, queue, stop_event))
+            process.start()
+
+            if not stop_event.wait(self.d_s.time_out):
+                debug_message, results = f"{RuntimeError(f'RuntimeError: run time > {self.d_s.time_out}s')}", None
+            else:
+                debug_message, results = queue.get()
+            process.terminate()
         self.d_s.debug_message = debug_message
         # save bore field in Datastorage
         self.d_s.results = results
@@ -88,7 +98,9 @@ class CalcProblem(QtC.QThread):
         self.any_signal.emit(self)
 
 
-def calculate(data_2_results_function: Callable[[DataStorage], tuple[object, Callable]], d_s: DataStorage, queue: mp.Queue, stop_event: mp.Event) -> None:
+def calculate(
+    data_2_results_function: Callable[[DataStorage], tuple[object, Callable]], d_s: DataStorage, queue: mp.Queue, stop_event: mp.Event
+) -> None:
     """
     This function contains the actual code to run the different calculations.
     For each aim in the GUI, a new if statement is used. Here, one can put all the code
