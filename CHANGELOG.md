@@ -15,8 +15,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Different file extension can be saved and loaded using add_other_export_function or add_other_import_function from MainWindow class (issue 89)
 - A conversation function to convert old json version styles of the gui to new ones can be added using add_other_version_import_function from MainWindow class
 - Qthread class for saving of files (issue 82)
-
-### Added
 - Ability to deactivate button box entries (issue 46)
 - Ability to deactivate aims
 - Ability to load a file as new scenarios and add them to the existing once's (issue 88)
@@ -45,6 +43,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   are reset to the default ones and the value is set. (issue 83)
 - Translation now works without the same names as the option etc.
 - Redefine list_of_result_texts (issue 86)
+- Shorter 'wrong value' error warnings (issue 119)
 
 ## [0.2.2] - 2023-04-21
 
