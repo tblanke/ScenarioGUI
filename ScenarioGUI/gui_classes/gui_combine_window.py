@@ -227,6 +227,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         globs.set_graph_layout()
 
         self.display_results()
+        self.change_window_title()
 
         # set started to True
         # this is so that no changes are made when the file is opening
