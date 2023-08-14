@@ -470,7 +470,7 @@ class GuiStructure:
 
     @staticmethod
     def show_option_under_multiple_conditions(options_to_be_shown: Option | list[Option],
-                                              options_2_be_checked: list[Option, Aim], *,
+                                              options_2_be_checked: Option | Aim | list[Option, Aim], *,
                                               functions_check_for_and: list[Callable[[], bool]] | None = None,
                                               functions_check_for_or: list[Callable[[], bool]] | None = None,
                                               custom_logic: Callable[[], bool] | None = None,
@@ -500,6 +500,9 @@ class GuiStructure:
 
         if not isinstance(options_to_be_shown, list):
             options_to_be_shown: list[Option] = [options_to_be_shown]
+
+        if not isinstance(options_2_be_checked, list):
+            options_2_be_checked = [options_2_be_checked]
 
         if np.sum([functions_check_for_and is not None, functions_check_for_or is not None, custom_logic is not None]) > 1:
             raise UserWarning('Multiple criteria for the truth evaluation are selected. Please choose either the and, or or custom logic criterium.')
