@@ -19,7 +19,7 @@ class ResultsClass:
         if self.a > 190:
             raise ValueError("Value above 190")
         self.result = self.a - self.b
-        sleep(2)
+        sleep(5)
 
     def get_result(self) -> float:
         return self.result
