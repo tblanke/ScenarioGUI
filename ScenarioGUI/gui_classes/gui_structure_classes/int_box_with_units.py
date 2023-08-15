@@ -73,19 +73,6 @@ class IntBoxWithUnits(IntBox):
         self.units: list[tuple[str, float]] = [] if units is None else units
         self.unit_widget: ComboBox = ComboBox(self.default_parent, currentIndexChanged=self.valueChanged.emit)
 
-    def _init_links(self) -> None:
-        """
-        Function on how the links for the IntBox should be set.
-
-        Returns
-        -------
-        None
-        """
-        current_index: int = self.get_value()[1] if self.get_value()[1] > 0 else 0
-        current_value: int = int(self.get_value()[0])
-        self.set_value((self.maximal_value if current_value == self.minimal_value else self.minimal_value, current_index + 1))
-        self.set_value((current_value, current_index))
-
     def check_linked_value(self, value: tuple[int | None, int | None]) -> bool:
         """
         This function checks if the linked "option" should be shown.

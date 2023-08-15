@@ -18,7 +18,6 @@ def test_filename_read(qtbot) -> None:
     # init gui window
     main_window = start_tests(qtbot)
     main_window.save_scenario()
-    main_window.gui_structure.filename._init_links()
 
     folder = Path(__file__).parent.parent
     file = f'{folder.joinpath("./example_data.csv")}'

@@ -13,8 +13,6 @@ def test_multiline_text_box(qtbot):
     # init gui window
     main_window = start_tests(qtbot)
 
-    main_window.gui_structure.text_box_multi_line._init_links()
-
     assert main_window.gui_structure.text_box_multi_line.get_value() == main_window.gui_structure.text_box_multi_line.default_value
     main_window.gui_structure.text_box_multi_line.set_value("Hello\nWorld")
     assert main_window.gui_structure.text_box_multi_line.get_value() == "Hello\nWorld"

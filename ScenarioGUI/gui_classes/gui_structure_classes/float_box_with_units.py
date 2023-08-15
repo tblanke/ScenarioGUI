@@ -125,19 +125,6 @@ class FloatBoxWithUnits(FloatBox):
         check_and_set_max_min_values(self.widget, value, self.maximal_value, self.minimal_value)
         self.widget.setValue(value)
 
-    def _init_links(self) -> None:
-        """
-        Function on how the links for the FloatBox should be set.
-
-        Returns
-        -------
-        None
-        """
-        current_index: int = self.unit_widget.currentIndex() if self.unit_widget.currentIndex() > 0 else 0
-        current_value: float = self.get_value()[0] / self.units[current_index][1]
-        self.set_value((current_value * 1.1, current_index + 1))
-        self.set_value((current_value, current_index))
-
     def _check_value(self) -> bool:
         """
         This function checks if the value of the IntBox is between the minimal_value

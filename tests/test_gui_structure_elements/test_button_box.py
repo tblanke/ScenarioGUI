@@ -23,7 +23,6 @@ def test_button_box(qtbot):
     assert np.isclose(button_box.get_value(), button_box.default_value)
     button_box.set_value(button_box.default_value + 1)
     assert np.isclose(button_box.default_value + 1, button_box.get_value())
-    button_box._init_links()
     assert button_box.check_linked_value(button_box.default_value + 1)
     assert button_box.create_function_2_check_linked_value(button_box.default_value + 1)() == button_box.check_linked_value(button_box.default_value + 1)
     assert not button_box.check_linked_value(button_box.default_value)

@@ -82,14 +82,13 @@ def test_flex_amount_option(qtbot):  # noqa: PLR0915
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 10, values[1][1])
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 15, values[2][1])
 
-    flex_option._init_links()
     assert not flex_option.check_linked_value((2, None))
     assert not flex_option.check_linked_value((None, 20))
     assert flex_option.check_linked_value((4, 20))
     assert flex_option.check_linked_value((None, 2))
     assert flex_option.check_linked_value((4, 20)) == flex_option.create_function_2_check_linked_value((4, 20))()
     main_window.gui_structure.page_inputs.button.click()
-    flex_option._init_links()
+
     assert not main_window.gui_structure.hint_flex.is_hidden()
     flex_option.set_value([["name", 4, 3, 0] for _ in range(5)])
     assert main_window.gui_structure.hint_flex.is_hidden()

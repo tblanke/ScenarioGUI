@@ -109,18 +109,6 @@ class ButtonBox(Option):
         if not button.isChecked():
             button.click()
 
-    def _init_links(self) -> None:
-        """
-        Function on how the links for the ButtonBox should be set.
-
-        Returns
-        -------
-        None
-        """
-        current_value: int = self.get_value()
-        self.set_value(0 if current_value != 0 else 1)
-        self.set_value(current_value)
-
     def _check_value(self) -> bool:
         """
         This function checks whether or not at least one button is checked.

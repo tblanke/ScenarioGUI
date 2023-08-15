@@ -109,18 +109,6 @@ class ListBox(Option):
             return
         self.widget.setCurrentIndex(value[0])
 
-    def _init_links(self) -> None:
-        """
-        Function on how the links for the ListBox should be set.
-
-        Returns
-        -------
-        None
-        """
-        current_value = self.get_value()
-        self.set_value(0 if current_value[0] != 0 else 1)
-        self.set_value(current_value)
-
     def _check_value(self) -> bool:
         """
         This function checks whether a correct value is selected.

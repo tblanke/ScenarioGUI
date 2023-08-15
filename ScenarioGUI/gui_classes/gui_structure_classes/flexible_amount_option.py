@@ -209,13 +209,13 @@ class FlexibleAmount(Option):
             for _ in range(len_options, len(value)):
                 self._add_entry()
         self.valueChanged.emit()
-        self._init_links()
+        self.init_links()
 
         for options, values in zip(self.option_entries, value):
             for option, val in zip(options, values):
                 option.set_value(val)
 
-    def _init_links(self) -> None:
+    def init_links(self) -> None:
         """
         Function on how the links for the FloatBox should be set.
 
@@ -223,6 +223,7 @@ class FlexibleAmount(Option):
         -------
         None
         """
+        self.valueChanged.emit()
         for option, (min_length, max_length) in self.linked_options:
             self.show_option(option, min_length, max_length)
 

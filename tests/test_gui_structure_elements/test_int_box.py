@@ -18,7 +18,7 @@ def test_int_box(qtbot):
     assert np.isclose(int_a.get_value(), int_a.default_value)
     int_a.set_value(int_a.default_value + 5)
     assert np.isclose(int_a.default_value + 5, int_a.get_value())
-    int_a._init_links()
+
     assert int_a.check_linked_value((20, None))
     assert int_a.check_linked_value((None, 2))
     assert not int_a.check_linked_value((5, 20))
