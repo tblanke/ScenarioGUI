@@ -43,6 +43,8 @@ def test_aim(qtbot):
     main_window.gui_structure.aim_add.widget.click()
     assert main_window.gui_structure.button_box.is_hidden()
     main_window.gui_structure.aim_plot.widget.click()
+    assert main_window.gui_structure.aim_plot.is_checked()
+    assert not main_window.gui_structure.aim_add.is_checked()
     assert not main_window.gui_structure.button_box.is_hidden()
 
     assert not main_window.gui_structure.aim_plot.is_hidden()
