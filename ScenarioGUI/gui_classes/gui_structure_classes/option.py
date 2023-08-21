@@ -100,6 +100,7 @@ class Option(QtC.QObject):
         """
 
     def check_value_if_hidden(self, un_hidden_value: bool, hidden_value: bool) -> bool:
+        hidden_value = self.value_if_hidden if hidden_value is None else hidden_value
         if hidden_value is not None and self.is_hidden():
             return hidden_value
         return un_hidden_value
