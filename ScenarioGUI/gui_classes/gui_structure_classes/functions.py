@@ -6,11 +6,16 @@ from __future__ import annotations
 from functools import partial as ft_partial
 from typing import TYPE_CHECKING, Callable
 
+import warnings
+
 if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW  # type: ignore
 
     from ScenarioGUI.gui_classes.gui_structure_classes.aim import Aim
     from ScenarioGUI.gui_classes.gui_structure_classes.option import Option
+    from ScenarioGUI.gui_classes.gui_structure_classes.category import Category
+    from ScenarioGUI.gui_classes.gui_structure_classes.hint import Hint
+    from ScenarioGUI.gui_classes.gui_structure_classes.function_button import FunctionButton
 
 
 def check_and_set_max_min_values(widget: QtW.QSpinBox | QtW.QDoubleSpinBox, value: int | float, default_max: int | float, default_min: int | float) -> None:
@@ -180,3 +185,23 @@ def _create_function_2_check_linked_value(
         return option.check_linked_value(value)
 
     return func
+
+
+class ConditionalVisibilityWarning(Warning):
+    def __init__(self, option):
+        self.message = f'The option {option} has already been assigned with a conditional visibility statement,'\
+                      'via add_link_2_show() or via show_under_multiple_conditions. This can lead to unexpected '\
+                      'behaviour.'
+    def __str__(self):
+        return repr(self.message)
+
+def check_conditional_visibility(option: Option | Aim | Category | Hint | FunctionButton):
+    """
+    This function checks if the option/aim/category has already been assigned with a conditional visibility.
+    If so, a warning is show.
+    """
+
+    if option.conditional_visibility:
+        warnings.warn(ConditionalVisibilityWarning(option))
+        return
+    option.conditional_visibility = True

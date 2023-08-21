@@ -18,6 +18,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes.functions import (
 )
 
 from .option import Option
+from .functions import check_conditional_visibility
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -144,6 +145,8 @@ class ButtonBox(Option):
         """
 
         self.linked_options.append([option, on_index])
+        check_conditional_visibility(option)
+
     def set_text(self, name: str) -> None:
         """
         This function sets the text of the label and of the different buttons in the ButtonBox.

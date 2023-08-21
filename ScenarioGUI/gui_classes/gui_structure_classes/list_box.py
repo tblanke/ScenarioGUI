@@ -14,6 +14,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes.functions import _create_func
 
 from ...utils import set_default_font
 from .option import Option
+from .functions import check_conditional_visibility
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -163,6 +164,7 @@ class ListBox(Option):
 
         """
         self.linked_options.append([option, on_index])
+        check_conditional_visibility(option)
 
     def check_linked_value(self, value: int) -> bool:
         """

@@ -18,6 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .function_button import FunctionButton
     from .option import Option
     from .page import Page
+    from .functions import check_conditional_visibility
 
 
 class Category:
@@ -57,6 +58,8 @@ class Category:
         self.layout_frame: QtW.QVBoxLayout | None = None
         page.list_categories.append(self)
         self.options_hidden = []
+        self.conditional_visibility: bool = False
+
 
     def activate_graphic_left(self) -> None:
         """

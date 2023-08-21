@@ -14,6 +14,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes.functions import _create_func
 
 from ...utils import change_font_size, set_default_font
 from .option import Option
+from .functions import check_conditional_visibility
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -269,6 +270,7 @@ class FlexibleAmount(Option):
         >>> option_flex.add_link_2_show(option=option_linked, min_length=2, max_length=10)
         """
         self.linked_options.append((option, (min_length, max_length)))
+        check_conditional_visibility(option)
 
     def show_option(
         self,

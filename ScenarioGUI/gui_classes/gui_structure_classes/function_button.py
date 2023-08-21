@@ -56,6 +56,7 @@ class FunctionButton:
         self.frame: QtW.QFrame = QtW.QFrame(self.default_parent)
         self.button: QtW.QPushButton = QtW.QPushButton(self.default_parent)
         category.list_of_options.append(self)
+        self.conditional_visibility: bool = False
 
     def create_widget(self, frame: QtW.QFrame, layout_parent: QtW.QLayout):
         """

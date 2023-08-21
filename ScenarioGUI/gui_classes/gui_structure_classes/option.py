@@ -62,6 +62,7 @@ class Option(QtC.QObject):
         self.list_2_check_before_value: list[tuple[Option, int], Aim] = []
         self.visibilityChanged: Signal = Signal()
         self.valueChanged: Signal = Signal()
+        self.conditional_visibility: bool = False
 
     @abc.abstractmethod
     def get_value(self) -> bool | int | float | str:

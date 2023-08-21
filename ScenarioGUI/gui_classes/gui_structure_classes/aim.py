@@ -12,6 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import Signal, change_font_size, set_default_font
+from .functions import check_conditional_visibility
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -70,6 +71,7 @@ class Aim:
         self.visibilityChanged: Signal = Signal()
         self.valueChanged: Signal = Signal()
         self.widget: QtW.QPushButton = QtW.QPushButton(self.default_parent)
+        self.conditional_visibility: bool = False
         page.upper_frame.append(self)
 
     def show(self):
@@ -155,6 +157,7 @@ class Aim:
         >>> aim_example.add_link_2_show(option=option_example)
         """
         self.list_options.append(option)
+        check_conditional_visibility(option)
 
     def create_widget(self, frame: QtW.QFrame, layout: QtW.QGridLayout, idx: tuple[int, int]) -> None:
         """
