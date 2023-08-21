@@ -10,12 +10,7 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from ScenarioGUI.gui_classes.gui_structure_classes.functions import (
-    _create_function_2_check_linked_value,
-    check,
-    update_opponent_not_change,
-    update_opponent_toggle,
-)
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check, update_opponent_not_change, update_opponent_toggle
 
 from .option import Option
 
@@ -144,6 +139,7 @@ class ButtonBox(Option):
         """
 
         self.linked_options.append([option, on_index])
+
     def set_text(self, name: str) -> None:
         """
         This function sets the text of the label and of the different buttons in the ButtonBox.
@@ -163,21 +159,23 @@ class ButtonBox(Option):
         for button, button_name in zip(self.widget, entry_name[1:]):
             button.setText(f" {button_name.replace('++', ',')} ")
 
-    def check_linked_value(self, value: int) -> bool:
+    def check_linked_value(self, value: int, value_if_hidden: bool | None = None) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
         Parameters
         ----------
         value : int
-            int of index on which the option should be shown
+            index on which the option should be shown
+        value_if_hidden: bool  | None
+            the return value, if the option is hidden
 
         Returns
         -------
         bool
             True if the linked "option" should be shown
         """
-        return self.get_value() == value
+        return self.check_value_if_hidden(self.get_value() == value, value_if_hidden)
 
     def create_function_2_check_linked_value(self, value: int, value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
@@ -186,7 +184,7 @@ class ButtonBox(Option):
         Parameters
         ----------
         value : int
-            int of index on which the option should be shown
+            index on which the option should be shown
         value_if_hidden: bool  | None
             the return value, if the option is hidden
 
@@ -194,7 +192,7 @@ class ButtonBox(Option):
         -------
         function
         """
-        return _create_function_2_check_linked_value(self, value, value_if_hidden)
+        return ft_partial(self.check_linked_value, value, value_if_hidden)
 
     def disable_entry(self, idx: int):
         """
@@ -289,7 +287,7 @@ class ButtonBox(Option):
         self,
         button: QtW.QPushButton,
         button_opponent: QtW.QPushButton,
-        false_button_list: list[QtW.QPushButton] = None,
+        false_button_list: list[QtW.QPushButton] | None = None,
     ) -> None:
         """
         This function updates which button should be checked/activated or unchecked/deactivated
@@ -301,7 +299,7 @@ class ButtonBox(Option):
             Button which is activated (iff it was not already), and which is deactivated if it was active and is pressed on
         button_opponent : QtW.QPushButton
             Button which is activated if the current button was active and is pressed on
-        false_button_list : List[QtW.QPushButton]
+        false_button_list : List[QtW.QPushButton] | None
             List with other buttons which aren't active
 
         Returns

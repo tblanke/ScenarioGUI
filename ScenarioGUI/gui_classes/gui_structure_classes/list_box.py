@@ -164,21 +164,23 @@ class ListBox(Option):
         """
         self.linked_options.append([option, on_index])
 
-    def check_linked_value(self, value: int) -> bool:
+    def check_linked_value(self, value: int, value_if_hidden: bool | None = None) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
         Parameters
         ----------
         value : int
-            int of index on which the option should be shown
+            index on which the option should be shown
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
         bool
             True if the linked "option" should be shown
         """
-        return self.widget.currentIndex() == value
+        return self.check_value_if_hidden(self.widget.currentIndex() == value, value_if_hidden)
 
     def create_function_2_check_linked_value(self, value: int, value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
@@ -195,14 +197,14 @@ class ListBox(Option):
         -------
         function
         """
-        return _create_function_2_check_linked_value(self, value, value_if_hidden)
+        return ft_partial(self.check_linked_value, value, value_if_hidden)
 
     def create_widget(
         self,
         frame: QtW.QFrame,
         layout_parent: QtW.QLayout,
-        row: int = None,
-        column: int = None,
+        row: int | None = None,
+        column: int | None = None,
     ) -> None:
         """
         This functions creates the ListBox widget in the frame.
@@ -213,10 +215,10 @@ class ListBox(Option):
             The frame object in which the widget should be created
         layout_parent : QtW.QLayout
             The parent layout of the current widget
-        row : int
+        row : int | None
             The index of the row in which the widget should be created
             (only needed when there is a grid layout)
-        column : int
+        column : int | None
             The index of the column in which the widget should be created
             (only needed when there is a grid layout)
 

@@ -469,14 +469,16 @@ class GuiStructure:
             aim.widget.setChecked(True)
 
     @staticmethod
-    def show_option_under_multiple_conditions(options_to_be_shown: Option | list[Option],
+    def show_option_under_multiple_conditions(options_to_be_shown: Option | list[Option],  # noqa: PLR0913
                                               options_2_be_checked: Option | Aim | list[Option, Aim], *,
                                               functions_check_for_and: list[Callable[[], bool]] | None = None,
                                               functions_check_for_or: list[Callable[[], bool]] | None = None,
                                               custom_logic: Callable[[], bool] | None = None,
                                               check_on_visibility_change: bool = False) -> None:
         """
-        show the option_to_be_shown if all functions_of_options of the options_2_be_checked are returning true
+        show the option_to_be_shown if all functions_of_options of the options_2_be_checked are returning true\n
+        Important!: This function can only be used once per option. Otherwise, this can lead to unexpected behaviour, where most probably the last function
+        call is the dominant one.
 
         Parameters
         ----------

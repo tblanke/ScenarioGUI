@@ -13,7 +13,7 @@
 
 ScenarioGUI is a Python package that contains many functionalities to design your own Graphical User Interfaces (GUI). It should help to create and maintain 
 scenario based GUIs.
-
+<br/><br/>
 #### Read The Docs
 ScenarioGUI has an elaborate documentation were all the functionalities of the tool are explained, with examples.
 This can be found on [ScenarioGUI.readthedocs.io](https://scenariogui.readthedocs.io).

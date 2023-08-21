@@ -215,7 +215,7 @@ class FloatBox(Option):
             return option.show()
         option.hide()
 
-    def check_linked_value(self, value: tuple[float | None, float | None]) -> bool:
+    def check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None = None) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
@@ -223,18 +223,22 @@ class FloatBox(Option):
         ----------
         value : tuple of 2 optional floats
             first one is the below value and the second the above value
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
         bool
             True if the linked "option" should be shown
         """
-        below, above = value
-        if below is not None and self.get_value() < below:
-            return True
-        if above is not None and self.get_value() > above:
-            return True
-        return False
+        def check() -> bool:
+            below, above = value
+            if below is not None and self.get_value() < below:
+                return True
+            if above is not None and self.get_value() > above:
+                return True
+            return False
+        return self.check_value_if_hidden(check(), value_if_hidden)
 
     def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
@@ -251,7 +255,7 @@ class FloatBox(Option):
         -------
         function
         """
-        return _create_function_2_check_linked_value(self, value, value_if_hidden)
+        return ft_partial(self.check_linked_value, value, value_if_hidden)
 
     def create_widget(
         self,
@@ -270,10 +274,10 @@ class FloatBox(Option):
             The frame object in which the widget should be created
         layout_parent : QtW.QLayout
             The parent layout of the current widget
-        row : int
+        row : int | None
             The index of the row in which the widget should be created
             (only needed when there is a grid layout)
-        column : int
+        column : int | None
             The index of the column in which the widget should be created
             (only needed when there is a grid layout)
 

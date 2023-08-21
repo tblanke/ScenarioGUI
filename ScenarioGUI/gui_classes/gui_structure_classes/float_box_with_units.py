@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from functools import partial
 from math import log10
 from typing import TYPE_CHECKING
 
@@ -181,7 +182,7 @@ class FloatBoxWithUnits(FloatBox):
         super().set_font_size(size)
         change_font_size(self.unit_widget, size, True)
 
-    def check_linked_value(self, value: tuple[float | None, float | None]) -> bool:
+    def check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None = None) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
@@ -189,18 +190,22 @@ class FloatBoxWithUnits(FloatBox):
         ----------
         value : tuple of 2 optional floats
             first one is the below value and the second the above value
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
         bool
             True if the linked "option" should be shown
         """
-        below, above = value
-        if below is not None and self.get_value()[0] < below:
-            return True
-        if above is not None and self.get_value()[0] > above:
-            return True
-        return False
+        def check() -> bool:
+            below, above = value
+            if below is not None and self.get_value()[0] < below:
+                return True
+            if above is not None and self.get_value()[0] > above:
+                return True
+            return False
+        return self.check_value_if_hidden(check(), value_if_hidden)
 
     def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
@@ -217,15 +222,15 @@ class FloatBoxWithUnits(FloatBox):
         -------
         function
         """
-        return _create_function_2_check_linked_value(self, value, value_if_hidden)
+        return partial(self.check_linked_value, value, value_if_hidden)
 
     def create_widget(
             self,
             frame: QtW.QFrame,
             layout_parent: QtW.QLayout,
             *,
-            row: int = None,
-            column: int = None,
+            row: int | None = None,
+            column: int | None = None,
     ) -> None:
         """
         This functions creates the IntBox widget in the frame.
@@ -236,10 +241,10 @@ class FloatBoxWithUnits(FloatBox):
             The frame object in which the widget should be created
         layout_parent : QtW.QLayout
             The parent layout of the current widget
-        row : int
+        row : int | None
             The index of the row in which the widget should be created
             (only needed when there is a grid layout)
-        column : int
+        column : int | None
             The index of the column in which the widget should be created
             (only needed when there is a grid layout)
 
