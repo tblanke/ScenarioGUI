@@ -83,6 +83,9 @@ class Aim:
     def is_hidden(self) -> bool:
         return self.widget.isHidden()
 
+    def is_checked(self) -> bool:
+        return self.widget.isChecked()
+
     def set_text(self, name: str) -> None:
         """
         This function sets the label text.
