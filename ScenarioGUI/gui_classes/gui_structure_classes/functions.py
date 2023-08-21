@@ -192,8 +192,10 @@ class ConditionalVisibilityWarning(Warning):
         self.message = f'The option {option} has already been assigned with a conditional visibility statement,'\
                       'via add_link_2_show() or via show_under_multiple_conditions. This can lead to unexpected '\
                       'behaviour.'
+
     def __str__(self):
         return repr(self.message)
+
 
 def check_conditional_visibility(option: Option | Aim | Category | Hint | FunctionButton):
     """

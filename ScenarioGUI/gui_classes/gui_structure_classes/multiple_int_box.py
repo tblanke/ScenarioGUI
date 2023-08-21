@@ -17,6 +17,7 @@ from ...utils import set_default_font
 from .functions import _create_function_2_check_linked_value
 from .int_box import SpinBox
 from .option import Option
+from .functions import check_conditional_visibility
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -24,7 +25,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
-    from .functions import check_conditional_visibility
 
 
 class MultipleIntBox(Option):
