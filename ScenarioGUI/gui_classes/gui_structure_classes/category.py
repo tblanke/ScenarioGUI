@@ -18,7 +18,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from .function_button import FunctionButton
     from .option import Option
     from .page import Page
-    from .functions import check_conditional_visibility
 
 
 class Category:

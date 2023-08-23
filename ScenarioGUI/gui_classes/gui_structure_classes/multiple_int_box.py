@@ -14,7 +14,6 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from .functions import _create_function_2_check_linked_value
 from .int_box import SpinBox
 from .option import Option
 from .functions import check_conditional_visibility

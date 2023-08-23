@@ -12,7 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from .functions import _create_function_2_check_linked_value, check_and_set_max_min_values
+from .functions import check_and_set_max_min_values
 from .option import Option
 from .functions import check_conditional_visibility
 

@@ -1,6 +1,8 @@
 import numpy as np
 import PySide6.QtGui as QtG
+import pytest
 
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import ConditionalVisibilityWarning
 from ..starting_closing_tests import close_tests, start_tests
 
 
@@ -60,4 +62,10 @@ def test_float_box(qtbot):
     assert main_window.gui_structure.float_b.label.text() == "Hello"
     main_window.save_scenario()
     assert "float_b" in main_window.list_ds[0].to_dict()
+
+    float_b.add_link_2_show(main_window.gui_structure.filename, 0)
+
+    with pytest.warns(ConditionalVisibilityWarning):
+        float_b.add_link_2_show(main_window.gui_structure.filename, 2)
+
     close_tests(main_window, qtbot)

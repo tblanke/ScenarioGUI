@@ -132,7 +132,7 @@ class Option(QtC.QObject):
         This function check whether the value of the option is valid.
         Before it checks the value, it makes sure to check all the dependencies in list_2_check_before_value.
         If the check of one of the aims or options in this list is True, True is returned.
-        Otherwise the value of the current option is checked.
+        Otherwise, the value of the current option is checked.
 
         Returns
         -------
@@ -300,7 +300,7 @@ class Option(QtC.QObject):
     def check_linked_value(
         self,
         value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | tuple[Iterable[int] | None, Iterable[int] | None] | str | bool,
-        value_if_hidden: bool | None,
+        value_if_hidden: bool | None = None,
     ) -> bool:
         """
         Check if the linked value is the current one then return True

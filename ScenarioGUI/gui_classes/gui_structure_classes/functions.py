@@ -170,28 +170,13 @@ def check_aim_options(list_aim: list[Aim], *args) -> None:
             option.show()
 
 
-def _create_function_2_check_linked_value(
-    option: Option,
-    value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | str | bool,
-    value_if_hidden: bool | None,
-) -> Callable[[], bool]:
-    value_if_hidden = option.value_if_hidden if value_if_hidden is None else value_if_hidden
-    if value_if_hidden is None:
-        return ft_partial(option.check_linked_value, value)
-
-    def func():
-        if option.is_hidden():
-            return value_if_hidden
-        return option.check_linked_value(value)
-
-    return func
-
-
 class ConditionalVisibilityWarning(Warning):
     def __init__(self, option):
-        self.message = f'The option {option} has already been assigned with a conditional visibility statement,'\
-                      'via add_link_2_show() or via show_under_multiple_conditions. This can lead to unexpected '\
-                      'behaviour.'
+        self.message = (
+            f"The option {option} has already been assigned with a conditional visibility statement,"
+            "via add_link_2_show() or via show_under_multiple_conditions. This can lead to unexpected "
+            "behaviour."
+        )
 
     def __str__(self):
         return repr(self.message)

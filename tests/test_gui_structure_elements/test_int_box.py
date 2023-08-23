@@ -1,5 +1,7 @@
 import numpy as np
+import pytest
 
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import ConditionalVisibilityWarning
 from ..starting_closing_tests import close_tests, start_tests
 
 
@@ -41,4 +43,10 @@ def test_int_box(qtbot):
     assert not main_window.gui_structure.float_b.is_hidden()
     main_window.save_scenario()
     assert "int_a" in main_window.list_ds[0].to_dict()
+
+    int_a.add_link_2_show(main_window.gui_structure.hint_1, 0)
+
+    with pytest.warns(ConditionalVisibilityWarning):
+        int_a.add_link_2_show(main_window.gui_structure.hint_1, 2)
+
     close_tests(main_window, qtbot)
