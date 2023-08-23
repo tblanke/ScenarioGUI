@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Option implemented to limit the maximal runtime (issue 107)
 - Automated previous/next buttons creation (issue 106)
 - check_linked_value gets a optional value if it is hidden
+- Warning by double conditional visibility (issue 126)
 
 ### Fixed
 - Scenario buttons not resizing (issue 42)
