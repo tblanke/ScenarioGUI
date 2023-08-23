@@ -1,6 +1,10 @@
 from functools import partial
 
-from ..starting_closing_tests import start_tests
+import pytest
+
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import ConditionalVisibilityWarning
+
+from ..starting_closing_tests import close_tests, start_tests
 
 
 def test_aim(qtbot):
@@ -58,3 +62,10 @@ def test_aim(qtbot):
 
     main_window.gui_structure.aim_plot.set_text("Hello")
     assert main_window.gui_structure.aim_plot.widget.text() == "Hello"
+
+    main_window.gui_structure.aim_plot.add_link_2_show(main_window.gui_structure.aim_add)
+
+    with pytest.warns(ConditionalVisibilityWarning):
+        main_window.gui_structure.aim_plot.add_link_2_show(main_window.gui_structure.aim_add)
+
+    close_tests(main_window, qtbot)

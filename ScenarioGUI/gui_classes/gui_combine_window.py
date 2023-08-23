@@ -12,10 +12,10 @@ from pathlib import Path
 from sys import path
 from typing import TYPE_CHECKING, TypedDict
 
+import pandas as pd
 import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
-import pandas as pd
 from matplotlib import rcParams
 
 import ScenarioGUI.global_settings as globs

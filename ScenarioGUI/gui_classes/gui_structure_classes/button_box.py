@@ -12,6 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.gui_classes.gui_structure_classes.functions import check, update_opponent_not_change, update_opponent_toggle
 
+from .functions import check_conditional_visibility
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -139,6 +140,8 @@ class ButtonBox(Option):
         """
 
         self.linked_options.append([option, on_index])
+        check_conditional_visibility(option)
+
 
     def set_text(self, name: str) -> None:
         """

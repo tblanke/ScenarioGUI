@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING
 
 import PySide6.QtCore as QtC
 
-
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
     from functools import partial

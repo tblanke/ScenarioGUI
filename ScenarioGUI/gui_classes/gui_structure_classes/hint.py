@@ -50,6 +50,7 @@ class Hint:
         self.label: QtW.QLabel = QtW.QLabel(self.default_parent)
         self.warning = warning
         category.list_of_options.append(self)
+        self.conditional_visibility: bool = False
 
     def create_widget(
         self,

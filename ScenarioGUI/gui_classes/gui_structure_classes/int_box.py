@@ -12,7 +12,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from .functions import _create_function_2_check_linked_value, check_and_set_max_min_values
+from .functions import check_and_set_max_min_values, check_conditional_visibility
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -155,8 +155,8 @@ class IntBox(Option):
         self,
         option: Option | Category | FunctionButton | Hint,
         *,
-        below: int = None,
-        above: int = None,
+        below: int | None = None,
+        above: int | None = None,
     ):
         """
         This function couples the visibility of an option to the value of the IntBox object.
@@ -165,9 +165,9 @@ class IntBox(Option):
         ----------
         option : Option, Category, FunctionButton, Hint
             Option which visibility should be linked to the value of the IntBox.
-        below : int
+        below : int | None
             Lower threshold of the FloatBox value below which the linked option will be hidden
-        above : int
+        above : int | None
             Higher threshold of the FloatBox value above which the linked option will be hidden
 
         Returns
@@ -182,6 +182,7 @@ class IntBox(Option):
         >>> option_int.add_link_2_show(option=option_linked, below=1, above=10)
         """
         self.change_event(ft_partial(self.show_option, option, below, above))
+        check_conditional_visibility(option)
 
     def show_option(
         self,

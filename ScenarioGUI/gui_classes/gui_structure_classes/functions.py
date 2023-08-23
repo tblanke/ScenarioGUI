@@ -3,6 +3,7 @@ script which contain basic gui structure functions
 """
 from __future__ import annotations
 
+import warnings
 from functools import partial as ft_partial
 from typing import TYPE_CHECKING, Callable
 
@@ -10,6 +11,9 @@ if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW  # type: ignore
 
     from ScenarioGUI.gui_classes.gui_structure_classes.aim import Aim
+    from ScenarioGUI.gui_classes.gui_structure_classes.category import Category
+    from ScenarioGUI.gui_classes.gui_structure_classes.function_button import FunctionButton
+    from ScenarioGUI.gui_classes.gui_structure_classes.hint import Hint
     from ScenarioGUI.gui_classes.gui_structure_classes.option import Option
 
 
@@ -165,18 +169,25 @@ def check_aim_options(list_aim: list[Aim], *args) -> None:
             option.show()
 
 
-def _create_function_2_check_linked_value(
-    option: Option,
-    value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | str | bool,
-    value_if_hidden: bool | None,
-) -> Callable[[], bool]:
-    value_if_hidden = option.value_if_hidden if value_if_hidden is None else value_if_hidden
-    if value_if_hidden is None:
-        return ft_partial(option.check_linked_value, value)
+class ConditionalVisibilityWarning(Warning):
+    def __init__(self, option):
+        self.message = (
+            f"The option {option} has already been assigned with a conditional visibility statement,"
+            "via add_link_2_show() or via show_under_multiple_conditions. This can lead to unexpected "
+            "behaviour."
+        )
 
-    def func():
-        if option.is_hidden():
-            return value_if_hidden
-        return option.check_linked_value(value)
+    def __str__(self):
+        return repr(self.message)
 
-    return func
+
+def check_conditional_visibility(option: Option | Aim | Category | Hint | FunctionButton):
+    """
+    This function checks if the option/aim/category has already been assigned with a conditional visibility.
+    If so, a warning is show.
+    """
+
+    if option.conditional_visibility:
+        warnings.warn(ConditionalVisibilityWarning(option))
+        return
+    option.conditional_visibility = True

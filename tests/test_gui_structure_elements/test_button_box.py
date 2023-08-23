@@ -1,6 +1,8 @@
 import numpy as np
+import pytest
 
 from ScenarioGUI.gui_classes.gui_structure_classes import Option
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import ConditionalVisibilityWarning
 
 from ..starting_closing_tests import close_tests, start_tests
 
@@ -75,5 +77,9 @@ def test_button_box(qtbot):
     button_box.widget[0].click()
     assert button_box.get_value() == 1
     assert main_window.status_bar.label.text() == ""
-    close_tests(main_window, qtbot)
 
+    button_box.add_link_2_show(main_window.gui_structure.float_b, 1)
+
+    with pytest.warns(ConditionalVisibilityWarning):
+        button_box.add_link_2_show(main_window.gui_structure.float_b, 0)
+    close_tests(main_window, qtbot)

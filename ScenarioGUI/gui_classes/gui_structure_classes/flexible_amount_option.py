@@ -10,9 +10,9 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from ScenarioGUI.gui_classes.gui_structure_classes.functions import _create_function_2_check_linked_value
 
 from ...utils import change_font_size, set_default_font
+from .functions import check_conditional_visibility
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -242,8 +242,8 @@ class FlexibleAmount(Option):
     def add_link_2_show(
         self,
         option: Option | Category | FunctionButton | Hint,
-        min_length: int = None,
-        max_length: int = None,
+        min_length: int | None = None,
+        max_length: int | None = None,
     ) -> None:
         """
         This function couples the visibility of an option to the value of the FloatBox object.
@@ -252,9 +252,9 @@ class FlexibleAmount(Option):
         ----------
         option : Option, Category, FunctionButton, Hint
             Option which visibility should be linked to the value of the FloatBox.
-        min_length : int
+        min_length : int | None
             length of the Options below which the linked option will be hidden
-        max_length : int
+        max_length : int | None
             length of the Options above which the linked option will be hidden
 
         Returns
@@ -269,6 +269,7 @@ class FlexibleAmount(Option):
         >>> option_flex.add_link_2_show(option=option_linked, min_length=2, max_length=10)
         """
         self.linked_options.append((option, (min_length, max_length)))
+        check_conditional_visibility(option)
 
     def show_option(
         self,
@@ -385,8 +386,8 @@ class FlexibleAmount(Option):
         frame: QtW.QFrame,
         layout_parent: QtW.QLayout,
         *,
-        row: int = None,
-        column: int = None,
+        row: int | None = None,
+        column: int | None = None,
     ) -> None:
         """
         This functions creates the FloatBox widget in the frame.
@@ -397,10 +398,10 @@ class FlexibleAmount(Option):
             The frame object in which the widget should be created
         layout_parent : QtW.QLayout
             The parent layout of the current widget
-        row : int
+        row : int | None
             The index of the row in which the widget should be created
             (only needed when there is a grid layout)
-        column : int
+        column : int | None
             The index of the column in which the widget should be created
             (only needed when there is a grid layout)
 

@@ -10,9 +10,10 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from ScenarioGUI.gui_classes.gui_structure_classes.functions import _create_function_2_check_linked_value, check
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check
 
 from ...utils import set_default_font
+from .functions import check_conditional_visibility
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -163,6 +164,7 @@ class ListBox(Option):
 
         """
         self.linked_options.append([option, on_index])
+        check_conditional_visibility(option)
 
     def check_linked_value(self, value: int, value_if_hidden: bool | None = None) -> bool:
         """

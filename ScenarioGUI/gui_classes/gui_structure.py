@@ -5,7 +5,7 @@ It contains all the options, categories etc. that should appear on the GUI.
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import Protocol, TYPE_CHECKING
 
 import numpy as np
 
@@ -29,6 +29,7 @@ from ScenarioGUI.gui_classes.gui_structure_classes import (
     ResultText,
 )
 from ScenarioGUI.gui_classes.gui_structure_classes.font_list_box import FontListBox
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import check_conditional_visibility
 from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import font_list, get_name
 
 if TYPE_CHECKING:
@@ -37,6 +38,16 @@ if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
 
     from ScenarioGUI.gui_classes.translation_class import Translations
+
+
+    class OptionShow(Protocol):
+
+        def show(self):
+            """"""
+
+        def hide(self):
+            """"""
+
 
 
 class GuiStructure:
@@ -469,8 +480,8 @@ class GuiStructure:
             aim.widget.setChecked(True)
 
     @staticmethod
-    def show_option_under_multiple_conditions(options_to_be_shown: Option | list[Option],  # noqa: PLR0913
-                                              options_2_be_checked: Option | Aim | list[Option, Aim], *,
+    def show_option_under_multiple_conditions(options_to_be_shown: OptionShow | list[OptionShow],  # noqa: PLR0913
+                                              options_2_be_checked: Option | Aim | list[Option | Aim], *,
                                               functions_check_for_and: list[Callable[[], bool]] | None = None,
                                               functions_check_for_or: list[Callable[[], bool]] | None = None,
                                               custom_logic: Callable[[], bool] | None = None,
@@ -504,15 +515,18 @@ class GuiStructure:
 
         options_2_be_checked = [options_2_be_checked] if not isinstance(options_2_be_checked, list) else options_2_be_checked
 
+        # check if conditional visibility is already assigned
+        [check_conditional_visibility(option) for option in options_2_be_checked]
+
         if np.sum([functions_check_for_and is not None, functions_check_for_or is not None, custom_logic is not None]) > 1:
             raise UserWarning('Multiple criteria for the truth evaluation are selected. Please choose either the and, or or custom logic criterium.')
 
         if functions_check_for_and is not None:
             def check():
-                _ = [i.show() for i in options_to_be_shown] if all([func() for func in functions_check_for_and]) else [i.hide() for i in options_to_be_shown]
+                _ = [i.show() for i in options_to_be_shown] if all(func() for func in functions_check_for_and) else [i.hide() for i in options_to_be_shown]
         elif functions_check_for_or:
             def check():
-                _ = [i.show() for i in options_to_be_shown] if any([func() for func in functions_check_for_or]) else [i.hide() for i in options_to_be_shown]
+                _ = [i.show() for i in options_to_be_shown] if any(func() for func in functions_check_for_or) else [i.hide() for i in options_to_be_shown]
         else:
             def check():
                 _ = [i.show() for i in options_to_be_shown] if custom_logic() else [i.hide() for i in options_to_be_shown]

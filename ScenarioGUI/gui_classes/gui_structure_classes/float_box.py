@@ -13,7 +13,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from .functions import _create_function_2_check_linked_value, check_and_set_max_min_values
+from .functions import check_and_set_max_min_values, check_conditional_visibility
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -183,6 +183,7 @@ class FloatBox(Option):
         """
         self.linked_options.append((option, (below, above)))
         self.change_event(ft_partial(self.show_option, option, below, above))
+        check_conditional_visibility(option)
 
     def show_option(
         self,

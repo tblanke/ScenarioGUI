@@ -1,3 +1,6 @@
+import pytest
+
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import ConditionalVisibilityWarning
 from tests.starting_closing_tests import close_tests, start_tests
 
 
@@ -31,4 +34,10 @@ def test_list_box(qtbot):
     assert main_window.gui_structure.list_small_2.create_function_2_check_linked_value(3)() == main_window.gui_structure.list_small_2.check_linked_value(3)
     main_window.save_scenario()
     assert "list_box" in main_window.list_ds[0].to_dict()
+
+    main_window.gui_structure.list_small_2.add_link_2_show(main_window.gui_structure.hint_1, on_index=0)
+
+    with pytest.warns(ConditionalVisibilityWarning):
+        main_window.gui_structure.list_small_2.add_link_2_show(main_window.gui_structure.hint_1, on_index=2)
+
     close_tests(main_window, qtbot)

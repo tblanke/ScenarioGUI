@@ -1,12 +1,17 @@
+from typing import TYPE_CHECKING
+
 import numpy as np
-from pytest import raises
+from pytest import raises, warns
 
 import ScenarioGUI.global_settings as global_vars
 from ScenarioGUI import elements as els
-from ScenarioGUI.gui_classes.gui_structure_classes.flexible_amount_option import FlexibleAmount
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import ConditionalVisibilityWarning
 
 from ..result_creating_class_for_tests import ResultsClass, data_2_results
 from ..starting_closing_tests import close_tests, start_tests
+
+if TYPE_CHECKING:
+    from ScenarioGUI.gui_classes.gui_structure_classes.flexible_amount_option import FlexibleAmount
 
 global_vars.ResultsClass = ResultsClass
 global_vars.DATA_2_RESULTS_FUNCTION = data_2_results
@@ -62,7 +67,7 @@ def test_flex_amount_option(qtbot):  # noqa: PLR0915
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 5, flex_option.frame.layout().itemAtPosition(1, 3).widget().value())
     flex_option._add_entry_at_row(row=0)
     values = flex_option.get_value()
-    assert len(values) == 4
+    assert len(values) == 4  # noqa: PLR2004
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 5, flex_option.frame.layout().itemAtPosition(1, 3).widget().value())
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 5, flex_option.frame.layout().itemAtPosition(2, 3).widget().value())
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 10, flex_option.frame.layout().itemAtPosition(3, 3).widget().value())
@@ -73,7 +78,7 @@ def test_flex_amount_option(qtbot):  # noqa: PLR0915
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 15, values[3][1])
     flex_option._del_entry(row=1)
     values = flex_option.get_value()
-    assert len(values) == 3
+    assert len(values) == 3  # noqa: PLR2004
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 5, flex_option.frame.layout().itemAtPosition(1, 3).widget().value())
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 10, flex_option.frame.layout().itemAtPosition(2, 3).widget().value())
     assert np.isclose(flex_option.option_classes[1][1]["default_value"] + 15, flex_option.frame.layout().itemAtPosition(3, 3).widget().value())
@@ -114,19 +119,26 @@ def test_flex_amount_option(qtbot):  # noqa: PLR0915
     close_tests(main_window, qtbot)
 
     min_max: FlexibleAmount = main_window.gui_structure.flex_option_min_max
-    assert len(min_max.option_entries) == 2
+    assert len(min_max.option_entries) == 2  # noqa: PLR2004
     min_max._del_entry(row=1)
-    assert len(min_max.option_entries) == 2
+    assert len(min_max.option_entries) == 2  # noqa: PLR2004
     min_max._add_entry_at_row(row=0)
-    assert len(min_max.option_entries) == 3
+    assert len(min_max.option_entries) == 3  # noqa: PLR2004
     min_max._del_entry(row=1)
-    assert len(min_max.option_entries) == 2
+    assert len(min_max.option_entries) == 2  # noqa: PLR2004
     min_max._add_entry_at_row(row=0)
     min_max._add_entry_at_row(row=0)
     min_max._add_entry_at_row(row=0)
     min_max._add_entry_at_row(row=0)
     min_max._add_entry_at_row(row=0)
     min_max._add_entry_at_row(row=0)
-    assert len(min_max.option_entries) == 5
+    assert len(min_max.option_entries) == 5  # noqa: PLR2004
     min_max._del_entry(row=0)
-    assert len(min_max.option_entries) == 4
+    assert len(min_max.option_entries) == 4  # noqa: PLR2004
+
+    min_max.add_link_2_show(main_window.gui_structure.float_b, 1)
+
+    with warns(ConditionalVisibilityWarning):
+        min_max.add_link_2_show(main_window.gui_structure.float_b, 0)
+
+    close_tests(main_window, qtbot)

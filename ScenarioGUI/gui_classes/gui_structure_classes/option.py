@@ -4,7 +4,7 @@ option base class script
 from __future__ import annotations
 
 import abc
-from typing import Iterable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterable
 
 import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW  # type: ignore
@@ -62,6 +62,7 @@ class Option(QtC.QObject):
         self.list_2_check_before_value: list[tuple[Option, int], Aim] = []
         self.visibilityChanged: Signal = Signal()
         self.valueChanged: Signal = Signal()
+        self.conditional_visibility: bool = False
 
     @abc.abstractmethod
     def get_value(self) -> bool | int | float | str:
@@ -131,7 +132,7 @@ class Option(QtC.QObject):
         This function check whether the value of the option is valid.
         Before it checks the value, it makes sure to check all the dependencies in list_2_check_before_value.
         If the check of one of the aims or options in this list is True, True is returned.
-        Otherwise the value of the current option is checked.
+        Otherwise, the value of the current option is checked.
 
         Returns
         -------
@@ -299,7 +300,7 @@ class Option(QtC.QObject):
     def check_linked_value(
         self,
         value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | tuple[Iterable[int] | None, Iterable[int] | None] | str | bool,
-        value_if_hidden: bool | None,
+        value_if_hidden: bool | None = None,
     ) -> bool:
         """
         Check if the linked value is the current one then return True

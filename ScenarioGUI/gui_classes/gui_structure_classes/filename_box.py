@@ -15,11 +15,13 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import change_font_size, set_default_font
+from .functions import check_conditional_visibility
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
 
+    from . import FunctionButton, Hint
     from .category import Category
 
 
@@ -95,7 +97,7 @@ class FileNameBox(Option):
         Parameters
         ----------
         value : int
-            Value to which the the FileNameBox should be set.
+            Value to which the FileNameBox should be set.
 
         Returns
         -------
@@ -105,7 +107,7 @@ class FileNameBox(Option):
 
     def _check_value(self) -> bool:
         """
-        This function checks whether or not a value is given in the FileNameBox.
+        This function checks whether a value is given in the FileNameBox.
 
         Returns
         -------
@@ -114,6 +116,35 @@ class FileNameBox(Option):
         """
         return exists(self.widget.text()) if self.check_active else True
 
+    def add_link_2_show(
+        self,
+        option: Option | Category | FunctionButton | Hint,
+        value: str,
+    ) -> None:
+        """
+        This function couples the visibility of an option to the value of the FloatBox object.
+
+        Parameters
+        ----------
+        option : Option, Category, FunctionButton, Hint
+            Option which visibility should be linked to the value of the FloatBox.
+        value : str
+            string on which the option should be shown
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        This function can be used to couple the FloatBox value to other options, hints, function buttons or categories.
+        In the example below, 'option linked' will be shown if the float value is below 0.1 or above 0.9.
+
+        >>> option.add_link_2_show(option=option_linked, value="")
+        """
+        self.linked_options.append((option, value))
+        check_conditional_visibility(option)
+
     def check_linked_value(self, value: str, value_if_hidden: bool | None = None) -> bool:
         """
         This function checks if the linked "option" should be shown.
@@ -121,7 +152,7 @@ class FileNameBox(Option):
         Parameters
         ----------
         value : str
-            str on which the option should be shown
+            string on which the option should be shown
         value_if_hidden: bool | None
             the return value, if the option is hidden
 
@@ -139,7 +170,7 @@ class FileNameBox(Option):
         Parameters
         ----------
         value : str
-            str on which the option should be shown
+            string on which the option should be shown
         value_if_hidden: bool | None
             the return value, if the option is hidden
 

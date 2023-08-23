@@ -1,6 +1,7 @@
 import numpy as np
 
 from ScenarioGUI.gui_classes.gui_calculation_thread import calculate
+
 from ..starting_closing_tests import close_tests, start_tests
 
 

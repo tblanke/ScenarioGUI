@@ -57,6 +57,8 @@ class Category:
         self.layout_frame: QtW.QVBoxLayout | None = None
         page.list_categories.append(self)
         self.options_hidden = []
+        self.conditional_visibility: bool = False
+
 
     def activate_graphic_left(self) -> None:
         """

@@ -1,7 +1,9 @@
 from functools import partial
 
+import pytest
 from pytest import raises
 
+from ScenarioGUI.gui_classes.gui_structure_classes.functions import ConditionalVisibilityWarning
 from tests.gui_structure_for_tests import GUI
 from tests.starting_closing_tests import close_tests, start_tests
 
@@ -84,15 +86,28 @@ def test_show_multiple_under_conditions(qtbot):
     g_s.int_small_1.set_value(18)
     assert g_s.float_units.is_hidden()
     with raises(UserWarning):
-        g_s.show_option_under_multiple_conditions(g_s.float_units, [g_s.aim_plot, g_s.int_small_1, g_s.int_small_2],
-        custom_logic=lambda: (g_s.aim_plot.widget.isChecked() or g_s.int_small_1.check_linked_value((None, 20))),functions_check_for_and=[
-            g_s.aim_add.widget.isChecked,
-            partial(g_s.int_a.check_linked_value, (None, 50)),
-        ])
+        g_s.show_option_under_multiple_conditions(
+            g_s.float_units,
+            [g_s.aim_plot, g_s.int_small_1, g_s.int_small_2],
+            custom_logic=lambda: (g_s.aim_plot.widget.isChecked() or g_s.int_small_1.check_linked_value((None, 20))),
+            functions_check_for_and=[
+                g_s.aim_add.widget.isChecked,
+                partial(g_s.int_a.check_linked_value, (None, 50)),
+            ],
+        )
+
+    with pytest.warns(ConditionalVisibilityWarning):
+        g_s.show_option_under_multiple_conditions(
+            g_s.float_units,
+            [g_s.aim_plot, g_s.int_small_1, g_s.int_small_2],
+            custom_logic=lambda: (g_s.aim_plot.widget.isChecked() or g_s.int_small_1.check_linked_value((None, 20)))
+            and g_s.int_small_2.check_linked_value((26, None)),
+        )
+
     close_tests(main_window, qtbot)
 
 
-def test_show_multiple_under_conditions_multiple_options(qtbot):
+def test_show_multiple_under_conditions_multiple_options(qtbot):  # noqa: PLR0915
     # init gui window
     # init gui window
     main_window = start_tests(qtbot)

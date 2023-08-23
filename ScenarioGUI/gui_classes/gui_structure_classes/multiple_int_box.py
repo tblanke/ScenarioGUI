@@ -14,7 +14,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from .functions import _create_function_2_check_linked_value
+from .functions import check_conditional_visibility
 from .int_box import SpinBox
 from .option import Option
 
@@ -193,6 +193,7 @@ class MultipleIntBox(Option):
         >>> option_int.add_link_2_show(option=option_linked, below=1, above=10)
         """
         self.change_event(ft_partial(self.show_option, option, below, above))
+        check_conditional_visibility(option)
 
     def show_option(
         self,
