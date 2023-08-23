@@ -4,6 +4,7 @@ filename box
 from __future__ import annotations
 
 import logging
+from functools import partial
 from os.path import exists
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -12,7 +13,6 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from ScenarioGUI.gui_classes.gui_structure_classes.functions import _create_function_2_check_linked_value
 
 from ...utils import change_font_size, set_default_font
 from .option import Option
@@ -114,7 +114,7 @@ class FileNameBox(Option):
         """
         return exists(self.widget.text()) if self.check_active else True
 
-    def check_linked_value(self, value: str) -> bool:
+    def check_linked_value(self, value: str, value_if_hidden: bool | None = None) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
@@ -122,13 +122,15 @@ class FileNameBox(Option):
         ----------
         value : str
             str on which the option should be shown
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
         bool
             True if the linked "option" should be shown
         """
-        return self.get_value() == value
+        return self.check_value_if_hidden(self.get_value() == value, value_if_hidden)
 
     def create_function_2_check_linked_value(self, value: str, value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
@@ -145,14 +147,14 @@ class FileNameBox(Option):
         -------
         function
         """
-        return _create_function_2_check_linked_value(self, value, value_if_hidden)
+        return partial(self.check_linked_value, value, value_if_hidden)
 
     def create_widget(
         self,
         frame: QtW.QFrame,
         layout_parent: QtW.QLayout,
-        row: int = None,
-        column: int = None,
+        row: int | None = None,
+        column: int | None = None,
     ) -> None:
         """
         This functions creates the ButtonBox widget in the frame.
@@ -163,10 +165,10 @@ class FileNameBox(Option):
             The frame object in which the widget should be created
         layout_parent : QtW.QLayout
             The parent layout of the current widget
-        row : int
+        row : int | None
             The index of the row in which the widget should be created
             (only needed when there is a grid layout)
-        column : int
+        column : int | None
             The index of the column in which the widget should be created
             (only needed when there is a grid layout)
 

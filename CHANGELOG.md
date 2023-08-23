@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Ability to load a file as new scenarios and add them to the existing once's (issue 88)
 - Option implemented to limit the maximal runtime (issue 107)
 - Automated previous/next buttons creation (issue 106)
+- check_linked_value gets a optional value if it is hidden
 
 ### Fixed
 - Scenario buttons not resizing (issue 42)

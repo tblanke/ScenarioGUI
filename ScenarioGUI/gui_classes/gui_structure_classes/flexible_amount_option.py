@@ -325,7 +325,7 @@ class FlexibleAmount(Option):
         super().show()
         self.label.show()
 
-    def check_linked_value(self, value: tuple[int | None, int | None]) -> bool:
+    def check_linked_value(self, value: tuple[int | None, int | None], value_if_hidden: bool | None = None) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
@@ -333,18 +333,22 @@ class FlexibleAmount(Option):
         ----------
         value : tuple of 2 optional ints
             first value minimal length and second maximal length
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
         bool
             True if the linked "option" should be shown
         """
-        min_length, max_length = value
-        if min_length is not None and len(self.get_value()) < min_length:
-            return True
-        if max_length is not None and len(self.get_value()) > max_length:
-            return True
-        return False
+        def check() -> bool:
+            min_length, max_length = value
+            if min_length is not None and len(self.get_value()) < min_length:
+                return True
+            if max_length is not None and len(self.get_value()) > max_length:
+                return True
+            return False
+        return self.check_value_if_hidden(check(), value_if_hidden)
 
     def create_function_2_check_linked_value(self, value: tuple[int | None, int | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:
         """
@@ -361,7 +365,7 @@ class FlexibleAmount(Option):
         -------
         function
         """
-        return _create_function_2_check_linked_value(self, value, value_if_hidden)
+        return partial(self.check_linked_value, value, value_if_hidden)
 
     def set_font_size(self, size: int) -> None:
         """

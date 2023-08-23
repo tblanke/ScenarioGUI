@@ -32,7 +32,7 @@ class IntBoxWithUnits(IntBox):
         minimal_value: int = 0,
         maximal_value: int = 100,
         step: int = 1,
-        units: list[tuple[str, float]] | None = None
+        units: list[tuple[str, float]] | None = None,
     ):
         """
 
@@ -73,7 +73,7 @@ class IntBoxWithUnits(IntBox):
         self.units: list[tuple[str, float]] = [] if units is None else units
         self.unit_widget: ComboBox = ComboBox(self.default_parent, currentIndexChanged=self.valueChanged.emit)
 
-    def check_linked_value(self, value: tuple[int | None, int | None]) -> bool:
+    def check_linked_value(self, value: tuple[int | None, int | None], value_if_hidden: bool | None = None) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
@@ -81,18 +81,22 @@ class IntBoxWithUnits(IntBox):
         ----------
         value : tuple of 2 optional ints
             first one is the below value and the second the above value
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
         bool
             True if the linked "option" should be shown
         """
-        below, above = value
-        if below is not None and self.get_value()[0] < below:
-            return True
-        if above is not None and self.get_value()[0] > above:
-            return True
-        return False
+        def check():
+            below, above = value
+            if below is not None and self.get_value()[0] < below:
+                return True
+            if above is not None and self.get_value()[0] > above:
+                return True
+            return False
+        return self.check_value_if_hidden(check(), value_if_hidden)
 
     def show_option(
         self,
@@ -187,7 +191,7 @@ class IntBoxWithUnits(IntBox):
         -------
         function
         """
-        return _create_function_2_check_linked_value(self, value, value_if_hidden)
+        return ft_partial(self.check_linked_value, value, value_if_hidden)
 
     def set_font_size(self, size: int) -> None:
         """
@@ -202,12 +206,12 @@ class IntBoxWithUnits(IntBox):
         change_font_size(self.unit_widget, size, True)
 
     def create_widget(
-            self,
-            frame: QtW.QFrame,
-            layout_parent: QtW.QLayout,
-            *,
-            row: int = None,
-            column: int = None,
+        self,
+        frame: QtW.QFrame,
+        layout_parent: QtW.QLayout,
+        *,
+        row: int | None = None,
+        column: int | None = None,
     ) -> None:
         """
         This functions creates the IntBox widget in the frame.
@@ -218,10 +222,10 @@ class IntBoxWithUnits(IntBox):
             The frame object in which the widget should be created
         layout_parent : QtW.QLayout
             The parent layout of the current widget
-        row : int
+        row : int | None
             The index of the row in which the widget should be created
             (only needed when there is a grid layout)
-        column : int
+        column : int | None
             The index of the column in which the widget should be created
             (only needed when there is a grid layout)
 
@@ -242,5 +246,3 @@ class IntBoxWithUnits(IntBox):
         self.unit_widget.setMinimumHeight(self.widget.minimumHeight())
         self.unit_widget.setFocusPolicy(QtC.Qt.FocusPolicy.StrongFocus)
         set_default_font(self.unit_widget)
-
-

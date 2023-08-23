@@ -4,7 +4,7 @@ option base class script
 from __future__ import annotations
 
 import abc
-from typing import TYPE_CHECKING
+from typing import Iterable, TYPE_CHECKING
 
 import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW  # type: ignore
@@ -92,13 +92,19 @@ class Option(QtC.QObject):
     @abc.abstractmethod
     def _check_value(self) -> bool:
         """
-        Abstract function to check whether or not the current value of the option is a valid value.
+        Abstract function to check whether the current value of the option is a valid value.
 
         Returns
         -------
         bool
             True if the option value is valid
         """
+
+    def check_value_if_hidden(self, un_hidden_value: bool, hidden_value: bool) -> bool:
+        hidden_value = self.value_if_hidden if hidden_value is None else hidden_value
+        if hidden_value is not None and self.is_hidden():
+            return hidden_value
+        return un_hidden_value
 
     def add_aim_option_2_be_set_for_check(self, aim_or_option: tuple[Option, int] | Aim):
         """
@@ -293,7 +299,8 @@ class Option(QtC.QObject):
     @abc.abstractmethod
     def check_linked_value(
         self,
-        value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | str | bool,
+        value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | tuple[Iterable[int] | None, Iterable[int] | None] | str | bool,
+        value_if_hidden: bool | None,
     ) -> bool:
         """
         Check if the linked value is the current one then return True
@@ -302,6 +309,8 @@ class Option(QtC.QObject):
         ----------
         value : int, bool, str, tuple of ints or floats
             value to be checked
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------

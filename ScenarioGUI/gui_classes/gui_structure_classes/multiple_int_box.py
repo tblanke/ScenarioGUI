@@ -33,7 +33,7 @@ class MultipleIntBox(Option):
     The IntBox can be used to input integer numbers.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         label: str | list[str],
         default_value: Iterable[int],
@@ -119,7 +119,7 @@ class MultipleIntBox(Option):
         """
         return np.any(np.less_equal(self.minimal_value, self.get_value())) and np.any(np.less_equal(self.get_value(), self.maximal_value))
 
-    def check_linked_value(self, value: tuple[Iterable[int] | None, Iterable[int] | None]) -> bool:
+    def check_linked_value(self, value: tuple[Iterable[int] | None, Iterable[int] | None], value_if_hidden: bool | None = None) -> bool:
         """
         This function checks if the linked "option" should be shown.
 
@@ -127,18 +127,22 @@ class MultipleIntBox(Option):
         ----------
         value : Iterable of ints
             first one is the below value and the second the above value
+        value_if_hidden: bool | None
+            the return value, if the option is hidden
 
         Returns
         -------
         bool
             True if the linked "option" should be shown
         """
-        below, above = value
-        if below is not None and np.any(np.less(self.get_value(), below)):
-            return True
-        if above is not None and np.any(np.greater(self.get_value(), above)):
-            return True
-        return False
+        def check() -> bool:
+            below, above = value
+            if below is not None and np.any(np.less(self.get_value(), below)):
+                return True
+            if above is not None and np.any(np.greater(self.get_value(), above)):
+                return True
+            return False
+        return self.check_value_if_hidden(check(), value_if_hidden)
 
     def create_function_2_check_linked_value(
         self, value: tuple[Iterable[int] | None, Iterable[int] | None], value_if_hidden: bool | None = None
@@ -157,7 +161,7 @@ class MultipleIntBox(Option):
         -------
         function
         """
-        return _create_function_2_check_linked_value(self, value, value_if_hidden)
+        return ft_partial(self.check_linked_value, value, value_if_hidden)
 
     def add_link_2_show(
         self,
@@ -228,8 +232,8 @@ class MultipleIntBox(Option):
         frame: QtW.QFrame,
         layout_parent: QtW.QLayout,
         *,
-        row: int = None,
-        column: int = None,
+        row: int | None = None,
+        column: int | None = None,
     ) -> None:
         """
         This functions creates the IntBox widget in the frame.
@@ -240,10 +244,10 @@ class MultipleIntBox(Option):
             The frame object in which the widget should be created
         layout_parent : QtW.QLayout
             The parent layout of the current widget
-        row : int
+        row : int | None
             The index of the row in which the widget should be created
             (only needed when there is a grid layout)
-        column : int
+        column : int | None
             The index of the column in which the widget should be created
             (only needed when there is a grid layout)
 
