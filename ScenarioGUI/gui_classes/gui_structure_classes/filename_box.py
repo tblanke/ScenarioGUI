@@ -13,15 +13,15 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-from .functions import check_conditional_visibility
 
 from ...utils import change_font_size, set_default_font
+from .functions import check_conditional_visibility
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
-    from . import FunctionButton, Hint
 
+    from . import FunctionButton, Hint
     from .category import Category
 
 
@@ -140,7 +140,7 @@ class FileNameBox(Option):
         This function can be used to couple the FloatBox value to other options, hints, function buttons or categories.
         In the example below, 'option linked' will be shown if the float value is below 0.1 or above 0.9.
 
-        >>> option_flex.add_link_2_show(option=option_linked, min_length=2, max_length=10)
+        >>> option.add_link_2_show(option=option_linked, value="")
         """
         self.linked_options.append((option, value))
         check_conditional_visibility(option)

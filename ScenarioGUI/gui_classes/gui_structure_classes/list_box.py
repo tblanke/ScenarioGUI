@@ -13,8 +13,8 @@ import ScenarioGUI.global_settings as globs
 from ScenarioGUI.gui_classes.gui_structure_classes.functions import check
 
 from ...utils import set_default_font
-from .option import Option
 from .functions import check_conditional_visibility
+from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable

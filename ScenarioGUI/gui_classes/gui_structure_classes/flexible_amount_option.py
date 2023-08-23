@@ -12,8 +12,8 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import change_font_size, set_default_font
-from .option import Option
 from .functions import check_conditional_visibility
+from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable

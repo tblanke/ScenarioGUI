@@ -4,7 +4,7 @@ option base class script
 from __future__ import annotations
 
 import abc
-from typing import Iterable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterable
 
 import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW  # type: ignore

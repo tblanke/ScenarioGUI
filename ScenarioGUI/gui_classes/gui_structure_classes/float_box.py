@@ -13,9 +13,8 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
-from .functions import check_and_set_max_min_values
+from .functions import check_and_set_max_min_values, check_conditional_visibility
 from .option import Option
-from .functions import check_conditional_visibility
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable

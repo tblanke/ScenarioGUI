@@ -5,6 +5,7 @@ import PySide6.QtWidgets as QtW
 import pytest
 
 from ScenarioGUI.gui_classes.gui_structure_classes.functions import ConditionalVisibilityWarning
+
 from ..starting_closing_tests import close_tests, start_tests
 
 
@@ -44,9 +45,12 @@ def test_filename_read(qtbot) -> None:
     main_window.save_scenario()
     assert "filename" in main_window.list_ds[0].to_dict()
 
-    main_window.gui_structure.filename.add_link_2_show(main_window.gui_structure.float_b, "1")
+    main_window.gui_structure.filename.add_link_2_show(main_window.gui_structure.hint_1, "1")
+    assert not main_window.gui_structure.hint_1.is_hidden()
+    main_window.gui_structure.filename.set_value("1")
+    assert not main_window.gui_structure.hint_1.is_hidden()
 
     with pytest.warns(ConditionalVisibilityWarning):
-        main_window.gui_structure.filename.add_link_2_show(main_window.gui_structure.float_b, "0")
+        main_window.gui_structure.filename.add_link_2_show(main_window.gui_structure.hint_1, "0")
 
     close_tests(main_window, qtbot)

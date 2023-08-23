@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from ScenarioGUI.gui_classes.gui_structure_classes.functions import ConditionalVisibilityWarning
+
 from ..starting_closing_tests import close_tests, start_tests
 
 
@@ -44,9 +45,9 @@ def test_multiple_int_box(qtbot):
     main_window.save_scenario()
     assert "multiple_ints" in main_window.list_ds[0].to_dict()
 
-    multiple_ints.add_link_2_show(main_window.gui_structure.hint_1, 0)
+    multiple_ints.add_link_2_show(main_window.gui_structure.hint_1, below=(0, 0, 0))
 
     with pytest.warns(ConditionalVisibilityWarning):
-        multiple_ints.add_link_2_show(main_window.gui_structure.hint_1, 2)
+        multiple_ints.add_link_2_show(main_window.gui_structure.hint_1, below=(0, 0, 0))
 
     close_tests(main_window, qtbot)

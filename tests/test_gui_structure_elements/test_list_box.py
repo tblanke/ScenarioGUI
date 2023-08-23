@@ -35,9 +35,9 @@ def test_list_box(qtbot):
     main_window.save_scenario()
     assert "list_box" in main_window.list_ds[0].to_dict()
 
-    main_window.gui_structure.list_small_2.add_link_2_show(main_window.gui_structure.hint_1, 0)
+    main_window.gui_structure.list_small_2.add_link_2_show(main_window.gui_structure.hint_1, on_index=0)
 
     with pytest.warns(ConditionalVisibilityWarning):
-        main_window.gui_structure.list_small_2.add_link_2_show(main_window.gui_structure.hint_1, 2)
+        main_window.gui_structure.list_small_2.add_link_2_show(main_window.gui_structure.hint_1, on_index=2)
 
     close_tests(main_window, qtbot)
