@@ -148,6 +148,9 @@ class GUI(GuiStructure):  # pragma: no cover
             category=self.category_inputs,
             password=True,
         )
+        self.show_option_under_multiple_conditions(self.pass_word,
+                                                   self.button_box_short,
+                                                   custom_logic=partial(self.button_box_short.check_linked_value, 0))
 
         self.flex_option = els.FlexibleAmount(
             label=self.translations.flex_option,
