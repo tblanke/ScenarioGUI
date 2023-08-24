@@ -573,6 +573,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         item.data(MainWindow.role).results = None
         # abort here if autosave scenarios is used
         if self.gui_structure.option_auto_saving.get_value() == 1:
+            self.save_scenario()
             return
         # get text string of current scenario
         text: str = self.list_widget_scenario.currentItem().text()
