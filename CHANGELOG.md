@@ -37,7 +37,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changing aims is not noticed (issue 98)
 - Wrong value in ButtonBox (issue 104)
 - Window title shows version when started without a previous backup (issue 117)
-- 
+- Strange issue with autosaving (Issue 128)
+ 
 ### Changed
 - list_ds in MainWindow removed and replaced by QListWidget data
 - FlexOption can new be provided with default values (issue 63)
