@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Iterable
 
 import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW  # type: ignore
+import numpy as np
 
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.utils import Signal, change_font_size, set_default_font
