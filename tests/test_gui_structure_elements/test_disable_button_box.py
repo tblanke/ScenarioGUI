@@ -71,6 +71,7 @@ def test_disable_button_box_and_show_under_multiple_conditions(qtbot):
                              data_2_results_function=data_2_results)
     g_s = main_window.gui_structure
     g_s.button_box_short.set_value(1)
+    g_s.aim_sub.widget.click()
     assert g_s.text_box_small.is_hidden()
     g_s.float_b.set_value(49)
     assert g_s.button_box_short.get_value() == 0

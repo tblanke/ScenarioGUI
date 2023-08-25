@@ -226,8 +226,12 @@ class GUI(GuiStructure):
             label="Multiple int box:", category=self.category_grid, default_value=(1, 2, 3), minimal_value=(1, 1, 1), maximal_value=(100, 110, 120)
         )
         self.show_option_under_multiple_conditions(self.text_box_small,
-                                                   self.button_box_short,
-                                                   custom_logic=partial(self.button_box_short.check_linked_value, 0))
+                                                   [self.button_box_short, self.aim_add],
+                                                   functions_check_for_or=[
+                                                       partial(self.button_box_short.check_linked_value, 0),
+                                                       partial(self.aim_add.is_checked)
+                                                   ])
+
 
         self.text_box_multi_line_small = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_grid)
         self.category_grid.activate_graphic_left()

@@ -462,13 +462,14 @@ class GuiStructure:
     @staticmethod
     def _disable_aim(aim: Aim, at_page: Page, func_2_check: Callable[[], bool], *args):
         if func_2_check():
-            if aim.widget.isChecked():
+            if aim.is_checked():
                 aim.widget.click()
             aim.widget.setEnabled(False)
             font = aim.widget.font()
             font.setStrikeOut(True)
             aim.widget.setFont(font)
-            if aim.widget.isChecked():
+            if aim.is_checked():
+                # if toggled is not enabled, the button is still checked
                 aim.widget.setChecked(False)
                 aims = [aim_i for aim_i in at_page.upper_frame if aim_i != aim and aim_i.widget.isEnabled()]
                 if aims:
