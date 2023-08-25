@@ -143,6 +143,8 @@ class GUI(GuiStructure):
         self.float_b.change_event(self.disable_button_box(self.button_box_short, 1, partial(self.float_b.check_linked_value, (50, None))))
         self.int_a.change_event(self.disable_button_box(self.button_box_short, 0, partial(self.int_a.check_linked_value, (None, 10))))
 
+
+
         self.list_box = ListBox(
             label="List box",
             default_index=0,
@@ -223,6 +225,13 @@ class GUI(GuiStructure):
         self.multiple_ints_small = els.MultipleIntBox(
             label="Multiple int box:", category=self.category_grid, default_value=(1, 2, 3), minimal_value=(1, 1, 1), maximal_value=(100, 110, 120)
         )
+        self.show_option_under_multiple_conditions(self.text_box_small,
+                                                   [self.button_box_short, self.aim_add],
+                                                   functions_check_for_or=[
+                                                       partial(self.button_box_short.check_linked_value, 0),
+                                                       partial(self.aim_add.is_checked)
+                                                   ])
+
 
         self.text_box_multi_line_small = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_grid)
         self.category_grid.activate_graphic_left()

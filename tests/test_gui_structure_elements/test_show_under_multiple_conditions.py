@@ -109,7 +109,6 @@ def test_show_multiple_under_conditions(qtbot):
 
 def test_show_multiple_under_conditions_multiple_options(qtbot):  # noqa: PLR0915
     # init gui window
-    # init gui window
     main_window = start_tests(qtbot)
     g_s: GUI = main_window.gui_structure
     g_s.show_option_under_multiple_conditions(
@@ -202,3 +201,27 @@ def test_show_multiple_under_conditions_multiple_options(qtbot):  # noqa: PLR091
     assert g_s.float_units.is_hidden()
     assert g_s.float_d.is_hidden()
     close_tests(main_window, qtbot)
+
+
+def test_visibility_and_truth_all_buttons_hidden(qtbot):
+    # init gui window
+    main_window = start_tests(qtbot)
+    g_s: GUI = main_window.gui_structure
+
+    g_s.show_option_under_multiple_conditions(g_s.float_c,
+                                              g_s.button_box_short,
+                                              custom_logic=partial(g_s.button_box_short.check_linked_value, 0),
+                                              check_on_visibility_change=True)
+    g_s.float_b.value_if_hidden = False
+
+    assert not g_s.float_c.is_hidden()
+    assert not g_s.button_box_short.is_hidden()
+    g_s.float_b.set_value(49)
+    assert not g_s.float_c.is_hidden()
+    assert not g_s.button_box_short.is_hidden()
+    g_s.int_a.set_value(11)
+    assert g_s.float_c.is_hidden()
+    assert g_s.button_box_short.is_hidden()
+    g_s.int_a.set_value(9)
+    assert not g_s.float_c.is_hidden()
+    assert not g_s.button_box_short.is_hidden()
