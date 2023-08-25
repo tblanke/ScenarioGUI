@@ -573,6 +573,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         item.data(MainWindow.role).results = None
         # abort here if autosave scenarios is used
         if self.gui_structure.option_auto_saving.get_value() == 1:
+            self.save_scenario()
             return
         # get text string of current scenario
         text: str = self.list_widget_scenario.currentItem().text()
@@ -659,14 +660,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # check if the auto saving should be performed and then save the last selected scenario
         if self.gui_structure.option_auto_saving.get_value() == 1:
             self.check_values()
-            # save old scenario
-            if (
-                self.list_widget_scenario.count() - 1 >= self.list_widget_scenario.row(old_row_item)
-                and DataStorage(self.gui_structure) != old_row_item.data(MainWindow.role)
-                and self.push_button_save_scenario.isEnabled()
-            ):
-                old_row_item.data(MainWindow.role).close_figures()
-                old_row_item.setData(MainWindow.role, DataStorage(self.gui_structure))
             # update backup fileImport
             self.auto_save()
             # change values to new scenario values

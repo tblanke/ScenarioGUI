@@ -37,6 +37,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changing aims is not noticed (issue 98)
 - Wrong value in ButtonBox (issue 104)
 - Window title shows version when started without a previous backup (issue 117)
+- Strange issue with autosaving (Issue 128)
 - Disable buttonBox does now emit a valueChanged signal when necessary (issue 129)
 
 ### Changed
