@@ -451,6 +451,8 @@ class GuiStructure:
     def _disable_button_box(button_box: ButtonBox, at_index: int, func_2_check: Callable[[], bool], *args):
         if func_2_check():
             button_box.disable_entry(at_index)
+            # emit valueChanged signal
+            button_box.valueChanged.emit()
             return
         button_box.enable_entry(at_index)
 
