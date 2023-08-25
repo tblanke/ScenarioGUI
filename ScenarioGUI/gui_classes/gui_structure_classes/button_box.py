@@ -6,6 +6,7 @@ from __future__ import annotations
 from functools import partial as ft_partial
 from typing import TYPE_CHECKING
 
+import numpy as np
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
@@ -142,6 +143,16 @@ class ButtonBox(Option):
         self.linked_options.append([option, on_index])
         check_conditional_visibility(option)
 
+    def is_hidden(self) -> bool:
+        """
+        This function returns a boolean value related to whether or not the option is hidden.
+
+        Returns
+        -------
+        Bool
+            True if the option is hidden
+        """
+        return super().is_hidden() or np.all([button.isHidden() for button in self.widget])
 
     def set_text(self, name: str) -> None:
         """
@@ -221,6 +232,10 @@ class ButtonBox(Option):
         if not [widget for widget in self.widget if widget.isEnabled()]:
             self.hide()
 
+        if np.all([but.isHidden() for but in self.widget]):
+            # all buttons are invisible
+            self.visibilityChanged.emit()
+
     def enable_entry(self, idx: int):
         """
         Enables the entry at index
@@ -235,6 +250,8 @@ class ButtonBox(Option):
         self.widget[idx].show()
         if len([widget for widget in self.widget if widget.isEnabled()]) == 1:
             self.widget[idx].setChecked(True)
+            # again visible
+            self.valueChanged.emit()
 
     def create_widget(
         self,

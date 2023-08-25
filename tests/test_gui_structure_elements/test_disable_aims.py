@@ -71,3 +71,27 @@ def test_disable_aims(qtbot):
         assert not main_window.gui_structure.text_box_only_on_add.is_hidden()
         main_window.gui_structure.option_toggle_buttons.set_value(main_window.gui_structure.option_toggle_buttons.default_value)
         main_window.delete_backup()
+
+
+def test_disable_aim_and_show_under_multiple_conditions(qtbot):
+    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass,
+                             data_2_results_function=data_2_results)
+    g_s = main_window.gui_structure
+    g_s.aim_sub.widget.click()
+    g_s.button_box_short.set_value(1)
+    assert g_s.text_box_small.is_hidden()
+    g_s.int_a.set_value(600)
+    assert g_s.aim_add.is_checked()
+    assert not g_s.text_box_small.is_hidden()
+
+    # with toggled disabled
+    main_window = MainWindow(QtW.QMainWindow(), qtbot, GUI, Translations, result_creating_class=ResultsClass,
+                             data_2_results_function=data_2_results)
+    g_s = main_window.gui_structure
+    g_s.option_toggle_buttons.set_value(0)
+    g_s.aim_sub.widget.click()
+    g_s.button_box_short.set_value(1)
+    assert g_s.text_box_small.is_hidden()
+    g_s.int_a.set_value(600)
+    assert g_s.aim_add.is_checked()
+    assert not g_s.text_box_small.is_hidden()
