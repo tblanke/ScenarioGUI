@@ -519,7 +519,7 @@ class GuiStructure:
         options_2_be_checked = [options_2_be_checked] if not isinstance(options_2_be_checked, list) else options_2_be_checked
 
         # check if conditional visibility is already assigned
-        [check_conditional_visibility(option) for option in options_2_be_checked]
+        [check_conditional_visibility(option) for option in options_to_be_shown]
 
         if np.sum([functions_check_for_and is not None, functions_check_for_or is not None, custom_logic is not None]) > 1:
             raise UserWarning('Multiple criteria for the truth evaluation are selected. Please choose either the and, or or custom logic criterium.')
