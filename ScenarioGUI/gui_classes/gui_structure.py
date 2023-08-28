@@ -527,7 +527,7 @@ class GuiStructure:
         if functions_check_for_and is not None:
             def check():
                 _ = [i.show() for i in options_to_be_shown] if all(func() for func in functions_check_for_and) else [i.hide() for i in options_to_be_shown]
-        elif functions_check_for_or:
+        elif functions_check_for_or is not None:
             def check():
                 _ = [i.show() for i in options_to_be_shown] if any(func() for func in functions_check_for_or) else [i.hide() for i in options_to_be_shown]
         else:
