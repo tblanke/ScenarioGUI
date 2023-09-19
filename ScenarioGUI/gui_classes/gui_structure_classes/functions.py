@@ -37,9 +37,9 @@ def check_and_set_max_min_values(widget: QtW.QSpinBox | QtW.QDoubleSpinBox, valu
         None
     """
     if default_max > value > widget.maximum():
-        widget.setMaximum(default_max)
+        widget.setMaximum(int(default_max))
     if widget.minimum() > value > default_min:
-        widget.setMinimum(default_min)
+        widget.setMinimum(int(default_min))
 
 
 def update_opponent_not_change(button: QtW.QPushButton, false_button_list: list[QtW.QPushButton] = None):

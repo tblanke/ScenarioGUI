@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     import PySide6.QtWidgets as QtW
 
 
-def change_font_size(widget: QtW.QWidget | QtG.QAction, size: int, scale_min_height: bool = False) -> None:
+def change_font_size(widget: QtW.QWidget, size: int, scale_min_height: bool = False) -> None:
     """
     change the font size of the widget
 

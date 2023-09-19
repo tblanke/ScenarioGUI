@@ -11,11 +11,11 @@ def load(gui_file: str | Path):
     config = ConfigParser()
     config.read(gui_file)
 
-    globs.FOLDER = globs.get_path_for_file(globs.get_path_for_file(Path(gui_file).parent.parent, config["DEFAULT"]["PATH_2_ICONS"]).joinpath(config["DEFAULT"][
-                                                                                                                                     "PATH_2_ICONS"]), "icons")
+    globs.FOLDER = globs.get_path_for_file(
+        globs.get_path_for_file(Path(gui_file).parent.parent, config["DEFAULT"]["PATH_2_ICONS"]).joinpath(config["DEFAULT"]["PATH_2_ICONS"]), "icons"
+    )
 
-    config.read(config.read(globs.get_path_for_file(Path(gui_file).parent.parent, "setup.cfg").joinpath("setup.cfg")))
-    globs.VERSION = config.get("metadata", "version")
+    globs.VERSION = globs.find_version(globs.get_path_for_file(Path(gui_file).parent.parent, "setup.cfg"))
 
     globs.WHITE = config["COLORS"]["WHITE"]
     globs.LIGHT = config["COLORS"]["LIGHT"]

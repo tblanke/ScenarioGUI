@@ -6,7 +6,7 @@ from __future__ import annotations
 from os import system
 from typing import TYPE_CHECKING
 
-from pandas import read_csv
+from pandas import read_csv  # type: ignore
 
 from .global_settings import FOLDER
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 def translate_csv_2_class(csv_file_with_path: str | Path, target_path: str | Path):
     """
     function to create a translation class
-     
+
     Parameters
     ----------
     csv_file_with_path: str | Path

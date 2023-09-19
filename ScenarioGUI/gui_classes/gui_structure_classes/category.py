@@ -59,7 +59,6 @@ class Category:
         self.options_hidden = []
         self.conditional_visibility: bool = False
 
-
     def activate_graphic_left(self) -> None:
         """
         This function activates the possibility to show a figure next to the options in

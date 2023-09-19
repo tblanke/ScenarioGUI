@@ -27,15 +27,8 @@ class TextBox(Option):
     This class contains all the functionalities of the TextBox option in the GUI.
     The TextBox can be used to input text.
     """
-    def __init__(
-        self,
-        label: str | list[str],
-        default_text: str,
-        category: Category,
-        *,
-        password: bool = False,
-        wrong_value: str = ""
-    ):
+
+    def __init__(self, label: str | list[str], default_text: str, category: Category, *, password: bool = False, wrong_value: str = ""):
         """
 
         Parameters

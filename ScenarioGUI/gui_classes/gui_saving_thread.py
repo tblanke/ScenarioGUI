@@ -23,7 +23,7 @@ class SavingThread(QtC.QThread):
     def __init__(
         self,
         date: datetime.datetime,
-        func: Callable[[]],
+        func: Callable[[], None],
         parent=None,
     ) -> None:
         """

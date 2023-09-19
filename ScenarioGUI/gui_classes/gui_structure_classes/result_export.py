@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from . import FunctionButton
+from ScenarioGUI.gui_classes.gui_structure_classes import FunctionButton
 
 if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Callable
@@ -23,8 +23,16 @@ class ResultExport(FunctionButton):
 
     default_parent: QtW.QWidget | None = None
 
-    def __init__(self, button_text: str | list[str], icon: str, *, category: Category, export_function: str | Callable[[str]], file_extension: str = "",
-                 caption: str):
+    def __init__(
+        self,
+        button_text: str | list[str],
+        icon: str,
+        *,
+        category: Category,
+        export_function: str | Callable[[str], None],
+        file_extension: str = "",
+        caption: str,
+    ):
         """
 
         Parameters
@@ -47,7 +55,7 @@ class ResultExport(FunctionButton):
         >>> function_example = ResultExport(button_text="Press Here to activate function",
         >>> # or self.translations.function_example if function_example is in Translation class
         >>>                                   icon="example_icon.svg",
-        >>>                                   category=category_example)
+        >>>                                   category=category_example)  # type: ignore
 
         Gives:
 
