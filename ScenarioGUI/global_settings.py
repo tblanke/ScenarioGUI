@@ -7,6 +7,8 @@ import logging
 from configparser import ConfigParser, NoSectionError
 from pathlib import Path
 
+path = Path(__file__).parent.absolute()
+
 
 def get_path_for_file(start_path: Path, filename: str) -> Path:
     path_i = start_path.absolute()
@@ -36,13 +38,11 @@ GUI_NAME: str = "Your GUI Name"
 ICON_NAME: str = "icon"
 
 
-
-
 # get current version
-def find_version(path: Path) -> str:
+def find_version(version_path: Path) -> str:
     config = ConfigParser()
     try:
-        config.read(get_path_for_file(path, "setup.cfg").joinpath("setup.cfg"))
+        config.read(get_path_for_file(version_path, "setup.cfg").joinpath("setup.cfg"))
         return config.get("metadata", "version")
     except FileNotFoundError:  # pragma: no cover
         return "0.0.0"

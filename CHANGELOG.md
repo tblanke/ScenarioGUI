@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.3.0.1]
 
+### Added
+- Version number can be added in the gui_config.ini file, but it must not
+
 ### Fixed 
 - Version can not be found error (issue 134)
 

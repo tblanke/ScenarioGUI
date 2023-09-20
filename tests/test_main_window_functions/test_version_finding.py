@@ -19,7 +19,7 @@ def test_find_version():
         file.close()
 
     sleep(1)
-    assert "0.2.0" == globs.find_version(path)
+    assert globs.find_version(path) == "0.2.0"
 
     # 1. Create a new section with the desired name
     config["meta"] = {}
@@ -35,7 +35,7 @@ def test_find_version():
 
     # os.remove(path.parent.joinpath("setup.cfg"))
     sleep(1)
-    assert "0.0.0" == globs.find_version(path)
+    assert globs.find_version(path) == "0.0.0"
 
     shutil.copy(path.parent.joinpath("setup_new.cfg"), path.parent.joinpath("setup.cfg"))
 
