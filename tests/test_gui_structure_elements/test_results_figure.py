@@ -6,6 +6,7 @@ from platform import system
 
 import numpy as np
 from matplotlib.backends import qt_compat
+import PySide6.QtWidgets as QtW
 
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.gui_classes.gui_structure_classes.result_figure import font_list_by_name
@@ -87,6 +88,7 @@ def test_results_figure(qtbot):  # noqa: PLR0915
         return file, ".png"
 
     qt_compat._getSaveFileName = func
+    QtW.QFileDialog.getSaveFileName = func
     main_window.gui_structure.figure_results_with_different_other_saved_figure.toolbar.save_figure()
     os.remove(main_window.default_path.joinpath(file))
 
