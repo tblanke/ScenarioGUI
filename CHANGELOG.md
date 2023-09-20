@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file including pl
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.3.0.2]
+## [0.3.0.2] - 2023-09-20
 
 ### Added
 - Version number can be added in the gui_config.ini file, but it must not
@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed 
 - Version can not be found error (issue 134)
 
-## [0.3.0] - expected: August 2023
+## [0.3.0] - 2023-08-23
 
 ### Added
 - Multiline text box (issue 56)
