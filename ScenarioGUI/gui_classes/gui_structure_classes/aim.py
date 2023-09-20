@@ -22,7 +22,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from .hint import Hint
     from .page import Page
 
-
     class Option(Protocol):
         label_text: str
         default_value: bool | int | float | str

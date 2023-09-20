@@ -4,11 +4,10 @@ global settings of scenario gui
 from __future__ import annotations
 
 import logging
-from configparser import ConfigParser
+from configparser import ConfigParser, NoSectionError
 from pathlib import Path
 
 path = Path(__file__).parent.absolute()
-config = ConfigParser()
 
 
 def get_path_for_file(start_path: Path, filename: str) -> Path:
@@ -38,14 +37,20 @@ FILE_EXTENSION: str = "yourGUI"
 GUI_NAME: str = "Your GUI Name"
 ICON_NAME: str = "icon"
 
+
 # get current version
-try:
-    config.read(config.read(get_path_for_file(path, "setup.cfg").joinpath("setup.cfg")))
-    VERSION = config.get("metadata", "version")
-except FileNotFoundError:  # pragma: no cover
-    VERSION = "0.0.0"
+def find_version(version_path: Path) -> str:
+    config = ConfigParser()
+    try:
+        config.read(get_path_for_file(version_path, "setup.cfg").joinpath("setup.cfg"))
+        return config.get("metadata", "version")
+    except FileNotFoundError:  # pragma: no cover
+        return "0.0.0"
+    except NoSectionError:
+        return "0.0.0"
 
 
+VERSION = find_version(get_path_for_file(Path(__file__).parent.absolute(), "setup.cfg"))
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
 
@@ -62,8 +67,8 @@ def set_graph_layout() -> None:
     from matplotlib.colors import to_rgb
     from numpy import array, float64
 
-    background_color: str = to_rgb(array(DARK.replace("rgb(", "").replace(")", "").split(","), dtype=float64) / 255)
-    white_color: str = to_rgb(array(WHITE.replace("rgb(", "").replace(")", "").split(","), dtype=float64) / 255)
+    background_color: tuple[float, float, float] = to_rgb(array(DARK.replace("rgb(", "").replace(")", "").split(","), dtype=float64) / 255)
+    white_color: tuple[float, float, float] = to_rgb(array(WHITE.replace("rgb(", "").replace(")", "").split(","), dtype=float64) / 255)
     # light_color: str = to_rgb(array(LIGHT.replace('rgb(', '').replace(')', '').split(','), dtype=float64) / 255)
     # bright_color: str = to_rgb(array(WARNING.replace('rgb(', '').replace(')', '').split(','), dtype=float64) / 255)
     plt.rcParams["axes.labelcolor"] = white_color
@@ -84,13 +89,13 @@ def set_print_layout(ax) -> None:
     None
     """
 
-    ax.spines['bottom'].set_color('black')
-    ax.spines['top'].set_color('black')
-    ax.spines['right'].set_color('black')
-    ax.spines['left'].set_color('black')
+    ax.spines["bottom"].set_color("black")
+    ax.spines["top"].set_color("black")
+    ax.spines["right"].set_color("black")
+    ax.spines["left"].set_color("black")
 
-    ax.tick_params(axis='x', colors='black')
-    ax.tick_params(axis='y', colors='black')
+    ax.tick_params(axis="x", colors="black")
+    ax.tick_params(axis="y", colors="black")
 
-    ax.xaxis.label.set_color('black')
-    ax.yaxis.label.set_color('black')
+    ax.xaxis.label.set_color("black")
+    ax.yaxis.label.set_color("black")

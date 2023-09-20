@@ -5,14 +5,13 @@ and it contains the main class that creates the framework for the GUI (top bar e
 """
 from platform import system
 
-import PySide6.QtCore as QtC
-import PySide6.QtGui as QtG
-import PySide6.QtWidgets as QtW
+import PySide6.QtCore as QtC  # type: ignore
+import PySide6.QtGui as QtG  # type: ignore
+import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
-
-from ..utils import set_default_font
-from .status_bar_logger import StatusBar
+from ScenarioGUI.utils import set_default_font
+from ScenarioGUI.gui_classes.status_bar_logger import StatusBar
 
 
 class BaseUI:
@@ -61,26 +60,26 @@ class BaseUI:
     frame_progress_bar: QtW.QFrame
     status_bar_progress_bar: QtW.QStatusBar
 
-    def setup_ui(self, ScenarioGUI, screen_size: QtC.QSize, gui_name: str="ScenarioGUI"):
-        if not ScenarioGUI.objectName():
-            ScenarioGUI.setObjectName(gui_name)
-        ScenarioGUI.resize(screen_size)
-        size_policy = QtW.QSizePolicy(QtW.QSizePolicy.Preferred, QtW.QSizePolicy.Preferred)
+    def setup_ui(self, window: QtW.QMainWindow, screen_size: QtC.QSize, gui_name: str = "ScenarioGUI"):
+        if not window.objectName():
+            window.setObjectName(gui_name)
+        window.resize(screen_size)
+        size_policy = QtW.QSizePolicy(QtW.QSizePolicy.Preferred, QtW.QSizePolicy.Preferred)  # type: ignore
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(ScenarioGUI.sizePolicy().hasHeightForWidth())
-        ScenarioGUI.setSizePolicy(size_policy)
-        ScenarioGUI.setMaximumSize(QtC.QSize(16777215, 16777215))
+        size_policy.setHeightForWidth(window.sizePolicy().hasHeightForWidth())
+        window.setSizePolicy(size_policy)
+        window.setMaximumSize(QtC.QSize(16777215, 16777215))
         font = QtG.QFont()
         font.setFamily(globs.FONT)
         font.setPointSize(globs.FONT_SIZE)
         font.setBold(False)
         font.setItalic(False)
-        ScenarioGUI.setFont(font)
+        window.setFont(font)
         icon = QtG.QIcon()
-        icon.addFile(f"{globs.FOLDER}/icons/{globs.ICON_NAME}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        ScenarioGUI.setWindowIcon(icon)
-        ScenarioGUI.setStyleSheet(
+        icon.addFile(f"{globs.FOLDER}/icons/{globs.ICON_NAME}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
+        window.setWindowIcon(icon)
+        window.setStyleSheet(
             f"*{'{'}color: {globs.WHITE};background-color: {globs.DARK};selection-background-color: {globs.LIGHT};"
             f"alternate-background-color: {globs.LIGHT};{'}'}\n"
             f"QPushButton{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color:{globs.WHITE};gridline-color:{globs.LIGHT};"
@@ -102,115 +101,115 @@ class BaseUI:
             f"QTabWidget::pane{'{'}border: 1px solid {globs.WHITE};{'}'}"
             f"QTabWidget::tab-bar{'{'}left: 5px;{'}'}"
         )
-        self.action_new = QtG.QAction(ScenarioGUI)
+        self.action_new = QtG.QAction(window)
         self.action_new.setObjectName("actionNew")
         self.action_new.setCheckable(False)
         self.action_new.setChecked(False)
         self.action_new.setEnabled(True)
         icon1 = QtG.QIcon()
-        icon1.addFile(f"{globs.FOLDER}/icons/New.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon1.addFile(f"{globs.FOLDER}/icons/New_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon1.addFile(f"{globs.FOLDER}/icons/New.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
+        icon1.addFile(f"{globs.FOLDER}/icons/New_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)  # type: ignore
         self.action_new.setIcon(icon1)
-        self.action_save = QtG.QAction(ScenarioGUI)
+        self.action_save = QtG.QAction(window)
         self.action_save.setObjectName("actionSave")
         self.action_save.setEnabled(True)
         icon2 = QtG.QIcon()
-        icon2.addFile(f"{globs.FOLDER}/icons/Save.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon2.addFile(f"{globs.FOLDER}/icons/Save_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon2.addFile(f"{globs.FOLDER}/icons/Save.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
+        icon2.addFile(f"{globs.FOLDER}/icons/Save_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)  # type: ignore
         self.action_save.setIcon(icon2)
-        self.action_open = QtG.QAction(ScenarioGUI)
+        self.action_open = QtG.QAction(window)
         self.action_open.setObjectName("actionOpen")
         self.action_open.setEnabled(True)
         icon3 = QtG.QIcon()
-        icon3.addFile(f"{globs.FOLDER}/icons/Open.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon3.addFile(f"{globs.FOLDER}/icons/Open_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon3.addFile(f"{globs.FOLDER}/icons/Open.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
+        icon3.addFile(f"{globs.FOLDER}/icons/Open_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)  # type: ignore
         self.action_open.setIcon(icon3)
-        self.action_open_add = QtG.QAction(ScenarioGUI)
+        self.action_open_add = QtG.QAction(window)
         self.action_open_add.setObjectName("action_open_add")
         self.action_open_add.setEnabled(True)
         icon_open_add = QtG.QIcon()
-        icon_open_add.addFile(f"{globs.FOLDER}/icons/Open_Add.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon_open_add.addFile(f"{globs.FOLDER}/icons/Open_Add_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon_open_add.addFile(f"{globs.FOLDER}/icons/Open_Add.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
+        icon_open_add.addFile(f"{globs.FOLDER}/icons/Open_Add_Inv.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)  # type: ignore
         self.action_open_add.setIcon(icon_open_add)
-        self.action_start_multiple = QtG.QAction(ScenarioGUI)
+        self.action_start_multiple = QtG.QAction(window)
         self.action_start_multiple.setObjectName("action_start_multiple")
         self.action_start_multiple.setEnabled(True)
         icon4 = QtG.QIcon()
         icon4.addFile(
             f"{globs.FOLDER}/icons/Start_multiple_inv.svg",
             QtC.QSize(),
-            QtG.QIcon.Normal,
-            QtG.QIcon.Off,
+            QtG.QIcon.Normal,  # type: ignore
+            QtG.QIcon.Off,  # type: ignore
         )
         icon4.addFile(
             f"{globs.FOLDER}/icons/Start_multiple.svg",
             QtC.QSize(),
-            QtG.QIcon.Active,
-            QtG.QIcon.Off,
+            QtG.QIcon.Active,  # type: ignore
+            QtG.QIcon.Off,  # type: ignore
         )
         self.action_start_multiple.setIcon(icon4)
-        self.action_update_scenario = QtG.QAction(ScenarioGUI)
+        self.action_update_scenario = QtG.QAction(window)
         self.action_update_scenario.setObjectName("actionUpdate_Scenario")
         icon7 = QtG.QIcon()
         icon7.addFile(
             f"{globs.FOLDER}/icons/Update_Inv.svg",
             QtC.QSize(),
-            QtG.QIcon.Normal,
-            QtG.QIcon.Off,
+            QtG.QIcon.Normal,  # type: ignore
+            QtG.QIcon.Off,  # type: ignore
         )
-        icon7.addFile(f"{globs.FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon7.addFile(f"{globs.FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)  # type: ignore
         self.action_update_scenario.setIcon(icon7)
-        self.action_add_scenario = QtG.QAction(ScenarioGUI)
+        self.action_add_scenario = QtG.QAction(window)
         self.action_add_scenario.setObjectName("actionAdd_Scenario")
         icon8 = QtG.QIcon()
-        icon8.addFile(f"{globs.FOLDER}/icons/Add_Inv.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
-        icon8.addFile(f"{globs.FOLDER}/icons/Add.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon8.addFile(f"{globs.FOLDER}/icons/Add_Inv.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
+        icon8.addFile(f"{globs.FOLDER}/icons/Add.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)  # type: ignore
         self.action_add_scenario.setIcon(icon8)
-        self.action_delete_scenario = QtG.QAction(ScenarioGUI)
+        self.action_delete_scenario = QtG.QAction(window)
         self.action_delete_scenario.setObjectName("actionDelete_scenario")
         icon9 = QtG.QIcon()
         icon9.addFile(
             f"{globs.FOLDER}/icons/Delete_Inv.svg",
             QtC.QSize(),
-            QtG.QIcon.Normal,
-            QtG.QIcon.Off,
+            QtG.QIcon.Normal,  # type: ignore
+            QtG.QIcon.Off,  # type: ignore
         )
-        icon9.addFile(f"{globs.FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon9.addFile(f"{globs.FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)  # type: ignore
         self.action_delete_scenario.setIcon(icon9)
-        self.action_save_as = QtG.QAction(ScenarioGUI)
+        self.action_save_as = QtG.QAction(window)
         self.action_save_as.setObjectName("actionSave_As")
         icon10 = QtG.QIcon()
-        icon10.addFile(f"{globs.FOLDER}/icons/SaveAs.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon10.addFile(f"{globs.FOLDER}/icons/SaveAs.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
         icon10.addFile(
             f"{globs.FOLDER}/icons/Save_As_Inv.svg",
             QtC.QSize(),
-            QtG.QIcon.Active,
-            QtG.QIcon.Off,
+            QtG.QIcon.Active,  # type: ignore
+            QtG.QIcon.Off,  # type: ignore
         )
         self.action_save_as.setIcon(icon10)
-        self.action_rename_scenario = QtG.QAction(ScenarioGUI)
+        self.action_rename_scenario = QtG.QAction(window)
         self.action_rename_scenario.setObjectName("actionRename_scenario")
         icon14 = QtG.QIcon()
         icon14.addFile(
             f"{globs.FOLDER}/icons/Rename_Inv.svg",
             QtC.QSize(),
-            QtG.QIcon.Normal,
-            QtG.QIcon.Off,
+            QtG.QIcon.Normal,  # type: ignore
+            QtG.QIcon.Off,  # type: ignore
         )
-        icon14.addFile(f"{globs.FOLDER}/icons/Rename.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon14.addFile(f"{globs.FOLDER}/icons/Rename.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)  # type: ignore
         self.action_rename_scenario.setIcon(icon14)
-        self.action_start_single = QtG.QAction(ScenarioGUI)
+        self.action_start_single = QtG.QAction(window)
         self.action_start_single.setObjectName("action_start_single")
         icon15 = QtG.QIcon()
         icon15.addFile(
             f"{globs.FOLDER}/icons/Start_inv.svg",
             QtC.QSize(),
-            QtG.QIcon.Normal,
-            QtG.QIcon.Off,
+            QtG.QIcon.Normal,  # type: ignore
+            QtG.QIcon.Off,  # type: ignore
         )
-        icon15.addFile(f"{globs.FOLDER}/icons/Start.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)
+        icon15.addFile(f"{globs.FOLDER}/icons/Start.svg", QtC.QSize(), QtG.QIcon.Active, QtG.QIcon.Off)  # type: ignore
         self.action_start_single.setIcon(icon15)
-        self.central_widget = QtW.QWidget(ScenarioGUI)
+        self.central_widget = QtW.QWidget(window)
         self.central_widget.setObjectName("central_widget")
         self.horizontal_layout_main = QtW.QHBoxLayout(self.central_widget)
         self.horizontal_layout_main.setObjectName("horizontalLayout_23")
@@ -218,7 +217,7 @@ class BaseUI:
         self.vertical_layout_scenario.setObjectName("verticalLayout_scenario")
         self.push_button_save_scenario = QtW.QPushButton(self.central_widget)
         self.push_button_save_scenario.setObjectName("pushButton_SaveScenario")
-        size_policy1 = QtW.QSizePolicy(QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Minimum)
+        size_policy1 = QtW.QSizePolicy(QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Minimum)  # type: ignore
         size_policy1.setHorizontalStretch(0)
         size_policy1.setVerticalStretch(0)
         size_policy1.setHeightForWidth(self.push_button_save_scenario.sizePolicy().hasHeightForWidth())
@@ -227,7 +226,7 @@ class BaseUI:
         self.push_button_save_scenario.setMaximumHeight(30)
         self.push_button_save_scenario.setStyleSheet("text-align:left;")
         icon18 = QtG.QIcon()
-        icon18.addFile(f"{globs.FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon18.addFile(f"{globs.FOLDER}/icons/Update.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
         self.push_button_save_scenario.setIcon(icon18)
         self.push_button_save_scenario.setIconSize(QtC.QSize(20, 20))
 
@@ -239,7 +238,7 @@ class BaseUI:
         self.push_button_add_scenario.setMaximumHeight(30)
         self.push_button_add_scenario.setStyleSheet("text-align:left;")
         icon19 = QtG.QIcon()
-        icon19.addFile(f"{globs.FOLDER}/icons/Add.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon19.addFile(f"{globs.FOLDER}/icons/Add.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
         self.push_button_add_scenario.setIcon(icon19)
         self.push_button_add_scenario.setIconSize(QtC.QSize(20, 20))
 
@@ -251,7 +250,7 @@ class BaseUI:
         self.push_button_delete_scenario.setMaximumHeight(30)
         self.push_button_delete_scenario.setStyleSheet("text-align:left;")
         icon20 = QtG.QIcon()
-        icon20.addFile(f"{globs.FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon20.addFile(f"{globs.FOLDER}/icons/Delete.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
         self.push_button_delete_scenario.setIcon(icon20)
         self.push_button_delete_scenario.setIconSize(QtC.QSize(20, 20))
 
@@ -263,7 +262,7 @@ class BaseUI:
         self.button_rename_scenario.setMaximumHeight(30)
         self.button_rename_scenario.setStyleSheet("text-align:left;")
         icon21 = QtG.QIcon()
-        icon21.addFile(f"{globs.FOLDER}/icons/Rename.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon21.addFile(f"{globs.FOLDER}/icons/Rename.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
         self.button_rename_scenario.setIcon(icon21)
         self.button_rename_scenario.setIconSize(QtC.QSize(20, 20))
 
@@ -282,14 +281,14 @@ class BaseUI:
             f"QListWidget::item:hover{'{'}border: 1px solid {globs.WHITE};color: {globs.WHITE};{'}'}"
             f"QListWidget:disabled{'{'}background-color: {globs.GREY};{'}'}"
         )
-        self.list_widget_scenario.setSizeAdjustPolicy(QtW.QAbstractScrollArea.AdjustToContents)
+        self.list_widget_scenario.setSizeAdjustPolicy(QtW.QAbstractScrollArea.AdjustToContents)  # type: ignore
         self.list_widget_scenario.setAutoScrollMargin(10)
         self.list_widget_scenario.setEditTriggers(
-            QtW.QAbstractItemView.DoubleClicked | QtW.QAbstractItemView.EditKeyPressed | QtW.QAbstractItemView.SelectedClicked
+            QtW.QAbstractItemView.DoubleClicked | QtW.QAbstractItemView.EditKeyPressed | QtW.QAbstractItemView.SelectedClicked  # type: ignore
         )
-        self.list_widget_scenario.setDragDropMode(QtW.QAbstractItemView.DragDrop)
-        self.list_widget_scenario.setDefaultDropAction(QtC.Qt.TargetMoveAction)
-        self.list_widget_scenario.setSelectionBehavior(QtW.QAbstractItemView.SelectItems)
+        self.list_widget_scenario.setDragDropMode(QtW.QAbstractItemView.DragDrop)  # type: ignore
+        self.list_widget_scenario.setDefaultDropAction(QtC.Qt.TargetMoveAction)  # type: ignore
+        self.list_widget_scenario.setSelectionBehavior(QtW.QAbstractItemView.SelectItems)  # type: ignore
         self.list_widget_scenario.setSelectionRectVisible(False)
 
         self.vertical_layout_scenario.addWidget(self.list_widget_scenario)
@@ -306,13 +305,13 @@ class BaseUI:
         self.vertical_layout_main.setObjectName("verticalLayout_21")
         self.stacked_widget = QtW.QStackedWidget(self.central_widget)
         self.stacked_widget.setObjectName("stackedWidget")
-        self.stacked_widget.setFrameShadow(QtW.QFrame.Plain)
+        self.stacked_widget.setFrameShadow(QtW.QFrame.Plain)  # type: ignore
         self.stacked_widget.setLineWidth(0)
 
         self.vertical_layout_main.addWidget(self.stacked_widget)
 
-        self.status_bar_progress_bar = QtW.QStatusBar(ScenarioGUI)
-        ScenarioGUI.setStatusBar(self.status_bar_progress_bar)
+        self.status_bar_progress_bar = QtW.QStatusBar(window)
+        window.setStatusBar(self.status_bar_progress_bar)
 
         self.frame_progress_bar = QtW.QFrame(self.central_widget)
         self.horizontal_layout_progress_bar = QtW.QHBoxLayout(self.frame_progress_bar)
@@ -337,7 +336,7 @@ class BaseUI:
         self.horizontal_layout_start_buttons = QtW.QHBoxLayout()
         self.horizontal_layout_start_buttons.setObjectName("horizontalLayout_2")
 
-        self.status_bar = StatusBar(ScenarioGUI)
+        self.status_bar = StatusBar(window)
         self.horizontal_layout_start_buttons.addWidget(self.status_bar.label)
         globs.LOGGER.addHandler(self.status_bar)
 
@@ -346,7 +345,7 @@ class BaseUI:
         self.push_button_start_single.setMinimumSize(QtC.QSize(100, 40))
         self.push_button_start_single.setMaximumSize(QtC.QSize(16777215, 40))
         icon32 = QtG.QIcon()
-        icon32.addFile(f"{globs.FOLDER}/icons/Start.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon32.addFile(f"{globs.FOLDER}/icons/Start.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
         self.push_button_start_single.setIcon(icon32)
         self.push_button_start_single.setIconSize(QtC.QSize(24, 24))
 
@@ -360,8 +359,8 @@ class BaseUI:
         icon33.addFile(
             f"{globs.FOLDER}/icons/Start_multiple.svg",
             QtC.QSize(),
-            QtG.QIcon.Normal,
-            QtG.QIcon.Off,
+            QtG.QIcon.Normal,  # type: ignore
+            QtG.QIcon.Off,  # type: ignore
         )
         self.push_button_start_multiple.setIcon(icon33)
         self.push_button_start_multiple.setIconSize(QtC.QSize(24, 24))
@@ -373,7 +372,7 @@ class BaseUI:
         self.push_button_cancel.setMinimumSize(QtC.QSize(100, 40))
         self.push_button_cancel.setMaximumSize(QtC.QSize(16777215, 40))
         icon34 = QtG.QIcon()
-        icon34.addFile(f"{globs.FOLDER}/icons/Exit.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon34.addFile(f"{globs.FOLDER}/icons/Exit.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
         self.push_button_cancel.setIcon(icon34)
         self.push_button_cancel.setIconSize(QtC.QSize(24, 24))
 
@@ -383,8 +382,8 @@ class BaseUI:
 
         self.horizontal_layout_main.addLayout(self.vertical_layout_main)
 
-        ScenarioGUI.setCentralWidget(self.central_widget)
-        self.menubar = QtW.QMenuBar(ScenarioGUI)
+        window.setCentralWidget(self.central_widget)
+        self.menubar = QtW.QMenuBar(window)
         self.menubar.setObjectName("menubar")
         self.menubar.setEnabled(True)
         self.menubar.setGeometry(QtC.QRect(0, 0, 1226, 30))
@@ -412,18 +411,18 @@ class BaseUI:
         self.menu_language.setObjectName("menuLanguage")
         self.menu_language.setEnabled(True)
         icon35 = QtG.QIcon()
-        icon35.addFile(f"{globs.FOLDER}/icons/Language.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon35.addFile(f"{globs.FOLDER}/icons/Language.svg", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
         icon35.addFile(
             f"{globs.FOLDER}/icons/Language_Inv.svg",
             QtC.QSize(),
-            QtG.QIcon.Active,
-            QtG.QIcon.Off,
+            QtG.QIcon.Active,  # type: ignore
+            QtG.QIcon.Off,  # type: ignore
         )
         self.menu_language.setIcon(icon35)
         self.menu_scenario = QtW.QMenu(self.menubar)
         self.menu_scenario.setObjectName("menuScenario")
-        ScenarioGUI.setMenuBar(self.menubar)
-        self.tool_bar = QtW.QToolBar(ScenarioGUI)
+        window.setMenuBar(self.menubar)
+        self.tool_bar = QtW.QToolBar(window)
         self.tool_bar.setObjectName("toolBar")
         self.tool_bar.setStyleSheet(
             f"QAction::icon {'{'} background-color:{globs.LIGHT};selection-background-color: {globs.LIGHT};{'}'}\n"
@@ -431,7 +430,7 @@ class BaseUI:
             f"*:hover{'{'}background-color: {globs.LIGHT};{'}'}"
         )
         self.tool_bar.setMovable(False)
-        ScenarioGUI.addToolBar(QtC.Qt.TopToolBarArea, self.tool_bar)
+        window.addToolBar(QtC.Qt.TopToolBarArea, self.tool_bar)  # type: ignore
 
         self.menubar.addAction(self.menu_file.menuAction())
         self.menubar.addAction(self.menu_calculation.menuAction())
@@ -463,7 +462,7 @@ class BaseUI:
         self.tool_bar.addAction(self.action_rename_scenario)
 
         self.button_rename_scenario.clicked.connect(self.action_rename_scenario.trigger)
-        self.push_button_cancel.clicked.connect(ScenarioGUI.close)
+        self.push_button_cancel.clicked.connect(window.close)
         self.push_button_start_multiple.clicked.connect(self.action_start_multiple.trigger)
         self.push_button_add_scenario.clicked.connect(self.action_add_scenario.trigger)
         self.push_button_delete_scenario.clicked.connect(self.action_delete_scenario.trigger)
@@ -490,9 +489,9 @@ class BaseUI:
         set_default_font(self.status_bar.label)
 
         self.stacked_widget.setCurrentIndex(0)
-        QtC.QMetaObject.connectSlotsByName(ScenarioGUI)
+        QtC.QMetaObject.connectSlotsByName(window)
 
-        ScenarioGUI.setWindowTitle(gui_name)
+        window.setWindowTitle(gui_name)
         self.action_new.setText("New")
         # if QT_CONFIG(tooltip)
         self.action_new.setToolTip("Create new project file")

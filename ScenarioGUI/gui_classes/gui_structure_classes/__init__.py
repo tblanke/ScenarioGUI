@@ -51,5 +51,5 @@ __all__ = [
     "Subcategory",
     "TextBox",
     "FlexibleAmount",
-    "TextBoxMultiLine"
+    "TextBoxMultiLine",
 ]

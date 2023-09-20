@@ -340,6 +340,7 @@ class FlexibleAmount(Option):
         bool
             True if the linked "option" should be shown
         """
+
         def check() -> bool:
             min_length, max_length = value
             if min_length is not None and len(self.get_value()) < min_length:
@@ -347,6 +348,7 @@ class FlexibleAmount(Option):
             if max_length is not None and len(self.get_value()) > max_length:
                 return True
             return False
+
         return self.check_value_if_hidden(check(), value_if_hidden)
 
     def create_function_2_check_linked_value(self, value: tuple[int | None, int | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:

@@ -74,16 +74,16 @@ class CalcProblem(QtC.QThread):
             try:
                 results, func = self.data_2_results_function(self.d_s)
                 func()
-                debug_message = None
+                debug_message: Exception | str | None = None
             except Exception as err:
                 debug_message, results = err, None
         else:
-            queue = mp.Queue()
-            stop_event: mp.Event = mp.Event()
+            queue: mp.Queue = mp.Queue()
+            stop_event: mp.Event = mp.Event()  # type: ignore
             process: mp.Process = mp.Process(target=calculate, args=(self.data_2_results_function, self.d_s, queue, stop_event))
             process.start()
 
-            if not stop_event.wait(self.d_s.time_out):
+            if not stop_event.wait(self.d_s.time_out):  # type: ignore
                 debug_message, results = f"{RuntimeError(f'RuntimeError: run time > {self.d_s.time_out}s')}", None
             else:
                 debug_message, results = queue.get()
@@ -97,9 +97,7 @@ class CalcProblem(QtC.QThread):
         self.any_signal.emit(self)
 
 
-def calculate(
-    data_2_results_function: Callable[[DataStorage], tuple[object, Callable]], d_s: DataStorage, queue: mp.Queue, stop_event: mp.Event
-) -> None:
+def calculate(data_2_results_function: Callable[[DataStorage], tuple[object, Callable]], d_s: DataStorage, queue: mp.Queue, stop_event: mp.Event) -> None:
     """
     This function contains the actual code to run the different calculations.
     For each aim in the GUI, a new if statement is used. Here, one can put all the code

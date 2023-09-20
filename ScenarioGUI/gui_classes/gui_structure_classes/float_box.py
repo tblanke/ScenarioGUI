@@ -232,6 +232,7 @@ class FloatBox(Option):
         bool
             True if the linked "option" should be shown
         """
+
         def check() -> bool:
             below, above = value
             if below is not None and self.get_value() < below:
@@ -239,6 +240,7 @@ class FloatBox(Option):
             if above is not None and self.get_value() > above:
                 return True
             return False
+
         return self.check_value_if_hidden(check(), value_if_hidden)
 
     def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:

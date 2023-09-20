@@ -39,7 +39,7 @@ class FileNameBox(Option):
         *,
         dialog_text: str = "",
         error_text: str = "",
-        file_extension: str | list[str] = "csv"
+        file_extension: str | list[str] = "csv",
     ):
         """
 
@@ -253,8 +253,7 @@ class FileNameBox(Option):
         # try to ask for a file otherwise show message in status bar
         file_extensions = [f".{extension} (*.{extension})" for extension in self.file_extension]
         file_extensions = ";;".join(file_extensions)
-        filename = QtW.QFileDialog.getOpenFileName(self.frame, caption=self.dialog_text,
-                                                   filter=file_extensions, dir=str(Path.home()))
+        filename = QtW.QFileDialog.getOpenFileName(self.frame, caption=self.dialog_text, filter=file_extensions, dir=str(Path.home()))
         if not filename[0]:
             logging.error(self.error_text)
             return

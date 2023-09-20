@@ -89,6 +89,7 @@ class IntBoxWithUnits(IntBox):
         bool
             True if the linked "option" should be shown
         """
+
         def check():
             below, above = value
             if below is not None and self.get_value()[0] < below:
@@ -96,6 +97,7 @@ class IntBoxWithUnits(IntBox):
             if above is not None and self.get_value()[0] > above:
                 return True
             return False
+
         return self.check_value_if_hidden(check(), value_if_hidden)
 
     def show_option(

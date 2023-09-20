@@ -16,6 +16,11 @@ qt_api="pyside6"
 [tool.black]
 line-length = 160
 
+[tool.mypy]
+check_untyped_defs = true
+ignore_missing_imports = true
+
+
 [tool.coverage.report]
 exclude_lines = [
   "pragma: no cover",
