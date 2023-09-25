@@ -93,13 +93,14 @@ class BaseUI:
             f"QLineEdit{'{'}border: 3px solid {globs.LIGHT};border-radius: 5px;color: {globs.WHITE};gridline-color: {globs.LIGHT};background-color: "
             f"{globs.LIGHT};selection-background-color: {globs.LIGHT_SELECT};{'}'}\n"
             f"QLineEdit:hover{'{'}background-color: {globs.DARK};{'}'}"
-            f"QToolTip{'{'}color: {globs.WHITE}; background-color: {globs.DARK}; border: 1px solid {globs.LIGHT};border-radius: 4px;{'}'}"
             f"QTabBar::tab{'{'}background-color: {globs.DARK};padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;color: {globs.WHITE};{'}'}"
             f"QTabBar::tab:selected, QTabBar::tab:hover{'{'}background-color: {globs.LIGHT};{'}'}"
             f"QTabBar::tab:selected{'{'}background-color: {globs.LIGHT};{'}'}"
             f"QTabBar::tab:!selected{'{'}background-color:  {globs.DARK};{'}'}"
             f"QTabWidget::pane{'{'}border: 1px solid {globs.WHITE};{'}'}"
             f"QTabWidget::tab-bar{'{'}left: 5px;{'}'}"
+            #f"QToolTip{'{'}color: {globs.BLACK};background-color: {globs.WHITE}; border: 2px solid {globs.LIGHT};"
+            #f"font-size: {globs.FONT_SIZE}px;font: {globs.FONT};  opacity: 255;{'}'}"
         )
         self.action_new = QtG.QAction(window)
         self.action_new.setObjectName("actionNew")
@@ -391,7 +392,6 @@ class BaseUI:
             f"QMenuBar::item{'{'}background-color: {globs.DARK};{'}'}\n"
             f"QMenuBar::item:pressed{'{'}background-color: {globs.LIGHT};{'}'}\n"
             f"QMenuBar::item:selected{'{'}background-color: {globs.LIGHT};{'}'}\n"
-            f"QToolTip{'{'} color: {globs.WHITE}; background-color: {globs.BLACK}; border: none; {'}'}"
         )
         self.menubar.setNativeMenuBar(True)
         self.menu_file = QtW.QMenu(self.menubar)

@@ -34,3 +34,4 @@ def set_default_font(widget: QtW.QWidget | QtG.QAction, *, bold: bool = False, a
     if bold:
         font.setBold(True)
     widget.setFont(font)
+

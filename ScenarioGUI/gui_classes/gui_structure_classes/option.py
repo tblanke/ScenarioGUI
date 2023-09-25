@@ -6,7 +6,6 @@ from __future__ import annotations
 import abc
 from typing import TYPE_CHECKING, Iterable
 
-import numpy as np
 import PySide6.QtCore as QtC
 import PySide6.QtWidgets as QtW  # type: ignore
 
@@ -100,6 +99,9 @@ class Option(QtC.QObject):
         bool
             True if the option value is valid
         """
+
+    def set_tool_tip(self, tool_tip: str):
+        self.frame.setToolTip(tool_tip)
 
     def check_value_if_hidden(self, un_hidden_value: bool, hidden_value: bool) -> bool:
         hidden_value = self.value_if_hidden if hidden_value is None else hidden_value
@@ -242,7 +244,7 @@ class Option(QtC.QObject):
         self.frame.setParent(frame)
         self.frame.setFrameShape(QtW.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtW.QFrame.Raised)
-        self.frame.setStyleSheet("QFrame {\n" f"	border: 0px solid {globs.WHITE};\n" "	border-radius: 0px;\n" "  }\n")
+        self.frame.setStyleSheet("QFrame{\n" f" border: 0px solid {globs.WHITE};\n" f"	border-radius: 0px;\n{'}'}")
         layout = QtW.QHBoxLayout(self.frame)
         layout.setSpacing(6)
         layout.setContentsMargins(0, 0, 0, 0)

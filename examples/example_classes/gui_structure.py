@@ -37,6 +37,7 @@ class GUI(GuiStructure):  # pragma: no cover
             maximal_value=200,
             category=self.category_inputs,
         )
+        self.int_a.set_tool_tip("This is an explanation\nfor the value a")
         self.int_a.change_event(
             self.disable_aim(
                 self.aim_sub,
