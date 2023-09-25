@@ -80,8 +80,9 @@ class GUI(GuiStructure):  # pragma: no cover
             label="List box",
             default_index=0,
             category=self.category_inputs,
-            entries=["1", "2", "3", "4"],
+            entries=["a1", "b2", "c3", "d4"],
         )
+        self.list_box.make_editable()
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = els.FileNameBox(

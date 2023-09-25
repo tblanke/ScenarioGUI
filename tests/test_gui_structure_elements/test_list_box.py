@@ -1,5 +1,7 @@
 import pytest
 
+import PySide6.QtWidgets as QtW  # type: ignore
+
 from ScenarioGUI.gui_classes.gui_structure_classes.functions import ConditionalVisibilityWarning
 from tests.starting_closing_tests import close_tests, start_tests
 
@@ -39,5 +41,13 @@ def test_list_box(qtbot):
 
     with pytest.warns(ConditionalVisibilityWarning):
         main_window.gui_structure.list_small_2.add_link_2_show(main_window.gui_structure.hint_1, on_index=2)
+
+    main_window.gui_structure.list_small_2.make_editable()
+    assert main_window.gui_structure.list_small_2.widget.isEditable()
+    assert main_window.gui_structure.list_small_2.widget.insertPolicy() == QtW.QComboBox.InsertPolicy.NoInsert
+
+    main_window.gui_structure.list_small_2.make_editable(True)
+    assert main_window.gui_structure.list_small_2.widget.isEditable()
+    assert main_window.gui_structure.list_small_2.widget.insertPolicy() == QtW.QComboBox.InsertPolicy.InsertAtBottom
 
     close_tests(main_window, qtbot)

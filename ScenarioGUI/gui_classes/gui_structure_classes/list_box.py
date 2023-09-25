@@ -110,6 +110,13 @@ class ListBox(Option):
             return
         self.widget.setCurrentIndex(value[0])
 
+    def make_editable(self, insertable: bool = False):
+        self.widget.setEditable(True)
+        if insertable:
+            self.widget.setInsertPolicy(QtW.QComboBox.InsertPolicy.InsertAtBottom)
+            return
+        self.widget.setInsertPolicy(QtW.QComboBox.InsertPolicy.NoInsert)
+
     def _check_value(self) -> bool:
         """
         This function checks whether a correct value is selected.
