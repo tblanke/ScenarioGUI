@@ -7,6 +7,7 @@ import abc
 from typing import TYPE_CHECKING, Iterable
 
 import PySide6.QtCore as QtC
+import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
@@ -22,6 +23,80 @@ if TYPE_CHECKING:  # pragma: no cover
         """class with list_of_options"""
 
         list_of_options: list[Option]
+
+
+class ToolTip(QtW.QToolTip):
+
+    def showText(self, pos: QtC.QPoint, text: str, w: QtW.QWidget | None = None, rect: QtC.QRect = {}, msecShowTime: int = -1) -> None:
+        widget = QtW.QWidget() if w is None else w
+        #label = QtW.QLabel()#widget)
+        #label.setText("Hello")
+        #set_default_font(label)
+        #label.show()
+        custom_tooltip = QtW.QLabel(widget)
+        custom_tooltip.setText(text)
+        custom_tooltip.setAutoFillBackground(True)
+
+
+        set_default_font(custom_tooltip)
+
+        background_color = QtG.QColor(255, 255, 0)  # Yellow background color
+        widget.setStyleSheet(f"color: {globs.BLACK};background-color: {globs.WHITE}; border: 2px solid {globs.LIGHT};"
+            f"font-size: {globs.FONT_SIZE}px;font: {globs.FONT};  opacity: 255;")
+
+        # Show the custom tooltip
+        widget.setWindowFlags(QtC.Qt.ToolTip | QtC.Qt.FramelessWindowHint)
+        widget.setWindowOpacity(0.9)
+        widget.setGeometry(pos.x(), pos.y(), custom_tooltip.sizeHint().width(), custom_tooltip.sizeHint().height())
+        widget.show()
+
+
+
+class CustomToolTip(QtW.QWidget):
+    def __init__(self, text):
+        super().__init__()
+        self.setWindowFlags(QtC.Qt.ToolTip | QtC.Qt.FramelessWindowHint)
+        self.setAutoFillBackground(True)
+
+        layout = QtW.QVBoxLayout()
+        self.label = QtW.QLabel(text)
+        set_default_font(self.label)
+        layout.addWidget(self.label)
+        self.setLayout(layout)
+        self.setStyleSheet(f"color: {globs.BLACK};background-color: {globs.WHITE}; border: 2px solid {globs.LIGHT};"
+            f"font-size: {globs.FONT_SIZE}px;font: {globs.FONT};  opacity: 255;")
+
+    def setText(self, text):
+        self.label.setText(text)
+
+
+
+class Frame(QtW.QFrame):
+
+    def __init__(self, *args, **kwargs):
+        self.tool_text: str = ""
+        self.tooltip: CustomToolTip | None = None
+        super().__init__(*args, **kwargs)
+
+    def enterEvent(self, event: QtG.QEnterEvent) -> None:
+        print("Enter")
+        if self.tooltip is not None:
+            self.tooltip.move(event.globalPos())
+            self.tooltip.show()
+        super().enterEvent(event)
+
+    def setToolTip(self, text: str) -> None:
+        self.tool_text = text
+        self.tooltip = CustomToolTip(text)
+
+    def leaveEvent(self, event: QtC.QEvent) -> None:
+        if self.tooltip is not None:
+            self.tooltip.hide()
+        super().leaveEvent(event)
+
+
+
+
 
 
 class Option(QtC.QObject):
@@ -54,7 +129,7 @@ class Option(QtC.QObject):
         self.label_text: list[str] = [label] if isinstance(label, str) else label
         self.default_value: bool | int | float | str = default_value
         self.widget: QtW.QWidget | None = None
-        self.frame: QtW.QFrame = QtW.QFrame(self.default_parent)
+        self.frame: Frame = Frame(self.default_parent)
         self.label = QtW.QLabel(self.frame)
         self.linked_options: list[(Option, int)] = []
         self.limit_size: bool = True
