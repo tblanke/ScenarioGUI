@@ -1256,6 +1256,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
+        if self.list_widget_scenario.currentRow() != idx:
+            self.list_widget_scenario.setCurrentRow(idx)
+            return
         # if i no scenario is selected (idx < 0) or no scenario exists break function
         item = self.list_widget_scenario.item(idx)
         # get selected Datastorage from list
