@@ -5,7 +5,7 @@ It contains all the options, categories etc. that should appear on the GUI.
 from __future__ import annotations
 
 from functools import partial
-from typing import Protocol, TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 import numpy as np
 
@@ -39,15 +39,12 @@ if TYPE_CHECKING:
 
     from ScenarioGUI.gui_classes.translation_class import Translations
 
-
     class OptionShow(Protocol):
-
         def show(self):
             """"""
 
         def hide(self):
             """"""
-
 
 
 class GuiStructure:
@@ -87,7 +84,7 @@ class GuiStructure:
         # self.option_toggle_buttons = None
         # self.option_auto_saving = None
         # self.hint_saving = None
-        self.option_font_size = None
+        # self.option_font_size = None
 
         self.list_of_aims: list[tuple[Aim, str]] = []
         self.list_of_options: list[tuple[Option, str]] = []
@@ -113,8 +110,8 @@ class GuiStructure:
 
     def automatically_create_page_links(self):
         # couple to previous and next buttons
-        _ = [page.set_previous_page(page_previous) for page, page_previous in zip(self.list_of_pages[1:], self.list_of_pages[:-1])]
-        _ = [page.set_next_page(page_next) for page, page_next in zip(self.list_of_pages[:-1], self.list_of_pages[1:])]
+        _ = [page.set_previous_page(page_previous) for page, page_previous in zip(self.list_of_pages[1:], self.list_of_pages[:-1])]  # type: ignore
+        _ = [page.set_next_page(page_next) for page, page_next in zip(self.list_of_pages[:-1], self.list_of_pages[1:])]  # type: ignore
 
     def create_settings_page(self):
         """
@@ -149,8 +146,13 @@ class GuiStructure:
             category=self.category_save_scenario,
             minimal_value=1,
         )
-        self.time_out = FloatBox(label=self.translations.time_out if hasattr(self.translations, "time_out") else "Maximal runtime [s]:", default_value=600,
-                                 category=self.category_save_scenario, minimal_value=1, maximal_value=3600*24)
+        self.time_out = FloatBox(
+            label=self.translations.time_out if hasattr(self.translations, "time_out") else "Maximal runtime [s]:",
+            default_value=600,
+            category=self.category_save_scenario,
+            minimal_value=1,
+            maximal_value=3600 * 24,
+        )
         self.option_font_size = IntBox(
             label=self.translations.option_font_size if hasattr(self.translations, "option_font_size") else "Font size",
             default_value=globs.FONT_SIZE,
@@ -308,13 +310,11 @@ class GuiStructure:
         self.list_of_pages = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), Page)]
         self.list_of_rest = [getattr(self, name) for name in self.__dict__ if isinstance(getattr(self, name), (Hint, FunctionButton, Category))]
 
-        self.list_of_result_texts: list[tuple[ResultText, str]] = [
+        self.list_of_result_texts = [
             (option, "") for cat in self.page_result.list_categories for option in cat.list_of_options if isinstance(option, ResultText)
         ]
 
-        self.list_of_result_figures: list[tuple[ResultFigure, str]] = [
-            (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultFigure)
-        ]
+        self.list_of_result_figures = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultFigure)]
         self.category_default_figure_settings.hide() if not self.list_of_result_figures else self.category_default_figure_settings.show()
         for fig in [fig for fig, _ in self.list_of_result_figures if fig.customizable_figure == 2]:  # noqa: PLR2004
             fig.option_save_layout.change_event(
@@ -330,10 +330,8 @@ class GuiStructure:
                     fig.option_title,
                 )
             )
-        self.list_of_result_exports: list[tuple[ResultExport, str]] = [
-            (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultExport)
-        ]
-        self.list_of_options_with_dependent_results: list[tuple[Option, str]] = [
+        self.list_of_result_exports = [(getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), ResultExport)]
+        self.list_of_options_with_dependent_results = [
             (getattr(self, name), name) for name in self.__dict__ if isinstance(getattr(self, name), Option) if getattr(self, name).linked_options
         ]
         self.set_figure_translations()
@@ -347,10 +345,10 @@ class GuiStructure:
         size: int
             new font size
         """
-        _ = [option.set_font_size(size) for option, _ in self.list_of_options]
-        _ = [aim.set_font_size(size) for aim, _ in self.list_of_aims]
-        _ = [item.set_font_size(size) for item in self.list_of_rest]
-        _ = [page.set_font_size(size) for page in self.list_of_pages]
+        _ = [option.set_font_size(size) for option, _ in self.list_of_options]  # type: ignore
+        _ = [aim.set_font_size(size) for aim, _ in self.list_of_aims]  # type: ignore
+        _ = [item.set_font_size(size) for item in self.list_of_rest]  # type: ignore
+        _ = [page.set_font_size(size) for page in self.list_of_pages]  # type: ignore
 
     def change_figure_background_color(self):
         for fig, _ in self.list_of_result_figures:
@@ -444,29 +442,32 @@ class GuiStructure:
         ButtonBox.TOGGLE = True
         Page.TOGGLE = True
 
-    def disable_button_box(self, button_box: ButtonBox, at_index: int, func_2_check: Callable[[], bool]) -> Callable[[]]:
+    def disable_button_box(self, button_box: ButtonBox, at_index: int, func_2_check: Callable[[], bool]) -> partial:
         return partial(self._disable_button_box, button_box, at_index, func_2_check)
 
     @staticmethod
     def _disable_button_box(button_box: ButtonBox, at_index: int, func_2_check: Callable[[], bool], *args):
         if func_2_check():
             button_box.disable_entry(at_index)
+            # emit valueChanged signal
+            button_box.valueChanged.emit()
             return
         button_box.enable_entry(at_index)
 
-    def disable_aim(self, aim: Aim, at_page: Page, func_2_check: Callable[[], bool]) -> Callable[[]]:
+    def disable_aim(self, aim: Aim, at_page: Page, func_2_check: Callable[[], bool]) -> partial:
         return partial(self._disable_aim, aim, at_page, func_2_check)
 
     @staticmethod
     def _disable_aim(aim: Aim, at_page: Page, func_2_check: Callable[[], bool], *args):
         if func_2_check():
-            if aim.widget.isChecked():
+            if aim.is_checked():
                 aim.widget.click()
             aim.widget.setEnabled(False)
             font = aim.widget.font()
             font.setStrikeOut(True)
             aim.widget.setFont(font)
-            if aim.widget.isChecked():
+            if aim.is_checked():
+                # if toggled is not enabled, the button is still checked
                 aim.widget.setChecked(False)
                 aims = [aim_i for aim_i in at_page.upper_frame if aim_i != aim and aim_i.widget.isEnabled()]
                 if aims:
@@ -480,12 +481,15 @@ class GuiStructure:
             aim.widget.setChecked(True)
 
     @staticmethod
-    def show_option_under_multiple_conditions(options_to_be_shown: OptionShow | list[OptionShow],  # noqa: PLR0913
-                                              options_2_be_checked: Option | Aim | list[Option | Aim], *,
-                                              functions_check_for_and: list[Callable[[], bool]] | None = None,
-                                              functions_check_for_or: list[Callable[[], bool]] | None = None,
-                                              custom_logic: Callable[[], bool] | None = None,
-                                              check_on_visibility_change: bool = False) -> None:
+    def show_option_under_multiple_conditions(
+        options_to_be_shown: OptionShow | list[OptionShow],  # noqa: PLR0913
+        options_2_be_checked: Option | Aim | list[Option | Aim],
+        *,
+        functions_check_for_and: list[Callable[[], bool]] | None = None,
+        functions_check_for_or: list[Callable[[], bool]] | None = None,
+        custom_logic: Callable[[], bool] | None = None,
+        check_on_visibility_change: bool = False,
+    ) -> None:
         """
         show the option_to_be_shown if all functions_of_options of the options_2_be_checked are returning true\n
         Important!: This function can only be used once per option. Otherwise, this can lead to unexpected behaviour, where most probably the last function
@@ -511,25 +515,35 @@ class GuiStructure:
             None
         """
 
-        options_to_be_shown: list[Option] = [options_to_be_shown] if not isinstance(options_to_be_shown, list) else options_to_be_shown
+        options_to_be_shown = [options_to_be_shown] if not isinstance(options_to_be_shown, list) else options_to_be_shown
 
         options_2_be_checked = [options_2_be_checked] if not isinstance(options_2_be_checked, list) else options_2_be_checked
 
         # check if conditional visibility is already assigned
-        [check_conditional_visibility(option) for option in options_2_be_checked]
+        _ = [check_conditional_visibility(option) for option in options_to_be_shown]  # type: ignore
 
         if np.sum([functions_check_for_and is not None, functions_check_for_or is not None, custom_logic is not None]) > 1:
-            raise UserWarning('Multiple criteria for the truth evaluation are selected. Please choose either the and, or or custom logic criterium.')
+            raise UserWarning("Multiple criteria for the truth evaluation are selected. Please choose either the and, or or custom logic criterium.")
 
         if functions_check_for_and is not None:
+
             def check():
-                _ = [i.show() for i in options_to_be_shown] if all(func() for func in functions_check_for_and) else [i.hide() for i in options_to_be_shown]
-        elif functions_check_for_or:
+                _ = (
+                    [i.show() for i in options_to_be_shown] if all(func() for func in functions_check_for_and) else [i.hide() for i in options_to_be_shown]
+                )  # type: ignore
+
+        elif functions_check_for_or is not None:
+
             def check():
-                _ = [i.show() for i in options_to_be_shown] if any(func() for func in functions_check_for_or) else [i.hide() for i in options_to_be_shown]
-        else:
+                _ = (
+                    [i.show() for i in options_to_be_shown] if any(func() for func in functions_check_for_or) else [i.hide() for i in options_to_be_shown]
+                )  # type: ignore
+
+        elif custom_logic is not None:
+
             def check():
-                _ = [i.show() for i in options_to_be_shown] if custom_logic() else [i.hide() for i in options_to_be_shown]
+                _ = [i.show() for i in options_to_be_shown] if custom_logic() else [i.hide() for i in options_to_be_shown]  # type: ignore
+
         for option in options_2_be_checked:
             option.change_event(check, also_on_visibility=check_on_visibility_change)
 
@@ -550,9 +564,9 @@ class GuiStructure:
         """
         Page.next_label = translation.label_next[index]
         Page.previous_label = translation.label_previous[index]
-        _ = [option.translate(index) for option, _ in self.list_of_options if len(option.label_text) > index and len(option.label_text) > 1]
-        _ = [aim.translate(index) for aim, _ in self.list_of_aims if len(aim.label) > index and len(aim.label) > 1]
-        _ = [page.translate(index) for page in self.list_of_pages if len(page.name) > index and len(page.name) > 1]
+        _ = [option.translate(index) for option, _ in self.list_of_options if len(option.label_text) > index and len(option.label_text) > 1]  # type: ignore
+        _ = [aim.translate(index) for aim, _ in self.list_of_aims if len(aim.label) > index and len(aim.label) > 1]  # type: ignore
+        _ = [page.translate(index) for page in self.list_of_pages if len(page.name) > index and len(page.name) > 1]  # type: ignore
         for fig, _ in self.list_of_result_figures:
             if not fig.customizable_figure == 2:
                 continue

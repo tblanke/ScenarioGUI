@@ -34,7 +34,7 @@ class FloatBoxWithUnits(FloatBox):
         minimal_value: float = 0.0,
         maximal_value: float = 100.0,
         step: float = 1.0,
-        units: list[tuple[str, float]] | None = None
+        units: list[tuple[str, float]] | None = None,
     ):
         """
 
@@ -73,8 +73,15 @@ class FloatBoxWithUnits(FloatBox):
 
         .. figure:: _static/Example_Float_Box_With_Units.PNG
         """
-        super().__init__(label=label, default_value=default_value, category=category, maximal_value=maximal_value, minimal_value=minimal_value, step=step,
-                         decimal_number=decimal_number)
+        super().__init__(
+            label=label,
+            default_value=default_value,
+            category=category,
+            maximal_value=maximal_value,
+            minimal_value=minimal_value,
+            step=step,
+            decimal_number=decimal_number,
+        )
         self.units: list[tuple[str, float]] = [] if units is None else units
         self.unit_widget: ComboBox = ComboBox(self.default_parent, currentIndexChanged=self.valueChanged.emit)
 
@@ -198,6 +205,7 @@ class FloatBoxWithUnits(FloatBox):
         bool
             True if the linked "option" should be shown
         """
+
         def check() -> bool:
             below, above = value
             if below is not None and self.get_value()[0] < below:
@@ -205,6 +213,7 @@ class FloatBoxWithUnits(FloatBox):
             if above is not None and self.get_value()[0] > above:
                 return True
             return False
+
         return self.check_value_if_hidden(check(), value_if_hidden)
 
     def create_function_2_check_linked_value(self, value: tuple[float | None, float | None], value_if_hidden: bool | None = None) -> Callable[[], bool]:
@@ -225,12 +234,12 @@ class FloatBoxWithUnits(FloatBox):
         return partial(self.check_linked_value, value, value_if_hidden)
 
     def create_widget(
-            self,
-            frame: QtW.QFrame,
-            layout_parent: QtW.QLayout,
-            *,
-            row: int | None = None,
-            column: int | None = None,
+        self,
+        frame: QtW.QFrame,
+        layout_parent: QtW.QLayout,
+        *,
+        row: int | None = None,
+        column: int | None = None,
     ) -> None:
         """
         This functions creates the IntBox widget in the frame.
@@ -265,5 +274,3 @@ class FloatBoxWithUnits(FloatBox):
         self.unit_widget.setMinimumHeight(self.widget.minimumHeight())
         self.unit_widget.setFocusPolicy(QtC.Qt.FocusPolicy.StrongFocus)
         set_default_font(self.unit_widget)
-
-

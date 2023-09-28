@@ -3,7 +3,21 @@ All notable changes to this project will be documented in this file including pl
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.3.0] - expected: August 2023
+## [0.3.1] - October 2023
+
+### Added
+- Autofill ComboBox (issue 138)
+- Remember last save location (issue 136)
+
+## [0.3.0.2] - 2023-09-20
+
+### Added
+- Version number can be added in the gui_config.ini file, but it must not
+
+### Fixed 
+- Version can not be found error (issue 134)
+
+## [0.3.0] - 2023-08-23
 
 ### Added
 - Multiline text box (issue 56)
@@ -37,7 +51,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changing aims is not noticed (issue 98)
 - Wrong value in ButtonBox (issue 104)
 - Window title shows version when started without a previous backup (issue 117)
-- 
+- Strange issue with autosaving (Issue 128)
+- Disable buttonBox does now emit a valueChanged signal when necessary (issue 129)
+
 ### Changed
 - list_ds in MainWindow removed and replaced by QListWidget data
 - FlexOption can new be provided with default values (issue 63)
@@ -126,7 +142,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Hint
 - ListBox
 
-[0.3.0]: https://github.com/tblanke/ScenarioGUI/compare/v0.2.2...main
+[0.3.1]: https://github.com/tblanke/ScenarioGUI/compare/v0.3.0.2...main
+[0.3.0.2]: https://github.com/tblanke/ScenarioGUI/compare/v0.3.0...v0.3.0.2
+[0.3.0]: https://github.com/tblanke/ScenarioGUI/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/tblanke/ScenarioGUI/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/tblanke/ScenarioGUI/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/tblanke/ScenarioGUI/compare/v0.1.3...v0.2.0

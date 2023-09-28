@@ -3,7 +3,7 @@ data storage class script
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import matplotlib.pyplot as plt
 
@@ -12,10 +12,8 @@ from .gui_structure_classes import ListBox
 if TYPE_CHECKING:  # pragma: no cover
     from ScenarioGUI.gui_classes.gui_structure import GuiStructure
 
-    from ..global_settings import ResultsClass
 
-
-def is_equal(var_1: any, var_2: any) -> bool:
+def is_equal(var_1: Any, var_2: Any) -> bool:
     """
     check if the two variables are equal
 
@@ -46,7 +44,7 @@ class DataStorage:
     in the attributes below.
     """
 
-    def __init__(self, gui_structure: GuiStructure) -> DataStorage:
+    def __init__(self, gui_structure: GuiStructure):
         """
         This creates an instance of the DataStorage Class
 
@@ -73,7 +71,7 @@ class DataStorage:
         for figure_name in self.list_of_figures:
             setattr(self, figure_name, None)
 
-        self.results: ResultsClass | None = None
+        self.results: object | None = None
 
         self.debug_message: str = ""
 
@@ -90,11 +88,11 @@ class DataStorage:
         -------
         None
         """
-        [aim.widget.setChecked(False) for aim, _ in gui_structure.list_of_aims]
-        [aim.widget.setEnabled(True) for aim, _ in gui_structure.list_of_aims]
+        _ = [aim.widget.setChecked(False) for aim, _ in gui_structure.list_of_aims]  # type: ignore
+        _ = [aim.widget.setEnabled(True) for aim, _ in gui_structure.list_of_aims]  # type: ignore
         # run over options to hide or show the relevant ones
-        [aim.widget.click() for aim, name in gui_structure.list_of_aims if getattr(self, name)]
-        [option.set_value(getattr(self, name)) for option, name in gui_structure.list_of_options if hasattr(self, name)]
+        _ = [aim.widget.click() for aim, name in gui_structure.list_of_aims if getattr(self, name)]  # type: ignore
+        _ = [option.set_value(getattr(self, name)) for option, name in gui_structure.list_of_options if hasattr(self, name)]  # type: ignore
         gui_structure.change_toggle_button()
 
     def close_figures(self) -> None:
@@ -135,7 +133,7 @@ class DataStorage:
         None
         """
         # set all normal values if they exist within the DS object
-        [setattr(self, key, value) for key, value in data.items() if hasattr(self, key)]
+        _ = [setattr(self, key, value) for key, value in data.items() if hasattr(self, key)]  # type: ignore
 
     def __eq__(self, other) -> bool:
         """

@@ -11,11 +11,9 @@ def load(gui_file: str | Path):
     config = ConfigParser()
     config.read(gui_file)
 
-    globs.FOLDER = globs.get_path_for_file(globs.get_path_for_file(Path(gui_file).parent.parent, config["DEFAULT"]["PATH_2_ICONS"]).joinpath(config["DEFAULT"][
-                                                                                                                                     "PATH_2_ICONS"]), "icons")
-
-    config.read(config.read(globs.get_path_for_file(Path(gui_file).parent.parent, "setup.cfg").joinpath("setup.cfg")))
-    globs.VERSION = config.get("metadata", "version")
+    globs.FOLDER = globs.get_path_for_file(
+        globs.get_path_for_file(Path(gui_file).parent.parent, config["DEFAULT"]["PATH_2_ICONS"]).joinpath(config["DEFAULT"]["PATH_2_ICONS"]), "icons"
+    )
 
     globs.WHITE = config["COLORS"]["WHITE"]
     globs.LIGHT = config["COLORS"]["LIGHT"]
@@ -31,3 +29,8 @@ def load(gui_file: str | Path):
     globs.FILE_EXTENSION = config["DEFAULT"]["FILE_EXTENSION"]
     globs.GUI_NAME = config["DEFAULT"]["GUI_NAME"]
     globs.ICON_NAME = config["DEFAULT"]["ICON_NAME"]
+    try:
+        globs.VERSION = config["DEFAULT"]["VERSION"]
+    except KeyError:
+        globs.VERSION = globs.find_version(globs.get_path_for_file(Path(gui_file).parent.parent, "setup.cfg"))
+

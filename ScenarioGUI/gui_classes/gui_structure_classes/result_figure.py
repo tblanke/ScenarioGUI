@@ -110,7 +110,7 @@ class ResultFigure(Category):
         The code below generates a ResultFigure category named 'Temperature evolution'.
 
         >>> self.results_fig = ResultFigure(label="Temperature evolution",  # or self.translations.results_fig if results_fig is in Translation class
-        >>>                                 page=self.page_result,
+        >>>                                 page=self.page_result,  # type: ignore
         >>>                                 x_axes_text="x_axes-label",
         >>>                                 y_axes_text="y_axes-label",
         >>>                                 legend_text="line 1")
@@ -120,6 +120,8 @@ class ResultFigure(Category):
         .. figure:: _static/Example_ResultFigure.PNG
         """
         super().__init__(label, page)
+        self.y_axes_text: str = ""
+        self.x_axes_text: str = ""
         self.frame_canvas: QtW.QFrame = QtW.QFrame(self.frame)
         self.layout_frame_canvas: QtW.QVBoxLayout = QtW.QVBoxLayout(self.frame_canvas)
         globs.set_graph_layout()
@@ -145,8 +147,8 @@ class ResultFigure(Category):
             icon.addFile(
                 f"{globs.FOLDER}/icons/{icon_name}.svg",
                 QtC.QSize(),
-                QtG.QIcon.Normal,
-                QtG.QIcon.Off,
+                QtG.QIcon.Normal,  # type: ignore
+                QtG.QIcon.Off,  # type: ignore
             )
             self.toolbar._actions[name].setIcon(icon)
         self._kwargs: dict = {}
@@ -263,7 +265,7 @@ class ResultFigure(Category):
             self._change_axes_color(self.default_settings["axes_text"])
             self._change_legend_text_color(self.default_settings["legend_text"])
             self._change_font(self.default_settings["font"], self.default_settings["font_size"])
-            self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout()) else None
+            self.fig.tight_layout() if self.frame.isVisible() and not (self.fig.get_tight_layout()) else None
             self.canvas.draw() if self.frame.isVisible() else None
             return
         self.change_figure_background_color()
@@ -276,7 +278,7 @@ class ResultFigure(Category):
 
     def update_figure_layout(self, event):
         self.canvas.draw() if self.frame.isVisible() else None  # Redraw the canvas
-        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout()) else None  # Adjust the layout of the figure
+        self.fig.tight_layout() if self.frame.isVisible() and not (self.fig.get_tight_layout()) else None  # Adjust the layout of the figure
         self.frame_canvas.setMinimumHeight(self.frame_canvas.window().size().height() * 0.6)
         self.frame_canvas.setMaximumHeight(self.frame_canvas.window().size().height() * 0.6)
         QtW.QFrame.resizeEvent(self.frame_canvas, event)
@@ -326,8 +328,8 @@ class ResultFigure(Category):
             icon.addFile(
                 f"{globs.FOLDER}/icons/{icon_name}.svg",
                 QtC.QSize(),
-                QtG.QIcon.Normal,
-                QtG.QIcon.Off,
+                QtG.QIcon.Normal,  # type: ignore
+                QtG.QIcon.Off,  # type: ignore
             )
             toolbar._actions[name].setIcon(icon)
 
@@ -368,8 +370,8 @@ class ResultFigure(Category):
             f"QFrame{'{'}border: 0px solid {globs.LIGHT};border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;{'}'}\n"
             f"QLabel{'{'}border: 0px solid {globs.WHITE};{'}'}"
         )
-        self.frame_canvas.setFrameShape(QtW.QFrame.StyledPanel)
-        self.frame_canvas.setFrameShadow(QtW.QFrame.Raised)
+        self.frame_canvas.setFrameShape(QtW.QFrame.StyledPanel)  # type: ignore
+        self.frame_canvas.setFrameShadow(QtW.QFrame.Raised)  # type: ignore
         self.layout_frame.addWidget(self.frame_canvas)
         # set minimal height to ensure a minimal height of the plots
         self.frame_canvas.setMinimumHeight(500)
@@ -398,17 +400,17 @@ class ResultFigure(Category):
 
     def change_figure_background_color(self):
         self.fig.set_facecolor(to_rgb(np.array(self.option_figure_background.get_value()) / 255))
-        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.fig.tight_layout() if self.frame.isVisible() and not (self.fig.get_tight_layout()) else None
         self.canvas.draw() if self.frame.isVisible() else None
 
     def change_plot_background_color(self):
         self.a_x.set_facecolor(to_rgb(np.array(self.option_plot_background.get_value()) / 255))
-        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.fig.tight_layout() if self.frame.isVisible() and not (self.fig.get_tight_layout()) else None
         self.canvas.draw() if self.frame.isVisible() else None
 
     def change_axes_color(self):
         self._change_axes_color(self.option_axes.get_value())
-        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.fig.tight_layout() if self.frame.isVisible() and not (self.fig.get_tight_layout()) else None
         self.canvas.draw() if self.frame.isVisible() else None
 
     def _change_axes_color(self, color: tuple[int, int, int]):
@@ -421,18 +423,18 @@ class ResultFigure(Category):
 
     def change_title_color(self):
         self.a_x.set_title(self.a_x.get_title(), color=to_rgb(np.array(self.option_title.get_value()) / 255))
-        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.fig.tight_layout() if self.frame.isVisible() and not (self.fig.get_tight_layout()) else None
         self.canvas.draw() if self.frame.isVisible() else None
 
     def change_axis_text_color(self):
         self.a_x.xaxis.label.set_color(to_rgb(np.array(self.option_axes_text.get_value()) / 255))
         self.a_x.yaxis.label.set_color(to_rgb(np.array(self.option_axes_text.get_value()) / 255))
-        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.fig.tight_layout() if self.frame.isVisible() and not (self.fig.get_tight_layout()) else None
         self.canvas.draw() if self.frame.isVisible() else None
 
     def change_legend_text_color(self):
         self._change_legend_text_color(self.option_legend_text.get_value())
-        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.fig.tight_layout() if self.frame.isVisible() and not (self.fig.get_tight_layout()) else None
         self.canvas.draw() if self.frame.isVisible() else None
 
     def _change_legend_text_color(self, colors: tuple[int, int, int]):
@@ -444,7 +446,7 @@ class ResultFigure(Category):
 
     def change_font(self):
         self._change_font(self.option_font.link_matrix()[self.option_font.get_value()[0]], self.option_font_size.get_value())
-        self.fig.tight_layout() if self.frame.isVisible() and not(self.fig.get_tight_layout())  else None
+        self.fig.tight_layout() if self.frame.isVisible() and not (self.fig.get_tight_layout()) else None
         self.canvas.draw() if self.frame.isVisible() else None
 
     def _change_font(self, font_index: int, font_size: int):
@@ -481,9 +483,9 @@ class ResultFigure(Category):
         # Create the QWheelEvent
         pyqt_event = QtG.QWheelEvent(
             QtC.QPoint(0, 0),  # Position of the event
-            QtC.QPoint(0, 0) ,  # Global position of the event
+            QtC.QPoint(0, 0),  # Global position of the event
             QtC.QPoint(0, 0),  # Scroll pixel delta
-            QtC.QPoint(0, delta * 120) ,  # Scroll angle delta
+            QtC.QPoint(0, delta * 120),  # Scroll angle delta
             QtC.Qt.MouseButton.NoButton,  # Mouse buttons pressed during the event
             QtC.Qt.KeyboardModifier.NoModifier,  # Modifiers active during the event
             QtC.Qt.ScrollPhase.NoScrollPhase,  # Scroll phase
@@ -507,9 +509,9 @@ class ResultFigure(Category):
         """
         entry_name: list[str, str] = name.split(",")
         self.label.setText(entry_name[0])
-        self.y_axes_text: str = entry_name[1]
+        self.y_axes_text = entry_name[1]
         self.a_x.set_ylabel(self.y_axes_text)
-        self.x_axes_text: str = entry_name[2]
+        self.x_axes_text = entry_name[2]
         self.a_x.set_xlabel(self.x_axes_text)
         self.legend_text = entry_name[3:]
         legend = self.a_x.get_legend()
@@ -545,7 +547,7 @@ class ResultFigure(Category):
         --------
         The example below shows the temperature profile by calling on the 'print_temperature_profile' function in the Borefield class.
 
-        >>> self.figure_temperature_profile.fig_to_be_shown(class_name="Borefield",
+        >>> self.figure_temperature_profile.fig_to_be_shown(class_name="Borefield",  # type: ignore
         >>>                                                 function_name="print_temperature_profile")
         """
         self.class_name = class_name
@@ -570,7 +572,7 @@ class ResultFigure(Category):
                 kwargs_temp[key] = value
         return {**self._kwargs, **kwargs_temp}
 
-    def show(self, results: bool = False) -> None:
+    def show(self, results: bool = False) -> None:  # type: ignore
         """
         This function shows the ResultFigure option.
         It makes sure that the figure is not shown when loading the entire GUI,
@@ -617,7 +619,7 @@ class ResultFigure(Category):
         self.default_figure_colors.set_font_size(size)
         self.option_axes_text.set_font_size(size)
 
-    def hide(self, results: bool = False) -> None:
+    def hide(self, results: bool = False) -> None:  # type: ignore
         """
         This function hides the ResultFigure option.
         It also sets the to_show parameter to False, so the Figure is not randomly showed

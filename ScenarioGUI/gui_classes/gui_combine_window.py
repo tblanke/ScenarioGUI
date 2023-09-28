@@ -16,7 +16,7 @@ import pandas as pd
 import PySide6.QtCore as QtC
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW
-from matplotlib import rcParams
+from matplotlib import rcParams  # type: ignore
 
 import ScenarioGUI.global_settings as globs
 from ScenarioGUI.gui_classes.gui_structure_classes.functions import check_aim_options
@@ -58,9 +58,10 @@ class JsonDict(TypedDict, total=True):
     version: str
     values: list[dict]
     results: list[dict]
+    default_path: str
 
 
-def normal_export(file_path: Path, data: dict):
+def normal_export(file_path: Path, data: JsonDict):
     """
     normal export function
 
@@ -68,7 +69,7 @@ def normal_export(file_path: Path, data: dict):
     ----------
     file_path: Path
         path to file including the file and type
-    data: dict
+    data: JsonDict
         json dict of data
 
     Returns
@@ -106,7 +107,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
     saving documents etc.)
     """
 
-    filename_default: tuple = ("", "")
+    filename_default: tuple[str, str] = ("", "")
     role: int = 99
     TEST_MODE: bool = False
     button_width_large: int = 150
@@ -117,7 +118,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
     def __init__(  # noqa: PLR0913
         self,
-        dialog: QtW.QWidget,
+        dialog: QtW.QMainWindow,
         app: QtW.QApplication,
         gui_structure: type[GuiStructure],
         translations: type[Translations],
@@ -125,9 +126,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         result_creating_class: type[ResultsClass],
         data_2_results_function: Callable[
             [DataStorage],
-            tuple[object, ft_partial[[], None]] | tuple[object, Callable[[], None]],
+            tuple[object, ft_partial[None,]] | tuple[object, Callable[[], None]],
         ],
-    ) -> MainWindow:
+    ):
         """
 
         Parameters
@@ -160,16 +161,16 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         self.gui_structure = gui_structure(self.central_widget, self.translations)
 
-        [page.create_page(self.central_widget, self.stacked_widget, self.vertical_layout_menu) for page in self.gui_structure.list_of_pages]
+        _ = [page.create_page(self.central_widget, self.stacked_widget, self.vertical_layout_menu) for page in self.gui_structure.list_of_pages]  # type: ignore
 
-        self.verticalSpacer = QtW.QSpacerItem(20, 40, QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Expanding)
+        self.verticalSpacer = QtW.QSpacerItem(20, 40, QtW.QSizePolicy.Minimum, QtW.QSizePolicy.Expanding)  # type: ignore
         self.vertical_layout_menu.addItem(self.verticalSpacer)
 
-        self.import_functions: dict[str, Callable[[str | Path], JsonDict]] = {
+        self.import_functions: dict[str, Callable[[Path], JsonDict]] = {
             globs.FILE_EXTENSION: normal_import,
             f"{globs.FILE_EXTENSION}BackUp": normal_import,
         }
-        self.export_functions: dict[str, Callable[[str | Path, JsonDict], None]] = {
+        self.export_functions: dict[str, Callable[[Path, JsonDict], None]] = {
             globs.FILE_EXTENSION: normal_export,
             f"{globs.FILE_EXTENSION}BackUp": normal_export,
         }
@@ -178,10 +179,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # set app and dialog
         self.dia, self.app = dialog, app
         # init pop up dialog
-        self.dialog: QtW.QInputDialog | None = None
+        self.dialog: QtW.QMessageBox | QtW.QInputDialog | None = None
         # init variables of class
         # allow checking of changes
-        self.checking: bool = False
+        self.checking = False
         # create backup path in home documents directory
         self.default_path: Path = Path(Path.home(), f"Documents/{globs.GUI_NAME}")
         self.backup_file: Path = Path(self.default_path, self._backup_filename)
@@ -193,7 +194,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # add languages to combo box
         self.gui_structure.option_language.widget.addItems(self.translations.languages)
         self.fileImport = None  # init import file
-        self.filename: tuple = MainWindow.filename_default  # filename of stored inputs
+        self.filename: tuple[str, str] = MainWindow.filename_default  # filename of stored inputs
         self.list_widget_scenario.clear()  # reset list widget with stored scenarios
         self.changedFile: bool = False  # set change file variable to false
         self.ax: list = []  # axes of figure
@@ -217,12 +218,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         self.last_idx = 0
 
-        [option.init_links() for option, _ in self.gui_structure.list_of_options]
-        [aim.init_links() for aim, _ in self.gui_structure.list_of_aims]
+        _ = [option.init_links() for option, _ in self.gui_structure.list_of_options]  # type: ignore
+        _ = [aim.init_links() for aim, _ in self.gui_structure.list_of_aims]  # type: ignore
 
         globs.LOGGER.info(self.translations.tool_imported[self.gui_structure.option_language.get_value()[0]])
         # allow checking of changes
-        self.checking: bool = True
+        self.checking = True
         # set the correct graph layout
         globs.set_graph_layout()
 
@@ -346,7 +347,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         action = QtG.QAction(self.central_widget)
         icon = QtG.QIcon()
-        icon.addFile(f"{globs.FOLDER}/icons/{icon_name}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)
+        icon.addFile(f"{globs.FOLDER}/icons/{icon_name}", QtC.QSize(), QtG.QIcon.Normal, QtG.QIcon.Off)  # type: ignore
         action.setIcon(icon)
         self.menu_language.addAction(action)
         action.setText(name)
@@ -390,16 +391,16 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             option.change_event(self.change)
         for option, _ in [(opt, name) for opt, name in self.gui_structure.list_of_options if isinstance(opt, FigureOption)]:
             option.change_event(self.change_figure_option)
-        for option, _ in [(opt, name) for opt, name in self.gui_structure.list_of_result_exports]:
+        for option, _ in [(opt, name) for opt, name in self.gui_structure.list_of_result_exports]:  # type: ignore
             option.change_event(ft_partial(self.export_results, option))
-        for option, _ in self.gui_structure.list_of_aims:
+        for option, _ in self.gui_structure.list_of_aims:  # type: ignore
             option.change_event(self.change)
 
         for option, name in setting_options:
             option.change_event(ft_partial(self._change_settings_in_all_data_storages, name))
 
         self.gui_structure.option_language.change_event(self.change_language)
-        self.gui_structure.option_font_size.change_event(self.change_font_size)
+        self.gui_structure.option_font_size.change_event(self.change_font_size)  # type: ignore
         self.gui_structure.page_result.button.clicked.connect(self.display_results)
         self.action_add_scenario.triggered.connect(self.add_scenario)
         self.action_update_scenario.triggered.connect(self.save_scenario)
@@ -412,13 +413,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.action_open_add.triggered.connect(self.load_add_scenarios)
         self.action_new.triggered.connect(self.fun_new)
         self.action_rename_scenario.triggered.connect(self.fun_rename_scenario)
-        self.list_widget_scenario.setDragDropMode(QtW.QAbstractItemView.InternalMove)
+        self.list_widget_scenario.setDragDropMode(QtW.QAbstractItemView.InternalMove)  # type: ignore
         # self.list_widget_scenario.model().rowsMoved.connect(self.fun_move_scenario)
         self.list_widget_scenario.currentItemChanged.connect(self.scenario_is_changed)
         self.list_widget_scenario.itemSelectionChanged.connect(self._always_scenario_selected)
         self.gui_structure.option_auto_saving.change_event(self.change_auto_saving)
-        self.dia.closeEvent = self.closeEvent
-        self.dia.resizeEvent = self.resizeEvent
+        self.dia.closeEvent = self.closeEvent  # type: ignore
+        self.dia.resizeEvent = self.resizeEvent  # type: ignore
 
     def change_auto_saving(self):
         if self.gui_structure.option_auto_saving.get_value() == 1:
@@ -427,7 +428,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.push_button_save_scenario.show()
 
     def change_font_size(self):
-        size = self.gui_structure.option_font_size.get_value()
+        size = self.gui_structure.option_font_size.get_value()  # type: ignore
         globs.FONT_SIZE = size
         rcParams.update({"font.size": size})
         self.gui_structure.change_font_size_2(size)
@@ -534,14 +535,14 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             button.setMaximumSize(self.size_push_b)
             button.setMinimumSize(self.size_push_b.width(), self.size_s.height() + 5)
             button.resize(self.size_push_b)
-            button.setSizePolicy(QtW.QSizePolicy.Fixed, QtW.QSizePolicy.Expanding)
+            button.setSizePolicy(QtW.QSizePolicy.Fixed, QtW.QSizePolicy.Expanding)  # type: ignore
             return
         button.setIconSize(self.size_b)
         # icon: QtG.QIcon = button.icon()
         # icon.si
         button.setMaximumSize(self.size_push_s)
         button.setMinimumSize(self.size_s.height() + 5, self.size_s.height() + 5)
-        button.setSizePolicy(QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Expanding)
+        button.setSizePolicy(QtW.QSizePolicy.Expanding, QtW.QSizePolicy.Expanding)  # type: ignore
         # button.setMinimumSize(self.size_push_s)
         button.resize(self.size_push_s)
 
@@ -562,7 +563,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.check_buttons()
         # if changed File is not already True set it to True and update window title
         if self.changedFile is False:
-            self.changedFile: bool = True
+            self.changedFile = True
             self.change_window_title()
         # get current index of scenario
         item = self.list_widget_scenario.currentItem()
@@ -573,6 +574,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         item.data(MainWindow.role).results = None
         # abort here if autosave scenarios is used
         if self.gui_structure.option_auto_saving.get_value() == 1:
+            self.save_scenario()
             return
         # get text string of current scenario
         text: str = self.list_widget_scenario.currentItem().text()
@@ -659,14 +661,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # check if the auto saving should be performed and then save the last selected scenario
         if self.gui_structure.option_auto_saving.get_value() == 1:
             self.check_values()
-            # save old scenario
-            if (
-                self.list_widget_scenario.count() - 1 >= self.list_widget_scenario.row(old_row_item)
-                and DataStorage(self.gui_structure) != old_row_item.data(MainWindow.role)
-                and self.push_button_save_scenario.isEnabled()
-            ):
-                old_row_item.data(MainWindow.role).close_figures()
-                old_row_item.setData(MainWindow.role, DataStorage(self.gui_structure))
             # update backup fileImport
             self.auto_save()
             # change values to new scenario values
@@ -678,37 +672,37 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # check if the old scenario is unsaved then create message box
         if text[-1] == "*":
             # create message box
-            self.dialog: QtW.QMessageBox = QtW.QMessageBox(self.dia)
+            self.dialog = QtW.QMessageBox(self.dia)
             set_default_font(self.dialog)
             # set Icon to question mark icon
-            self.dialog.setIcon(QtW.QMessageBox.Question)
+            self.dialog.setIcon(QtW.QMessageBox.Question)  # type: ignore
             # set label text to leave scenario text depending on language selected
             self.dialog.setText(self.translations.label_LeaveScenarioText[self.gui_structure.option_language.get_value()[0]])
             # set window text to  leave scenario text depending on language selected
             self.dialog.setWindowTitle(self.translations.label_CancelTitle[self.gui_structure.option_language.get_value()[0]])
             # set standard buttons to save, close and cancel
-            self.dialog.setStandardButtons(QtW.QMessageBox.Save | QtW.QMessageBox.Close | QtW.QMessageBox.Cancel)
+            self.dialog.setStandardButtons(QtW.QMessageBox.Save | QtW.QMessageBox.Close | QtW.QMessageBox.Cancel)  # type: ignore
             # get save, close and cancel button
-            button_s = self.dialog.button(QtW.QMessageBox.Save)
-            button_cl = self.dialog.button(QtW.QMessageBox.Close)
-            button_ca = self.dialog.button(QtW.QMessageBox.Cancel)
+            button_s = self.dialog.button(QtW.QMessageBox.Save)  # type: ignore
+            button_cl = self.dialog.button(QtW.QMessageBox.Close)  # type: ignore
+            button_ca = self.dialog.button(QtW.QMessageBox.Cancel)  # type: ignore
             # set save, close and cancel button text depending on language selected
             button_s.setText(f"{self.translations.push_button_save_scenario[self.gui_structure.option_language.get_value()[0]]} ")
             button_cl.setText(f"{self.translations.label_LeaveScenario[self.gui_structure.option_language.get_value()[0]]} ")
             button_ca.setText(f"{self.translations.label_StayScenario[self.gui_structure.option_language.get_value()[0]]} ")
             # set  save, close and cancel button icon
-            self.set_push_button_icon(button_s, "Save_Inv")
-            self.set_push_button_icon(button_cl, "Exit")
-            self.set_push_button_icon(button_ca, "Abort")
-            [set_default_font(button) for button in self.dialog.findChildren(QtW.QPushButton)]
+            self.set_push_button_icon(button_s, "Save_Inv")  # type: ignore
+            self.set_push_button_icon(button_cl, "Exit")  # type: ignore
+            self.set_push_button_icon(button_ca, "Abort")  # type: ignore
+            _ = [set_default_font(button) for button in self.dialog.findChildren(QtW.QPushButton)]  # type: ignore
             # execute message box and save response
             reply = self.dialog.exec()
             # check if closing should be canceled
-            if reply == QtW.QMessageBox.Cancel:
+            if reply == QtW.QMessageBox.Cancel:  # type: ignore
                 return_2_old_item()
                 return
             # save scenario if wanted
-            if reply == QtW.QMessageBox.Save:  # pragma: no cover
+            if reply == QtW.QMessageBox.Save:  # type: ignore # pragma: no cover
                 old_row_item.setData(MainWindow.role, DataStorage(self.gui_structure))
             # remove * symbol
             old_row_item.setText(text[:-1])
@@ -736,8 +730,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # add pixmap to icon
         icon.addPixmap(
             QtG.QPixmap(f"{globs.FOLDER}/icons/{icon_name}.svg"),
-            QtG.QIcon.Normal,
-            QtG.QIcon.Off,
+            QtG.QIcon.Normal,  # type: ignore
+            QtG.QIcon.Off,  # type: ignore
         )
         button.setIcon(icon)  # set icon to button
 
@@ -794,9 +788,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         li = self.dialog.findChildren(QtW.QPushButton)
         self.set_push_button_icon(li[0], "Okay")
         self.set_push_button_icon(li[1], "Abort")
-        [set_default_font(button) for button in li]
+        _ = [set_default_font(button) for button in li]  # type: ignore
         # set new name if the dialog is not canceled and the text is not None
-        if self.dialog.exec() == QtW.QDialog.Accepted:
+        if self.dialog.exec() == QtW.QDialog.Accepted:  # type: ignore
             name = self.dialog.textValue()
             item.setText(self.set_name(name)) if name else None
 
@@ -840,13 +834,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # set new title name
         self.dia.setWindowTitle(name)
 
-    def eventFilter(self, obj: QtW.QPushButton, event) -> bool:  # noqa: N802
+    def eventFilter(self, obj: QtC.QObject, event) -> bool:  # noqa: N802
         """
         This function checks the mouse over event. It overwrites the eventFilter object in QObject.
 
         Parameters
         ----------
-        obj : QtW.QPushButton
+        obj : QtW.QObject
         event : event
             Event for which it is check if the mouse is entering or leaving
 
@@ -855,17 +849,17 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         bool
             True to check if the function has worked correctly. (implemented for test cases)
         """
-        if event.type() == QtC.QEvent.Enter:
+        if event.type() == QtC.QEvent.Enter:  # type: ignore
             # Mouse is over the label
             self.check_page_button_layout(True)
             return True
-        elif event.type() == QtC.QEvent.Leave:
+        elif event.type() == QtC.QEvent.Leave:  # type: ignore
             # Mouse is not over the label
             self.check_page_button_layout(False)
             return True
         return super().eventFilter(obj, event)
 
-    def _change_settings_in_all_data_storages(self, name_of_option: str, *args) -> None:
+    def _change_settings_in_all_data_storages(self, name_of_option: str, *args) -> None:  # type: ignore
         """
         This function makes sure that the settings are the same in all the different scenarios.
 
@@ -1011,19 +1005,21 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         file_extension = splitext(location)[1].replace(".", "")
         func = self.import_functions[file_extension]
         try:
-            saving = func(location)
+            saving: JsonDict = func(Path(location))
         except FileNotFoundError:
             globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()[0]])
             return
         if saving["version"] in self.version_import_functions:
-            saving = self.version_import_functions[saving["version"]](saving)
+            saving: JsonDict = self.version_import_functions[saving["version"]](saving)
         # set and change the window title
         if not append:
-            self.filename = tuple(saving["filename"])
+            self.filename = tuple(saving["filename"])  # type: ignore
+            if "default_path" in saving:
+                self.default_path = Path(saving["default_path"])  # type: ignore
             self.change_window_title()
             self.list_widget_scenario.clear()
         else:
-            self.changedFile: bool = True
+            self.changedFile = True
             self.change_window_title()
         # write data to variables
         for _idx, (val, results, name) in enumerate(zip(saving["values"], saving["results"], saving["names"])):
@@ -1048,7 +1044,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         Parameters
         ----------
-        location : str
+        location : str | Path
             Location of the data file.
 
         Returns
@@ -1065,11 +1061,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             "version": globs.VERSION,
             "values": [d_s.to_dict() for d_s in list_ds],
             "results": [d_s.results.to_dict() if d_s.results is not None else None for d_s in list_ds],
+            "default_path": f"{self.default_path}",
         }
-
         file_extension = splitext(location)[1].replace(".", "")
         try:
-            self.export_functions[file_extension](location, saving)
+            self.export_functions[file_extension](Path(location), saving)
         except FileNotFoundError:
             globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()[0]])
         except PermissionError:  # pragma: no cover
@@ -1099,12 +1095,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if filename == MainWindow.filename_default or not filename[0]:
             return
         # deactivate checking
-        self.checking: bool = False
+        self.checking = False
         self.gui_structure.loaded = False
+        self.default_path = Path(filename[0]).parent
         # open file and set data
         self._load_from_data(filename[0], append=True)
         # activate checking
-        self.checking: bool = True
+        self.checking = True
         self.gui_structure.loaded = True
 
     def fun_load(self) -> None:
@@ -1131,6 +1128,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if filename == MainWindow.filename_default or not filename[0]:
             return
         self.filename = filename
+        self.default_path = Path(filename[0]).parent
         # load selected data
         self.fun_load_known_filename()
 
@@ -1145,12 +1143,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # deactivate checking
-        self.checking: bool = False
+        self.checking = False
         self.gui_structure.loaded = False
         # open file and set data
         self._load_from_data(self.filename[0])
         # activate checking
-        self.checking: bool = True
+        self.checking = True
         self.gui_structure.loaded = True
 
     def fun_save_as(self) -> None:
@@ -1162,7 +1160,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         None
         """
         # reset filename because then the funSave function ask for a new filename
-        filename: tuple = QtW.QFileDialog.getSaveFileName(
+        filename: tuple[str, str] = QtW.QFileDialog.getSaveFileName(
             self.central_widget,
             caption=self.translations.Save[self.gui_structure.option_language.get_value()[0]],
             filter=";;".join(
@@ -1175,6 +1173,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # break function if no file is selected
         if filename == MainWindow.filename_default or not filename[0]:
             return
+        self.default_path = Path(filename[0]).parent
         self.filename = filename if splitext(filename[0])[1].replace(".", "") == globs.FILE_EXTENSION else self.filename
         self.fun_save(filename)  # save data under a new filename
 
@@ -1194,7 +1193,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # ask for pickle file if the filename is still the default
         logging.info(f"Saved as {self.filename[0]}")
-        if not isinstance(filename, tuple):
+        if filename is None or type(filename) == bool:
             if self.filename == MainWindow.filename_default:
                 self.fun_save_as()
                 return True
@@ -1207,11 +1206,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # update backup file
         self.auto_save()
         # try to store the data in the pickle file
-        func = ft_partial(self._save_to_data, filename[0])
+        func = ft_partial(self._save_to_data, filename[0])  # type: ignore
         self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
         self._saving_threads_update()
         # deactivate changed file * from window title
-        self.changedFile: bool = False
+        self.changedFile = False
         self.change_window_title()
         # return true because everything was successful
         return True
@@ -1224,7 +1223,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        self.filename: tuple = MainWindow.filename_default  # reset filename
+        self.filename = MainWindow.filename_default  # reset filename
         if self.fun_save():  # get and save filename
             self.list_widget_scenario.clear()  # clear list widget with scenario list
             self.display_results()  # clear the results page
@@ -1261,13 +1260,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # get selected Datastorage from list
         d_s: DataStorage = item.data(MainWindow.role)
         # deactivate checking for changes
-        self.checking: bool = False
+        self.checking = False
         # set values of selected Datastorage
         d_s.set_values(self.gui_structure)
         # refresh results if results page is selected
         self.display_results() if self.stacked_widget.currentWidget() == self.gui_structure.page_result.page else None
         # activate checking for changed
-        self.checking: bool = True
+        self.checking = True
 
     def check_values(self) -> bool:
         """
@@ -1356,17 +1355,15 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # run change function to mark unsaved inputs
         self.change()
 
-    def update_bar(self, val: int) -> None:
+    def update_bar(self, val: int | float) -> None:
         """
         This function updates the status bar or hides them if it is no longer needed.
         It displays the percentage of calculated scenarios.
 
         Parameters
         ----------
-        val : int
+        val : int | float
             Number of successfully calculated scenarios
-        opt_start : bool
-            True if the calculation is started and the progressbar should be shown
 
         Returns
         -------
@@ -1495,10 +1492,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
     @staticmethod
     def wait_2_terminate(thread: CalcProblem):
-        finished = thread.wait(thread.d_s.time_out*1000)
+        finished = thread.wait(thread.d_s.time_out * 1000)  # type: ignore
         if finished:
             return
-        thread.d_s.debug_message = f"{RuntimeError(f'RuntimeError: run time > {thread.d_s.time_out}s')}"
+        thread.d_s.debug_message = f"{RuntimeError(f'RuntimeError: run time > {thread.d_s.time_out}s')}"  # type: ignore
         # save bore field in Datastorage
         thread.d_s.results = None
         thread.calculated = True
@@ -1583,7 +1580,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             fig_obj.show()
             fig_obj.canvas.show()
             # draw new plot
-            fig.tight_layout() if fig_obj.frame.isVisible() and not(fig_obj.fig.get_tight_layout()) else None
+            fig.tight_layout() if fig_obj.frame.isVisible() and not (fig_obj.fig.get_tight_layout()) else None
             fig_obj.canvas.draw()
 
         # update result for every ResultText object
@@ -1616,40 +1613,40 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             event.accept()
             return
         # create message box
-        self.dialog: QtW.QMessageBox = QtW.QMessageBox(self.dia)
+        self.dialog = QtW.QMessageBox(self.dia)  # type: ignore
         set_default_font(self.dialog)
         # set Icon to question mark icon
-        self.dialog.setIcon(QtW.QMessageBox.Question)
+        self.dialog.setIcon(QtW.QMessageBox.Question)  # type: ignore
         # set label text to cancel text depending on language selected
         self.dialog.setText(self.translations.label_CancelText[self.gui_structure.option_language.get_value()[0]])
         # set window text to cancel text depending on language selected
         self.dialog.setWindowTitle(self.translations.label_CancelTitle[self.gui_structure.option_language.get_value()[0]])
         # set standard buttons to save, close and cancel
-        self.dialog.setStandardButtons(QtW.QMessageBox.Save | QtW.QMessageBox.Close | QtW.QMessageBox.Cancel)
+        self.dialog.setStandardButtons(QtW.QMessageBox.Save | QtW.QMessageBox.Close | QtW.QMessageBox.Cancel)  # type: ignore
         # get save, close and cancel button
-        button_s = self.dialog.button(QtW.QMessageBox.Save)
-        button_cl = self.dialog.button(QtW.QMessageBox.Close)
-        button_ca = self.dialog.button(QtW.QMessageBox.Cancel)
-        [set_default_font(button) for button in self.dialog.findChildren(QtW.QPushButton)]
+        button_s = self.dialog.button(QtW.QMessageBox.Save)  # type: ignore
+        button_cl = self.dialog.button(QtW.QMessageBox.Close)  # type: ignore
+        button_ca = self.dialog.button(QtW.QMessageBox.Cancel)  # type: ignore
+        _ = [set_default_font(button) for button in self.dialog.findChildren(QtW.QPushButton)]  # type: ignore
         # set save, close and cancel button text depending on language selected
         button_s.setText(f"{self.translations.label_Save[self.gui_structure.option_language.get_value()[0]]} ")
         button_cl.setText(f"{self.translations.label_close[self.gui_structure.option_language.get_value()[0]]} ")
         button_ca.setText(f"{self.translations.label_cancel[self.gui_structure.option_language.get_value()[0]]} ")
         # set  save, close and cancel button icon
-        self.set_push_button_icon(button_s, "Save_Inv")
-        self.set_push_button_icon(button_cl, "Exit")
-        self.set_push_button_icon(button_ca, "Abort")
+        self.set_push_button_icon(button_s, "Save_Inv")  # type: ignore
+        self.set_push_button_icon(button_cl, "Exit")  # type: ignore
+        self.set_push_button_icon(button_ca, "Abort")  # type: ignore
         # execute message box and save response
         reply = self.dialog.exec()
         # check if closing should be canceled
-        if reply == QtW.QMessageBox.Cancel:
+        if reply == QtW.QMessageBox.Cancel:  # type: ignore
             # cancel closing event
             event.ignore()
             return
         # check if inputs should be saved and if successfully set closing variable to true
-        close: bool = self.fun_save() if reply == QtW.QMessageBox.Save else True
+        close: bool = self.fun_save() if reply == QtW.QMessageBox.Save else True  # type: ignore
         # stop all calculation threads
-        _ = [i.terminate() for i in self.threads]
+        _ = [i.terminate() for i in self.threads]  # type: ignore
         # close figures
         _ = [self.list_widget_scenario.item(idx).data(MainWindow.role).close_figures() for idx in range(self.list_widget_scenario.count())]
         # close window if close variable is true else not

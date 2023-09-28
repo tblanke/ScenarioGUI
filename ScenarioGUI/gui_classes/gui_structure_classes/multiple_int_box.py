@@ -134,6 +134,7 @@ class MultipleIntBox(Option):
         bool
             True if the linked "option" should be shown
         """
+
         def check() -> bool:
             below, above = value
             if below is not None and np.any(np.less(self.get_value(), below)):
@@ -141,6 +142,7 @@ class MultipleIntBox(Option):
             if above is not None and np.any(np.greater(self.get_value(), above)):
                 return True
             return False
+
         return self.check_value_if_hidden(check(), value_if_hidden)
 
     def create_function_2_check_linked_value(
