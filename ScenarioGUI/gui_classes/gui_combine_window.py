@@ -115,6 +115,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
     button_height: int = 75
     icon_size_small: int = 24
     icon_size_large: int = 48
+    MOVE_2_NEXT: bool = True  # move to the next instead of the previous scenario if a scenario is deleted
 
     def __init__(  # noqa: PLR0913
         self,
@@ -1320,7 +1321,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        if self.list_widget_scenario.count() < 2:  # noqa: PLR2004
+        number_of_scenarios = self.list_widget_scenario.count()
+        if number_of_scenarios < 2:  # noqa: PLR2004
             return
         # get current scenario index
         item = self.list_widget_scenario.currentItem()
@@ -1329,9 +1331,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         idx = self.list_widget_scenario.row(item)
         # delete scenario form list widget
         self.list_widget_scenario.takeItem(idx)
-        # select previous scenario then the deleted one but at least the first one
+        # select next scenario
+        if self.MOVE_2_NEXT:
+            self.list_widget_scenario.setCurrentRow(min(idx, number_of_scenarios - 2))
+            return
+        # select previous scenario
         self.list_widget_scenario.setCurrentRow(max(idx - 1, 0))
-        self.change_scenario(max(idx - 1, 0))
 
     def add_scenario(self) -> None:
         """
