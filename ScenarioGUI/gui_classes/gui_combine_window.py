@@ -58,6 +58,7 @@ class JsonDict(TypedDict, total=True):
     version: str
     values: list[dict]
     results: list[dict]
+    default_path: str
 
 
 def normal_export(file_path: Path, data: JsonDict):
@@ -1004,15 +1005,17 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         file_extension = splitext(location)[1].replace(".", "")
         func = self.import_functions[file_extension]
         try:
-            saving = func(Path(location))
+            saving: JsonDict = func(Path(location))
         except FileNotFoundError:
             globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()[0]])
             return
         if saving["version"] in self.version_import_functions:
-            saving = self.version_import_functions[saving["version"]](saving)
+            saving: JsonDict = self.version_import_functions[saving["version"]](saving)
         # set and change the window title
         if not append:
             self.filename = tuple(saving["filename"])  # type: ignore
+            if "default_path" in saving:
+                self.default_path = Path(saving["default_path"])  # type: ignore
             self.change_window_title()
             self.list_widget_scenario.clear()
         else:
@@ -1058,8 +1061,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             "version": globs.VERSION,
             "values": [d_s.to_dict() for d_s in list_ds],
             "results": [d_s.results.to_dict() if d_s.results is not None else None for d_s in list_ds],
+            "default_path": f"{self.default_path}",
         }
-
         file_extension = splitext(location)[1].replace(".", "")
         try:
             self.export_functions[file_extension](Path(location), saving)
@@ -1094,6 +1097,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # deactivate checking
         self.checking = False
         self.gui_structure.loaded = False
+        self.default_path = Path(filename[0]).parent
         # open file and set data
         self._load_from_data(filename[0], append=True)
         # activate checking
@@ -1124,6 +1128,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if filename == MainWindow.filename_default or not filename[0]:
             return
         self.filename = filename
+        self.default_path = Path(filename[0]).parent
         # load selected data
         self.fun_load_known_filename()
 
@@ -1168,6 +1173,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # break function if no file is selected
         if filename == MainWindow.filename_default or not filename[0]:
             return
+        self.default_path = Path(filename[0]).parent
         self.filename = filename if splitext(filename[0])[1].replace(".", "") == globs.FILE_EXTENSION else self.filename
         self.fun_save(filename)  # save data under a new filename
 
