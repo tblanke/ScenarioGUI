@@ -25,46 +25,6 @@ if TYPE_CHECKING:  # pragma: no cover
         list_of_options: list[Option]
 
 
-class CustomToolTip(QtW.QWidget):
-    def __init__(self, text):
-        super().__init__()
-        self.setWindowFlags(QtC.Qt.ToolTip | QtC.Qt.FramelessWindowHint)
-        self.setAutoFillBackground(True)
-
-        layout = QtW.QVBoxLayout()
-        self.label = QtW.QLabel(text)
-        set_default_font(self.label)
-        layout.addWidget(self.label)
-        layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(layout)
-        self.setStyleSheet(f"color: {globs.WHITE};background-color: {globs.BLACK}; border: 2px solid {globs.LIGHT};")
-
-    def setText(self, text):
-        self.label.setText(text)
-
-
-class Frame(QtW.QFrame):
-    def __init__(self, *args, **kwargs):
-        self.tool_text: str = ""
-        self.tooltip: CustomToolTip | None = None
-        super().__init__(*args, **kwargs)
-
-    def enterEvent(self, event: QtG.QEnterEvent) -> None:
-        if self.tooltip is not None:
-            self.tooltip.move(event.globalPos())
-            self.tooltip.show()
-        super().enterEvent(event)
-
-    def setToolTip(self, text: str) -> None:
-        self.tool_text = text
-        self.tooltip = CustomToolTip(text)
-
-    def leaveEvent(self, event: QtC.QEvent) -> None:
-        if self.tooltip is not None:
-            self.tooltip.hide()
-        super().leaveEvent(event)
-
-
 class Option(QtC.QObject):
     """
     Abstract base class for a gui option.
@@ -95,7 +55,7 @@ class Option(QtC.QObject):
         self.label_text: list[str] = [label] if isinstance(label, str) else label
         self.default_value: bool | int | float | str = default_value
         self.widget: QtW.QWidget | None = None
-        self.frame: Frame = Frame(self.default_parent)
+        self.frame: QtW.QFrame = QtW.QFrame(self.default_parent)
         self.label = QtW.QLabel(self.frame)
         self.linked_options: list[(Option, int)] = []
         self.limit_size: bool = True

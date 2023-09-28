@@ -99,7 +99,7 @@ class BaseUI:
             f"QTabBar::tab:!selected{'{'}background-color:  {globs.DARK};{'}'}"
             f"QTabWidget::pane{'{'}border: 1px solid {globs.WHITE};{'}'}"
             f"QTabWidget::tab-bar{'{'}left: 5px;{'}'}"
-            f"QToolTip{'{'}color: {globs.WHITE};background-color: {globs.BLACK}; border: 2px solid {globs.LIGHT};{'}'}"
+            f"QToolTip{'{'}color:{globs.WHITE};background-color:{globs.BLACK}; border: 2px solid {globs.LIGHT};font: {globs.FONT_SIZE}pt {globs.FONT};{'}'}"
         )
         self.action_new = QtG.QAction(window)
         self.action_new.setObjectName("actionNew")
@@ -391,7 +391,6 @@ class BaseUI:
             f"QMenuBar::item{'{'}background-color: {globs.DARK};{'}'}\n"
             f"QMenuBar::item:pressed{'{'}background-color: {globs.LIGHT};{'}'}\n"
             f"QMenuBar::item:selected{'{'}background-color: {globs.LIGHT};{'}'}\n"
-            f"QToolTip{'{'}color: {globs.WHITE};background-color: {globs.BLACK}; border: 2px solid {globs.LIGHT};{'}'}"
         )
         self.menubar.setNativeMenuBar(True)
         self.menu_file = QtW.QMenu(self.menubar)
