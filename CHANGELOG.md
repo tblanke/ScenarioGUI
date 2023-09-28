@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - Autofill ComboBox (issue 138)
 - Delete scenario, move to next instead of previous (is implemented using MOVE_2_NEXT variable, so it is selectable) (issue 133)
+- Remember last save location (issue 136)
 
 ## [0.3.0.2] - 2023-09-20
 
