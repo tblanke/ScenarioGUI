@@ -64,7 +64,7 @@ class GUI(GuiStructure):
             label="b",
             default_value=100,
             minimal_value=0,
-            maximal_value=1000,
+            maximal_value=100_000,
             decimal_number=2,
             category=self.sub_category,
         )
