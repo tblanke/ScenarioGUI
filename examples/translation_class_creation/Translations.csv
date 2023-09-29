@@ -81,4 +81,4 @@ option_figure_background;Figure background color in rgb code?;Hintergrundfarbe i
 category_default_figure_settings;Default figure settings;Standarddiagrammeinstellungen
 option_font_size;Font Size:;Schriftgröße:
 default_figure_colors;Should the default colors be used?, No , Yes ;Sollen die Standardeinstellungen für die Farben verwendet werden?, Nein , Ja 
-
+float_b_tooltip;This is an explanation@for the value b;Dies ist eine Erklärung@für den Wert b

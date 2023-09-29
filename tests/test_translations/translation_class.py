@@ -80,6 +80,7 @@ class Translations:  # pragma: no cover
         "option_figure_background",
         "category_default_figure_settings",
         "default_figure_colors",
+        "float_b_tooltip",
         "languages",
     )
 
@@ -180,3 +181,4 @@ class Translations:  # pragma: no cover
             "Should the default colors be used?, No , Yes ",
             "Sollen die Standardeinstellungen für die Farben verwendet werden?, Nein , Ja",
         ]
+        self.float_b_tooltip: list[str] = ["This is an explanation@for the value b", "Dies ist eine Erklärung@für den Wert b"]

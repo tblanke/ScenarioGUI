@@ -79,3 +79,4 @@ option_plot_background;Plot background color in rgb code?;Diagrammbereichsfarbe 
 option_figure_background;Figure background color in rgb code?;Hintergrundfarbe in rgb code?
 category_default_figure_settings;Default figure settings;Standarddiagrammeinstellungen
 default_figure_colors;Should the default colors be used?, No , Yes ;Sollen die Standardeinstellungen für die Farben verwendet werden?, Nein , Ja
+float_b_tooltip;This is an explanation@for the value b;Dies ist eine Erklärung@für den Wert b

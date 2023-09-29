@@ -69,13 +69,14 @@ class GUI(GuiStructure):  # pragma: no cover
         self.sub_category = els.Subcategory("Subcategory", self.category_inputs)
 
         self.float_b = els.FloatBox(
-            label="b",
+            label=["b", "b"],
             default_value=100,
             minimal_value=0,
             maximal_value=1000,
             decimal_number=2,
             category=self.sub_category,
         )
+        self.float_b.set_tool_tip(self.translations.float_b_tooltip)
 
         self.list_box = els.ListBox(
             label="List box",

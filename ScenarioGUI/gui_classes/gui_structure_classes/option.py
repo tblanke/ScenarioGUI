@@ -64,6 +64,7 @@ class Option(QtC.QObject):
         self.visibilityChanged: Signal = Signal()
         self.valueChanged: Signal = Signal()
         self.conditional_visibility: bool = False
+        self.tool_tip: list[str] = []
 
     @abc.abstractmethod
     def get_value(self) -> bool | int | float | str:
@@ -101,7 +102,12 @@ class Option(QtC.QObject):
             True if the option value is valid
         """
 
-    def set_tool_tip(self, tool_tip: str):
+    def set_tool_tip(self, tool_tip: str | list[str]):
+        self.tool_tip = tool_tip if isinstance(tool_tip, list) else [tool_tip]
+        self.tool_tip = [tt.replace("@", "\n") for tt in self.tool_tip]
+        self._set_tool_tip(self.tool_tip[0])
+
+    def _set_tool_tip(self, tool_tip: str):
         self.frame.setToolTip(tool_tip)
 
     def check_value_if_hidden(self, un_hidden_value: bool, hidden_value: bool) -> bool:
@@ -392,6 +398,8 @@ class Option(QtC.QObject):
         None
         """
         self.set_text(self.label_text[idx])
+        if idx < len(self.tool_tip):
+            self._set_tool_tip(self.tool_tip[idx])
 
     def __repr__(self):
         return f"{type(self).__name__}; Label: {self.label_text[0]}; Value: {self.get_value()}"
