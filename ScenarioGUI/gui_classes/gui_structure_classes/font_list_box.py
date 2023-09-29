@@ -61,7 +61,7 @@ class FontListBox(ListBox):
 
         Gives:
 
-        .. figure:: _static/Example_List_Box.PNG
+        .. figure:: _static/Example_FontListBox.PNG
 
         """
         Option.__init__(self, label, default_index, category)
