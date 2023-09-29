@@ -126,6 +126,17 @@ class GUI(GuiStructure):
             units=[("kW", 1), ("W", 0.001), ("MW", 1_000)],
         )
         self.float_units.activate_scale_decimals()
+
+        self.category_monthly = els.Category(label="Monthly loads", page = self.page_inputs)
+        self.matrix = els.MatrixBox(label=self.translations.matrix,
+                                    default_value=[[0,1,2,3], [0,1,2,3],[0,1,2,3]],
+                                    category=self.category_monthly,
+                                    row=3,
+                                    column=4,
+                                    minimal_value=0,
+                                    maximal_value=1000_000,
+                                    decimal_number=[[3,3,0,0], [3,3,0,0], [3,3,0,0]])
+        self.matrix.limit_size = True
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
         self.filename = FileNameBox(label="Filename", default_value=file, category=self.category_inputs, dialog_text="Hello", error_text="no file found")
