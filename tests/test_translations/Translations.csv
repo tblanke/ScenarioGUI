@@ -79,3 +79,4 @@ option_plot_background;Plot background color in rgb code?;Diagrammbereichsfarbe 
 option_figure_background;Figure background color in rgb code?;Hintergrundfarbe in rgb code?
 category_default_figure_settings;Default figure settings;Standarddiagrammeinstellungen
 default_figure_colors;Should the default colors be used?, No , Yes ;Sollen die Standardeinstellungen für die Farben verwendet werden?, Nein , Ja
+matrix;Heating peak [kW],Cooling peak [kW],Heating load [kWh],Cooling load [kWh],January,February,March;Heizungspeak [kW],Kühlungspeak [kW],Heizlast [kWh],Kühllast [kWh],Januar,Februar,März

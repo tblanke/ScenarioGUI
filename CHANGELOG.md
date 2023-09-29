@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Autofill ComboBox (issue 138)
 - Delete scenario, move to next instead of previous (is implemented using MOVE_2_NEXT variable, so it is selectable) (issue 133)
 - Remember last save location (issue 136)
+- Create a grid layout / matrix box as option (issue 102)
+- Move within this matrix box with the arrows (issue 101)
 
 ## Fixed
 - Change_scenario is not working properly (issue 131)
