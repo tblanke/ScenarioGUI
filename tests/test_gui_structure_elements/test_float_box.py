@@ -57,29 +57,47 @@ def test_float_box(qtbot):
     assert not main_window.gui_structure.int_a.is_hidden()
     float_b.widget.setLocale(QtC.QLocale(QtC.QLocale.German, QtC.QLocale.Germany))
     # test validation
+    res = float_b.widget.validate("100,02", 7)
+    assert np.isclose(float(res[1].replace(",", ".")), 100.02)
+    assert res[2] == 7
     res = float_b.widget.validate("100,020", 5)
     assert np.isclose(float(res[1].replace(",", ".")), 100.02)
+    assert res[2] == 5
     res = float_b.widget.validate("10.000,020", 8)
     assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 10_000.02)
+    assert res[2] == 8
+    res = float_b.widget.validate("10.000,00", 4)
+    assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 10_000)
+    assert res[2] == 4
     res = float_b.widget.validate("103.000,20", 3)
     assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 10_300.02)
-    res = float_b.widget.validate(",20", 3)
+    assert res[2] == 4
+    res = float_b.widget.validate("103.000", 7)
+    assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 10_300)
+    assert res[2] == 8
+    res = float_b.widget.validate(",20", 0)
     assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 0.2)
-    #assert float_b.widget.lineEdit().cursorPosition() == 4
+    assert res[2] == 0
     res = float_b.widget.validate("10.0003,20", 7)
     assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 10_000.32)
+    assert res[2] == 8
     res = float_b.widget.validate("10002,0", 5)
     assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 10002)
+    assert res[2] == 5
     # test validation
     float_b.widget.setLocale(QtC.QLocale(QtC.QLocale.English, QtC.QLocale.UnitedStates))
     res = float_b.widget.validate("10,0003.20", 7)
     assert np.isclose(float(res[1].replace(",", "")), 10_000.32)
+    assert res[2] == 8
     res = float_b.widget.validate(".20", 3)
     assert np.isclose(float(res[1]), 0.2)
+    assert res[2] == 3
     res = float_b.widget.validate("100.020", 5)
     assert np.isclose(float(res[1]), 100.02)
+    assert res[2] == 5
     res = float_b.widget.validate("10002.0", 5)
     assert np.isclose(float(res[1].replace(",", "")), 10002)
+    assert res[2] == 5
     float_b.widget.setLocale(QtC.QLocale(QtC.QLocale.German, QtC.QLocale.Germany))
     # test set text
     main_window.gui_structure.float_b.set_text("Hello")

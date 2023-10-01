@@ -355,7 +355,7 @@ class MatrixBox(Option):
                     f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};' f'border: 1px solid {globs.WHITE};{"}"}'
                 )
                 widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
-                widget.setProperty("showGroupSeparator", True)
+                widget.setGroupSeparatorShown(True)
                 widget.setMinimum(self.minimal_value[row][column])
                 widget.setMaximum(self.maximal_value[row][column])
                 widget.setDecimals(self.decimal_number[row][column])
