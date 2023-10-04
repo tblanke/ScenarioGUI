@@ -101,6 +101,15 @@ class GUI(GuiStructure):
             category=self.sub_category,
         )
 
+        self.negative_float = els.FloatBox(
+            label="negative_float",
+            default_value=-1000,
+            minimal_value=-100_000,
+            maximal_value=-100,
+            decimal_number=2,
+            category=self.sub_category,
+        )
+
         self.int_units = els.IntBoxWithUnits(
             label="IntBoxWithUnits",
             default_value=2,

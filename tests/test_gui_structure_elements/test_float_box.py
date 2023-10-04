@@ -19,6 +19,7 @@ def test_float_box(qtbot):
     # init gui window
     main_window = start_tests(qtbot)
     float_b = main_window.gui_structure.float_b
+    negative_float = main_window.gui_structure.negative_float
     assert np.isclose(float_b.get_value(), float_b.default_value)
     float_b.set_value(float_b.default_value + 50)
     assert np.isclose(float_b.default_value + 50, float_b.get_value())
@@ -84,6 +85,21 @@ def test_float_box(qtbot):
     res = float_b.widget.validate("10002,0", 5)
     assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 10002)
     assert res[2] == 5
+    res = negative_float.widget.validate("-20000,20", 5)
+    assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), -20_000.20)
+    assert res[2] == 5
+    res = negative_float.widget.validate("-212.000,20", 4)
+    assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), -21_200.02)
+    assert res[2] == 5
+    res = negative_float.widget.validate("-21.000,230", 10)
+    assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), -21_000.23)
+    assert res[2] == 10
+    res = negative_float.widget.validate("-21.000,230", 9)
+    assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), -21_000.23)
+    assert res[2] == 9
+    res = negative_float.widget.validate("-21.0002,23", 8)
+    assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), -21_000.22)
+    assert res[2] == 9
     # test validation
     float_b.widget.setLocale(QtC.QLocale(QtC.QLocale.English, QtC.QLocale.UnitedStates))
     res = float_b.widget.validate("10,0003.20", 7)

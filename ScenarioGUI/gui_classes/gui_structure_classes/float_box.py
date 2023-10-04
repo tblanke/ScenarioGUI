@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW  # type: ignore
+import numpy as np
 
 import ScenarioGUI.global_settings as globs
 
@@ -64,14 +65,13 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
         if nb_of_decimals > self.decimals() and pos != nb_of_chars + 1:
             float_str = float_str[:-1]
         # move values if the current one is above the maximum
-        bigger_as_max: bool = False
-        if self.maximum() > 0:
+        limit_reached: bool = False
+        if self.maximum() > 1:
             float_str = float_str.replace(sep_sign, "")
             strings = float_str.split(decimal_sign)
-            if strings[0] == "":
-                strings[0] = "0"
-            if float(strings[0]) > self.maximum():
-                bigger_as_max = True
+            strings[0] = "0" if strings[0] == "" else strings[0]
+            limit_reached = float(strings[0]) > self.maximum()
+            if limit_reached:
                 float_str = f"{strings[0][:-1]}{decimal_sign}{strings[0][-1]}{strings[1][:-1]}" if len(strings) > 0 else strings[:-1]
             if has_sep:
                 dec_idx = float_str.index(decimal_sign) if self.decimals() > 0 and float_str.index(decimal_sign) > 2 else 0
@@ -84,7 +84,25 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
                         result_string = sep_sign + result_string  # Insert the symbol
                     result_string = char + result_string  # Add the character
                 float_str = result_string + float_str[dec_idx:]
-        pos = (pos + 1) if bigger_as_max and is_number and float_str[pos-1] in [sep_sign, decimal_sign] else pos
+        elif self.minimum() < -1:
+            float_str = float_str.replace(sep_sign, "")
+            strings = float_str.split(decimal_sign)
+            strings[0] = "0" if strings[0] == "" else strings[0]
+            limit_reached = float(strings[0]) < self.minimum()
+            if limit_reached:
+                float_str = f"{strings[0][:-1]}{decimal_sign}{strings[0][-1]}{strings[1][:-1]}" if len(strings) > 0 else strings[:-1]
+            if has_sep:
+                dec_idx = float_str.index(decimal_sign) if self.decimals() > 0 and float_str.index(decimal_sign) > 2 else 0
+                # Initialize an empty result string
+                result_string = ""
+                # Iterate through the original string in reverse
+                for i, char in enumerate(reversed(float_str[: dec_idx])):
+                    # Check if it's time to insert the symbol
+                    if i > 0 and i % 3 == 0:
+                        result_string = sep_sign + result_string  # Insert the symbol
+                    result_string = char + result_string  # Add the character
+                float_str = result_string + float_str[dec_idx:]
+        pos = (pos + 1) if limit_reached and is_number and float_str[pos-1] in [sep_sign, decimal_sign] else pos
         return QtW.QDoubleSpinBox.validate(self, float_str, pos)
 
 
