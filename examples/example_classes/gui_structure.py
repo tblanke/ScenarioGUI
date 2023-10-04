@@ -114,6 +114,15 @@ class GUI(GuiStructure):  # pragma: no cover
             category=self.sub_category,
         )
 
+        self.negative_float = els.FloatBox(
+            label="negative_float",
+            default_value=-1000,
+            minimal_value=-100_000,
+            maximal_value=-100,
+            decimal_number=2,
+            category=self.sub_category,
+        )
+
         self.list_box = els.ListBox(
             label="List box",
             default_index=0,
