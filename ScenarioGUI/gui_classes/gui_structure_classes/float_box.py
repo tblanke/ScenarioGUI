@@ -66,29 +66,11 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
             float_str = float_str[:-1]
         # move values if the current one is above the maximum
         limit_reached: bool = False
-        if self.maximum() > 1:
+        if self.maximum() > 1 or self.minimum() < -1:
             float_str = float_str.replace(sep_sign, "")
             strings = float_str.split(decimal_sign)
             strings[0] = "0" if strings[0] == "" else strings[0]
-            limit_reached = float(strings[0]) > self.maximum()
-            if limit_reached:
-                float_str = f"{strings[0][:-1]}{decimal_sign}{strings[0][-1]}{strings[1][:-1]}" if len(strings) > 0 else strings[:-1]
-            if has_sep:
-                dec_idx = float_str.index(decimal_sign) if self.decimals() > 0 and float_str.index(decimal_sign) > 2 else 0
-                # Initialize an empty result string
-                result_string = ""
-                # Iterate through the original string in reverse
-                for i, char in enumerate(reversed(float_str[: dec_idx])):
-                    # Check if it's time to insert the symbol
-                    if i > 0 and i % 3 == 0:
-                        result_string = sep_sign + result_string  # Insert the symbol
-                    result_string = char + result_string  # Add the character
-                float_str = result_string + float_str[dec_idx:]
-        elif self.minimum() < -1:
-            float_str = float_str.replace(sep_sign, "")
-            strings = float_str.split(decimal_sign)
-            strings[0] = "0" if strings[0] == "" else strings[0]
-            limit_reached = float(strings[0]) < self.minimum()
+            limit_reached = float(strings[0]) > self.maximum() or float(strings[0]) < self.minimum()
             if limit_reached:
                 float_str = f"{strings[0][:-1]}{decimal_sign}{strings[0][-1]}{strings[1][:-1]}" if len(strings) > 0 else strings[:-1]
             if has_sep:
