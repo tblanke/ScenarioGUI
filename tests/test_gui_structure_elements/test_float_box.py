@@ -85,6 +85,7 @@ def test_float_box(qtbot):
     res = float_b.widget.validate("10002,0", 5)
     assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 10002)
     assert res[2] == 5
+    negative_float.widget.setLocale(QtC.QLocale(QtC.QLocale.German, QtC.QLocale.Germany))
     res = negative_float.widget.validate("-20000,20", 5)
     assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), -20_000.20)
     assert res[2] == 5
