@@ -24,13 +24,14 @@ def test_results_text(qtbot):
             main_window.gui_structure.float_b.create_function_2_check_linked_value((main_window.gui_structure.float_b.get_value()+1, None)),
         ],
     )
-
+    main_window.gui_structure.float_b.valueChanged.emit()
     # calc sum from gui
     main_window.save_scenario()
     main_window.start_current_scenario_calculation()
     thread = main_window.threads[-1]
     thread.run()
     assert thread.calculated
+    main_window.gui_structure.page_result.button.click()
     assert main_window.list_ds[main_window.list_widget_scenario.currentRow()].results is not None
     assert main_window.gui_structure.result_text_add2.is_hidden()
     assert not main_window.gui_structure.result_text_add3.is_hidden()

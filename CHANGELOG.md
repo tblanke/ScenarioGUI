@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## Fixed
 - Change_scenario is not working properly (issue 131)
 - Autosave keeps * (issue 144)
+- Start with one scenario (issue 145)
 
 ## [0.3.0.2] - 2023-09-20
 

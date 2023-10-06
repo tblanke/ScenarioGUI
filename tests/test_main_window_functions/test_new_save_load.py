@@ -21,7 +21,6 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     """
     # init gui window
     main_window = start_tests(qtbot)
-    main_window.add_scenario()
     main_window.gui_structure.float_b.set_value(1.1)
     main_window.gui_structure.int_a.set_value(10)
     main_window.gui_structure.list_small_2.set_value(2)
@@ -131,7 +130,7 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     )
     main_window.action_new.trigger()
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (filename_3, f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
-    assert len(main_window.list_ds) < 1
+    assert len(main_window.list_ds) == 1
     main_window.filename = (f"filename_1.{global_vars.FILE_EXTENSION}", filename_1)
     main_window.fun_load_known_filename()
     assert main_window.status_bar.label.text() == main_window.translations.no_file_selected[0]

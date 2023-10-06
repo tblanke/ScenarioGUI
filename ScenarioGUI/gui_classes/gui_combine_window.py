@@ -469,10 +469,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         getattr(d_s.results, result_export.export_function)(filename[0])
 
     def change_figure_option(self):
-        item = self.list_widget_scenario.currentItem()
-        if item is None:
-            return
-        d_s = item.data(MainWindow.role)
+        d_s = self.list_widget_scenario.currentItem().data(MainWindow.role)
         for option, name in [(opt, name) for opt, name in self.gui_structure.list_of_options if isinstance(opt, FigureOption)]:
             setattr(d_s, name, option.get_value())
         self.remove_previous_calculated_results()
@@ -486,8 +483,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        if self.list_widget_scenario.count() < 1:
-            return
         ds = self.list_widget_scenario.currentItem().data(MainWindow.role)
         if ds.results is None:
             return
@@ -574,8 +569,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.change_window_title()
         # get current index of scenario
         item = self.list_widget_scenario.currentItem()
-        if item is None:
-            return
         # remove results object
         item.data(MainWindow.role).close_figures()
         item.data(MainWindow.role).results = None
@@ -774,10 +767,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # get current item
         item = self.list_widget_scenario.currentItem()
-        # return if no scenarios exits
-        if item is None:
-            return
-
         # get first item if no one is selected
         item = self.list_widget_scenario.item(0) if item is None else item
         if name:
@@ -963,6 +952,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             return
         # change language to english
         self.change_language()
+        # add a first scenario
+        self.add_scenario()
         # show message that no backup file is found
         globs.LOGGER.error(self.translations.no_backup_file[self.gui_structure.option_language.get_value()[0]])
 
@@ -974,10 +965,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        # append scenario if no scenario is in list
-        if self.list_widget_scenario.count() < 1:
-            self.add_scenario()
-
         func = ft_partial(self._save_to_data, self.backup_file)
         self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
         self._saving_threads_update()
@@ -1233,7 +1220,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.filename = MainWindow.filename_default  # reset filename
         if self.fun_save():  # get and save filename
             self.list_widget_scenario.clear()  # clear list widget with scenario list
+            self.add_scenario()
             self.display_results()  # clear the results page
+            self.fun_save()
 
     def _always_scenario_selected(self) -> None:
         """
@@ -1307,10 +1296,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # get selected scenario index
         item = self.list_widget_scenario.currentItem()
         # if no scenario exists create a new one else save DataStorage with new inputs in list of scenarios
-        if item is None:
-            self.add_scenario()
-            item = self.list_widget_scenario.currentItem()
-        elif item.data(MainWindow.role).results is None:  # do not overwrite any results
+        if item.data(MainWindow.role).results is None:  # do not overwrite any results
             item.data(MainWindow.role).close_figures()
             item.setData(MainWindow.role, DataStorage(self.gui_structure))
         # remove * from scenario if not Auto save is checked and if the last char is a *
@@ -1544,10 +1530,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 cat.show(results=True)
             # make sure all the results are being shown
             self.gui_structure.cat_no_results.hide()
-
-        if self.list_widget_scenario.count() < 1:
-            hide_no_result(True)
-            return
 
         # get Datastorage of selected scenario
         ds: DataStorage = self.list_widget_scenario.currentItem().data(MainWindow.role)

@@ -22,7 +22,6 @@ def test_add_scenarios_2_currents(qtbot):  # noqa: PLR0915
     # init gui window
     main_window = start_tests(qtbot)
     main_window.activate_load_as_new_scenarios()
-    main_window.add_scenario()
     main_window.gui_structure.aim_add.widget.click()
     main_window.gui_structure.float_b.set_value(1.1)
     main_window.gui_structure.int_a.set_value(10)
