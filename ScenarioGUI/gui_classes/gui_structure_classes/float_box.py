@@ -47,7 +47,7 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
         -------
             object
         """
-        # position is index +1 in input
+        # get sign and decimal symbols
         decimal_sign = self.locale().decimalPoint()
         sep_sign = self.locale().groupSeparator()
         has_sep = sep_sign in float_str
@@ -70,7 +70,9 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
             float_str = float_str.replace(sep_sign, "")
             strings = float_str.split(decimal_sign)
             strings[0] = "0" if strings[0] == "" else strings[0]
-            limit_reached = float(strings[0]) > self.maximum() or float(strings[0]) < self.minimum()
+            strings[0] = "-0" if strings[0] == "-" else strings[0]
+            new_float_str = f"{strings[0]}.{strings[1]}" if len(strings) > 1 else strings[0]
+            limit_reached = (float(new_float_str) > self.maximum() and float(new_float_str) > 0) or float(new_float_str) < self.minimum()
             if limit_reached:
                 float_str = f"{strings[0][:-1]}{decimal_sign}{strings[0][-1]}{strings[1][:-1]}" if len(strings) > 0 else strings[:-1]
             if has_sep:
