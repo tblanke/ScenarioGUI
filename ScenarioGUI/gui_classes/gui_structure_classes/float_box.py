@@ -51,6 +51,7 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
         decimal_sign = self.locale().decimalPoint()
         sep_sign = self.locale().groupSeparator()
         has_sep = sep_sign in float_str
+        len_bef = float_str[:pos].count(sep_sign)
         if pos > len(float_str) or float_str == "":
             return QtW.QDoubleSpinBox.validate(self, float_str, pos)
         is_number = not (float_str[pos-1] in [sep_sign, decimal_sign])
@@ -91,7 +92,9 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
                 float_str = result_string + float_str[dec_idx:]
                 if minus:
                     float_str = f"-{float_str}"
-        pos = (pos + 1) if limit_reached and is_number and float_str[pos-1] in [sep_sign, decimal_sign] else pos
+        pos = (pos + 1) if limit_reached and is_number and float_str[pos-1] == decimal_sign else pos
+        pos = (pos + 1) if len_bef < float_str[:pos].count(sep_sign) else pos
+        pos = (pos - 1) if len_bef > float_str[:pos].count(sep_sign) else pos
         return QtW.QDoubleSpinBox.validate(self, float_str, pos)
 
 
