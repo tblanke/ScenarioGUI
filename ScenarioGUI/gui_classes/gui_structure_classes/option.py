@@ -309,7 +309,8 @@ class Option(QtC.QObject):
     @abc.abstractmethod
     def check_linked_value(
         self,
-        value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | tuple[Iterable[int] | None, Iterable[int] | None] | str | bool,
+        value: int | tuple[int | None, int | None] | tuple[float | None, float | None] | tuple[Iterable[int] | None, Iterable[int] | None] | tuple[list[list[
+            float]] | None, list[list[float]] | None] | str | bool,
         value_if_hidden: bool | None = None,
     ) -> bool:
         """
@@ -380,6 +381,10 @@ class Option(QtC.QObject):
             change_font_size(self.label, size, False)
         if isinstance(self.widget, list):
             for widget in self.widget:
+                if isinstance(widget, list):
+                    for wid in widget:
+                        change_font_size(wid, size, True)
+                    continue
                 change_font_size(widget, size, True)
             return
         change_font_size(self.widget, size, True)

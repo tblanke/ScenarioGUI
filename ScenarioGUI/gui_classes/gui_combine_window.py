@@ -58,6 +58,7 @@ class JsonDict(TypedDict, total=True):
     version: str
     values: list[dict]
     results: list[dict]
+    default_path: str
 
 
 def normal_export(file_path: Path, data: JsonDict):
@@ -114,6 +115,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
     button_height: int = 75
     icon_size_small: int = 24
     icon_size_large: int = 48
+    MOVE_2_NEXT: bool = True  # move to the next instead of the previous scenario if a scenario is deleted
 
     def __init__(  # noqa: PLR0913
         self,
@@ -1004,15 +1006,17 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         file_extension = splitext(location)[1].replace(".", "")
         func = self.import_functions[file_extension]
         try:
-            saving = func(Path(location))
+            saving: JsonDict = func(Path(location))
         except FileNotFoundError:
             globs.LOGGER.error(self.translations.no_file_selected[self.gui_structure.option_language.get_value()[0]])
             return
         if saving["version"] in self.version_import_functions:
-            saving = self.version_import_functions[saving["version"]](saving)
+            saving: JsonDict = self.version_import_functions[saving["version"]](saving)
         # set and change the window title
         if not append:
             self.filename = tuple(saving["filename"])  # type: ignore
+            if "default_path" in saving:
+                self.default_path = Path(saving["default_path"])  # type: ignore
             self.change_window_title()
             self.list_widget_scenario.clear()
         else:
@@ -1058,8 +1062,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             "version": globs.VERSION,
             "values": [d_s.to_dict() for d_s in list_ds],
             "results": [d_s.results.to_dict() if d_s.results is not None else None for d_s in list_ds],
+            "default_path": f"{self.default_path}",
         }
-
         file_extension = splitext(location)[1].replace(".", "")
         try:
             self.export_functions[file_extension](Path(location), saving)
@@ -1094,6 +1098,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # deactivate checking
         self.checking = False
         self.gui_structure.loaded = False
+        self.default_path = Path(filename[0]).parent
         # open file and set data
         self._load_from_data(filename[0], append=True)
         # activate checking
@@ -1124,6 +1129,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if filename == MainWindow.filename_default or not filename[0]:
             return
         self.filename = filename
+        self.default_path = Path(filename[0]).parent
         # load selected data
         self.fun_load_known_filename()
 
@@ -1168,6 +1174,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # break function if no file is selected
         if filename == MainWindow.filename_default or not filename[0]:
             return
+        self.default_path = Path(filename[0]).parent
         self.filename = filename if splitext(filename[0])[1].replace(".", "") == globs.FILE_EXTENSION else self.filename
         self.fun_save(filename)  # save data under a new filename
 
@@ -1249,6 +1256,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
+        if self.list_widget_scenario.currentRow() != idx:
+            self.list_widget_scenario.setCurrentRow(idx)
+            return
         # if i no scenario is selected (idx < 0) or no scenario exists break function
         item = self.list_widget_scenario.item(idx)
         # get selected Datastorage from list
@@ -1314,7 +1324,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        if self.list_widget_scenario.count() < 2:  # noqa: PLR2004
+        number_of_scenarios = self.list_widget_scenario.count()
+        if number_of_scenarios < 2:  # noqa: PLR2004
             return
         # get current scenario index
         item = self.list_widget_scenario.currentItem()
@@ -1323,9 +1334,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         idx = self.list_widget_scenario.row(item)
         # delete scenario form list widget
         self.list_widget_scenario.takeItem(idx)
-        # select previous scenario then the deleted one but at least the first one
+        # select next scenario
+        if self.MOVE_2_NEXT:
+            self.list_widget_scenario.setCurrentRow(min(idx, number_of_scenarios - 2))
+            return
+        # select previous scenario
         self.list_widget_scenario.setCurrentRow(max(idx - 1, 0))
-        self.change_scenario(max(idx - 1, 0))
 
     def add_scenario(self) -> None:
         """

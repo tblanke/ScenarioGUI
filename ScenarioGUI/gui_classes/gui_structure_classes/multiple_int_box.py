@@ -71,7 +71,7 @@ class MultipleIntBox(Option):
 
         Gives:
 
-        .. figure:: _static/Example_Int_Box.PNG
+        .. figure:: _static/Example_MultipleIntBox.PNG
 
         """
         super().__init__(label, default_value, category)

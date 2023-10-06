@@ -98,4 +98,8 @@ def test_change_scenario(qtbot):  # noqa: PLR0915
     main_window.scenario_is_changed(main_window.list_widget_scenario.item(1), main_window.list_widget_scenario.item(1))
     assert isclose(main_window.list_ds[1].float_b, 3)
     assert isclose(main_window.gui_structure.float_b.get_value(), 3)
+    assert main_window.list_widget_scenario.currentRow() == 1
+    main_window.change_scenario(0)
+    assert main_window.list_widget_scenario.currentRow() == 0
+    assert isclose(main_window.gui_structure.float_b.get_value(), 4)
     close_tests(main_window, qtbot)

@@ -45,7 +45,45 @@ class GUI(GuiStructure):  # pragma: no cover
                 partial(self.int_a.check_linked_value, (None, 5)),
             )
         )
-
+        self.category_monthly = els.Category(label="Monthly loads", page=self.page_inputs)
+        self.matrix = els.MatrixBox(
+            label=self.translations.matrix,
+            # ["Heating peak [kW],Cooling peak [kW],Heating load [kWh],Cooling load [kWh],January,February,March,April,May,June,July,
+            # August,September,October,November,December"],
+            default_value=[
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+            ],
+            category=self.category_monthly,
+            row=12,
+            column=4,
+            minimal_value=0,
+            decimal_number=[
+                [3, 3, 0, 0],
+                [3, 3, 0, 0],
+                [3, 3, 0, 0],
+                [3, 3, 0, 0],
+                [3, 3, 0, 0],
+                [3, 3, 0, 0],
+                [3, 3, 0, 0],
+                [3, 3, 0, 0],
+                [3, 3, 0, 0],
+                [3, 3, 0, 0],
+                [3, 3, 0, 0],
+                [3, 3, 0, 0],
+            ],
+        )
+        self.matrix.limit_size = False
         self.int_units = els.IntBoxWithUnits(
             label="IntBoxWithUnits",
             default_value=2,
@@ -151,9 +189,7 @@ class GUI(GuiStructure):  # pragma: no cover
             category=self.category_inputs,
             password=True,
         )
-        self.show_option_under_multiple_conditions(self.pass_word,
-                                                   self.button_box_short,
-                                                   custom_logic=partial(self.button_box_short.check_linked_value, 0))
+        self.show_option_under_multiple_conditions(self.pass_word, self.button_box_short, custom_logic=partial(self.button_box_short.check_linked_value, 0))
 
         self.flex_option = els.FlexibleAmount(
             label=self.translations.flex_option,
