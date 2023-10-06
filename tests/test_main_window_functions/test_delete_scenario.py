@@ -15,7 +15,6 @@ def test_delete_scenarios(qtbot):
     # init gui window
     main_window = start_tests(qtbot)
     # create two scenarios
-    main_window.add_scenario()
     main_window.gui_structure.float_b.set_value(1)
     main_window.save_scenario()
     main_window.add_scenario()

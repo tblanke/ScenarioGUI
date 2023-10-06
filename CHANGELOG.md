@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Autofill ComboBox (issue 138)
+- Tooltip can now be set (issue 137)
 - Delete scenario, move to next instead of previous (is implemented using MOVE_2_NEXT variable, so it is selectable) (issue 133)
 - Remember last save location (issue 136)
 - Create a grid layout / matrix box as option (issue 102)
@@ -14,6 +15,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Fixed
 - Change_scenario is not working properly (issue 131)
+- Autosave keeps * (issue 144)
+- Start with one scenario (issue 145)
 
 ## [0.3.0.2] - 2023-09-20
 
@@ -22,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed 
 - Version can not be found error (issue 134)
+- Problem with autosaving not saving latest changes before enabling autosaving (issue 146)
 
 ## [0.3.0] - 2023-08-23
 

@@ -6,8 +6,8 @@ from __future__ import annotations
 import abc
 from typing import TYPE_CHECKING, Iterable
 
-import numpy as np
 import PySide6.QtCore as QtC
+import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
@@ -64,6 +64,7 @@ class Option(QtC.QObject):
         self.visibilityChanged: Signal = Signal()
         self.valueChanged: Signal = Signal()
         self.conditional_visibility: bool = False
+        self.tool_tip: list[str] = []
 
     @abc.abstractmethod
     def get_value(self) -> bool | int | float | str:
@@ -100,6 +101,14 @@ class Option(QtC.QObject):
         bool
             True if the option value is valid
         """
+
+    def set_tool_tip(self, tool_tip: str | list[str]):
+        self.tool_tip = tool_tip if isinstance(tool_tip, list) else [tool_tip]
+        self.tool_tip = [tt.replace("@", "\n") for tt in self.tool_tip]
+        self._set_tool_tip(self.tool_tip[0])
+
+    def _set_tool_tip(self, tool_tip: str):
+        self.frame.setToolTip(tool_tip)
 
     def check_value_if_hidden(self, un_hidden_value: bool, hidden_value: bool) -> bool:
         hidden_value = self.value_if_hidden if hidden_value is None else hidden_value
@@ -242,7 +251,7 @@ class Option(QtC.QObject):
         self.frame.setParent(frame)
         self.frame.setFrameShape(QtW.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtW.QFrame.Raised)
-        self.frame.setStyleSheet("QFrame {\n" f"	border: 0px solid {globs.WHITE};\n" "	border-radius: 0px;\n" "  }\n")
+        self.frame.setStyleSheet("QFrame{\n" f" border: 0px solid {globs.WHITE};\n" f"	border-radius: 0px;\n{'}'}")
         layout = QtW.QHBoxLayout(self.frame)
         layout.setSpacing(6)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -394,6 +403,8 @@ class Option(QtC.QObject):
         None
         """
         self.set_text(self.label_text[idx])
+        if idx < len(self.tool_tip):
+            self._set_tool_tip(self.tool_tip[idx])
 
     def __repr__(self):
         return f"{type(self).__name__}; Label: {self.label_text[0]}; Value: {self.get_value()}"

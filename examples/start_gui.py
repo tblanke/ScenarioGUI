@@ -55,7 +55,7 @@ def run(path_list=None):  # pragma: no cover
             dump(data, file, indent=1)
 
     def import_txt(file_path: Path) -> JsonDict:
-        # write data to back up file
+        # read data from file
         with open(file_path) as file:
             data = load(file)
         return data

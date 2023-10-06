@@ -80,5 +80,6 @@ option_plot_background;Plot background color in rgb code?;Diagrammbereichsfarbe 
 option_figure_background;Figure background color in rgb code?;Hintergrundfarbe in rgb code?
 category_default_figure_settings;Default figure settings;Standarddiagrammeinstellungen
 option_font_size;Font Size:;Schriftgröße:
-default_figure_colors;Should the default colors be used?, No , Yes ;Sollen die Standardeinstellungen für die Farben verwendet werden?, Nein , Ja 
+default_figure_colors;Should the default colors be used?, No , Yes ;Sollen die Standardeinstellungen für die Farben verwendet werden?, Nein , Ja
+float_b_tooltip;This is an explanation@for the value b;Dies ist eine Erklärung@für den Wert b
 matrix;Heating peak [kW],Cooling peak [kW],Heating load [kWh],Cooling load [kWh],January,February,March,April,May,June,July,August,September,October,November,December;Heizungspeak [kW],Kühlungspeak [kW],Heizlast [kWh],Kühllast [kWh],Januar,Februar,März,April,Mai,Juni,Juli,August,September,Oktober,November,Dezember

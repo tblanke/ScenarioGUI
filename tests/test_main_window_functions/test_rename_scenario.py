@@ -16,7 +16,6 @@ def test_rename_scenario(qtbot):  # noqa: PLR0915
     # init gui window
     main_window = start_tests(qtbot)
     main_window.fun_rename_scenario("name")
-    main_window.add_scenario()
     # set scenario names
     scenario_name = "test_name"
     scenario_name_2 = "test_name_2"

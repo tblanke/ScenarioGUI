@@ -37,6 +37,7 @@ class GUI(GuiStructure):  # pragma: no cover
             maximal_value=200,
             category=self.category_inputs,
         )
+        self.int_a.set_tool_tip("This is an explanation\nfor the value a")
         self.int_a.change_event(
             self.disable_aim(
                 self.aim_sub,
@@ -106,7 +107,7 @@ class GUI(GuiStructure):  # pragma: no cover
         self.sub_category = els.Subcategory("Subcategory", self.category_inputs)
 
         self.float_b = els.FloatBox(
-            label="b",
+            label=["b", "b"],
             default_value=100,
             minimal_value=0,
             maximal_value=100_000,
@@ -122,6 +123,7 @@ class GUI(GuiStructure):  # pragma: no cover
             decimal_number=2,
             category=self.sub_category,
         )
+        self.float_b.set_tool_tip(self.translations.float_b_tooltip)
 
         self.list_box = els.ListBox(
             label="List box",

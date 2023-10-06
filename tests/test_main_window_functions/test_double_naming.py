@@ -14,7 +14,6 @@ def test_gui_scenario_double_naming(qtbot):
     main_window = start_tests(qtbot)
     # create two scenarios
     main_window.add_scenario()
-    main_window.add_scenario()
     assert ["Scenario: 1", "Scenario: 2"] == [
         main_window.list_widget_scenario.item(x).text().split("*")[0] for x in range(main_window.list_widget_scenario.count())
     ]
