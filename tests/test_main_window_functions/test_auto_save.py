@@ -49,10 +49,9 @@ def test_auto_save(qtbot):
     assert len(main_window.list_ds) == 1
     assert main_window.list_widget_scenario.count() == 1
 
-    assert main_window.gui_structure.int_a.get_value()  != 10
+    assert main_window.gui_structure.int_a.get_value() != 10
     main_window.gui_structure.int_a.set_value(10)
     assert main_window.list_ds[-1].int_a == 10
-
 
     main_window.gui_structure.option_auto_saving.set_value(0)
     close_tests(main_window, qtbot)
