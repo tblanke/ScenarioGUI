@@ -57,7 +57,6 @@ def test_run_multiple_scenarios_autosaving(qtbot):  # noqa: PLR0915
     gs.option_auto_saving.set_value(1)
 
     main_window.add_scenario()
-    main_window.add_scenario()
     gs.float_b.set_value(102)
     main_window.add_scenario()
     gs.float_b.set_value(104)
