@@ -76,6 +76,9 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
             if limit_reached:
                 float_str = f"{strings[0][:-1]}{decimal_sign}{strings[0][-1]}{strings[1][:-1]}" if len(strings) > 0 else strings[:-1]
             if has_sep:
+                minus = float_str[0] == "-"
+                if minus:
+                    float_str = float_str[1:]
                 dec_idx = float_str.index(decimal_sign) if self.decimals() > 0 and float_str.index(decimal_sign) > 2 else 0
                 # Initialize an empty result string
                 result_string = ""
@@ -86,6 +89,8 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
                         result_string = sep_sign + result_string  # Insert the symbol
                     result_string = char + result_string  # Add the character
                 float_str = result_string + float_str[dec_idx:]
+                if minus:
+                    float_str = f"-{float_str}"
         pos = (pos + 1) if limit_reached and is_number and float_str[pos-1] in [sep_sign, decimal_sign] else pos
         return QtW.QDoubleSpinBox.validate(self, float_str, pos)
 

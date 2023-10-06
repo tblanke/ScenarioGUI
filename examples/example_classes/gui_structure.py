@@ -225,7 +225,7 @@ class GUI(GuiStructure):  # pragma: no cover
             entries=["entry 1", "entry 2", "entry 3"],
         )
         self.hint_flex = els.Hint(
-            hint="wrong length of flexible option",
+            hint=["wrong length of flexible option", "Falscher Wert in flexible option"],
             category=self.category_inputs,
             warning=True,
         )
