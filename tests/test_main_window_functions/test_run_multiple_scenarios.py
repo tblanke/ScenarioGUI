@@ -39,6 +39,7 @@ def test_run_multiple_scenarios_no_autosaving(qtbot):  # noqa: PLR0915
     main_window.change_scenario(2)
     main_window.display_results()
     assert gs.result_text_add.label.text() == "Result: 106.0m"
+    close_tests(main_window, qtbot)
 
 
 def test_run_multiple_scenarios_autosaving(qtbot):  # noqa: PLR0915
@@ -57,7 +58,6 @@ def test_run_multiple_scenarios_autosaving(qtbot):  # noqa: PLR0915
     gs.option_auto_saving.set_value(1)
 
     main_window.add_scenario()
-    main_window.add_scenario()
     gs.float_b.set_value(102)
     main_window.add_scenario()
     gs.float_b.set_value(104)
@@ -69,8 +69,9 @@ def test_run_multiple_scenarios_autosaving(qtbot):  # noqa: PLR0915
     main_window.display_results()
     assert gs.result_text_add.label.text() == "Result: 102.0m"
     main_window.change_scenario(1)
-    main_window.display_results()
+    assert main_window.list_widget_scenario.currentRow() == 1
     assert gs.result_text_add.label.text() == "Result: 104.0m"
     main_window.change_scenario(2)
     main_window.display_results()
     assert gs.result_text_add.label.text() == "Result: 106.0m"
+    close_tests(main_window, qtbot)
