@@ -119,6 +119,9 @@ class GUI(GuiStructure):
             units=[("kW", 1), ("W", 0.001), ("MW", 1_000)],
         )
 
+        self.value_hint = els.ValueHint(["The power is: , kW", "Die Leistung beträgt: , kW"], self.category_inputs, default_value=-2, warning=True)
+        self.int_units.change_event(self.change_hint)
+
         self.int_a.change_event(self.disable_aim(self.aim_sub, self.page_inputs, partial(self.int_a.check_linked_value, (None, 200))))
         self.float_b.change_event(self.disable_aim(self.aim_add, self.page_inputs, partial(self.float_b.check_linked_value, (30, None))))
         self.int_units.change_event(self.disable_aim(self.aim_plot, self.page_inputs, partial(self.int_units.check_linked_value, (None, 20))))
@@ -136,15 +139,17 @@ class GUI(GuiStructure):
         )
         self.float_units.activate_scale_decimals()
 
-        self.category_monthly = els.Category(label="Monthly loads", page = self.page_inputs)
-        self.matrix = els.MatrixBox(label=self.translations.matrix,
-                                    default_value=[[0,1,2,3], [0,1,2,3],[0,1,2,3]],
-                                    category=self.category_monthly,
-                                    row=3,
-                                    column=4,
-                                    minimal_value=0,
-                                    maximal_value=1000_000,
-                                    decimal_number=[[3,3,0,0], [3,3,0,0], [3,3,0,0]])
+        self.category_monthly = els.Category(label="Monthly loads", page=self.page_inputs)
+        self.matrix = els.MatrixBox(
+            label=self.translations.matrix,
+            default_value=[[0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3]],
+            category=self.category_monthly,
+            row=3,
+            column=4,
+            minimal_value=0,
+            maximal_value=1000_000,
+            decimal_number=[[3, 3, 0, 0], [3, 3, 0, 0], [3, 3, 0, 0]],
+        )
         self.matrix.limit_size = True
         folder: Path = Path(__file__).parent
         file = f'{folder.joinpath("./example_data.csv")}'
@@ -162,8 +167,6 @@ class GUI(GuiStructure):
         self.button_box_short = els.ButtonBox(label="b or c?", default_index=0, entries=["b", "c"], category=self.category_inputs)
         self.float_b.change_event(self.disable_button_box(self.button_box_short, 1, partial(self.float_b.check_linked_value, (50, None))))
         self.int_a.change_event(self.disable_button_box(self.button_box_short, 0, partial(self.int_a.check_linked_value, (None, 10))))
-
-
 
         self.list_box = ListBox(
             label="List box",
@@ -240,18 +243,17 @@ class GUI(GuiStructure):
             entries=["0", "1", "2", "3"],
             category=self.category_grid,
         )
+        self.value_hint_small = els.ValueHint(["The power is: , kW", "Die Leistung beträgt: , kW"], self.category_grid, default_value=2)
         self.text_box_small = TextBox(label="", default_text="Example text 15", category=self.category_grid, password=True)
         self.font_style = els.FontListBox(label="Font label", category=self.category_grid, entries=["Arial", "Verdana"], default_index=0)
         self.multiple_ints_small = els.MultipleIntBox(
             label="Multiple int box:", category=self.category_grid, default_value=(1, 2, 3), minimal_value=(1, 1, 1), maximal_value=(100, 110, 120)
         )
-        self.show_option_under_multiple_conditions(self.text_box_small,
-                                                   [self.button_box_short, self.aim_add],
-                                                   functions_check_for_or=[
-                                                       partial(self.button_box_short.check_linked_value, 0),
-                                                       partial(self.aim_add.is_checked)
-                                                   ])
-
+        self.show_option_under_multiple_conditions(
+            self.text_box_small,
+            [self.button_box_short, self.aim_add],
+            functions_check_for_or=[partial(self.button_box_short.check_linked_value, 0), partial(self.aim_add.is_checked)],
+        )
 
         self.text_box_multi_line_small = els.TextBoxMultiLine(label="Example Multi Line", default_text="Hello\nmulti line", category=self.category_grid)
         self.category_grid.activate_graphic_left()
@@ -338,3 +340,6 @@ class GUI(GuiStructure):
 
     def count(self):
         self.counter += 1
+
+    def change_hint(self):
+        self.value_hint.set_text_value(self.int_units.get_value()[0])
