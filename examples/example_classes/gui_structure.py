@@ -103,6 +103,8 @@ class GUI(GuiStructure):  # pragma: no cover
             units=[("kW", 1), ("W", 0.001), ("MW", 1_000)],
         )
         self.float_units.activate_scale_decimals()
+        self.value_hint = els.ValueHint(["The power is: , kW", "Die Leistung beträgt: , kW"], self.category_inputs, default_value=2)
+        self.int_units.change_event(self.change_hint)
 
         self.sub_category = els.Subcategory("Subcategory", self.category_inputs)
 
@@ -267,6 +269,8 @@ class GUI(GuiStructure):  # pragma: no cover
             decimal_number=2,
             category=self.category_grid,
         )
+
+        self.value_hint_small = els.ValueHint(["The power is: , kW", "Die Leistung beträgt: , kW"], self.category_grid, default_value=2)
         self.category_grid.activate_graphic_left()
         self.category_grid.activate_graphic_right()
 
@@ -396,6 +400,9 @@ class GUI(GuiStructure):  # pragma: no cover
         # self.page_result.set_next_page(self.page_settings)
         # self.page_settings.set_previous_page(self.page_result)
 
-    def check(self) -> bool:
+    def check(self) -> None:
         if self.started:
             logging.info("This should not be shown whilst loading")
+
+    def change_hint(self):
+        self.value_hint.set_text_value(self.int_units.get_value()[0])

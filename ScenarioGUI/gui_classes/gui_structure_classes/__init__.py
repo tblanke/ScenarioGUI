@@ -28,6 +28,7 @@ from .subcategory import Subcategory
 from .text_box import TextBox
 from .text_box_multi_line import TextBoxMultiLine
 from .matrix_option import MatrixBox
+from .value_hint import ValueHint
 
 __all__ = [
     "Aim",
@@ -54,4 +55,5 @@ __all__ = [
     "FlexibleAmount",
     "TextBoxMultiLine",
     "MatrixBox",
+    "ValueHint",
 ]
