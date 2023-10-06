@@ -469,10 +469,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         getattr(d_s.results, result_export.export_function)(filename[0])
 
     def change_figure_option(self):
-        item = self.list_widget_scenario.currentItem()
-        if item is None:
-            return
-        d_s = item.data(MainWindow.role)
+        d_s = self.list_widget_scenario.currentItem().data(MainWindow.role)
         for option, name in [(opt, name) for opt, name in self.gui_structure.list_of_options if isinstance(opt, FigureOption)]:
             setattr(d_s, name, option.get_value())
         self.remove_previous_calculated_results()
@@ -486,8 +483,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        if self.list_widget_scenario.count() < 1:
-            return
         ds = self.list_widget_scenario.currentItem().data(MainWindow.role)
         if ds.results is None:
             return
@@ -574,8 +569,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             self.change_window_title()
         # get current index of scenario
         item = self.list_widget_scenario.currentItem()
-        if item is None:
-            return
         # remove results object
         item.data(MainWindow.role).close_figures()
         item.data(MainWindow.role).results = None
@@ -774,10 +767,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         """
         # get current item
         item = self.list_widget_scenario.currentItem()
-        # return if no scenarios exits
-        if item is None:
-            return
-
         # get first item if no one is selected
         item = self.list_widget_scenario.item(0) if item is None else item
         if name:
@@ -1541,10 +1530,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 cat.show(results=True)
             # make sure all the results are being shown
             self.gui_structure.cat_no_results.hide()
-
-        if self.list_widget_scenario.count() < 1:
-            hide_no_result(True)
-            return
 
         # get Datastorage of selected scenario
         ds: DataStorage = self.list_widget_scenario.currentItem().data(MainWindow.role)
