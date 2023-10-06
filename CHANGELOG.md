@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed 
 - Version can not be found error (issue 134)
+- Problem with autosaving not saving latest changes before enabling autosaving (issue 146)
 
 ## [0.3.0] - 2023-08-23
 

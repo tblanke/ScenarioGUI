@@ -426,6 +426,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if self.gui_structure.option_auto_saving.get_value() == 1:
             if self.list_widget_scenario.currentItem().text()[-1] == "*":
                 self.list_widget_scenario.currentItem().setText(self.list_widget_scenario.currentItem().text()[:-1])
+            # save current changes
+            self.save_scenario()
+            # disable button
             self.push_button_save_scenario.hide()
             return
         self.push_button_save_scenario.show()
