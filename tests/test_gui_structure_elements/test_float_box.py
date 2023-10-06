@@ -76,6 +76,9 @@ def test_float_box(qtbot):
     res = float_b.widget.validate("103.000", 7)
     assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 10_300)
     assert res[2] == 8
+    res = float_b.widget.validate("10.300", 5)
+    assert res[1] == "10.300"
+    assert res[2] == 5
     res = float_b.widget.validate(",20", 0)
     assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 0.2)
     assert res[2] == 0
