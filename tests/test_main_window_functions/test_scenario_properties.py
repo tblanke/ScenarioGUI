@@ -13,8 +13,8 @@ def test_gui_scenario_properties(qtbot):
     # init gui window
     main_window = start_tests(qtbot)
     # check if at start no scenario exists
-    assert len(main_window.list_ds) == 0
-    assert main_window.list_widget_scenario.count() == 0
+    assert len(main_window.list_ds) == 1
+    assert main_window.list_widget_scenario.count() == 1
     # check if saving of a scenario if an empty list create one
     main_window.save_scenario()
     assert len(main_window.list_ds) == 1

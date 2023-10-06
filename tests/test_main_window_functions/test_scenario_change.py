@@ -18,7 +18,6 @@ def test_change_scenario(qtbot):  # noqa: PLR0915
     # init gui window
     main_window = start_tests(qtbot)
     # add two scenarios and set different conductivity
-    main_window.add_scenario()
     main_window.gui_structure.float_b.set_value(2.1)
     main_window.save_scenario()
     main_window.add_scenario()

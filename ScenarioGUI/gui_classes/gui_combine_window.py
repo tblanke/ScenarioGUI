@@ -963,6 +963,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             return
         # change language to english
         self.change_language()
+        # add a first scenario
+        self.add_scenario()
         # show message that no backup file is found
         globs.LOGGER.error(self.translations.no_backup_file[self.gui_structure.option_language.get_value()[0]])
 
@@ -974,10 +976,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
-        # append scenario if no scenario is in list
-        if self.list_widget_scenario.count() < 1:
-            self.add_scenario()
-
         func = ft_partial(self._save_to_data, self.backup_file)
         self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
         self._saving_threads_update()
@@ -1233,7 +1231,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.filename = MainWindow.filename_default  # reset filename
         if self.fun_save():  # get and save filename
             self.list_widget_scenario.clear()  # clear list widget with scenario list
+            self.add_scenario()
             self.display_results()  # clear the results page
+            self.fun_save()
 
     def _always_scenario_selected(self) -> None:
         """
@@ -1307,10 +1307,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # get selected scenario index
         item = self.list_widget_scenario.currentItem()
         # if no scenario exists create a new one else save DataStorage with new inputs in list of scenarios
-        if item is None:
-            self.add_scenario()
-            item = self.list_widget_scenario.currentItem()
-        elif item.data(MainWindow.role).results is None:  # do not overwrite any results
+        if item.data(MainWindow.role).results is None:  # do not overwrite any results
             item.data(MainWindow.role).close_figures()
             item.setData(MainWindow.role, DataStorage(self.gui_structure))
         # remove * from scenario if not Auto save is checked and if the last char is a *

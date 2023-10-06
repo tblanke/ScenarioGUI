@@ -15,7 +15,6 @@ def test_move_scenario_upwards(qtbot):
     """
     # init gui window
     main_window = start_tests(qtbot)
-    main_window.add_scenario()
     # add three scenarios
     for i in range(1, 6):
         main_window.gui_structure.float_b.set_value(i)
@@ -59,7 +58,6 @@ def test_move_scenario_downwards(qtbot):
     """
     # init gui window
     main_window = start_tests(qtbot)
-    main_window.add_scenario()
     # add three scenarios
     for i in range(1, 6):
         main_window.gui_structure.float_b.set_value(i)

@@ -17,7 +17,6 @@ def test_run(qtbot):  # noqa: PLR0915
     # init gui window
     main_window = start_tests(qtbot)
     main_window.remove_previous_calculated_results()
-    main_window.add_scenario()
     file = main_window.gui_structure.filename.get_value()
     main_window.gui_structure.filename.set_value("abc")
     main_window.save_scenario()
