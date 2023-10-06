@@ -82,6 +82,7 @@ class Translations:  # pragma: no cover
         "category_default_figure_settings",
         "option_font_size",
         "default_figure_colors",
+        "float_b_tooltip",
         "matrix",
         "languages",
     )
@@ -189,8 +190,9 @@ class Translations:  # pragma: no cover
         self.option_font_size: list[str] = ["Font Size:", "Schriftgröße:"]
         self.default_figure_colors: list[str] = [
             "Should the default colors be used?, No , Yes ",
-            "Sollen die Standardeinstellungen für die Farben verwendet werden?, Nein , Ja ",
+            "Sollen die Standardeinstellungen für die Farben verwendet werden?, Nein , Ja",
         ]
+        self.float_b_tooltip: list[str] = ["This is an explanation@for the value b", "Dies ist eine Erklärung@für den Wert b"]
         self.matrix: list[str] = [
             "Heating peak [kW],Cooling peak [kW],Heating load [kWh],Cooling load [kWh],January,February,March,April,May,June,July,August,September,October,November,December",
             "Heizungspeak [kW],Kühlungspeak [kW],Heizlast [kWh],Kühllast [kWh],Januar,Februar,März,April,Mai,Juni,Juli,August,September,Oktober,November,Dezember",
