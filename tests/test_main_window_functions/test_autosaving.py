@@ -20,7 +20,9 @@ def test_autosaving(qtbot):  # noqa: PLR0915
     # add two scenarios and set different conductivity
     main_window.add_scenario()
     main_window.gui_structure.float_b.set_value(2.1)
+    assert main_window.list_widget_scenario.currentItem().text()[-1] == "*"
     main_window.gui_structure.option_auto_saving.set_value(1)
+    assert main_window.list_widget_scenario.currentItem().text()[-1] != "*"
 
     main_window.add_scenario()
     main_window.gui_structure.float_b.set_value(1.1)

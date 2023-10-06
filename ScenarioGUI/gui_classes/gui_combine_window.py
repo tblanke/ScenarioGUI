@@ -424,6 +424,9 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
     def change_auto_saving(self):
         if self.gui_structure.option_auto_saving.get_value() == 1:
+            item = self.list_widget_scenario.currentItem()
+            if item is not None and item.text()[-1] == "*":
+                item.setText(item.text()[:-1])
             # save current changes
             self.save_scenario()
             # disable button
