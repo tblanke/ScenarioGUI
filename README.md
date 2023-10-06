@@ -20,9 +20,9 @@ This can be found on [ScenarioGUI.readthedocs.io](https://scenariogui.readthedoc
 
 
 ## Requirements
-This code is tested with Python 3.10 and 3.11 and requires the following libraries (the versions mentioned are the ones with which the code is tested)
+This code is tested with Python 3.8 to 3.11 and requires the following libraries (the versions mentioned are the ones with which the code is tested)
 
-* PySide6>=6.4.1
+* PySide6>=6.5.3
 * matplotlib>=3.5.2
 * numpy>=1.23.1
 * pandas>=1.4.3
@@ -34,7 +34,6 @@ For the tests
 * pytest-cov>=3.0.0
 * pytest-timeout>=2.1.0
 * pytest-qt>=4.1.0
-* keyboard>=0.13.5
 
 ## Quick start
 ### Installation
