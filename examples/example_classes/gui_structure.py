@@ -34,7 +34,7 @@ class GUI(GuiStructure):  # pragma: no cover
             label="a",
             default_value=2,
             minimal_value=0,
-            maximal_value=200,
+            maximal_value=30000,
             category=self.category_inputs,
         )
         self.int_a.set_tool_tip("This is an explanation\nfor the value a")

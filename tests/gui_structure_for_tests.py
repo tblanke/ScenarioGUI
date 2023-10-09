@@ -46,7 +46,7 @@ class GUI(GuiStructure):
             label="a",
             default_value=2,
             minimal_value=0,
-            maximal_value=300,
+            maximal_value=3000,
             category=self.category_inputs,
         )
 

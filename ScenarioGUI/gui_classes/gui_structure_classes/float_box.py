@@ -75,12 +75,12 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
             new_float_str = f"{strings[0]}.{strings[1]}" if len(strings) > 1 else strings[0]
             limit_reached = (float(new_float_str) > self.maximum() and float(new_float_str) > 0) or float(new_float_str) < self.minimum()
             if limit_reached:
-                float_str = f"{strings[0][:-1]}{decimal_sign}{strings[0][-1]}{strings[1][:-1]}" if len(strings) > 0 else strings[:-1]
+                float_str = f"{strings[0][:-1]}{decimal_sign}{strings[0][-1]}{strings[1][:-1]}" if len(strings) > 1 else strings[0][:-1]
             if has_sep:
                 minus = float_str[0] == "-"
                 if minus:
                     float_str = float_str[1:]
-                dec_idx = float_str.index(decimal_sign) if self.decimals() > 0 and float_str.index(decimal_sign) > 2 else 0
+                dec_idx = float_str.index(decimal_sign) if self.decimals() > 0 and float_str.index(decimal_sign) > 2 else len(float_str)
                 # Initialize an empty result string
                 result_string = ""
                 # Iterate through the original string in reverse
@@ -92,7 +92,8 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
                 float_str = result_string + float_str[dec_idx:]
                 if minus:
                     float_str = f"-{float_str}"
-        pos = (pos + 1) if limit_reached and is_number and float_str[pos-1] == decimal_sign else pos
+
+        pos = (pos + 1) if limit_reached and is_number and len(float_str) > pos and float_str[pos-1] == decimal_sign else pos
         pos = (pos + 1) if len_bef < float_str[:pos].count(sep_sign) else pos
         pos = (pos - 1) if len_bef > float_str[:pos].count(sep_sign) else pos
         float_str = float_str[:-1] if has_no_decimal_sign else float_str
