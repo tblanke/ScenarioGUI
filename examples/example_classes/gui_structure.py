@@ -34,7 +34,7 @@ class GUI(GuiStructure):  # pragma: no cover
             label="a",
             default_value=2,
             minimal_value=0,
-            maximal_value=200,
+            maximal_value=30000,
             category=self.category_inputs,
         )
         self.int_a.set_tool_tip("This is an explanation\nfor the value a")
@@ -112,7 +112,16 @@ class GUI(GuiStructure):  # pragma: no cover
             label=["b", "b"],
             default_value=100,
             minimal_value=0,
-            maximal_value=1000,
+            maximal_value=100_000,
+            decimal_number=2,
+            category=self.sub_category,
+        )
+
+        self.negative_float = els.FloatBox(
+            label="negative_float",
+            default_value=-1000,
+            minimal_value=-100_000,
+            maximal_value=-100,
             decimal_number=2,
             category=self.sub_category,
         )
@@ -218,7 +227,7 @@ class GUI(GuiStructure):  # pragma: no cover
             entries=["entry 1", "entry 2", "entry 3"],
         )
         self.hint_flex = els.Hint(
-            hint="wrong length of flexible option",
+            hint=["wrong length of flexible option", "Falscher Wert in flexible option"],
             category=self.category_inputs,
             warning=True,
         )

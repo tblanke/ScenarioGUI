@@ -46,7 +46,7 @@ class GUI(GuiStructure):
             label="a",
             default_value=2,
             minimal_value=0,
-            maximal_value=300,
+            maximal_value=3000,
             category=self.category_inputs,
         )
 
@@ -64,7 +64,7 @@ class GUI(GuiStructure):
             label="b",
             default_value=100,
             minimal_value=0,
-            maximal_value=1000,
+            maximal_value=100_000,
             decimal_number=2,
             category=self.sub_category,
         )
@@ -97,6 +97,15 @@ class GUI(GuiStructure):
             default_value=100,
             minimal_value=0,
             maximal_value=1000,
+            decimal_number=2,
+            category=self.sub_category,
+        )
+
+        self.negative_float = els.FloatBox(
+            label="negative_float",
+            default_value=-1000,
+            minimal_value=-100_000,
+            maximal_value=-100,
             decimal_number=2,
             category=self.sub_category,
         )

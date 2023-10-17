@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtGui as QtG
 import PySide6.QtWidgets as QtW  # type: ignore
+import numpy as np
 
 import ScenarioGUI.global_settings as globs
 
@@ -46,11 +47,56 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
         -------
             object
         """
-        # position is index +1 in input
-        nb_of_chars = len(float_str) - 1 if "," in float_str else 0
-        nb_of_decimals = 0 if "," not in float_str else nb_of_chars - float_str.index(",")
+        # get sign and decimal symbols
+        decimal_sign = self.locale().decimalPoint()
+        sep_sign = self.locale().groupSeparator()
+        has_sep = sep_sign in float_str
+        len_bef = float_str[:pos].count(sep_sign)
+        if pos > len(float_str) or float_str == "":
+            return QtW.QDoubleSpinBox.validate(self, float_str, pos)
+        is_number = not (float_str[pos-1] in [sep_sign, decimal_sign])
+        has_no_decimal_sign = decimal_sign not in float_str and self.decimals() > 0
+        if has_no_decimal_sign:
+            float_str += decimal_sign
+        # move the curser to the next number if the current one is not
+        # float_str = float_str.replace(sep_sign, "")
+        nb_of_chars = len(float_str) - 1 if decimal_sign in float_str else 0
+        nb_of_decimals = 0 if decimal_sign not in float_str else nb_of_chars - float_str.index(decimal_sign)
         # overwrite decimals
-        float_str = float_str[:-1] if nb_of_decimals > self.decimals() and pos != nb_of_chars + 1 else float_str
+        if nb_of_decimals > self.decimals() and pos != nb_of_chars + 1:
+            float_str = float_str[:-1]
+        # move values if the current one is above the maximum
+        limit_reached: bool = False
+        if self.maximum() > 1 or self.minimum() < -1:
+            float_str = float_str.replace(sep_sign, "")
+            strings = float_str.split(decimal_sign)
+            strings[0] = "0" if strings[0] == "" else strings[0]
+            strings[0] = "-0" if strings[0] == "-" else strings[0]
+            new_float_str = f"{strings[0]}.{strings[1]}" if len(strings) > 1 else strings[0]
+            limit_reached = (float(new_float_str) > self.maximum() and float(new_float_str) > 0) or float(new_float_str) < self.minimum()
+            if limit_reached:
+                float_str = f"{strings[0][:-1]}{decimal_sign}{strings[0][-1]}{strings[1][:-1]}" if len(strings) > 1 else strings[0][:-1]
+            if has_sep:
+                minus = float_str[0] == "-"
+                if minus:
+                    float_str = float_str[1:]
+                dec_idx = float_str.index(decimal_sign) if self.decimals() > 0 and float_str.index(decimal_sign) > 2 else len(float_str)
+                # Initialize an empty result string
+                result_string = ""
+                # Iterate through the original string in reverse
+                for i, char in enumerate(reversed(float_str[: dec_idx])):
+                    # Check if it's time to insert the symbol
+                    if i > 0 and i % 3 == 0:
+                        result_string = sep_sign + result_string  # Insert the symbol
+                    result_string = char + result_string  # Add the character
+                float_str = result_string + float_str[dec_idx:]
+                if minus:
+                    float_str = f"-{float_str}"
+
+        pos = (pos + 1) if limit_reached and is_number and len(float_str) > pos and float_str[pos-1] == decimal_sign else pos
+        pos = (pos + 1) if len_bef < float_str[:pos].count(sep_sign) else pos
+        pos = (pos - 1) if len_bef > float_str[:pos].count(sep_sign) else pos
+        float_str = float_str[:-1] if has_no_decimal_sign else float_str
         return QtW.QDoubleSpinBox.validate(self, float_str, pos)
 
 
@@ -61,15 +107,15 @@ class FloatBox(Option):
     """
 
     def __init__(  # noqa: PLR0913
-        self,
-        label: str | list[str],
-        default_value: float,
-        category: Category,
-        *,
-        decimal_number: int = 0,
-        minimal_value: float = 0.0,
-        maximal_value: float = 100.0,
-        step: float = 1.0,
+            self,
+            label: str | list[str],
+            default_value: float,
+            category: Category,
+            *,
+            decimal_number: int = 0,
+            minimal_value: float = 0.0,
+            maximal_value: float = 100.0,
+            step: float = 1.0,
     ):
         """
 
@@ -153,10 +199,10 @@ class FloatBox(Option):
         return self.minimal_value <= self.get_value() <= self.maximal_value
 
     def add_link_2_show(
-        self,
-        option: Option | Category | FunctionButton | Hint,
-        below: float = None,
-        above: float = None,
+            self,
+            option: Option | Category | FunctionButton | Hint,
+            below: float = None,
+            above: float = None,
     ) -> None:
         """
         This function couples the visibility of an option to the value of the FloatBox object.
@@ -186,11 +232,11 @@ class FloatBox(Option):
         check_conditional_visibility(option)
 
     def show_option(
-        self,
-        option: Option | Category | FunctionButton | Hint,
-        below: float | None,
-        above: float | None,
-        args=None,
+            self,
+            option: Option | Category | FunctionButton | Hint,
+            below: float | None,
+            above: float | None,
+            args=None,
     ):
         """
         This function shows the option if the value of the FloatBox is between the below and above value.
@@ -261,12 +307,12 @@ class FloatBox(Option):
         return ft_partial(self.check_linked_value, value, value_if_hidden)
 
     def create_widget(
-        self,
-        frame: QtW.QFrame,
-        layout_parent: QtW.QLayout,
-        *,
-        row: int | None = None,
-        column: int | None = None,
+            self,
+            frame: QtW.QFrame,
+            layout_parent: QtW.QLayout,
+            *,
+            row: int | None = None,
+            column: int | None = None,
     ) -> None:
         """
         This functions creates the FloatBox widget in the frame.
@@ -291,10 +337,10 @@ class FloatBox(Option):
         layout = self.create_frame(frame, layout_parent)
         self.widget.setParent(self.frame)
         self.widget.setStyleSheet(
-            f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};' f'border: 1px solid {globs.WHITE};{"}"}'
+            f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};border: 1px solid {globs.WHITE};{"}"}'
         )
         self.widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
-        self.widget.setProperty("showGroupSeparator", True)
+        self.widget.setGroupSeparatorShown(True)
         self.widget.setMinimum(self.minimal_value)
         self.widget.setMaximum(self.maximal_value)
         self.widget.setDecimals(self.decimal_number)

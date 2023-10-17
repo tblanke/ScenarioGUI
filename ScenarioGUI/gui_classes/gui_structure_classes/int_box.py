@@ -10,6 +10,7 @@ import PySide6.QtCore as QtC  # type: ignore
 import PySide6.QtWidgets as QtW  # type: ignore
 
 import ScenarioGUI.global_settings as globs
+from .float_box import DoubleSpinBox
 
 from ...utils import set_default_font
 from .functions import check_and_set_max_min_values, check_conditional_visibility
@@ -23,14 +24,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from .category import Category
     from .function_button import FunctionButton
     from .hint import Hint
-
-
-class SpinBox(QtW.QSpinBox):  # pragma: no cover
-    def wheelEvent(self, event: QtG.QWheelEvent):
-        if self.hasFocus():
-            super().wheelEvent(event)
-            return
-        self.parent().wheelEvent(event)
 
 
 class IntBox(Option):
@@ -85,7 +78,8 @@ class IntBox(Option):
         self.minimal_value: int = minimal_value
         self.maximal_value: int = maximal_value
         self.step: int = step
-        self.widget: SpinBox = SpinBox(self.default_parent, valueChanged=self.valueChanged.emit)
+        self.widget: DoubleSpinBox = DoubleSpinBox(self.default_parent, valueChanged=self.valueChanged.emit)
+        self.widget.setDecimals(0)
 
     def get_value(self) -> int:
         """
@@ -96,7 +90,7 @@ class IntBox(Option):
         int
             Value of the IntBox
         """
-        return self.widget.value()
+        return int(self.widget.value())
 
     def set_value(self, value: int) -> None:
         """
@@ -265,9 +259,10 @@ class IntBox(Option):
         layout = self.create_frame(frame, layout_parent)
         self.widget.setParent(self.frame)
         self.widget.setStyleSheet(
-            f'QSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};border: 1px solid {globs.WHITE};{"}"}'
+            f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};border: 1px solid {globs.WHITE};{"}"}'
         )
         self.widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
+        self.widget.setGroupSeparatorShown(True)
         self.widget.setMinimum(self.minimal_value)
         self.widget.setMaximum(self.maximal_value)
         self.widget.setValue(self.default_value)

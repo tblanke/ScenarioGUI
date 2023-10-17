@@ -1,4 +1,5 @@
 import numpy as np
+import PySide6.QtCore as QtC
 import pytest
 
 from ScenarioGUI.gui_classes.gui_structure_classes.functions import ConditionalVisibilityWarning
@@ -44,6 +45,18 @@ def test_int_box(qtbot):
     assert not main_window.gui_structure.float_b.is_hidden()
     main_window.save_scenario()
     assert "int_a" in main_window.list_ds[0].to_dict()
+    int_a.widget.setLocale(QtC.QLocale(QtC.QLocale.German, QtC.QLocale.Germany))
+    # test validation
+    res = int_a.widget.validate("100", 2)
+    assert np.isclose(float(res[1].replace(",", ".")), 100)
+    assert res[2] == 2
+    res = int_a.widget.validate("12345", 2)
+    assert np.isclose(float(res[1].replace(",", ".")), 1234)
+    assert res[2] == 2
+    res = int_a.widget.validate("1.234", 2)
+    assert np.isclose(float(res[1].replace(".", "").replace(",", ".")), 1234)
+    assert res[1] == "1.234"
+    assert res[2] == 2
 
     int_a.add_link_2_show(main_window.gui_structure.hint_1, below=0)
 

@@ -8,6 +8,7 @@ import PySide6.QtWidgets as QtW  # type: ignore
 import numpy as np
 
 import ScenarioGUI.global_settings as globs
+from .float_box import DoubleSpinBox
 from .functions import check_and_set_max_min_values, check_conditional_visibility
 
 from ...utils import set_default_font
@@ -23,7 +24,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .hint import Hint
 
 
-class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
+class ArrowDoubleSpinBox(DoubleSpinBox):  # pragma: no cover
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.up = self
@@ -32,7 +33,7 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
         self.right = self
         self.setButtonSymbols(QtW.QDoubleSpinBox.NoButtons)
 
-    def set_boxes(self, up: DoubleSpinBox, down: DoubleSpinBox, left: DoubleSpinBox, right: DoubleSpinBox):
+    def set_boxes(self, up: ArrowDoubleSpinBox, down: ArrowDoubleSpinBox, left: ArrowDoubleSpinBox, right: ArrowDoubleSpinBox):
         self.up = up
         self.down = down
         self.left = left
@@ -53,13 +54,6 @@ class DoubleSpinBox(QtW.QDoubleSpinBox):  # pragma: no cover
             self.right.selectAll()
         else:
             super().keyPressEvent(event)
-
-    def wheelEvent(self, event: QtG.QWheelEvent):
-        if self.hasFocus():
-            super().wheelEvent(event)
-            return
-        self.parent().wheelEvent(event)
-
 
 class MatrixBox(Option):
     """
@@ -118,8 +112,8 @@ class MatrixBox(Option):
         self.maximal_value: list[list[float]] = ([[maximal_value] * column] * row) if isinstance(maximal_value, (float, int)) else maximal_value
         self.column = column
         self.row = row
-        self.widget: list[list[DoubleSpinBox]] = [
-            [DoubleSpinBox(self.default_parent, valueChanged=self.valueChanged.emit) for _ in range(column)] for _ in range(row)
+        self.widget: list[list[ArrowDoubleSpinBox]] = [
+            [ArrowDoubleSpinBox(self.default_parent, valueChanged=self.valueChanged.emit) for _ in range(column)] for _ in range(row)
         ]
 
     def get_value(self) -> list[list[float]]:
@@ -361,7 +355,7 @@ class MatrixBox(Option):
                     f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};' f'border: 1px solid {globs.WHITE};{"}"}'
                 )
                 widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
-                widget.setProperty("showGroupSeparator", True)
+                widget.setGroupSeparatorShown(True)
                 widget.setMinimum(self.minimal_value[row][column])
                 widget.setMaximum(self.maximal_value[row][column])
                 widget.setDecimals(self.decimal_number[row][column])

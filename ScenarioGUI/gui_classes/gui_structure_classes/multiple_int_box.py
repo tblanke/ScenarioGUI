@@ -15,7 +15,7 @@ import ScenarioGUI.global_settings as globs
 
 from ...utils import set_default_font
 from .functions import check_conditional_visibility
-from .int_box import SpinBox
+from .int_box import DoubleSpinBox
 from .option import Option
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -78,7 +78,8 @@ class MultipleIntBox(Option):
         self.minimal_value: list[int] = [minimal_value for _ in default_value] if not isinstance(minimal_value, Iterable) else minimal_value
         self.maximal_value: list[int] = [maximal_value for _ in default_value] if not isinstance(maximal_value, Iterable) else maximal_value
         self.step: list[int] = [step for _ in default_value] if not isinstance(step, Iterable) else step
-        self.widget: list[SpinBox] = [SpinBox(self.default_parent, valueChanged=self.valueChanged.emit) for _ in default_value]
+        self.widget: list[DoubleSpinBox] = [DoubleSpinBox(self.default_parent, valueChanged=self.valueChanged.emit) for _ in default_value]
+        _ = [wid.setDecimals(0) for wid in self.widget]
 
     def get_value(self) -> tuple[int]:
         """
@@ -260,7 +261,7 @@ class MultipleIntBox(Option):
         for widget, max_val, min_val, step, def_val in zip(self.widget, self.maximal_value, self.minimal_value, self.step, self.default_value):
             widget.setParent(self.frame)
             widget.setStyleSheet(
-                f'QSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};' f'border: 1px solid {globs.WHITE};{"}"}'
+                f'QDoubleSpinBox{"{"}selection-color: {globs.WHITE};selection-background-color: {globs.LIGHT};' f'border: 1px solid {globs.WHITE};{"}"}'
             )
             widget.setAlignment(QtC.Qt.AlignRight | QtC.Qt.AlignTrailing | QtC.Qt.AlignVCenter)
             widget.setMinimum(min_val)

@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Remember last save location (issue 136)
 - Create a grid layout / matrix box as option (issue 102)
 - Move within this matrix box with the arrows (issue 101)
+- Use insert in FloatBox (issue 103)
 - Value Hint (issue 151)
 
 ## Fixed
