@@ -30,13 +30,7 @@ class GUI(GuiStructure):  # pragma: no cover
         # this three aims can appear in one row by setting:
         self.page_inputs.aims_in_row = 3
         self.category_inputs = els.Category(page=self.page_inputs, label="Inputs")
-        self.int_a = els.IntBox(
-            label="a",
-            default_value=2,
-            minimal_value=0,
-            maximal_value=200,
-            category=self.category_inputs,
-        )
+        self.int_a = els.IntBox(label="a", default_value=2, minimal_value=0, maximal_value=200, category=self.category_inputs)
         self.int_a.set_tool_tip("This is an explanation\nfor the value a")
         self.int_a.change_event(
             self.disable_aim(
