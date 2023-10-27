@@ -118,6 +118,7 @@ class DataStorage:
         """
         # get all normal values
         return {key: value for key, value in self.__dict__.items() if isinstance(value, (int, bool, float, str, tuple))}
+        return {key: value for key, value in self.__dict__.items() if isinstance(value, (int, bool, float, str, list, tuple))}
 
     def from_dict(self, data: dict):
         """
