@@ -20,9 +20,9 @@ This can be found on [ScenarioGUI.readthedocs.io](https://scenariogui.readthedoc
 
 
 ## Requirements
-This code is tested with Python 3.10 and 3.11 and requires the following libraries (the versions mentioned are the ones with which the code is tested)
+This code is tested with Python 3.10 until 3.12 and requires the following libraries (the versions mentioned are the ones with which the code is tested)
 
-* PySide6>=6.4.1
+* PySide6>=6.6.0
 * matplotlib>=3.5.2
 * numpy>=1.23.1
 * pandas>=1.4.3
