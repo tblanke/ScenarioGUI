@@ -1326,6 +1326,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         idx = self.list_widget_scenario.row(item)
         # delete scenario form list widget
         self.list_widget_scenario.takeItem(idx)
+        # run change function to mark unsaved inputs
+        self.change()
         # select next scenario
         if self.MOVE_2_NEXT:
             self.list_widget_scenario.setCurrentRow(min(idx, number_of_scenarios - 2))
