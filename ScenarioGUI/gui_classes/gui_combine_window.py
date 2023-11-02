@@ -1107,6 +1107,15 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
+
+        if self.changedFile:
+            # ask if the project should be saved
+            reply = self._prompt_save_project_message()
+            if reply is None:
+                return
+            if reply:
+                self.fun_save()
+
         # open interface and get file name
         filename = QtW.QFileDialog.getOpenFileName(
             self.central_widget,
@@ -1217,6 +1226,15 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         -------
         None
         """
+
+        if self.changedFile:
+            # ask if the project should be saved
+            reply = self._prompt_save_project_message()
+            if reply is None:
+                return
+            if reply:
+                self.fun_save()
+
         self.filename = MainWindow.filename_default  # reset filename
         if self.fun_save():  # get and save filename
             self.list_widget_scenario.clear()  # clear list widget with scenario list
