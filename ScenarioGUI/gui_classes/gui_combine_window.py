@@ -1608,6 +1608,33 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if not self.changedFile:
             event.accept()
             return
+
+        # ask if the project should be saved
+        reply = self._prompt_save_project_message()
+
+        # check if closing should be canceled
+        if reply is None:  # type: ignore
+            # cancel closing event
+            event.ignore()
+            return
+        # check if inputs should be saved and if successfully set closing variable to true
+        close: bool = self.fun_save() if reply else True  # type: ignore
+        # stop all calculation threads
+        _ = [i.terminate() for i in self.threads]  # type: ignore
+        # close figures
+        _ = [self.list_widget_scenario.item(idx).data(MainWindow.role).close_figures() for idx in range(self.list_widget_scenario.count())]
+        # close window if close variable is true else not
+        event.accept() if close else event.ignore()
+
+    def _prompt_save_project_message(self) -> bool:
+        """
+        This function prompts the save project message.
+        It returns None if the command is cancelled, True if the project should be saved and False otherwise.
+
+        Returns
+        -------
+        bool
+        """
         # create message box
         self.dialog = QtW.QMessageBox(self.dia)  # type: ignore
         set_default_font(self.dialog)
@@ -1616,9 +1643,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # set label text to cancel text depending on language selected
         self.dialog.setText(self.translations.label_CancelText[self.gui_structure.option_language.get_value()[0]])
         # set window text to cancel text depending on language selected
-        self.dialog.setWindowTitle(self.translations.label_CancelTitle[self.gui_structure.option_language.get_value()[0]])
+        self.dialog.setWindowTitle(
+            self.translations.label_CancelTitle[self.gui_structure.option_language.get_value()[0]])
         # set standard buttons to save, close and cancel
-        self.dialog.setStandardButtons(QtW.QMessageBox.Save | QtW.QMessageBox.Close | QtW.QMessageBox.Cancel)  # type: ignore
+        self.dialog.setStandardButtons(
+            QtW.QMessageBox.Save | QtW.QMessageBox.Close | QtW.QMessageBox.Cancel)  # type: ignore
         # get save, close and cancel button
         button_s = self.dialog.button(QtW.QMessageBox.Save)  # type: ignore
         button_cl = self.dialog.button(QtW.QMessageBox.Close)  # type: ignore
@@ -1634,16 +1663,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.set_push_button_icon(button_ca, "Abort")  # type: ignore
         # execute message box and save response
         reply = self.dialog.exec()
-        # check if closing should be canceled
-        if reply == QtW.QMessageBox.Cancel:  # type: ignore
-            # cancel closing event
-            event.ignore()
-            return
-        # check if inputs should be saved and if successfully set closing variable to true
-        close: bool = self.fun_save() if reply == QtW.QMessageBox.Save else True  # type: ignore
-        # stop all calculation threads
-        _ = [i.terminate() for i in self.threads]  # type: ignore
-        # close figures
-        _ = [self.list_widget_scenario.item(idx).data(MainWindow.role).close_figures() for idx in range(self.list_widget_scenario.count())]
-        # close window if close variable is true else not
-        event.accept() if close else event.ignore()
+
+        if reply == QtW.QMessageBox.Cancel:
+            return None
+
+        if reply == QtW.QMessageBox.Save:
+            return True
+
+        return False
