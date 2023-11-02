@@ -1197,10 +1197,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.change_window_title() if self.filename == filename else None
         # save scenarios
         self.save_scenario()
-        # update backup file
-        # self.auto_save() --> this is already done in self.save_scenario()
         # try to store the data in the pickle file
-        print(filename[0])
         func = ft_partial(self._save_to_data, filename[0])  # type: ignore
         self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
         self._saving_threads_update()
@@ -1636,8 +1633,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # execute message box and save response
         reply = self.dialog.exec()
         # check if closing should be canceled
-        logging.info(reply)
-        print(reply, QtW.QMessageBox.Save, reply == QtW.QMessageBox.Save)
         if reply == QtW.QMessageBox.Cancel:  # type: ignore
             # cancel closing event
             event.ignore()
@@ -1648,11 +1643,12 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             event.ignore()
             return
         # stop all calculation threads
-        print(len(self.saving_threads))
-        _ = [i.start() for i in self.saving_threads]  # type: ignore
-        # _ = [i.wait() for i in self.saving_threads]  # type: ignore
-        _ = [i.terminate() for i in self.threads]  # type: ignore
-        print(len(self.saving_threads), [t.calculated for t in self.saving_threads])
+        if len(self.saving_threads) > 1:
+            _ = [t.terminate() for t in self.saving_threads[1:-2]]  # type: ignore
+            self.saving_threads[0].wait() if len(self.saving_threads) > 2 else None
+            _ = [t.start() for t in self.saving_threads[-2:]]  # type: ignore
+            _ = [t.wait() for t in self.saving_threads[-2:]]  # type: ignore
+        _ = [t.terminate() for t in self.threads]  # type: ignore
         # close figures
         _ = [self.list_widget_scenario.item(idx).data(MainWindow.role).close_figures() for idx in range(self.list_widget_scenario.count())]
         # close window if close variable is true else not

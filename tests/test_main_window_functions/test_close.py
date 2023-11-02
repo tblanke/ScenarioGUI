@@ -47,6 +47,9 @@ def test_close(qtbot):
     main_window.close()
     assert filename_1 in main_window.filename[0]
     assert filename_1 in main_window.dia.windowTitle()
+    for thread in main_window.saving_threads:
+        assert thread.isFinished()
+        assert thread.calculated
 
     response = QtW.QMessageBox.Close
     main_window.close()
