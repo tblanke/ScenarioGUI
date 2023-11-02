@@ -415,7 +415,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.action_new.triggered.connect(self.fun_new)
         self.action_rename_scenario.triggered.connect(self.fun_rename_scenario)
         self.list_widget_scenario.setDragDropMode(QtW.QAbstractItemView.InternalMove)  # type: ignore
-        # self.list_widget_scenario.model().rowsMoved.connect(self.fun_move_scenario)
+        self.list_widget_scenario.model().rowsMoved.connect(self.change)
         self.list_widget_scenario.currentItemChanged.connect(self.scenario_is_changed)
         self.list_widget_scenario.itemSelectionChanged.connect(self._always_scenario_selected)
         self.gui_structure.option_auto_saving.change_event(self.change_auto_saving)
@@ -789,6 +789,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if self.dialog.exec() == QtW.QDialog.Accepted:  # type: ignore
             name = self.dialog.textValue()
             item.setText(self.set_name(name)) if name else None
+            # run change function to mark unsaved inputs
+            self.change()
 
         self.dialog = None
 
@@ -1326,6 +1328,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         idx = self.list_widget_scenario.row(item)
         # delete scenario form list widget
         self.list_widget_scenario.takeItem(idx)
+        # run change function to mark unsaved inputs
+        self.change()
         # select next scenario
         if self.MOVE_2_NEXT:
             self.list_widget_scenario.setCurrentRow(min(idx, number_of_scenarios - 2))

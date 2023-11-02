@@ -15,16 +15,21 @@ def test_move_scenario_upwards(qtbot):
     """
     # init gui window
     main_window = start_tests(qtbot)
+    assert main_window.dia.windowTitle()[-1] != "*"
     # add three scenarios
     for i in range(1, 6):
         main_window.gui_structure.float_b.set_value(i)
         main_window.save_scenario()
         main_window.add_scenario()
+    main_window.dia.setWindowTitle(main_window.dia.windowTitle()[:-1])
+    main_window.changedFile = False
+    assert main_window.dia.windowTitle()[-1] != "*"
     # save old lists of data storages and names
     li_before = main_window.list_ds.copy()
     li_names_before = [main_window.list_widget_scenario.item(idx).text() for idx in range(main_window.list_widget_scenario.count())]
     # change the items
     main_window.list_widget_scenario.model().moveRow(QtC.QModelIndex(), 1, QtC.QModelIndex(), 3)
+    assert main_window.dia.windowTitle()[-1] == "*"
 
     # create check lists by hand from before lists
     li_check = [li_before[0], li_before[2], li_before[1], li_before[3], li_before[4], li_before[5]]
