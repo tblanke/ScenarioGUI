@@ -22,14 +22,22 @@ def test_gui_scenario_properties(qtbot):
     # check if adding a scenario is adding one
     for i in range(10):
         main_window.save_scenario()
+        main_window.dia.setWindowTitle(main_window.dia.windowTitle()[:-1])
+        main_window.changedFile = False
+        assert main_window.dia.windowTitle()[-1] != "*"
         main_window.add_scenario()
         assert len(main_window.list_ds) == 2 + i
         assert main_window.list_widget_scenario.count() == 2 + i
+        assert main_window.dia.windowTitle()[-1] == "*"
     # check if deleting a scenario is removing a scenario
     for i in range(10):
+        main_window.dia.setWindowTitle(main_window.dia.windowTitle()[:-1])
+        main_window.changedFile = False
+        assert main_window.dia.windowTitle()[-1] != "*"
         main_window.delete_scenario()
         assert len(main_window.list_ds) == 10 - i
         assert main_window.list_widget_scenario.count() == 10 - i
+        assert main_window.dia.windowTitle()[-1] == "*"
     # check if deleting the last scenario is ignored so at least one exists
     main_window.delete_scenario()
     assert len(main_window.list_ds) == 1
