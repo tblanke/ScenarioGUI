@@ -1198,7 +1198,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # save scenarios
         self.save_scenario()
         # update backup file
-        self.auto_save()
+        # self.auto_save() --> this is already done in self.save_scenario()
         # try to store the data in the pickle file
         func = ft_partial(self._save_to_data, filename[0])  # type: ignore
         self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
