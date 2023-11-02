@@ -1145,13 +1145,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.checking = True
         self.gui_structure.loaded = True
 
-    def fun_save_as(self) -> None:
+    def fun_save_as(self) -> bool:
         """
         This function sets the filename to a default value and calls the fun_save() function.
 
         Returns
         -------
-        None
+        bool
         """
         # reset filename because then the funSave function ask for a new filename
         filename: tuple[str, str] = QtW.QFileDialog.getSaveFileName(
@@ -1166,10 +1166,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         )
         # break function if no file is selected
         if filename == MainWindow.filename_default or not filename[0]:
-            return
+            return False
         self.default_path = Path(filename[0]).parent
         self.filename = filename if splitext(filename[0])[1].replace(".", "") == globs.FILE_EXTENSION else self.filename
         self.fun_save(filename)  # save data under a new filename
+        return True
 
     def fun_save(self, filename: tuple[str, str] | None = None) -> bool:
         """
@@ -1189,8 +1190,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         logging.info(f"Saved as {self.filename[0]}")
         if filename is None or type(filename) == bool:
             if self.filename == MainWindow.filename_default:
-                self.fun_save_as()
-                return True
+                return self.fun_save_as()
             else:
                 filename = self.filename
 
@@ -1200,6 +1200,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # update backup file
         self.auto_save()
         # try to store the data in the pickle file
+        print(filename[0])
         func = ft_partial(self._save_to_data, filename[0])  # type: ignore
         self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
         self._saving_threads_update()
@@ -1635,15 +1636,24 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # execute message box and save response
         reply = self.dialog.exec()
         # check if closing should be canceled
+        logging.info(reply)
+        print(reply, QtW.QMessageBox.Save, reply == QtW.QMessageBox.Save)
         if reply == QtW.QMessageBox.Cancel:  # type: ignore
             # cancel closing event
             event.ignore()
             return
         # check if inputs should be saved and if successfully set closing variable to true
         close: bool = self.fun_save() if reply == QtW.QMessageBox.Save else True  # type: ignore
+        if not close:
+            event.ignore()
+            return
         # stop all calculation threads
+        print(len(self.saving_threads))
+        _ = [i.start() for i in self.saving_threads]  # type: ignore
+        # _ = [i.wait() for i in self.saving_threads]  # type: ignore
         _ = [i.terminate() for i in self.threads]  # type: ignore
+        print(len(self.saving_threads), [t.calculated for t in self.saving_threads])
         # close figures
         _ = [self.list_widget_scenario.item(idx).data(MainWindow.role).close_figures() for idx in range(self.list_widget_scenario.count())]
         # close window if close variable is true else not
-        event.accept() if close else event.ignore()
+        event.accept()
