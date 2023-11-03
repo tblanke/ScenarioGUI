@@ -1117,6 +1117,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
                 return
             if reply == QtW.QMessageBox.Save:
                 self.fun_save()
+            self.changedFile = False
 
         # open interface and get file name
         filename = QtW.QFileDialog.getOpenFileName(

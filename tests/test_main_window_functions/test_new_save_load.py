@@ -76,8 +76,9 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     # check that they differ
     assert list_old != main_window.list_ds
     # set a different filename and test save as action
-    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
-        f"{filename_2}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
+    QtW.QFileDialog.getSaveFileName = partial(
+        get_save_file_name, return_value=(f"{filename_2}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    )
     main_window.action_save_as.trigger()
     thread = main_window.saving_threads[0]
     thread.run()
@@ -92,8 +93,9 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     main_window.fun_save(main_window.filename)
     main_window._save_to_data(main_window.filename[0])
     # trigger open function and set filename 1
-    QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=(
-        f"{filename_1}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
+    QtW.QFileDialog.getOpenFileName = partial(
+        get_save_file_name, return_value=(f"{filename_1}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    )
     main_window.gui_structure.float_b.set_value(main_window.gui_structure.float_b.get_value() + 1)
     response = QtW.QMessageBox.Cancel
 
@@ -106,11 +108,13 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     # check if filename is imported correctly and the data storages as well
     assert (Path(main_window.filename[0]), main_window.filename[1]) != (filename_1, f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
     assert f"{filename_1.parent}" != f"{main_window.default_path}"
+    assert main_window.dia.windowTitle()[-1] == "*"
     response = QtW.QMessageBox.Save
     main_window.action_open.trigger()
     # check if filename is imported correctly and the data storages as well
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (filename_1, f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
     assert f"{filename_1.parent}" == f"{main_window.default_path}"
+    assert main_window.dia.windowTitle()[-1] != "*"
     # check if the imported values are the same
     for ds_old, ds_new in zip(list_old, main_window.list_ds):
         for option in ds_new.list_options_aims:
@@ -120,11 +124,21 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
             if isinstance(getattr(ds_old, option), (str, bool)):
                 assert getattr(ds_old, option) == getattr(ds_new, option)
                 continue
+    QtW.QFileDialog.getOpenFileName = partial(
+        get_save_file_name, return_value=(f"{filename_2}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    )
+    response = QtW.QMessageBox.Close
+    main_window.gui_structure.float_b.set_value(main_window.gui_structure.float_b.get_value() + 1)
+    main_window.action_open.trigger()
+    assert (Path(main_window.filename[0]), main_window.filename[1]) == (filename_2, f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    assert f"{filename_2.parent}" == f"{main_window.default_path}"
+    assert main_window.dia.windowTitle()[-1] != "*"
 
     main_window._load_from_data(main_window.filename[0])
     # set a different filename and test new action
-    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(
-        f"{filename_3}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
+    QtW.QFileDialog.getSaveFileName = partial(
+        get_save_file_name, return_value=(f"{filename_3}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    )
 
     # trigger open function and set filename 1
     QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=("", ""))
