@@ -881,6 +881,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             )
             self.list_widget_scenario.item(idx).setData(MainWindow.role, data)
 
+        self.change()
+
     def change_language(self) -> None:
         """
         This function changes the language on the different labels and buttons in the gui.
