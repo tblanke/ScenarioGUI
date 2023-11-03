@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-
 class Translations:  # pragma: no cover
     __slots__ = (
         "action_add_scenario",
