@@ -84,6 +84,9 @@ class Translations:  # pragma: no cover
         "default_figure_colors",
         "float_b_tooltip",
         "matrix",
+        "label_Continue",
+        "label_ContinueText",
+        "label_ContinueTitle",
         "languages",
     )
 
@@ -197,3 +200,9 @@ class Translations:  # pragma: no cover
             "Heating peak [kW],Cooling peak [kW],Heating load [kWh],Cooling load [kWh],January,February,March,April,May,June,July,August,September,October,November,December",
             "Heizungspeak [kW],Kühlungspeak [kW],Heizlast [kWh],Kühllast [kWh],Januar,Februar,März,April,Mai,Juni,Juli,August,September,Oktober,November,Dezember",
         ]
+        self.label_Continue: list[str] = ["Continue", "Fortsetzen"]
+        self.label_ContinueText: list[str] = [
+            "Would you like to save the project before you continue?",
+            "Möchten Sie das Projekt speichern bevor sie fortfahren?",
+        ]
+        self.label_ContinueTitle: list[str] = ["Warning", "Warnung"]

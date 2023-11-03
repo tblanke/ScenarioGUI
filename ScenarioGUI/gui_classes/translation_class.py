@@ -65,6 +65,9 @@ class Translations:  # pragma: no cover
         "option_auto_saving",
         "hint_saving",
         "languages",
+        "label_Continue",
+        "label_ContinueText",
+        "label_ContinueTitle",
     )
 
     def __init__(self):
@@ -145,3 +148,9 @@ class Translations:  # pragma: no cover
             "If Auto saving is selected the scenario will automatically saved if a scenario is changed. Otherwise the scenario has to be saved with the Update scenario button in the upper left corner if the changes should not be lost.",
             "Wenn Automatisch speichern ausgewählt ist, wird das Szenario automatisch gespeichert, wenn ein Szenario geändert wird. Andernfalls muss das Szenario mit der Schaltfläche Szenario aktualisieren in der oberen linken Ecke gespeichert werden, wenn die Änderungen nicht verloren gehen sollen.",
         ]
+        self.label_Continue: list[str] = ["Continue", "Fortsetzen"]
+        self.label_ContinueText: list[str] = [
+            "Would you like to save the project before you continue?",
+            "Möchten Sie das Projekt speichern bevor sie fortfahren?",
+        ]
+        self.label_ContinueTitle: list[str] = ["Warning", "Warnung"]

@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.3.2] - January 2024
 
+### Added
+- Open file whilst current file is not saved (ask to save if so) (issue 159)
+
 ## Fixed
 - Bug in saving ListBox values (issue 154)
 - Bug in saving while closing (issue 157)
