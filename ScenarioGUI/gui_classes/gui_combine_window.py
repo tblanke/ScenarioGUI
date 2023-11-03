@@ -1112,10 +1112,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         if self.changedFile:
             # ask if the project should be saved
-            reply = self._prompt_save_project_message()
-            if reply is None:
+            reply = self._prompt_save_project_message(close_event=False)
+            if reply == QtW.QMessageBox.Cancel:
                 return
-            if reply:
+            if reply == QtW.QMessageBox.Save:
                 self.fun_save()
 
         # open interface and get file name
@@ -1229,10 +1229,10 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         if self.changedFile:
             # ask if the project should be saved
-            reply = self._prompt_save_project_message()
-            if reply is None:
+            reply = self._prompt_save_project_message(close_event=False)
+            if reply == QtW.QMessageBox.Cancel:
                 return
-            if reply:
+            if reply == QtW.QMessageBox.Save:
                 self.fun_save()
 
         self.filename = MainWindow.filename_default  # reset filename
@@ -1633,11 +1633,6 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         reply = self._prompt_save_project_message()
 
         # check if closing should be canceled
-        if reply is None:  # type: ignore
-            # cancel closing event
-            event.ignore()
-            return
-        # check if closing should be canceled
         if reply == QtW.QMessageBox.Cancel:  # type: ignore
             # cancel closing event
             event.ignore()
@@ -1659,28 +1654,27 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         # close window if close variable is true else not
         event.accept()
 
-    def _prompt_save_project_message(self) -> bool:
+    def _prompt_save_project_message(self, close_event: bool = True) -> int:
         """
         This function prompts the save project message.
         It returns None if the command is cancelled, True if the project should be saved and False otherwise.
 
+        Parameters
+        -------
+        close_event: bool
+            Should the prompt be shown for the close event(True) or for the open event (False)
+
         Returns
         -------
-        bool
+        int
         """
         # create message box
         self.dialog = QtW.QMessageBox(self.dia)  # type: ignore
         set_default_font(self.dialog)
         # set Icon to question mark icon
         self.dialog.setIcon(QtW.QMessageBox.Question)  # type: ignore
-        # set label text to cancel text depending on language selected
-        self.dialog.setText(self.translations.label_CancelText[self.gui_structure.option_language.get_value()[0]])
-        # set window text to cancel text depending on language selected
-        self.dialog.setWindowTitle(
-            self.translations.label_CancelTitle[self.gui_structure.option_language.get_value()[0]])
         # set standard buttons to save, close and cancel
-        self.dialog.setStandardButtons(
-            QtW.QMessageBox.Save | QtW.QMessageBox.Close | QtW.QMessageBox.Cancel)  # type: ignore
+        self.dialog.setStandardButtons(QtW.QMessageBox.Save | QtW.QMessageBox.Close | QtW.QMessageBox.Cancel)  # type: ignore
         # get save, close and cancel button
         button_s = self.dialog.button(QtW.QMessageBox.Save)  # type: ignore
         button_cl = self.dialog.button(QtW.QMessageBox.Close)  # type: ignore
@@ -1688,11 +1682,35 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         _ = [set_default_font(button) for button in self.dialog.findChildren(QtW.QPushButton)]  # type: ignore
         # set save, close and cancel button text depending on language selected
         button_s.setText(f"{self.translations.label_Save[self.gui_structure.option_language.get_value()[0]]} ")
-        button_cl.setText(f"{self.translations.label_close[self.gui_structure.option_language.get_value()[0]]} ")
+        if close_event:
+            # set label text to cancel text depending on language selected
+            self.dialog.setText(self.translations.label_CancelText[self.gui_structure.option_language.get_value()[0]])
+            # set window text to cancel text depending on language selected
+            self.dialog.setWindowTitle(self.translations.label_CancelTitle[self.gui_structure.option_language.get_value()[0]])
+            button_cl.setText(f"{self.translations.label_close[self.gui_structure.option_language.get_value()[0]]} ")
+            self.set_push_button_icon(button_cl, "Exit")  # type: ignore
+        else:
+            button_cl.setText(
+                self.translations.label_Continue[self.gui_structure.option_language.get_value()[0]]
+                if hasattr(self.translations, "label_Continue")
+                else "Continue"
+            )
+            self.set_push_button_icon(button_cl, "ArrowRight")  # type: ignore
+            # set label text to cancel text depending on language selected
+            self.dialog.setText(
+                self.translations.label_ContinueText[self.gui_structure.option_language.get_value()[0]]
+                if hasattr(self.translations, "label_ContinueText")
+                else "Would you like to save the project before you continue?"
+            )
+            # set window text to cancel text depending on language selected
+            self.dialog.setWindowTitle(
+                self.translations.label_ContinueTitle[self.gui_structure.option_language.get_value()[0]]
+                if hasattr(self.translations, "label_ContinueTitle")
+                else "Warning"
+            )
         button_ca.setText(f"{self.translations.label_cancel[self.gui_structure.option_language.get_value()[0]]} ")
         # set  save, close and cancel button icon
         self.set_push_button_icon(button_s, "Save_Inv")  # type: ignore
-        self.set_push_button_icon(button_cl, "Exit")  # type: ignore
         self.set_push_button_icon(button_ca, "Abort")  # type: ignore
         # execute message box and save response
-        reply = self.dialog.exec()
+        return self.dialog.exec()

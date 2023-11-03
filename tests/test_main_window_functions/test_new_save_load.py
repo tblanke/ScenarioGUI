@@ -94,6 +94,19 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     # trigger open function and set filename 1
     QtW.QFileDialog.getOpenFileName = partial(get_save_file_name, return_value=(
         f"{filename_1}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})"))
+    main_window.gui_structure.float_b.set_value(main_window.gui_structure.float_b.get_value() + 1)
+    response = QtW.QMessageBox.Cancel
+
+    class NewMessageBox(QtW.QMessageBox):
+        def exec(self):
+            return response
+
+    QtW.QMessageBox = NewMessageBox
+    main_window.action_open.trigger()
+    # check if filename is imported correctly and the data storages as well
+    assert (Path(main_window.filename[0]), main_window.filename[1]) != (filename_1, f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    assert f"{filename_1.parent}" != f"{main_window.default_path}"
+    response = QtW.QMessageBox.Save
     main_window.action_open.trigger()
     # check if filename is imported correctly and the data storages as well
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (filename_1, f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
@@ -128,6 +141,12 @@ def test_save_load_new(qtbot):  # noqa: PLR0915
     QtW.QFileDialog.getSaveFileName = partial(
         get_save_file_name, return_value=(f"{filename_3}", f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
     )
+    main_window.gui_structure.float_b.set_value(main_window.gui_structure.float_b.get_value() + 1)
+    response = QtW.QMessageBox.Cancel
+    main_window.action_new.trigger()
+    assert (Path(main_window.filename[0]), main_window.filename[1]) != (filename_3, f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
+    assert len(main_window.list_ds) != 1
+    response = QtW.QMessageBox.Save
     main_window.action_new.trigger()
     assert (Path(main_window.filename[0]), main_window.filename[1]) == (filename_3, f"{global_vars.FILE_EXTENSION} (*.{global_vars.FILE_EXTENSION})")
     assert len(main_window.list_ds) == 1
