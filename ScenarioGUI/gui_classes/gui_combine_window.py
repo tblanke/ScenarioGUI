@@ -415,7 +415,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.action_new.triggered.connect(self.fun_new)
         self.action_rename_scenario.triggered.connect(self.fun_rename_scenario)
         self.list_widget_scenario.setDragDropMode(QtW.QAbstractItemView.InternalMove)  # type: ignore
-        # self.list_widget_scenario.model().rowsMoved.connect(self.fun_move_scenario)
+        self.list_widget_scenario.model().rowsMoved.connect(self.change)
         self.list_widget_scenario.currentItemChanged.connect(self.scenario_is_changed)
         self.list_widget_scenario.itemSelectionChanged.connect(self._always_scenario_selected)
         self.gui_structure.option_auto_saving.change_event(self.change_auto_saving)
@@ -789,6 +789,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         if self.dialog.exec() == QtW.QDialog.Accepted:  # type: ignore
             name = self.dialog.textValue()
             item.setText(self.set_name(name)) if name else None
+            # run change function to mark unsaved inputs
+            self.change()
 
         self.dialog = None
 
@@ -1154,13 +1156,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.checking = True
         self.gui_structure.loaded = True
 
-    def fun_save_as(self) -> None:
+    def fun_save_as(self) -> bool:
         """
         This function sets the filename to a default value and calls the fun_save() function.
 
         Returns
         -------
-        None
+        bool
         """
         # reset filename because then the funSave function ask for a new filename
         filename: tuple[str, str] = QtW.QFileDialog.getSaveFileName(
@@ -1175,10 +1177,11 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         )
         # break function if no file is selected
         if filename == MainWindow.filename_default or not filename[0]:
-            return
+            return False
         self.default_path = Path(filename[0]).parent
         self.filename = filename if splitext(filename[0])[1].replace(".", "") == globs.FILE_EXTENSION else self.filename
         self.fun_save(filename)  # save data under a new filename
+        return True
 
     def fun_save(self, filename: tuple[str, str] | None = None) -> bool:
         """
@@ -1198,16 +1201,13 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         logging.info(f"Saved as {self.filename[0]}")
         if filename is None or type(filename) == bool:
             if self.filename == MainWindow.filename_default:
-                self.fun_save_as()
-                return True
+                return self.fun_save_as()
             else:
                 filename = self.filename
 
         self.change_window_title() if self.filename == filename else None
         # save scenarios
         self.save_scenario()
-        # update backup file
-        self.auto_save()
         # try to store the data in the pickle file
         func = ft_partial(self._save_to_data, filename[0])  # type: ignore
         self.saving_threads.append(SavingThread(datetime.datetime.now(), func))
@@ -1344,6 +1344,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         idx = self.list_widget_scenario.row(item)
         # delete scenario form list widget
         self.list_widget_scenario.takeItem(idx)
+        # run change function to mark unsaved inputs
+        self.change()
         # select next scenario
         if self.MOVE_2_NEXT:
             self.list_widget_scenario.setCurrentRow(min(idx, number_of_scenarios - 2))
@@ -1635,14 +1637,27 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             # cancel closing event
             event.ignore()
             return
+        # check if closing should be canceled
+        if reply == QtW.QMessageBox.Cancel:  # type: ignore
+            # cancel closing event
+            event.ignore()
+            return
         # check if inputs should be saved and if successfully set closing variable to true
-        close: bool = self.fun_save() if reply else True  # type: ignore
+        close: bool = self.fun_save() if reply == QtW.QMessageBox.Save else True  # type: ignore
+        if not close:
+            event.ignore()
+            return
         # stop all calculation threads
-        _ = [i.terminate() for i in self.threads]  # type: ignore
+        if len(self.saving_threads) > 1:
+            _ = [t.terminate() for t in self.saving_threads[1:-2]]  # type: ignore
+            self.saving_threads[0].wait() if len(self.saving_threads) > 2 else None
+            _ = [t.start() for t in self.saving_threads[-2:]]  # type: ignore
+            _ = [t.wait() for t in self.saving_threads[-2:]]  # type: ignore
+        _ = [t.terminate() for t in self.threads]  # type: ignore
         # close figures
         _ = [self.list_widget_scenario.item(idx).data(MainWindow.role).close_figures() for idx in range(self.list_widget_scenario.count())]
         # close window if close variable is true else not
-        event.accept() if close else event.ignore()
+        event.accept()
 
     def _prompt_save_project_message(self) -> bool:
         """
@@ -1681,11 +1696,3 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.set_push_button_icon(button_ca, "Abort")  # type: ignore
         # execute message box and save response
         reply = self.dialog.exec()
-
-        if reply == QtW.QMessageBox.Cancel:
-            return None
-
-        if reply == QtW.QMessageBox.Save:
-            return True
-
-        return False

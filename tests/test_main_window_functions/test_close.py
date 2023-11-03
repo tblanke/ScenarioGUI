@@ -42,11 +42,20 @@ def test_close(qtbot):
         """getSaveFileName proxy"""
         return kwargs["return_value"]
 
+    QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=("", ""))
+    response = QtW.QMessageBox.Save
+    main_window.close()
+
+    assert len(main_window.saving_threads) == 0
+
     QtW.QFileDialog.getSaveFileName = partial(get_save_file_name, return_value=(f"{main_window.default_path.joinpath(filename_1)}", f"{main_window.filename_default[1]}"))
     response = QtW.QMessageBox.Save
     main_window.close()
     assert filename_1 in main_window.filename[0]
     assert filename_1 in main_window.dia.windowTitle()
+    for thread in main_window.saving_threads:
+        assert thread.isFinished()
+        assert thread.calculated
 
     response = QtW.QMessageBox.Close
     main_window.close()

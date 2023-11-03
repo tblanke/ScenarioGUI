@@ -45,7 +45,8 @@ def test_add_other_version_functions(qtbot):
     )
     main_window.fun_save_as()
     for thread in main_window.saving_threads:
-        thread.run()
+        thread.start()
+        thread.wait()
         assert thread.calculated
     assert filename_1 in main_window.dia.windowTitle()
     old_value = main_window.gui_structure.float_b.get_value()

@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Fixed
 - Bug in saving ListBox values (issue 154)
+- Bug in saving while closing (issue 157)
+- Bug in deleting scenario (issue 156)
 
 ## [0.3.1] - 2023-10-12
 
