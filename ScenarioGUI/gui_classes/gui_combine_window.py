@@ -1011,7 +1011,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             saving: JsonDict = self.version_import_functions[saving["version"]](saving)
         # set and change the window title
         if not append:
-            self.filename = tuple(saving["filename"])  # type: ignore
+            self.filename = tuple(saving["filename"]) if f'{globs.FILE_EXTENSION}BackUp' in str(location) else (str(location), f'{globs.FILE_EXTENSION} (*.{globs.FILE_EXTENSION})')
+
             if "default_path" in saving:
                 self.default_path = Path(saving["default_path"])  # type: ignore
             self.change_window_title()
