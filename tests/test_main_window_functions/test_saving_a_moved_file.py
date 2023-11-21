@@ -7,6 +7,7 @@ setrecursionlimit(1500)
 
 import ScenarioGUI.global_settings as global_vars
 
+
 def test_saving_a_moved_fie(qtbot):
     main_window = start_tests(qtbot)
     main_window._save_to_data(f'tests/temp.{global_vars.FILE_EXTENSION}')
