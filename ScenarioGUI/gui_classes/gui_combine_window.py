@@ -1011,7 +1011,8 @@ class MainWindow(QtW.QMainWindow, BaseUI):
             saving: JsonDict = self.version_import_functions[saving["version"]](saving)
         # set and change the window title
         if not append:
-            self.filename = tuple(saving["filename"])  # type: ignore
+            self.filename = tuple(saving["filename"])
+
             if "default_path" in saving:
                 self.default_path = Path(saving["default_path"])  # type: ignore
             self.change_window_title()
@@ -1139,6 +1140,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self.default_path = Path(filename[0]).parent
         # load selected data
         self.fun_load_known_filename()
+        self.filename = filename
 
     def fun_load_known_filename(self) -> None:
         """
