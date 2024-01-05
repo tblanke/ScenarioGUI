@@ -10,7 +10,7 @@ from os.path import split as os_split
 from os.path import splitext
 from pathlib import Path
 from sys import path
-from typing import TYPE_CHECKING, TypedDict
+from typing import Generic, TYPE_CHECKING, Type, TypeVar, TypedDict
 
 import pandas as pd
 import PySide6.QtCore as QtC
@@ -28,13 +28,18 @@ from .gui_data_storage import DataStorage
 from .gui_saving_thread import SavingThread
 from .gui_structure_classes import FigureOption, Option, ResultExport
 
+
 if TYPE_CHECKING:
     from collections.abc import Callable
     from typing import Protocol
 
-    from ScenarioGUI.gui_classes.gui_structure import GuiStructure
 
     from .translation_class import Translations
+    from ScenarioGUI.gui_classes.gui_structure import GuiStructure
+
+    GuiStructureType = TypeVar("GuiStructureType", bound=GuiStructure)
+
+
 
     class ResultsClass(Protocol):
         """Testing"""
@@ -121,7 +126,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
         self,
         dialog: QtW.QMainWindow,
         app: QtW.QApplication,
-        gui_structure: type[GuiStructure],
+        gui_structure: Type[GuiStructureType],
         translations: type[Translations],
         *,
         result_creating_class: type[ResultsClass],
@@ -159,8 +164,7 @@ class MainWindow(QtW.QMainWindow, BaseUI):
 
         self.result_creating_class = result_creating_class
         self.data_2_results_function = data_2_results_function
-
-        self.gui_structure = gui_structure(self.central_widget, self.translations)
+        self.gui_structure: GuiStructureType = gui_structure(self.central_widget, self.translations)
 
         _ = [page.create_page(self.central_widget, self.stacked_widget, self.vertical_layout_menu) for page in self.gui_structure.list_of_pages]  # type: ignore
 
