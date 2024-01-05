@@ -56,6 +56,7 @@ class Subcategory(Category):
         self.layout_frame: QtW.QVBoxLayout | None = None
         category.list_of_options.append(self)
         self.options_hidden = []
+        self.conditional_visibility: bool = False
 
     def create_widget(self, page: QtW.QWidget, layout: QtW.QLayout):
         """
